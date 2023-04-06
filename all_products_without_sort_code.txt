@@ -1,0 +1,480 @@
+public function all_products($idd,$t)
+	{
+		$id=$idd;
+		$page=base64_decode($t);
+
+		$data['page']= $t;
+		$data['level_id']= $idd;
+
+		$sort_type= $this->input->get('sort_type');
+
+if($page == 3){
+
+		// Category
+
+		// $data['cate_id']= $idd;
+		$data['sub_id']= "";
+		$data['minorsub_id']= "";
+		$data['minorsub_name']= "";
+		$data['subcategory_id']= "";
+
+		$this->db->select('*');
+	$this->db->from('tbl_products');
+	$this->db->where('category',$id);
+	$this->db->where('is_active', 1);
+	$data['product_count']= $this->db->count_all_results();
+
+
+
+		$this->db->select('*');
+		$this->db->from('tbl_category');
+		$this->db->where('id',$id);
+		$this->db->where('is_active', 1);
+		$cate_da= $this->db->get()->row();
+		if(!empty($cate_da)){
+			$cate_name= $cate_da->name;
+		}else{
+			$cate_name="";
+			$category_id="";
+			$subcate_name="";
+			$cate_name="";
+		}
+
+
+		$data['category_id']= $idd;
+		$data['subcategory_name']= "";
+		$data['category_name']= $cate_name;
+
+			$ringsize= $this->input->get('ringsize');
+			$product_type= $this->input->get('product_type');
+			$totalweight= $this->input->get('totalweight');
+			$dclarity= $this->input->get('dclarity');
+			$dcolor= $this->input->get('dcolor');
+
+
+
+			if(!empty($ringsize)) {
+
+
+	      			$this->db->select('*');
+	$this->db->from('tbl_products');
+	$this->db->where('category',$id);
+	$this->db->where('ringsize',$ringsize);
+	$this->db->where('is_active', 1);
+	$data['product']= $this->db->get();
+
+
+	$data['flter_name']= $ringsize;
+
+
+
+
+		}elseif (!empty($dcolor)) {
+
+			$this->db->select('*');
+	$this->db->from('tbl_products');
+	$this->db->where('category',$id);
+	$this->db->where('dcolor',$dcolor);
+	$this->db->where('is_active', 1);
+	$data['product']= $this->db->get();
+
+
+	$data['flter_name']= $dcolor;
+
+		}elseif (!empty($product_type)) {
+
+
+			$this->db->select('*');
+	$this->db->from('tbl_products');
+	$this->db->where('category',$id);
+	$this->db->where('product_type',$product_type);
+	$this->db->where('is_active', 1);
+	$data['product']= $this->db->get();
+
+
+	$data['flter_name']= $product_type;
+
+
+		}elseif (!empty($totalweight)) {
+
+
+			$this->db->select('*');
+	$this->db->from('tbl_products');
+	$this->db->where('category',$id);
+	$this->db->where('totalweight',$totalweight);
+	$this->db->where('is_active', 1);
+	$data['product']= $this->db->get();
+
+
+	$data['flter_name']= $totalweight;
+
+
+		}elseif (!empty($dclarity)) {
+
+
+			$this->db->select('*');
+	$this->db->from('tbl_products');
+	$this->db->where('category',$id);
+	$this->db->where('dclarity',$dclarity);
+	$this->db->where('is_active', 1);
+	$data['product']= $this->db->get();
+
+
+	$data['flter_name']= $dclarity;
+
+		}else {
+
+if(!empty($sort_type)){
+
+	if($sort_type == )
+}
+
+			$this->db->select('*');
+			$this->db->from('tbl_products');
+			$this->db->where('category',$id);
+			$this->db->where('is_active', 1);
+			$data['product']= $this->db->get();
+
+		}
+
+
+
+}elseif ($page == 0) {
+
+
+	// subcategory
+
+	$data['sub_id']= $idd;
+	$data['minorsub_id']= "";
+	$data['minorsub_name']= "";
+	$data['subcategory_id']= $idd;
+
+	$this->db->select('*');
+$this->db->from('tbl_products');
+$this->db->where('sub_category',$id);
+$this->db->where('is_active', 1);
+$data['product_count']= $this->db->count_all_results();
+
+$this->db->select('*');
+$this->db->from('tbl_sub_category');
+$this->db->where('id',$id);
+$this->db->where('is_active', 1);
+$subcate_da= $this->db->get()->row();
+if(!empty($subcate_da)){
+	$subcate_name= $subcate_da->name;
+	$category_id= $subcate_da->category;
+
+	$this->db->select('*');
+	$this->db->from('tbl_category');
+	$this->db->where('id',$category_id);
+	$this->db->where('is_active', 1);
+	$cate_da= $this->db->get()->row();
+	if(!empty($cate_da)){
+		$cate_name= $cate_da->name;
+	}else{
+		$cate_name="";
+	}
+}else{
+	$category_id="";
+	$subcate_name="";
+	$cate_name="";
+}
+
+	$data['category_id']= $category_id;
+	$data['subcategory_name']= $subcate_name;
+	$data['category_name']= $cate_name;
+
+		$ringsize= $this->input->get('ringsize');
+		$product_type= $this->input->get('product_type');
+		$totalweight= $this->input->get('totalweight');
+		$dclarity= $this->input->get('dclarity');
+		$dcolor= $this->input->get('dcolor');
+
+
+
+		if(!empty($ringsize)) {
+
+
+      			$this->db->select('*');
+$this->db->from('tbl_products');
+$this->db->where('sub_category',$id);
+$this->db->where('ringsize',$ringsize);
+$this->db->where('is_active', 1);
+$data['product']= $this->db->get();
+
+
+$data['flter_name']= $ringsize;
+
+
+
+
+	}elseif (!empty($dcolor)) {
+
+		$this->db->select('*');
+$this->db->from('tbl_products');
+$this->db->where('sub_category',$id);
+$this->db->where('dcolor',$dcolor);
+$this->db->where('is_active', 1);
+$data['product']= $this->db->get();
+
+
+$data['flter_name']= $dcolor;
+
+	}elseif (!empty($product_type)) {
+
+
+		$this->db->select('*');
+$this->db->from('tbl_products');
+$this->db->where('sub_category',$id);
+$this->db->where('product_type',$product_type);
+$this->db->where('is_active', 1);
+$data['product']= $this->db->get();
+
+
+$data['flter_name']= $product_type;
+
+
+	}elseif (!empty($totalweight)) {
+
+
+		$this->db->select('*');
+$this->db->from('tbl_products');
+$this->db->where('sub_category',$id);
+$this->db->where('totalweight',$totalweight);
+$this->db->where('is_active', 1);
+$data['product']= $this->db->get();
+
+
+$data['flter_name']= $totalweight;
+
+
+	}elseif (!empty($dclarity)) {
+
+
+		$this->db->select('*');
+$this->db->from('tbl_products');
+$this->db->where('sub_category',$id);
+$this->db->where('dclarity',$dclarity);
+$this->db->where('is_active', 1);
+$data['product']= $this->db->get();
+
+
+$data['flter_name']= $dclarity;
+
+	}else {
+
+		$this->db->select('*');
+		$this->db->from('tbl_products');
+		$this->db->where('sub_category',$id);
+		$this->db->where('is_active', 1);
+		$data['product']= $this->db->get();
+
+	}
+
+}else{
+
+//minor subcategory
+
+
+
+	$data['minorsub_id']= $idd;
+	$data['sub_id']= "";
+
+
+	$this->db->select('*');
+$this->db->from('tbl_products');
+$this->db->where('minisub_category',$id);
+$this->db->where('is_active', 1);
+$data['product_count']= $this->db->count_all_results();
+
+$this->db->select('*');
+$this->db->from('tbl_minisubcategory');
+$this->db->where('id',$id);
+$this->db->where('is_active', 1);
+$minorsubcate_da= $this->db->get()->row();
+if(!empty($minorsubcate_da)){
+	$minorsubcate_name= $minorsubcate_da->name;
+	$category_id= $minorsubcate_da->category;
+	$subcategory_id= $minorsubcate_da->subcategory;
+
+	$this->db->select('*');
+	$this->db->from('tbl_category');
+	$this->db->where('id',$category_id);
+	$this->db->where('is_active', 1);
+	$cate_da= $this->db->get()->row();
+	if(!empty($cate_da)){
+		$cate_name= $cate_da->name;
+	}else{
+		$cate_name="";
+	}
+
+	$this->db->select('*');
+	$this->db->from('tbl_sub_category');
+	$this->db->where('id',$subcategory_id);
+	$this->db->where('is_active', 1);
+	$subcate_da= $this->db->get()->row();
+	if(!empty($subcate_da)){
+		$subcate_name= $subcate_da->name;
+	}else{
+		$subcate_name="";
+	}
+
+}else{
+	$category_id="";
+	$subcategory_id="";
+	$subcate_name="N/A";
+	$cate_name="N/A";
+	$minorsubcate_name="N/A";
+}
+
+	$data['category_id']= $category_id;
+	$data['subcategory_id']= $subcategory_id;
+	$data['subcategory_name']= $subcate_name;
+	$data['category_name']= $cate_name;
+	$data['minorsub_name']= $minorsubcate_name;
+
+
+
+
+		$ringsize= $this->input->get('ringsize');
+		$product_type= $this->input->get('product_type');
+		$totalweight= $this->input->get('totalweight');
+		$dclarity= $this->input->get('dclarity');
+		$dcolor= $this->input->get('dcolor');
+
+
+
+		if(!empty($ringsize)) {
+
+
+      			$this->db->select('*');
+$this->db->from('tbl_products');
+$this->db->where('minisub_category',$id);
+$this->db->where('ringsize',$ringsize);
+$this->db->where('is_active', 1);
+$data['product']= $this->db->get();
+
+
+$data['flter_name']= $ringsize;
+
+
+
+
+	}elseif (!empty($dcolor)) {
+
+		$this->db->select('*');
+$this->db->from('tbl_products');
+$this->db->where('minisub_category',$id);
+$this->db->where('dcolor',$dcolor);
+$this->db->where('is_active', 1);
+$data['product']= $this->db->get();
+
+
+$data['flter_name']= $dcolor;
+
+	}elseif (!empty($product_type)) {
+
+
+		$this->db->select('*');
+$this->db->from('tbl_products');
+$this->db->where('minisub_category',$id);
+$this->db->where('product_type',$product_type);
+$this->db->where('is_active', 1);
+$data['product']= $this->db->get();
+
+
+$data['flter_name']= $product_type;
+
+
+	}elseif (!empty($totalweight)) {
+
+
+		$this->db->select('*');
+$this->db->from('tbl_products');
+$this->db->where('minisub_category',$id);
+$this->db->where('totalweight',$totalweight);
+$this->db->where('is_active', 1);
+$data['product']= $this->db->get();
+
+
+$data['flter_name']= $totalweight;
+
+
+	}elseif (!empty($dclarity)) {
+
+
+		$this->db->select('*');
+$this->db->from('tbl_products');
+$this->db->where('minisub_category',$id);
+$this->db->where('dclarity',$dclarity);
+$this->db->where('is_active', 1);
+$data['product']= $this->db->get();
+
+
+$data['flter_name']= $dclarity;
+
+	}else {
+
+		$this->db->select('*');
+		$this->db->from('tbl_products');
+		$this->db->where('minisub_category',$id);
+		$this->db->where('is_active', 1);
+		$data['product']= $this->db->get();
+
+	}
+
+
+
+}
+
+
+
+
+// $products=[];
+// $ss=[];
+//
+// 		if(!empty($ringsize)){
+// 		  $cc1= count($ringsize);
+//
+//
+// 		for ($i=0; $i < $cc1 ; $i++) {
+// 			 $ringsize= $ringsize[$i];
+//
+//
+//
+// 		       $this->db->select('*');
+// 		       $this->db->from('tbl_products');
+// 		       $this->db->where('ringsize',$ringsize);
+// 		 			$this->db->where('sub_category',$id);
+// 		       $this->db->where('is_active', 1);
+// 		       $sub_all_products_da[]= $this->db->get();
+// 		 // echo "   next   ";
+// 		 // print_r($sub_all_products_da);
+// 		       if(!empty($sub_all_products_da)){
+//
+//
+// 		 $ss[] = array('id' => $sub_all_products_da->id, 'categories_id' => $sub_all_products_da->categories_id, 'subcategories_id' =>$sub_all_products_da->subcategories_id , 'vendor_id' => $sub_all_products_da->vendor_id, 'name' => $sub_all_products_da->name, 'details' =>$sub_all_products_da->details ,'ldesc' => $sub_all_products_da->ldesc, 'product_tag' => $sub_all_products_da->product_tag, 'brand' =>$sub_all_products_da->brand , 'date' => $sub_all_products_da->date, 'ip' => $sub_all_products_da->ip, 'added_by' =>$sub_all_products_da->added_by , 'is_active' =>$sub_all_products_da->is_active );
+//
+// 		       }
+//
+//
+// 		 // print_r($ss);
+//
+// 		 // $data['products']= $ss;
+//
+//
+//
+// 		}
+// 		$data['product']= $ss;
+// 		}
+// print_r($ss); die();
+
+
+
+
+
+			$this->load->view('common/header',$data);
+			$this->load->view('all_products');
+			$this->load->view('common/footer');
+
+	}

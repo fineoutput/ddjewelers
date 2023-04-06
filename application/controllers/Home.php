@@ -1,0 +1,7314 @@
+<?php if (!defined('BASEPATH')) exit('No direct script access allowed');
+class Home extends CI_Controller
+{
+    function __construct()
+    {
+        parent::__construct();
+        $this->load->library('user_agent');
+        // $this->load->library('paypal_lib');
+
+        $this->load->model("admin/login_model");
+        $this->load->model("admin/base_model");
+
+        $this->load->library("pagination");
+    }
+
+
+    // 	function  __construct() {
+    // 		parent::__construct();
+    // 		$this->load->library('paypal_lib');
+    // 		$this->load->model('product');
+    // 		$this->load->database();
+    // }
+
+
+
+    //paypal integration methods starts
+
+
+    // checkout page
+    // public function charge($am,$idd) {
+    //
+    //   $id= base64_decode($idd);
+    //   $amu= base64_decode($am);
+    // 	 $data['title'] = 'Checkout payment | TechArise';
+    // 	 // $this->site->setProductID($id);
+    // 	 $data['order_id'] =  $id;
+    // 	 $data['amn'] =  $amu;
+    // 	 $data['return_url'] = site_url().'Home/callback/'.$idd;
+    // 	 $data['surl'] = site_url().'Home/order_success';;
+    // 	 $data['furl'] = site_url().'Home/order_failed';;
+    // 	 $data['currency_code'] = 'USD';
+    // 	 // $this->load->view('paypal/checkout', $data);
+    //
+    // 	 $this->load->view('common/header',$data);
+    // 	 $this->load->view('confirmation');
+    // 	 $this->load->view('common/footer');
+    // }
+
+    // success method for order place paypal
+    public function callback($idd)
+    {
+
+        $order_id = base64_decode($idd);
+        $user_id = $this->session->userdata('user_id');
+
+        $datas['title'] = 'Paypal Success | TechArise';
+        $paymentID = $this->input->post('paymentID');
+        $payerID = $this->input->post('payerID');
+        $token = $this->input->post('token');
+        $pid = $this->input->post('pid');
+        if (!empty($paymentID) && !empty($payerID) && !empty($token) && !empty($pid)) {
+            // $data['paymentID'] = $paymentID;
+            // $data['payerID'] = $payerID;
+            // $data['token'] = $token;
+            // $data['pid'] = $pid;
+            // $this->load->view('paypal/success', $data);
+
+            $data['txn_id']    = $token;
+            $data['payment_id'] = $paymentID;
+            $data['payer_id'] = $payerID;
+            // $data['payment_gross'] = $paypalInfo["mc_gross"];
+            $data['currency_code'] = 'USD';
+            // $data['payer_email'] = $paypalInfo["payer_email"];
+            $data['online_payment_status']    = 'success';
+            $data['payment_status']    = 1;
+            $data['order_status']    = 1;
+            $data['payment_type']    = 'Paypal';
+
+
+            $order1_da = Order1::wherenull('deleted_at')->where('id', $order_id)->first();
+            $order1_da->update($data);
+
+
+
+
+            //delete Tbl Cart data of user
+
+            // if($page != 0){
+            // 			$this->db->select('*');
+            // 			$this->db->from('tbl_cart');
+            // 			$this->db->where('user_id',$user_id);
+            // 			$this->db->where('product_id',$page);
+            // 			$cart_dat= $this->db->get();
+            // }else {
+            $this->db->select('*');
+            $this->db->from('tbl_cart');
+            $this->db->where('user_id', $user_id);
+            $cart_dat = $this->db->get();
+            // }
+
+
+            if (!empty($cart_dat)) {
+                foreach ($cart_dat->result() as $cart) {
+
+                    $del_cart = $this->db->delete('tbl_cart', array('id' => $cart->id));
+                }
+            }
+
+
+
+            //send email to user's email start
+            //
+            // $config = Array(
+            // 							'protocol' => 'smtp',
+            // 							// 'smtp_host' => 'mail.fineoutput.co.in',
+            // 							'smtp_host' => SMTP_HOST,
+            // 							'smtp_port' => 26,
+            // 							// 'smtp_user' => 'info@fineoutput.co.in', // change it to yours
+            // 							// 'smtp_pass' => 'info@fineoutput2019', // change it to yours
+            // 							'smtp_user' => USER_NAME, // change it to yours
+            // 							'smtp_pass' => PASSWORD, // change it to yours
+            // 							'mailtype' => 'html',
+            // 							'charset' => 'iso-8859-1',
+            // 							'wordwrap' => TRUE
+            // 							);
+            //
+            // 							$this->db->select('*');
+            // 										$this->db->from('tbl_users');
+            // 										$this->db->where('id',$user_id);
+            // 										$user_data= $this->db->get()->row();
+            // 					$email = '';
+            // 										if(!empty($user_data)){
+            // 											$email =  $user_data->email;
+            // 										}
+            //
+            // 							$to=$email;
+            //
+            // 							$email_data = array("order1_id"=>$last_order_id, "type"=>"1"
+            // 							);
+            //
+            // 							$message = 	$this->load->view('emails/order-success',$email_data,TRUE);
+            // 							// $message = 	"HELLO";
+            // 							$this->load->library('email', $config);
+            // 							$this->email->set_newline("");
+            // 							// $this->email->from('info@fineoutput.co.in'); // change it to yours
+            // 							$this->email->from(EMAIL); // change it to yours
+            // 							$this->email->to($to);// change it to yours
+            // 							$this->email->subject('Order Placed Successfully');
+            // 							$this->email->message($message);
+            // 							if($this->email->send()){
+            // 							//  echo 'Email sent.';
+            // 							}else{
+            // 							// show_error($this->email->print_debugger());
+            // 							}
+
+            //send email to user's email end
+
+            redirect("Home/order_success", "refresh");
+        } else {
+            $this->load->view('Home/order_failed', $data);
+        }
+    }
+
+
+
+    // function charge($am,$idd){
+    //
+    // 	$amu= base64_decode($am);
+    // 	$order_id= base64_decode($idd);
+    // 		//Set variables for paypal form
+    // 		$returnURL = base_url().'Home/payment_success/'.$idd; //payment success url
+    // 		$failURL = base_url().'Home/order_failed'; //payment fail url
+    // 		$notifyURL = base_url().'paypal/ipn'; //ipn url
+    // 		//get particular product data
+    // 		$product_name= 'ddJewellery';
+    // 		$product_number= 1;
+    // 		$userID = $this->session->userdata('user_id'); //current user id
+    // 		$logo = base_url().'assets/frontend/logo.png';
+    //
+    // 		$this->paypal_lib->add_field('return', $returnURL);
+    // 		$this->paypal_lib->add_field('fail_return', $failURL);
+    // 		$this->paypal_lib->add_field('notify_url', $notifyURL);
+    // 		$this->paypal_lib->add_field('item_name', $product_name);
+    // 		$this->paypal_lib->add_field('custom', $userID);
+    // 		$this->paypal_lib->add_field('item_number',  $product_number);
+    // 		$this->paypal_lib->add_field('amount',  $amu);
+    // 		$this->paypal_lib->image($logo);
+    //
+    // 		$this->paypal_lib->paypal_auto_form();
+    // }
+
+
+
+
+    // public function payment_success($idd){
+    //
+    // 	$order_id= base64_decode($idd);
+    // $user_id = $this->session->userdata('user_id');
+    // 	//get the transaction data
+    // // $paypalInfoTrans = $this->input->get();
+    // //
+    // // print_r($paypalInfoTrans);
+    // //
+    // // $data['item_number'] = $paypalInfoTrans['item_number'];
+    // // $data['txn_id'] = $paypalInfoTrans["tx"];
+    // // $data['payment_amt'] = $paypalInfoTrans["amt"];
+    // // $data['currency_code'] = $paypalInfoTrans["cc"];
+    // // $data['status'] = $paypalInfoTrans["st"];
+    //
+    //
+    // //paypal return transaction details array
+    //  $paypalInfo    = $this->input->post();
+    //
+    //
+    //  $data['txn_id']    = $paypalInfo["txn_id"];
+    //  $data['payment_gross'] = $paypalInfo["mc_gross"];
+    //  $data['currency_code'] = $paypalInfo["mc_currency"];
+    //  $data['payer_email'] = $paypalInfo["payer_email"];
+    //  $data['online_payment_status']    = $paypalInfo["payment_status"];
+    //  $data['payment_status']    = 1;
+    //  $data['order_status']    = 1;
+    //
+    //
+    //  $paypalURL = $this->paypal_lib->paypal_url;
+    //  $result    = $this->paypal_lib->curlPost($paypalURL,$paypalInfo);
+    //
+    //  //check whether the payment is verified
+    //  if(preg_match("/VERIFIED/i",$result)){
+    // 		 //insert the transaction data into the database
+    //
+    // 		 $order1_da = Order1::wherenull('deleted_at')->where('id', $order_id)->first();
+    // 		 $order1_da->update($data);
+    //
+    //
+    //
+    //
+    // 		 //delete Tbl Cart data of user
+    //
+    // 		 // if($page != 0){
+    // 		 // 			$this->db->select('*');
+    // 		 // 			$this->db->from('tbl_cart');
+    // 		 // 			$this->db->where('user_id',$user_id);
+    // 		 // 			$this->db->where('product_id',$page);
+    // 		 // 			$cart_dat= $this->db->get();
+    // 		 // }else {
+    // 		 $this->db->select('*');
+    // 		 			$this->db->from('tbl_cart');
+    // 		 			$this->db->where('user_id',$user_id);
+    // 		 			$cart_dat= $this->db->get();
+    // 		 // }
+    //
+    //
+    // 		 if(!empty($cart_dat)){
+    // 		 foreach ($cart_dat->result() as $cart) {
+    //
+    // 		 $del_cart=$this->db->delete('tbl_cart', array('id' => $cart->id));
+    //
+    // 		 }
+    // 		 }
+    //
+    //
+    //
+    // 		 //send email to user's email start
+    // 		 //
+    // 		 // $config = Array(
+    // 		 // 							'protocol' => 'smtp',
+    // 		 // 							// 'smtp_host' => 'mail.fineoutput.co.in',
+    // 		 // 							'smtp_host' => SMTP_HOST,
+    // 		 // 							'smtp_port' => 26,
+    // 		 // 							// 'smtp_user' => 'info@fineoutput.co.in', // change it to yours
+    // 		 // 							// 'smtp_pass' => 'info@fineoutput2019', // change it to yours
+    // 		 // 							'smtp_user' => USER_NAME, // change it to yours
+    // 		 // 							'smtp_pass' => PASSWORD, // change it to yours
+    // 		 // 							'mailtype' => 'html',
+    // 		 // 							'charset' => 'iso-8859-1',
+    // 		 // 							'wordwrap' => TRUE
+    // 		 // 							);
+    // 		 //
+    // 		 // 							$this->db->select('*');
+    // 		 // 										$this->db->from('tbl_users');
+    // 		 // 										$this->db->where('id',$user_id);
+    // 		 // 										$user_data= $this->db->get()->row();
+    // 		 // 					$email = '';
+    // 		 // 										if(!empty($user_data)){
+    // 		 // 											$email =  $user_data->email;
+    // 		 // 										}
+    // 		 //
+    // 		 // 							$to=$email;
+    // 		 //
+    // 		 // 							$email_data = array("order1_id"=>$last_order_id, "type"=>"1"
+    // 		 // 							);
+    // 		 //
+    // 		 // 							$message = 	$this->load->view('emails/order-success',$email_data,TRUE);
+    // 		 // 							// $message = 	"HELLO";
+    // 		 // 							$this->load->library('email', $config);
+    // 		 // 							$this->email->set_newline("");
+    // 		 // 							// $this->email->from('info@fineoutput.co.in'); // change it to yours
+    // 		 // 							$this->email->from(EMAIL); // change it to yours
+    // 		 // 							$this->email->to($to);// change it to yours
+    // 		 // 							$this->email->subject('Order Placed Successfully');
+    // 		 // 							$this->email->message($message);
+    // 		 // 							if($this->email->send()){
+    // 		 // 							//  echo 'Email sent.';
+    // 		 // 							}else{
+    // 		 // 							// show_error($this->email->print_debugger());
+    // 		 // 							}
+    //
+    // 		 //send email to user's email end
+    //
+    //  redirect("Home/order_success","refresh");
+    //
+    //  }
+    //
+    //
+    // 						}
+
+
+    //paypal integration methods end
+
+
+
+
+    public function index()
+    {
+
+        $this->db->select('*');
+        $this->db->from('tbl_category');
+        $this->db->where('is_active', 1);
+        $this->db->order_by('id', 'ASC');
+        $data['category'] = $this->db->get();
+
+        $this->db->select('*');
+        $this->db->from('tbl_slider');
+        $this->db->where('is_active', 1);
+        $this->db->order_by('seq', 'ASC');
+        $data['slider'] = $this->db->get();
+
+        $this->db->select('*');
+        $this->db->from('tbl_slider1');
+        $this->db->where('is_active', 1);
+        $this->db->order_by('seq', 'ASC');
+        $data['slider1'] = $this->db->get();
+
+        $this->db->select('*');
+        $this->db->from('tbl_slider2');
+        $this->db->where('is_active', 1);
+        $this->db->order_by('seq', 'ASC');
+        $data['slider2'] = $this->db->get();
+
+        $this->db->select('*');
+        $this->db->from('tbl_slider3');
+        $this->db->where('is_active', 1);
+        $this->db->order_by('seq', 'ASC');
+        $data['slider3'] = $this->db->get();
+
+        $this->load->view('common/header', $data);
+        $this->load->view('index');
+        $this->load->view('common/footer');
+    }
+
+
+
+
+
+
+
+    //Search Products  by subcategory Page after search
+    public function search_sub_products($idd)
+    {
+
+        $this->load->helper(array('form', 'url'));
+        $this->load->library('form_validation');
+        $this->load->helper('security');
+
+
+        $id = base64_decode($idd);
+
+
+        // $id = base64_decode($idd);
+
+        //  $this->db->select('*');
+        // $this->db->from('tbl_categories');
+        // $this->db->where('id',$id);
+        // $data['categories_data']= $this->db->get();
+
+        $this->db->select('*');
+        $this->db->from('tbl_category');
+        $this->db->where('is_active', 1);
+        $data['categories'] = $this->db->get();
+
+
+        $this->db->select('*');
+        $this->db->from('tbl_sub_category');
+        $this->db->where('id', $id);
+        $this->db->where('is_active', 1);
+        $subcategories = $this->db->limit(5000)->get()->row();
+        if (!empty($subcategories)) {
+            $subcategory_name = $subcategories->name;
+        } else {
+            $subcategory_name = "";
+        }
+
+
+        $user_id = $this->session->userdata('user_id');
+
+
+
+        // $data['products']= $this->db->select('*')->from('tbl_vendors_product')->where('is_active', 1)->where("name LIKE '%$string%'")->or_where('product_tag', 'like', '%' . $string . '%')->get();
+
+
+        // 				$this->db->select('*');
+        // $this->db->from('tbl_vendors_product');
+        // $this->db->where("name LIKE '%$string%'");
+        // $this->db->or_where("product_tag LIKE '%$string%'");
+        // $this->db->where('is_active', 1);
+        // $data['products']= $this->db->get();
+
+
+
+        //new search code start
+        $ss = [];
+
+        // $string1 = explode(" ", $string);
+        // $st_count= count($string1);
+        // // print_r($string1);
+        //
+        // $det1="";
+        // $det2="";
+        // $det3="";
+        // $det4="";
+        // $det5="";
+        // $det6="";
+        // if($st_count >= 1 ){
+        // 	$a= $string1[0];
+        // // $det1="->where('name','LIKE', '%{$a}%' )";
+        // $det1 = " description LIKE '%". $a . "%' ";
+        // }
+        // if($st_count >= 2 ){
+        // 	$b= $string1[1];
+        // // $det2="->where('name','LIKE', '%{$a}%' )";
+        // $det2 = "AND description LIKE '%". $b . "%' ";
+        // }
+        // if($st_count >= 3 ){
+        // 	$c= $string1[2];
+        // // $det3="->where('name','LIKE', '%{$a}%' )";
+        // $det3 = "AND description LIKE '%". $c . "%' ";
+        // }
+        // if($st_count >= 4 ){
+        // 	$d= $string1[3];
+        // // $det4="->where('name','LIKE', '%{$a}%' )";
+        // $det4 = "AND description LIKE '%". $d . "%' ";
+        // }
+        //
+        // if($st_count >= 5 ){
+        // 	$e= $string1[4];
+        // // $det4="->where('name','LIKE', '%{$a}%' )";
+        // $det5 = "AND description LIKE '%". $e . "%' ";
+        // }
+        //
+        // if($st_count >= 6 ){
+        // 	$f= $string1[5];
+        // // $det4="->where('name','LIKE', '%{$a}%' )";
+        // $det6 = "AND description LIKE '%". $f . "%' ";
+        // }
+
+
+        $isactiveProductCondition = "AND is_active = 1";
+        $subcategory_condition = " sub_category = " . $id;
+        // $isSubCatDeleteProductCondition = "AND is_subcat_delete = 0";
+        // $deleteAtProductCondition = "AND deleted_at IS NULL";
+
+
+        // $details= "SELECT * FROM `tbl_products` WHERE name LIKE '%silver%' AND name LIKE '%gemstone%' AND name LIKE '%chain%'";
+
+        $native_query = "SELECT * FROM tbl_products WHERE  " . $subcategory_condition . "  " . $isactiveProductCondition;
+
+        // echo $native_query; die();
+
+        // $details = DB::select($native_query);
+        $details = $this->db->query($native_query);
+        // echo "<pre>";	print_r($details->result()); die();
+
+        // SELECT * FROM tbl_products WHERE name LIKE '%lapis%' AND name LIKE '%tyre%' AND name LIKE '%beads%' AND is_active = 1 AND is_cat_delete = 0 AND is_subcat_delete = 0
+
+        // print_r($details); echo count($details); die();
+
+        if (!empty($details)) {
+            $ss = [];
+            foreach ($details->result() as $dt) {
+                // code...
+                $a = 0;
+                if (!empty($ss)) {
+                    foreach ($ss as $value) {
+                        if ($dt->sku_series == $value['sku_series']) {
+                            $a = 1;
+                        }
+                    }
+                }
+                if ($a == 1) {
+                    continue;
+                } else {
+
+                    $ss[] = array(
+                        'id' => $dt->id, 'product_id' => $dt->product_id, 'category' => $dt->category, 'sub_category' => $dt->sub_category, 'minisub_category' => $dt->minisub_category, 'minisub_category2' => $dt->minisub_category2, 'vendor' => $dt->vendor, 'sku' => $dt->sku, 'sku_series' => $dt->sku_series, 'description' => $dt->description, 'sdesc' => $dt->sdesc, 'gdesc' => $dt->gdesc, 'mcat1' => $dt->mcat1, 'mcat2' => $dt->mcat2,
+                        'mcat3' => $dt->mcat3, 'mcat4' => $dt->mcat4, 'mcat5' => $dt->mcat5, 'product_type' => $dt->product_type, 'collection' => $dt->collection, 'onhand' => $dt->onhand, 'status' => $dt->status, 'price' => $dt->price, 'currency' => $dt->currency, 'unitofsale' => $dt->unitofsale, 'weight' => $dt->weight, 'weightunit' => $dt->weightunit, 'gramweight' => $dt->gramweight, 'ringsizable' => $dt->ringsizable, 'ringsize' => $dt->ringsize, 'ringsizetype' => $dt->ringsizetype, 'leadtime' => $dt->leadtime, 'agta' => $dt->agta, 'desc_e_grp' => $dt->desc_e_grp, 'desc_e_name1' => $dt->desc_e_name1, 'desc_e_value1' => $dt->desc_e_value1, 'desc_e_name2' => $dt->desc_e_name2, 'desc_e_value2' => $dt->desc_e_value2, 'desc_e_name3' => $dt->desc_e_name3, 'desc_e_value3' => $dt->desc_e_value3, 'desc_e_name4' => $dt->desc_e_name4, 'desc_e_value4' => $dt->desc_e_value4, 'desc_e_name5' => $dt->desc_e_name5, 'desc_e_value5' => $dt->desc_e_value5, 'desc_e_name6' => $dt->desc_e_name6,
+                        'desc_e_value6' => $dt->desc_e_value6, 'desc_e_name7' => $dt->desc_e_name7, 'desc_e_value7' => $dt->desc_e_value7, 'desc_e_name8' => $dt->desc_e_name8, 'desc_e_value8' => $dt->desc_e_value8, 'desc_e_name9' => $dt->desc_e_name9, 'desc_e_value9' => $dt->desc_e_value9, 'desc_e_name10' => $dt->desc_e_name10, 'desc_e_value10' => $dt->desc_e_value10,
+                        'desc_e_name11' => $dt->desc_e_name11, 'desc_e_value11' => $dt->desc_e_value11, 'desc_e_name12' => $dt->desc_e_name12, 'desc_e_value12' => $dt->desc_e_value12, 'desc_e_name13' => $dt->desc_e_name13, 'desc_e_value13' => $dt->desc_e_value13, 'desc_e_name14' => $dt->desc_e_name14, 'desc_e_value14' => $dt->desc_e_value14, 'desc_e_name15' => $dt->desc_e_value15, 'FullySetImage1' => $dt->FullySetImage1, 'FullySetImage2' => $dt->FullySetImage2, 'FullySetImage3' => $dt->FullySetImage3, 'FullySetImage4' => $dt->FullySetImage4, 'FullySetImage5' => $dt->FullySetImage5, 'FullySetImage6' => $dt->FullySetImage6,
+                        'readytowear' => $dt->readytowear, 'smi' => $dt->smi, 'image1' => $dt->image1, 'image2' => $dt->image2, 'image3' => $dt->image3, 'video' => $dt->video, 'gimage1' => $dt->gimage1, 'gimage2' => $dt->gimage2, 'gimage3' => $dt->gimage3,
+                        'gvideo' => $dt->gvideo, 'creationdate' => $dt->creationdate, 'currencycode' => $dt->currencycode, 'country' => $dt->country, 'dclarity' => $dt->dclarity, 'dcolor' => $dt->dcolor,  'totalweight' => $dt->totalweight,  'ip' => $dt->ip,  'date' => $dt->date,  'added_by' => $dt->added_by,  'is_active' => $dt->is_active
+                    );
+                }
+            }
+        } else {
+            $ss = [];
+        }
+
+        $detail_name = $ss;
+
+
+
+
+
+        // $detail_sku = Product::wherenull('deleted_at')->where('is_active', 1)->where('is_cat_delete', 0)->where('is_subcat_delete', 0)
+        // ->where('sku_id','LIKE', "%{$string}%" )->get()->toArray();
+
+
+        // $detail_tag = Product::wherenull('deleted_at')->where('is_active', 1)->where('is_cat_delete', 0)->where('is_subcat_delete', 0)
+        // ->where('tag','LIKE', "%{$string}%" )->get()->toArray();
+
+        // 						$this->db->select('*');
+        // $this->db->from('tbl_products');
+        // $this->db->where("sku LIKE '%$string%'");
+        // $this->db->where('is_active', 1);
+        // $detail_sku= $this->db->get()->result_array();
+
+
+        $detail_sku = [];
+        // $detail_tag=[];
+        // print_r($detail_tag);
+        // echo "df";
+
+        $detail = array_merge($detail_name, $detail_sku);
+        // print_r($detail); die();
+
+
+        //duplicate objects will be removed
+        $detail = array_map("unserialize", array_unique(array_map("serialize", $detail)));
+        //array is sorted on the bases of id
+        sort($detail);
+
+        //new search code end
+
+        // echo "<pre>"; print_r($detail); die();
+
+        $data['product'] = $detail;
+        $data['search_string'] = $subcategory_name;
+
+
+
+
+        $this->load->view('common/header', $data);
+        $this->load->view('search_products');
+        $this->load->view('common/footer');
+    }
+
+
+
+
+
+
+
+
+    //Search Products Page after search
+    public function search_products()
+    {
+
+        $this->load->helper(array('form', 'url'));
+        $this->load->library('form_validation');
+        $this->load->helper('security');
+        if ($this->input->post()) {
+
+            $this->form_validation->set_rules('search_input', 'search_input', 'required|xss_clean|trim');
+
+            if ($this->form_validation->run() == TRUE) {
+
+                $string_main = $this->input->post('search_input');
+
+
+                $string = str_replace('SLR-', '', $string_main);
+                // echo $string; exit;
+
+                // $id = base64_decode($idd);
+
+                //  $this->db->select('*');
+                // $this->db->from('tbl_categories');
+                // $this->db->where('id',$id);
+                // $data['categories_data']= $this->db->get();
+
+                $this->db->select('*');
+                $this->db->from('tbl_category');
+                $this->db->where('is_active', 1);
+                $data['categories'] = $this->db->get();
+
+
+                $user_id = $this->session->userdata('user_id');
+
+
+
+                // $data['products']= $this->db->select('*')->from('tbl_vendors_product')->where('is_active', 1)->where("name LIKE '%$string%'")->or_where('product_tag', 'like', '%' . $string . '%')->get();
+
+
+                // 				$this->db->select('*');
+                // $this->db->from('tbl_vendors_product');
+                // $this->db->where("name LIKE '%$string%'");
+                // $this->db->or_where("product_tag LIKE '%$string%'");
+                // $this->db->where('is_active', 1);
+                // $data['products']= $this->db->get();
+                // ----------------query to fetch distinct product types--------------------
+                // $this->db->select('product_type');
+                // $this->db->from('tbl_products');
+                // $this->db->distinct();
+                // $query = $this->db->get();
+                // foreach($query->result() as $type){
+                // 	echo $type->product_type."<br />";
+                // }
+                // die();
+                // ---------------------------------------------------------------
+
+
+
+                //new search code start
+                $ss = [];
+
+                $string1 = explode(" ", $string);
+                $st_count = count($string1);
+                // print_r($st_count);die();
+
+                $det1 = "";
+                $det2 = "";
+                $det3 = "";
+                $det4 = "";
+                $det5 = "";
+                $det6 = "";
+                $findProduct = "";
+                if ($st_count >= 1) {
+                    $a = " " . $string1[0] . " ";            //----------ADDED SPACES TO DIFFERENTIATE BETWEEN WORDS LIKE RING AND EAR-RING
+                    if (strtoupper($string1[0]) == "RING" || strtoupper($string1[0]) == "RINGS") {
+                        $findProduct = "Rings";
+                    }
+                    if (strtoupper($string1[0]) == "EARRING" || strtoupper($string1[0]) == "EARRINGS") {
+                        $findProduct = "Earrings";
+                    }
+                    if (strtoupper($string1[0]) == "SHANK" || strtoupper($string1[0]) == "SHANKS") {
+                        $findProduct = "Shanks";
+                    }
+                    if (strtoupper($string1[0]) == "NECKLACE" || strtoupper($string1[0]) == "NECKLACES") {
+                        $findProduct = "Necklaces";
+                    }
+                    if (strtoupper($string1[0]) == "BRACELET" || strtoupper($string1[0]) == "BRACELETS") {
+                        $findProduct = "Bracelets";
+                    }
+                    if (strtoupper($string1[0]) == "PENDANT" || strtoupper($string1[0]) == "PENDANTS") {
+                        $findProduct = "Pendants";
+                    }
+                    if (strtoupper($string1[0]) == "CHARM" || strtoupper($string1[0]) == "CHARMS") {
+                        $findProduct = "Charms";
+                    }
+                    // echo $a;die();
+                    // $det1="->where('name','LIKE', '%{$a}%' )";
+                    $det1 = " sdesc LIKE '%" . $a . "%' ";
+                    // echo $det1;
+                }
+                if ($st_count >= 2) {
+                    $b = $string1[1];
+                    $findProduct = "";
+                    // $det2="->where('name','LIKE', '%{$a}%' )";
+                    $det2 = "AND sdesc LIKE '%" . $b . "%' ";
+                }
+                if ($st_count >= 3) {
+                    $c = $string1[2];
+                    // $det3="->where('name','LIKE', '%{$a}%' )";
+                    $det3 = "AND sdesc LIKE '%" . $c . "%' ";
+                }
+                if ($st_count >= 4) {
+                    $d = $string1[3];
+                    // $det4="->where('name','LIKE', '%{$a}%' )";
+                    $det4 = "AND sdesc LIKE '%" . $d . "%' ";
+                }
+
+                if ($st_count >= 5) {
+                    $e = $string1[4];
+                    // $det4="->where('name','LIKE', '%{$a}%' )";
+                    $det5 = "AND sdesc LIKE '%" . $e . "%' ";
+                }
+
+                if ($st_count >= 6) {
+                    $f = $string1[5];
+                    // $det4="->where('name','LIKE', '%{$a}%' )";
+                    $det6 = "AND sdesc LIKE '%" . $f . "%' ";
+                }
+
+
+                $isactiveProductCondition = "AND is_active = 1";
+                $groupByCondition = " group by sku_series, sku_series_type1";
+                // $isCatDeleteProductCondition = "AND is_cat_delete = 0";
+                // $isSubCatDeleteProductCondition = "AND is_subcat_delete = 0";
+                // $deleteAtProductCondition = "AND deleted_at IS NULL";
+
+
+                // $details= "SELECT * FROM `tbl_products` WHERE name LIKE '%silver%' AND name LIKE '%gemstone%' AND name LIKE '%chain%'";
+                if (!empty($findProduct)) {
+                    $native_query = "SELECT * FROM tbl_products WHERE product_type='" . $findProduct . "'  " . $isactiveProductCondition . " " . $groupByCondition . " LIMIT 5000";
+                } else {
+                    $native_query = "SELECT * FROM tbl_products WHERE " . $det1 . "  " . $det2 . "  " . $det3 . "  " . $det4 . "  " . $det5 . "  " . $det6 . "  " . $isactiveProductCondition . " " . $groupByCondition . " LIMIT 5000";
+                }
+
+
+                // echo $native_query; die();
+
+                // $details = DB::select($native_query);
+                $details = $this->db->query($native_query);
+                // echo "<pre>";	print_r($details->result()); die();
+
+                // SELECT * FROM tbl_products WHERE name LIKE '%lapis%' AND name LIKE '%tyre%' AND name LIKE '%beads%' AND is_active = 1 AND is_cat_delete = 0 AND is_subcat_delete = 0
+
+                // print_r($details); die();
+
+                if (!empty($details)) {
+                    $ss = [];
+                    foreach ($details->result() as $dt) {
+                        // code...
+                        // print_r($dt);die();
+                        $a = 0;
+                        if (!empty($ss)) {
+                            foreach ($ss as $value) {
+                                if ($dt->sku_series == $value['sku_series']) {
+                                    $a = 1;
+                                }
+                            }
+                        }
+                        if ($a == 1) {
+                            continue;
+                        } else {
+
+                            $ss[] = array(
+                                'id' => $dt->id, 'product_id' => $dt->product_id, 'category' => $dt->category, 'sub_category' => $dt->sub_category, 'minisub_category' => $dt->minisub_category, 'minisub_category2' => $dt->minisub_category2, 'vendor' => $dt->vendor, 'sku' => $dt->sku, 'sku_series' => $dt->sku_series, 'description' => $dt->description, 'sdesc' => $dt->sdesc, 'gdesc' => $dt->gdesc, 'mcat1' => $dt->mcat1, 'mcat2' => $dt->mcat2,
+                                'mcat3' => $dt->mcat3, 'mcat4' => $dt->mcat4, 'mcat5' => $dt->mcat5, 'product_type' => $dt->product_type, 'collection' => $dt->collection, 'onhand' => $dt->onhand, 'status' => $dt->status, 'price' => $dt->price, 'currency' => $dt->currency, 'unitofsale' => $dt->unitofsale, 'weight' => $dt->weight, 'weightunit' => $dt->weightunit, 'gramweight' => $dt->gramweight, 'ringsizable' => $dt->ringsizable, 'ringsize' => $dt->ringsize, 'ringsizetype' => $dt->ringsizetype, 'leadtime' => $dt->leadtime, 'agta' => $dt->agta, 'desc_e_grp' => $dt->desc_e_grp, 'desc_e_name1' => $dt->desc_e_name1, 'desc_e_value1' => $dt->desc_e_value1, 'desc_e_name2' => $dt->desc_e_name2, 'desc_e_value2' => $dt->desc_e_value2, 'desc_e_name3' => $dt->desc_e_name3, 'desc_e_value3' => $dt->desc_e_value3, 'desc_e_name4' => $dt->desc_e_name4, 'desc_e_value4' => $dt->desc_e_value4, 'desc_e_name5' => $dt->desc_e_name5, 'desc_e_value5' => $dt->desc_e_value5, 'desc_e_name6' => $dt->desc_e_name6,
+                                'desc_e_value6' => $dt->desc_e_value6, 'desc_e_name7' => $dt->desc_e_name7, 'desc_e_value7' => $dt->desc_e_value7, 'desc_e_name8' => $dt->desc_e_name8, 'desc_e_value8' => $dt->desc_e_value8, 'desc_e_name9' => $dt->desc_e_name9, 'desc_e_value9' => $dt->desc_e_value9, 'desc_e_name10' => $dt->desc_e_name10, 'desc_e_value10' => $dt->desc_e_value10,
+                                'desc_e_name11' => $dt->desc_e_name11, 'desc_e_value11' => $dt->desc_e_value11, 'desc_e_name12' => $dt->desc_e_name12, 'desc_e_value12' => $dt->desc_e_value12, 'desc_e_name13' => $dt->desc_e_name13, 'desc_e_value13' => $dt->desc_e_value13, 'desc_e_name14' => $dt->desc_e_name14, 'desc_e_value14' => $dt->desc_e_value14, 'desc_e_name15' => $dt->desc_e_value15,
+                                'readytowear' => $dt->readytowear, 'smi' => $dt->smi, 'FullySetImage1' => $dt->FullySetImage1, 'FullySetImage2' => $dt->FullySetImage2, 'image3' => $dt->image3, 'video' => $dt->video, 'gimage1' => $dt->gimage1, 'gimage2' => $dt->gimage2, 'gimage3' => $dt->gimage3,
+                                'gvideo' => $dt->gvideo, 'creationdate' => $dt->creationdate, 'currencycode' => $dt->currencycode, 'country' => $dt->country, 'dclarity' => $dt->dclarity, 'dcolor' => $dt->dcolor,  'totalweight' => $dt->totalweight,  'ip' => $dt->ip,  'date' => $dt->date,  'added_by' => $dt->added_by,  'is_active' => $dt->is_active
+                            );
+                        }
+                    }
+                } else {
+                    $ss = [];
+                }
+
+                $detail_name = $ss;
+                // print_r($detail_name);die();
+
+
+
+
+                // $detail_sku = Product::wherenull('deleted_at')->where('is_active', 1)->where('is_cat_delete', 0)->where('is_subcat_delete', 0)
+                // ->where('sku_id','LIKE', "%{$string}%" )->get()->toArray();
+
+
+                // $detail_tag = Product::wherenull('deleted_at')->where('is_active', 1)->where('is_cat_delete', 0)->where('is_subcat_delete', 0)
+                // ->where('tag','LIKE', "%{$string}%" )->get()->toArray();
+
+                $this->db->select('*');
+                $this->db->from('tbl_products');
+                $this->db->group_by(array("sku_series", "sku_series_type1"));
+                $this->db->where("sku LIKE ", '%' . $string . '%');
+                $this->db->where('is_active', 1);
+                $detail_sku = $this->db->get();
+                $detail = [];
+                $yy = [];
+                foreach ($detail_sku->result() as $dt) {
+                    // print_r($yy);
+                    $b = 0;
+                    if (empty($detail_name)) {
+                        $j = 1;
+                        foreach ($yy as $value) {
+                            // echo $dt->sku_series." ".$value['sku_series'];
+                            if ($dt->sku_series == $value['sku_series']) {
+                                $b = 1;
+                            }
+                        }
+                    }
+                    if ($b == 1) {
+                        continue;
+                    } else {
+                        $yy[] = array(
+                            'id' => $dt->id, 'product_id' => $dt->product_id, 'category' => $dt->category, 'sub_category' => $dt->sub_category, 'minisub_category' => $dt->minisub_category, 'minisub_category2' => $dt->minisub_category2, 'vendor' => $dt->vendor, 'sku' => $dt->sku, 'sku_series' => $dt->sku_series, 'description' => $dt->description, 'sdesc' => $dt->sdesc, 'gdesc' => $dt->gdesc, 'mcat1' => $dt->mcat1, 'mcat2' => $dt->mcat2,
+                            'mcat3' => $dt->mcat3, 'mcat4' => $dt->mcat4, 'mcat5' => $dt->mcat5, 'product_type' => $dt->product_type, 'collection' => $dt->collection, 'onhand' => $dt->onhand, 'status' => $dt->status, 'price' => $dt->price, 'currency' => $dt->currency, 'unitofsale' => $dt->unitofsale, 'weight' => $dt->weight, 'weightunit' => $dt->weightunit, 'gramweight' => $dt->gramweight, 'ringsizable' => $dt->ringsizable, 'ringsize' => $dt->ringsize, 'ringsizetype' => $dt->ringsizetype, 'leadtime' => $dt->leadtime, 'agta' => $dt->agta, 'desc_e_grp' => $dt->desc_e_grp, 'desc_e_name1' => $dt->desc_e_name1, 'desc_e_value1' => $dt->desc_e_value1, 'desc_e_name2' => $dt->desc_e_name2, 'desc_e_value2' => $dt->desc_e_value2, 'desc_e_name3' => $dt->desc_e_name3, 'desc_e_value3' => $dt->desc_e_value3, 'desc_e_name4' => $dt->desc_e_name4, 'desc_e_value4' => $dt->desc_e_value4, 'desc_e_name5' => $dt->desc_e_name5, 'desc_e_value5' => $dt->desc_e_value5, 'desc_e_name6' => $dt->desc_e_name6,
+                            'desc_e_value6' => $dt->desc_e_value6, 'desc_e_name7' => $dt->desc_e_name7, 'desc_e_value7' => $dt->desc_e_value7, 'desc_e_name8' => $dt->desc_e_name8, 'desc_e_value8' => $dt->desc_e_value8, 'desc_e_name9' => $dt->desc_e_name9, 'desc_e_value9' => $dt->desc_e_value9, 'desc_e_name10' => $dt->desc_e_name10, 'desc_e_value10' => $dt->desc_e_value10,
+                            'desc_e_name11' => $dt->desc_e_name11, 'desc_e_value11' => $dt->desc_e_value11, 'desc_e_name12' => $dt->desc_e_name12, 'desc_e_value12' => $dt->desc_e_value12, 'desc_e_name13' => $dt->desc_e_name13, 'desc_e_value13' => $dt->desc_e_value13, 'desc_e_name14' => $dt->desc_e_name14, 'desc_e_value14' => $dt->desc_e_value14, 'desc_e_name15' => $dt->desc_e_value15,
+                            'readytowear' => $dt->readytowear, 'smi' => $dt->smi, 'FullySetImage1' => $dt->FullySetImage1, 'FullySetImage2' => $dt->FullySetImage2, 'image3' => $dt->image3, 'video' => $dt->video, 'gimage1' => $dt->gimage1, 'gimage2' => $dt->gimage2, 'gimage3' => $dt->gimage3,
+                            'gvideo' => $dt->gvideo, 'creationdate' => $dt->creationdate, 'currencycode' => $dt->currencycode, 'country' => $dt->country, 'dclarity' => $dt->dclarity, 'dcolor' => $dt->dcolor,  'totalweight' => $dt->totalweight,  'ip' => $dt->ip,  'date' => $dt->date,  'added_by' => $dt->added_by,  'is_active' => $dt->is_active
+                        );
+                    }
+                }
+                // exit;
+
+                $detail = array_merge($detail_name, $yy);
+                // print_r($yy);die();
+                if (empty($detail)) {
+                    $detail = $detail_name;
+                }
+                // $detail = array_merge( $detail_name, $detail_sku );
+                // print_r($detail); die();
+
+
+                //duplicate objects will be removed
+                $detail = array_map("unserialize", array_unique(array_map("serialize", $detail)));
+                // print_r($detail); die();
+
+                //array is sorted on the bases of id
+                sort($detail);
+
+                //new search code end
+
+                // echo "<pre>";
+                // print_r($detail); die();
+
+                $data['product'] = $detail;
+                $data['search_string'] = $string_main;
+                // echo count($detail);die();
+
+                if (count($detail) == 1) {
+                    // echo "hi";die();
+                    redirect('Home/product_detail/' . $detail[0]['sku']);
+                } else {
+
+
+                    $this->load->view('common/header', $data);
+                    $this->load->view('search_products');
+                    $this->load->view('common/footer');
+                }
+            } else {
+
+                $this->session->set_flashdata('emessage', validation_errors());
+                // redirect("auth/login","refresh");
+                redirect($_SERVER['HTTP_REFERER']);
+            }
+        } else {
+            $this->session->set_flashdata('emessage', 'sorry error occur.');
+            // redirect("auth/login","refresh");
+            redirect($_SERVER['HTTP_REFERER']);
+        }
+    }
+
+
+
+
+    //search result data
+
+    public function search_results()
+    {
+
+        $data['data'] = '';
+        // if(!empty($this->session->userdata('user_data'))){
+
+        $string = $this->input->post('string');
+
+
+
+        $user_id = $this->session->userdata('usersid');
+
+
+        //new search code start
+        $ss = [];
+
+        $string1 = explode(" ", $string);
+        $st_count = count($string1);
+        // print_r($string1);
+
+        $det1 = "";
+        $det2 = "";
+        $det3 = "";
+        $det4 = "";
+        $det5 = "";
+        $det6 = "";
+        if ($st_count >= 1) {
+            $a = $string1[0];
+            // $det1="->where('name','LIKE', '%{$a}%' )";
+            $det1 = " name LIKE '%" . $a . "%' ";
+        }
+        if ($st_count >= 2) {
+            $b = $string1[1];
+            // $det2="->where('name','LIKE', '%{$a}%' )";
+            $det2 = "AND name LIKE '%{" . $b . "}%' ";
+        }
+        if ($st_count >= 3) {
+            $c = $string1[2];
+            // $det3="->where('name','LIKE', '%{$a}%' )";
+            $det3 = "AND name LIKE '%" . $c . "%' ";
+        }
+        if ($st_count >= 4) {
+            $d = $string1[3];
+            // $det4="->where('name','LIKE', '%{$a}%' )";
+            $det4 = "AND name LIKE '%" . $d . "%' ";
+        }
+
+        if ($st_count >= 5) {
+            $e = $string1[4];
+            // $det4="->where('name','LIKE', '%{$a}%' )";
+            $det5 = "AND name LIKE '%" . $e . "%' ";
+        }
+
+        if ($st_count >= 6) {
+            $f = $string1[5];
+            // $det4="->where('name','LIKE', '%{$a}%' )";
+            $det6 = "AND name LIKE '%" . $f . "%' ";
+        }
+
+
+        $isactiveProductCondition = "AND is_active = 1";
+        // $isCatDeleteProductCondition = "AND is_cat_delete = 0";
+        // $isSubCatDeleteProductCondition = "AND is_subcat_delete = 0";
+        // $deleteAtProductCondition = "AND deleted_at IS NULL";
+
+
+        // $details= "SELECT * FROM `tbl_products` WHERE name LIKE '%silver%' AND name LIKE '%gemstone%' AND name LIKE '%chain%'";
+
+        $native_query = "SELECT * FROM tbl_sub_category WHERE " . $det1 . "  " . $det2 . "  " . $det3 . "  " . $det4 . "  " . $det5 . "  " . $det6 . "  " . $isactiveProductCondition;
+
+        // echo $native_query; die();
+
+        // $details = DB::select($native_query);
+        $details = $this->db->query($native_query);
+        // echo "<pre>";	print_r($details->result()); die();
+
+        // SELECT * FROM tbl_products WHERE name LIKE '%lapis%' AND name LIKE '%tyre%' AND name LIKE '%beads%' AND is_active = 1 AND is_cat_delete = 0 AND is_subcat_delete = 0
+
+        // print_r($details); echo count($details); die();
+
+        if (!empty($details)) {
+            foreach ($details->result() as $dt) {
+                // code...
+
+
+                $ss[] = array('id' => $dt->id, 'category' => $dt->category, 'api_id' => $dt->api_id, 'name' => $dt->name, 'image' => $dt->image, 'seq' => $dt->seq,  'ip' => $dt->ip,  'date' => $dt->date,  'added_by' => $dt->added_by,  'is_active' => $dt->is_active);
+            }
+        } else {
+            $ss = [];
+        }
+
+        $detail_name = $ss;
+
+
+
+
+
+        // $detail_sku = Product::wherenull('deleted_at')->where('is_active', 1)->where('is_cat_delete', 0)->where('is_subcat_delete', 0)
+        // ->where('sku_id','LIKE', "%{$string}%" )->get()->toArray();
+
+
+        // $detail_tag = Product::wherenull('deleted_at')->where('is_active', 1)->where('is_cat_delete', 0)->where('is_subcat_delete', 0)
+        // ->where('tag','LIKE', "%{$string}%" )->get()->toArray();
+
+        // 						$this->db->select('*');
+        // $this->db->from('tbl_products');
+        // $this->db->where("sku LIKE '%$string%'");
+        // $this->db->where('is_active', 1);
+        // $detail_sku= $this->db->get()->result_array();
+
+
+        $detail_sku = [];
+        // $detail_tag=[];
+        // print_r($detail_tag);
+        // echo "df";
+
+        $detail = array_merge($detail_name, $detail_sku);
+        // print_r($detail); die();
+
+
+        //duplicate objects will be removed
+        $detail = array_map("unserialize", array_unique(array_map("serialize", $detail)));
+        //array is sorted on the bases of id
+        sort($detail);
+
+        //new search code end
+
+
+        $data['data'] = true;
+        $data['result_da'] = $detail;
+
+
+
+
+
+        // $this->db->select('*');
+        // $this->db->from('tbl_ecom_products');
+        // $this->db->where('category_id',$catid);
+        // $this->db->where("is_active", 1);
+        // $this->db->where("is_cat_delete", 0);
+        // $data['ecom_product_data']= $this->db->get();
+
+        // $this->load->view('layout/withoutheader');
+        // $this->load->view('view_wishlist',$data);
+        // $this->load->view('layout/footer');
+        // }else{
+        // // redirect("home","refresh");
+        // $data['data']=false;
+        //
+        // }
+        echo json_encode($data);
+    }
+
+
+
+
+
+
+    public function new_arrivals()
+    {
+
+        $this->db->select('*');
+        $this->db->from('tbl_new_arrival_products');
+        $this->db->group_by(array("sku_series", "sku_series_type1"));
+        $this->db->where('is_active', 1);
+        $this->db->order_by('id', 'ASC');
+        $data['product'] = $this->db->get();
+
+        //get product count
+        $this->db->select('*');
+        $this->db->from('tbl_new_arrival_products');
+        $this->db->group_by(array("sku_series", "sku_series_type1"));
+        $this->db->where('is_active', 1);
+        $data['product_count'] = $this->db->count_all_results();
+
+
+        $this->load->view('common/header', $data);
+        $this->load->view('new_arrival_products');
+        $this->load->view('common/footer');
+    }
+
+
+
+
+    public function new_arrive_product_detail($idd)
+    {
+        $data['page_t'] = 2; // 1 for quickshop product ,2 for new arrivals, 3 for normal products
+
+        $data['page'] = 0;
+        $id = $idd;
+        // echo $id;
+        // exit;
+        $this->db->select('*');
+        $this->db->from('tbl_new_arrival_products');
+        $this->db->where('id', $id);
+        $this->db->where('is_active', 1);
+        $data['products'] = $this->db->get()->row();
+
+
+        $this->db->select('*');
+        $this->db->from('tbl_new_arrival_products');
+        $this->db->where('id', $id);
+        $this->db->where('is_active', 1);
+        $d1 = $this->db->get()->row();
+
+
+        $sub_id = $d1->sub_category;
+        $minorsub_id = $d1->minisub_category;
+        $a1 = $d1->desc_e_value1;
+
+
+        $this->db->select('*');
+        $this->db->from('tbl_new_arrival_products');
+        $this->db->where('desc_e_value1', $a1);
+        $this->db->where('is_active', 1);
+        $d2 = $this->db->get();
+
+        $i = 1;
+        foreach ($d2->result() as $d3) {
+
+            $data['b1'] = $d1->desc_e_name2;
+            $data['b2'] = $d1->desc_e_name3;
+            $data['b3'] = $d1->desc_e_name4;
+            $data['b4'] = $d1->desc_e_name5;
+            $data['b5'] = $d1->desc_e_name6;
+            $data['b6'] = $d1->desc_e_name7;
+            $data['b7'] = $d1->desc_e_name8;
+            $data['b8'] = $d1->desc_e_name9;
+            $data['b9'] = $d1->desc_e_name10;
+            $data['b10'] = $d1->desc_e_name11;
+
+            $c1[] = $d3->desc_e_value2;
+            $c2[] = $d3->desc_e_value3;
+            $c3[] = $d3->desc_e_value4;
+            $c4[] = $d3->desc_e_value5;
+            $c5[] = $d3->desc_e_value6;
+            $c6[] = $d3->desc_e_value7;
+            $c7[] = $d3->desc_e_value8;
+            $c8[] = $d3->desc_e_value9;
+            $c9[] = $d3->desc_e_value10;
+            $c10[] = $d3->desc_e_value11;
+        }
+
+        $data['d1'] = array_unique($c1);
+        $data['d2'] = array_unique($c2);
+        $data['d3'] = array_unique($c3);
+        $data['d4'] = array_unique($c4);
+        $data['d5'] = array_unique($c5);
+        $data['d6'] = array_unique($c6);
+        $data['d7'] = array_unique($c7);
+        $data['d8'] = array_unique($c8);
+        $data['d9'] = array_unique($c9);
+        $data['d10'] = array_unique($c10);
+
+
+        // print_r($d1);
+        // exit;
+
+        //
+        // $this->db->select('*');
+        // $this->db->from('tbl_types');
+        // $this->db->where('product',$id);
+        // $data['types']= $this->db->get();
+
+
+        //get related products(Shoppers Also Bought)
+
+        // if(!empty($minorsub_id)){
+        // 	$this->db->select('*');
+        // 	$this->db->from('tbl_new_arrival_products');
+        // 	$this->db->group_by(array("sku_series", "sku_series_type1"));
+        // 	$this->db->where('minisub_category',$minorsub_id);
+        // 	$this->db->where('is_active',1);
+        // 	$this->db->order_by('id','DESC');
+        // 	$data['ralated_products']= $this->db->limit(100)->get();
+        // }else {
+        $this->db->select('*');
+        $this->db->from('tbl_new_arrival_products');
+        $this->db->group_by(array("sku_series", "sku_series_type1"));
+        // $this->db->where('sub_category',$sub_id);
+        $this->db->where('is_active', 1);
+        $this->db->order_by('id', 'DESC');
+        $data['ralated_products'] = $this->db->limit(100)->get();
+        // }
+
+
+
+        //get trendings products(Popular Products)
+
+        // if(!empty($minorsub_id)){
+        // 	$this->db->select('*');
+        // 	$this->db->from('tbl_products');
+        // 	$this->db->where('minisub_category',$minorsub_id);
+        // 	$this->db->where('is_active',1);
+        // 	$this->db->order_by('id', 'RANDOM');
+        // 	$data['trending_products']= $this->db->limit(100)->get();
+        // }else {
+        // 	$this->db->select('*');
+        // 	$this->db->from('tbl_products');
+        // 	$this->db->where('sub_category',$sub_category);
+        // 	$this->db->where('is_active',1);
+        // 	$this->db->order_by('id', 'RANDOM');
+        // 	$data['trending_products']= $this->db->limit(100)->get();
+        // }
+
+
+
+
+        $this->load->view('common/header', $data);
+        $this->load->view('product_detail');
+        $this->load->view('common/footer');
+    }
+
+
+
+
+    public function all_products($idd, $t)
+    {
+        $id = $idd;
+        $page = base64_decode($t);
+
+        $sort_type = $this->input->get('sort_type');
+
+        $data['page'] = $t;
+        $data['level_id'] = $idd;
+        $data['sort_type'] = $sort_type;
+
+
+
+        if ($sort_type == 0) {
+            $sort_type = "";
+        }
+
+        if ($page == 3) {
+
+
+
+
+            //pagination code
+            $config = array();
+            $config["base_url"] = base_url() . "Home/all_products/" . $id . "/" . $t;
+
+            $this->db->select('*');
+            $this->db->from('tbl_products');
+            $this->db->group_by(array("sku_series", "sku_series_type1"));
+            $this->db->where('category', $id);
+            $this->db->where('is_active', 1);
+            $config["total_rows"] = $this->db->count_all_results();
+            // echo  $config["total_rows"];die();
+
+            $config["per_page"] = 100;
+            $config["uri_segment"] = 6;
+
+
+            $this->pagination->initialize($config);
+
+            // $page = ($this->uri->segment(2)) ? $this->uri->segment(2) : 0;
+            $page = ($this->uri->segment(6)) ? $this->uri->segment(6) : 0;
+
+            $data["links"] = $this->pagination->create_links();
+
+
+
+
+
+
+            // Category
+
+            // $data['cate_id']= $idd;
+            $data['sub_id'] = "";
+            $data['minorsub_id'] = "";
+            $data['minorsub_name'] = "";
+            $data['subcategory_id'] = "";
+
+            $this->db->distinct();
+            $this->db->select('sku_series');
+            $this->db->where('sub_category', $id);
+            $this->db->where('is_active', 1);
+            $query = $this->db->get('tbl_products');
+            $data['product_count'] = $query->num_rows();
+
+            // 	$this->db->select('*');
+            // $this->db->from('tbl_products');
+            // $this->db->group_by(array("sku_series", "sku_series_type1"));
+            // $this->db->where('category',$id);
+            // $this->db->where('is_active', 1);
+            // $data['product_count']= $this->db->count_all_results();
+
+
+
+            $this->db->select('*');
+            $this->db->from('tbl_category');
+            $this->db->where('id', $id);
+            $this->db->where('is_active', 1);
+            $cate_da = $this->db->get()->row();
+            if (!empty($cate_da)) {
+                $cate_name = $cate_da->name;
+            } else {
+                $cate_name = "";
+                $category_id = "";
+                $subcate_name = "";
+                $cate_name = "";
+            }
+
+
+            $data['category_id'] = $idd;
+            $data['subcategory_name'] = "";
+            $data['category_name'] = $cate_name;
+
+            $ringsize = $this->input->get('ringsize');
+            $product_type = $this->input->get('product_type');
+            $totalweight = $this->input->get('totalweight');
+            $dclarity = $this->input->get('dclarity');
+            $dcolor = $this->input->get('dcolor');
+
+
+
+            if (!empty($ringsize)) {
+
+
+                //sorting logic start
+
+                if (!empty($sort_type)) {
+
+                    if ($sort_type == 1) {
+                        $this->db->select('*');
+                        $this->db->from('tbl_products');
+                        $this->db->group_by(array("sku_series", "sku_series_type1"));
+                        $this->db->where('category', $id);
+                        $this->db->where('ringsize', $ringsize);
+                        $this->db->where('is_active', 1);
+                        $this->db->order_by('id', "DESC");
+                        $data['product'] = $this->db->get();
+                    } elseif ($sort_type == 2) {
+                        $this->db->select('*');
+                        $this->db->from('tbl_products');
+                        $this->db->group_by(array("sku_series", "sku_series_type1"));
+                        $this->db->where('category', $id);
+                        $this->db->where('ringsize', $ringsize);
+                        $this->db->where('is_active', 1);
+                        $this->db->order_by('price', "DESC");
+                        $data['product'] = $this->db->get();
+                    } else {
+                        $this->db->select('*');
+                        $this->db->from('tbl_products');
+                        $this->db->group_by(array("sku_series", "sku_series_type1"));
+                        $this->db->where('category', $id);
+                        $this->db->where('ringsize', $ringsize);
+                        $this->db->where('is_active', 1);
+                        $this->db->order_by('price', "ASC");
+                        $data['product'] = $this->db->get();
+                    }
+                } else {
+
+
+                    $this->db->select('*');
+                    $this->db->from('tbl_products');
+                    $this->db->group_by(array("sku_series", "sku_series_type1"));
+                    $this->db->where('category', $id);
+                    $this->db->where('ringsize', $ringsize);
+                    $this->db->where('is_active', 1);
+                    $data['product'] = $this->db->get();
+                }
+
+                //sorting logic end
+
+
+
+
+
+                $data['flter_name'] = $ringsize;
+            } elseif (!empty($dcolor)) {
+
+
+                //sorting logic start
+
+                if (!empty($sort_type)) {
+
+                    if ($sort_type == 1) {
+                        $this->db->select('*');
+                        $this->db->from('tbl_products');
+                        $this->db->group_by(array("sku_series", "sku_series_type1"));
+                        $this->db->where('category', $id);
+                        $this->db->where('dcolor', $dcolor);
+                        $this->db->where('is_active', 1);
+                        $this->db->order_by('id', "DESC");
+                        $data['product'] = $this->db->get();
+                    } elseif ($sort_type == 2) {
+                        $this->db->select('*');
+                        $this->db->from('tbl_products');
+                        $this->db->group_by(array("sku_series", "sku_series_type1"));
+                        $this->db->where('category', $id);
+                        $this->db->where('dcolor', $dcolor);
+                        $this->db->where('is_active', 1);
+                        $this->db->order_by('price', "DESC");
+                        $data['product'] = $this->db->get();
+                    } else {
+                        $this->db->select('*');
+                        $this->db->from('tbl_products');
+                        $this->db->group_by(array("sku_series", "sku_series_type1"));
+                        $this->db->where('category', $id);
+                        $this->db->where('dcolor', $dcolor);
+                        $this->db->where('is_active', 1);
+                        $this->db->order_by('price', "ASC");
+                        $data['product'] = $this->db->get();
+                    }
+                } else {
+
+
+                    $this->db->select('*');
+                    $this->db->from('tbl_products');
+                    $this->db->group_by(array("sku_series", "sku_series_type1"));
+                    $this->db->where('category', $id);
+                    $this->db->where('dcolor', $dcolor);
+                    $this->db->where('is_active', 1);
+                    $data['product'] = $this->db->get();
+                }
+
+                //sorting logic end
+
+
+
+
+
+                $data['flter_name'] = $dcolor;
+            } elseif (!empty($product_type)) {
+
+                //sorting logic start
+
+                if (!empty($sort_type)) {
+
+                    if ($sort_type == 1) {
+                        $this->db->select('*');
+                        $this->db->from('tbl_products');
+                        $this->db->group_by(array("sku_series", "sku_series_type1"));
+                        $this->db->where('category', $id);
+                        $this->db->where('product_type', $product_type);
+                        $this->db->where('is_active', 1);
+                        $this->db->order_by('id', "DESC");
+                        $data['product'] = $this->db->get();
+                    } elseif ($sort_type == 2) {
+                        $this->db->select('*');
+                        $this->db->from('tbl_products');
+                        $this->db->group_by(array("sku_series", "sku_series_type1"));
+                        $this->db->where('category', $id);
+                        $this->db->where('product_type', $product_type);
+                        $this->db->where('is_active', 1);
+                        $this->db->order_by('price', "DESC");
+                        $data['product'] = $this->db->get();
+                    } else {
+                        $this->db->select('*');
+                        $this->db->from('tbl_products');
+                        $this->db->group_by(array("sku_series", "sku_series_type1"));
+                        $this->db->where('category', $id);
+                        $this->db->where('product_type', $product_type);
+                        $this->db->where('is_active', 1);
+                        $this->db->order_by('price', "ASC");
+                        $data['product'] = $this->db->get();
+                    }
+                } else {
+
+
+                    $this->db->select('*');
+                    $this->db->from('tbl_products');
+                    $this->db->group_by(array("sku_series", "sku_series_type1"));
+                    $this->db->where('category', $id);
+                    $this->db->where('product_type', $product_type);
+                    $this->db->where('is_active', 1);
+                    $data['product'] = $this->db->get();
+                }
+
+                //sorting logic end
+
+
+
+
+                $data['flter_name'] = $product_type;
+            } elseif (!empty($totalweight)) {
+
+
+                //sorting logic start
+
+                if (!empty($sort_type)) {
+
+                    if ($sort_type == 1) {
+                        $this->db->select('*');
+                        $this->db->from('tbl_products');
+                        $this->db->group_by(array("sku_series", "sku_series_type1"));
+                        $this->db->where('category', $id);
+                        $this->db->where('totalweight', $totalweight);
+                        $this->db->where('is_active', 1);
+                        $this->db->order_by('id', "DESC");
+                        $data['product'] = $this->db->get();
+                    } elseif ($sort_type == 2) {
+                        $this->db->select('*');
+                        $this->db->from('tbl_products');
+                        $this->db->group_by(array("sku_series", "sku_series_type1"));
+                        $this->db->where('category', $id);
+                        $this->db->where('totalweight', $totalweight);
+                        $this->db->where('is_active', 1);
+                        $this->db->order_by('price', "DESC");
+                        $data['product'] = $this->db->get();
+                    } else {
+                        $this->db->select('*');
+                        $this->db->from('tbl_products');
+                        $this->db->group_by(array("sku_series", "sku_series_type1"));
+                        $this->db->where('category', $id);
+                        $this->db->where('totalweight', $totalweight);
+                        $this->db->where('is_active', 1);
+                        $this->db->order_by('price', "ASC");
+                        $data['product'] = $this->db->get();
+                    }
+                } else {
+
+
+                    $this->db->select('*');
+                    $this->db->from('tbl_products');
+                    $this->db->group_by(array("sku_series", "sku_series_type1"));
+                    $this->db->where('category', $id);
+                    $this->db->where('totalweight', $totalweight);
+                    $this->db->where('is_active', 1);
+                    $data['product'] = $this->db->get();
+                }
+
+                //sorting logic end
+
+
+
+
+                $data['flter_name'] = $totalweight;
+            } elseif (!empty($dclarity)) {
+
+
+
+                //sorting logic start
+
+                if (!empty($sort_type)) {
+
+                    if ($sort_type == 1) {
+                        $this->db->select('*');
+                        $this->db->from('tbl_products');
+                        $this->db->group_by(array("sku_series", "sku_series_type1"));
+                        $this->db->where('category', $id);
+                        $this->db->where('dclarity', $dclarity);
+                        $this->db->where('is_active', 1);
+                        $this->db->order_by('id', "DESC");
+                        $data['product'] = $this->db->get();
+                    } elseif ($sort_type == 2) {
+                        $this->db->select('*');
+                        $this->db->from('tbl_products');
+                        $this->db->group_by(array("sku_series", "sku_series_type1"));
+                        $this->db->where('category', $id);
+                        $this->db->where('dclarity', $dclarity);
+                        $this->db->where('is_active', 1);
+                        $this->db->order_by('price', "DESC");
+                        $data['product'] = $this->db->get();
+                    } else {
+                        $this->db->select('*');
+                        $this->db->from('tbl_products');
+                        $this->db->group_by(array("sku_series", "sku_series_type1"));
+                        $this->db->where('category', $id);
+                        $this->db->where('dclarity', $dclarity);
+                        $this->db->where('is_active', 1);
+                        $this->db->order_by('price', "ASC");
+                        $data['product'] = $this->db->get();
+                    }
+                } else {
+
+
+                    $this->db->select('*');
+                    $this->db->from('tbl_products');
+                    $this->db->group_by(array("sku_series", "sku_series_type1"));
+                    $this->db->where('category', $id);
+                    $this->db->where('dclarity', $dclarity);
+                    $this->db->where('is_active', 1);
+                    $data['product'] = $this->db->get();
+                }
+
+                //sorting logic end
+
+
+
+
+
+                $data['flter_name'] = $dclarity;
+            } else {
+
+                //sorting logic start
+
+                if (!empty($sort_type)) {
+
+                    if ($sort_type == 1) {
+                        $this->db->select('*');
+                        $this->db->from('tbl_products');
+                        $this->db->group_by(array("sku_series", "sku_series_type1"));
+                        $this->db->where('category', $id);
+                        $this->db->where('is_active', 1);
+                        $this->db->order_by('id', "DESC");
+                        $data['product'] = $this->db->get();
+                    } elseif ($sort_type == 2) {
+                        $this->db->select('*');
+                        $this->db->from('tbl_products');
+                        $this->db->group_by(array("sku_series", "sku_series_type1"));
+                        $this->db->where('category', $id);
+                        $this->db->where('is_active', 1);
+                        $this->db->order_by('price', "DESC");
+                        $data['product'] = $this->db->get();
+                    } else {
+                        $this->db->select('*');
+                        $this->db->from('tbl_products');
+                        $this->db->group_by(array("sku_series", "sku_series_type1"));
+                        $this->db->where('category', $id);
+                        $this->db->where('is_active', 1);
+                        $this->db->order_by('price', "ASC");
+                        $data['product'] = $this->db->get();
+                    }
+                } else {
+
+                    $this->db->select('*');
+                    $this->db->from('tbl_products');
+                    // $this->db->group_by(array("sku_series", "sku_series_type1"));
+                    $this->db->where('category', $id);
+                    $this->db->where('is_active', 1);
+                    // $this->db->limit($config["per_page"], $page);
+                    $data['product'] = $this->db->get();
+                    // echo $data['product'];
+                    // exit;
+                }
+
+                //sorting logic end
+
+
+            }
+        } elseif ($page == 0) {
+
+
+            //pagination code
+            $config = array();
+            $config["base_url"] = base_url() . "Home/all_products/" . $id . "/" . $t;
+
+            $this->db->distinct();
+            $this->db->select('sku_series');
+            $this->db->where('sub_category', $id);
+            $query = $this->db->get('tbl_products');
+            $config["total_rows"] = $query->num_rows();;
+            // print_r($config["total_rows"]);
+            // exit;
+            $config["per_page"] = 100;
+            $config["uri_segment"] = 4;
+
+
+            $this->pagination->initialize($config);
+
+            // $page = ($this->uri->segment(2)) ? $this->uri->segment(2) : 0;
+            $page = ($this->uri->segment(4)) ? $this->uri->segment(4) : 0;
+
+            $data["links"] = $this->pagination->create_links();
+
+            // echo $page; print_r($data["links"]); die();
+
+            // echo "f"; die();
+            // subcategory
+
+            $data['sub_id'] = $idd;
+            $data['minorsub_id'] = "";
+            $data['minorsub_name'] = "";
+            $data['subcategory_id'] = $idd;
+
+            $this->db->distinct();
+            $this->db->select('sku_series');
+            $this->db->where('sub_category', $id);
+            $this->db->where('is_active', 1);
+            $query = $this->db->get('tbl_products');
+            $data['product_count'] = $query->num_rows();
+
+            // 	$this->db->select('*');
+            // $this->db->from('tbl_products');
+            // $this->db->group_by(array("sku_series", "sku_series_type1"));
+            // $this->db->where('sub_category',$id);
+            // $this->db->where('is_active', 1);
+            // $data['product_count']= $this->db->count_all_results();
+
+            $this->db->select('*');
+            $this->db->from('tbl_sub_category');
+            $this->db->where('id', $id);
+            $this->db->where('is_active', 1);
+            $subcate_da = $this->db->get()->row();
+            if (!empty($subcate_da)) {
+                $subcate_name = $subcate_da->name;
+                $category_id = $subcate_da->category;
+
+                $this->db->select('*');
+                $this->db->from('tbl_category');
+                $this->db->where('id', $category_id);
+                $this->db->where('is_active', 1);
+                $cate_da = $this->db->get()->row();
+                if (!empty($cate_da)) {
+                    $cate_name = $cate_da->name;
+                } else {
+                    $cate_name = "";
+                }
+            } else {
+                $category_id = "";
+                $subcate_name = "";
+                $cate_name = "";
+            }
+
+            $data['category_id'] = $category_id;
+            $data['subcategory_name'] = $subcate_name;
+            $data['category_name'] = $cate_name;
+
+            $ringsize = $this->input->get('ringsize');
+            $product_type = $this->input->get('product_type');
+            $totalweight = $this->input->get('totalweight');
+            $dclarity = $this->input->get('dclarity');
+            $dcolor = $this->input->get('dcolor');
+
+
+
+            if (!empty($ringsize)) {
+
+
+
+                //sorting logic start
+
+                if (!empty($sort_type)) {
+
+                    if ($sort_type == 1) {
+                        $this->db->select('*');
+                        $this->db->from('tbl_products');
+                        $this->db->group_by(array("sku_series", "sku_series_type1"));
+                        $this->db->where('sub_category', $id);
+                        $this->db->where('ringsize', $ringsize);
+                        $this->db->where('is_active', 1);
+                        $this->db->order_by('id', "DESC");
+                        $data['product'] = $this->db->get();
+                    } elseif ($sort_type == 2) {
+                        $this->db->select('*');
+                        $this->db->from('tbl_products');
+                        $this->db->group_by(array("sku_series", "sku_series_type1"));
+                        $this->db->where('sub_category', $id);
+                        $this->db->where('ringsize', $ringsize);
+                        $this->db->where('is_active', 1);
+                        $this->db->order_by('price', "DESC");
+                        $data['product'] = $this->db->get();
+                    } else {
+                        $this->db->select('*');
+                        $this->db->from('tbl_products');
+                        $this->db->group_by(array("sku_series", "sku_series_type1"));
+                        $this->db->where('sub_category', $id);
+                        $this->db->where('ringsize', $ringsize);
+                        $this->db->where('is_active', 1);
+                        $this->db->order_by('price', "ASC");
+                        $data['product'] = $this->db->get();
+                    }
+                } else {
+
+                    $this->db->select('*');
+                    $this->db->from('tbl_products');
+                    $this->db->group_by(array("sku_series", "sku_series_type1"));
+                    $this->db->where('sub_category', $id);
+                    $this->db->where('ringsize', $ringsize);
+                    $this->db->where('is_active', 1);
+                    $data['product'] = $this->db->get();
+                }
+
+                //sorting logic end
+
+
+
+
+
+                $data['flter_name'] = $ringsize;
+            } elseif (!empty($dcolor)) {
+
+
+                //sorting logic start
+
+                if (!empty($sort_type)) {
+
+                    if ($sort_type == 1) {
+                        $this->db->select('*');
+                        $this->db->from('tbl_products');
+                        $this->db->group_by(array("sku_series", "sku_series_type1"));
+                        $this->db->where('sub_category', $id);
+                        $this->db->where('dcolor', $dcolor);
+                        $this->db->where('is_active', 1);
+                        $this->db->order_by('id', "DESC");
+                        $data['product'] = $this->db->get();
+                    } elseif ($sort_type == 2) {
+                        $this->db->select('*');
+                        $this->db->from('tbl_products');
+                        $this->db->group_by(array("sku_series", "sku_series_type1"));
+                        $this->db->where('sub_category', $id);
+                        $this->db->where('dcolor', $dcolor);
+                        $this->db->where('is_active', 1);
+                        $this->db->order_by('price', "DESC");
+                        $data['product'] = $this->db->get();
+                    } else {
+                        $this->db->select('*');
+                        $this->db->from('tbl_products');
+                        $this->db->group_by(array("sku_series", "sku_series_type1"));
+                        $this->db->where('sub_category', $id);
+                        $this->db->where('dcolor', $dcolor);
+                        $this->db->where('is_active', 1);
+                        $this->db->order_by('price', "ASC");
+                        $data['product'] = $this->db->get();
+                    }
+                } else {
+
+                    $this->db->select('*');
+                    $this->db->from('tbl_products');
+                    $this->db->group_by(array("sku_series", "sku_series_type1"));
+                    $this->db->where('sub_category', $id);
+                    $this->db->where('dcolor', $dcolor);
+                    $this->db->where('is_active', 1);
+                    $data['product'] = $this->db->get();
+                }
+
+                //sorting logic end
+
+
+
+                $data['flter_name'] = $dcolor;
+            } elseif (!empty($product_type)) {
+
+
+
+                //sorting logic start
+
+                if (!empty($sort_type)) {
+
+                    if ($sort_type == 1) {
+                        $this->db->select('*');
+                        $this->db->from('tbl_products');
+                        $this->db->group_by(array("sku_series", "sku_series_type1"));
+                        $this->db->where('sub_category', $id);
+                        $this->db->where('product_type', $product_type);
+                        $this->db->where('is_active', 1);
+                        $this->db->order_by('id', "DESC");
+                        $data['product'] = $this->db->get();
+                    } elseif ($sort_type == 2) {
+                        $this->db->select('*');
+                        $this->db->from('tbl_products');
+                        $this->db->group_by(array("sku_series", "sku_series_type1"));
+                        $this->db->where('sub_category', $id);
+                        $this->db->where('product_type', $product_type);
+                        $this->db->where('is_active', 1);
+                        $this->db->order_by('price', "DESC");
+                        $data['product'] = $this->db->get();
+                    } else {
+                        $this->db->select('*');
+                        $this->db->from('tbl_products');
+                        $this->db->group_by(array("sku_series", "sku_series_type1"));
+                        $this->db->where('sub_category', $id);
+                        $this->db->where('product_type', $product_type);
+                        $this->db->where('is_active', 1);
+                        $this->db->order_by('price', "ASC");
+                        $data['product'] = $this->db->get();
+                    }
+                } else {
+
+                    $this->db->select('*');
+                    $this->db->from('tbl_products');
+                    $this->db->group_by(array("sku_series", "sku_series_type1"));
+                    $this->db->where('sub_category', $id);
+                    $this->db->where('product_type', $product_type);
+                    $this->db->where('is_active', 1);
+                    $data['product'] = $this->db->get();
+                }
+
+                //sorting logic end
+
+
+
+
+
+                $data['flter_name'] = $product_type;
+            } elseif (!empty($totalweight)) {
+
+
+                //sorting logic start
+
+                if (!empty($sort_type)) {
+
+                    if ($sort_type == 1) {
+                        $this->db->select('*');
+                        $this->db->from('tbl_products');
+                        $this->db->group_by(array("sku_series", "sku_series_type1"));
+                        $this->db->where('sub_category', $id);
+                        $this->db->where('totalweight', $totalweight);
+                        $this->db->where('is_active', 1);
+                        $this->db->order_by('id', "DESC");
+                        $data['product'] = $this->db->get();
+                    } elseif ($sort_type == 2) {
+                        $this->db->select('*');
+                        $this->db->from('tbl_products');
+                        $this->db->group_by(array("sku_series", "sku_series_type1"));
+                        $this->db->where('sub_category', $id);
+                        $this->db->where('totalweight', $totalweight);
+                        $this->db->where('is_active', 1);
+                        $this->db->order_by('price', "DESC");
+                        $data['product'] = $this->db->get();
+                    } else {
+                        $this->db->select('*');
+                        $this->db->from('tbl_products');
+                        $this->db->group_by(array("sku_series", "sku_series_type1"));
+                        $this->db->where('sub_category', $id);
+                        $this->db->where('totalweight', $totalweight);
+                        $this->db->where('is_active', 1);
+                        $this->db->order_by('price', "ASC");
+                        $data['product'] = $this->db->get();
+                    }
+                } else {
+
+                    $this->db->select('*');
+                    $this->db->from('tbl_products');
+                    $this->db->group_by(array("sku_series", "sku_series_type1"));
+                    $this->db->where('sub_category', $id);
+                    $this->db->where('totalweight', $totalweight);
+                    $this->db->where('is_active', 1);
+                    $data['product'] = $this->db->get();
+                }
+
+                //sorting logic end
+
+
+
+
+                $data['flter_name'] = $totalweight;
+            } elseif (!empty($dclarity)) {
+
+
+                //sorting logic start
+
+                if (!empty($sort_type)) {
+
+                    if ($sort_type == 1) {
+                        $this->db->select('*');
+                        $this->db->from('tbl_products');
+                        $this->db->group_by(array("sku_series", "sku_series_type1"));
+                        $this->db->where('sub_category', $id);
+                        $this->db->where('dclarity', $dclarity);
+                        $this->db->where('is_active', 1);
+                        $this->db->order_by('id', "DESC");
+                        $data['product'] = $this->db->get();
+                    } elseif ($sort_type == 2) {
+                        $this->db->select('*');
+                        $this->db->from('tbl_products');
+                        $this->db->group_by(array("sku_series", "sku_series_type1"));
+                        $this->db->where('sub_category', $id);
+                        $this->db->where('dclarity', $dclarity);
+                        $this->db->where('is_active', 1);
+                        $this->db->order_by('price', "DESC");
+                        $data['product'] = $this->db->get();
+                    } else {
+                        $this->db->select('*');
+                        $this->db->from('tbl_products');
+                        $this->db->group_by(array("sku_series", "sku_series_type1"));
+                        $this->db->where('sub_category', $id);
+                        $this->db->where('dclarity', $dclarity);
+                        $this->db->where('is_active', 1);
+                        $this->db->order_by('price', "ASC");
+                        $data['product'] = $this->db->get();
+                    }
+                } else {
+
+                    $this->db->select('*');
+                    $this->db->from('tbl_products');
+                    $this->db->group_by(array("sku_series", "sku_series_type1"));
+                    $this->db->where('sub_category', $id);
+                    $this->db->where('dclarity', $dclarity);
+                    $this->db->where('is_active', 1);
+                    $data['product'] = $this->db->get();
+                }
+
+                //sorting logic end
+
+
+
+
+
+                $data['flter_name'] = $dclarity;
+            } else {
+
+                // echo "hi";
+                // exit;
+                //sorting logic start
+
+                if (!empty($sort_type)) {
+
+                    if ($sort_type == 1) {
+                        $this->db->select('*');
+                        $this->db->from('tbl_products');
+                        $this->db->group_by(array("sku_series", "sku_series_type1"));
+                        $this->db->where('sub_category', $id);
+                        $this->db->where('is_active', 1);
+                        $this->db->order_by('id', "DESC");
+                        $data['product'] = $this->db->get();
+                    } elseif ($sort_type == 2) {
+                        $this->db->select('*');
+                        $this->db->from('tbl_products');
+                        $this->db->group_by(array("sku_series", "sku_series_type1"));
+                        $this->db->where('sub_category', $id);
+                        $this->db->where('is_active', 1);
+                        $this->db->order_by('price', "DESC");
+                        $data['product'] = $this->db->get();
+                    } else {
+                        $this->db->select('*');
+                        $this->db->from('tbl_products');
+                        $this->db->group_by(array("sku_series", "sku_series_type1"));
+                        $this->db->where('sub_category', $id);
+                        $this->db->where('is_active', 1);
+                        $this->db->order_by('price', "ASC");
+                        $data['product'] = $this->db->get();
+                    }
+                } else {
+
+                    $this->db->distinct();
+                    $this->db->select('*');
+                    $this->db->where('sub_category', $id);
+                    $this->db->where('is_active', 1);
+                    $data['product'] = $this->db->get('tbl_products');
+
+                    // $this->db->select('*');
+                    //
+                    // $this->db->from('tbl_products');
+                    // $this->db->group_by(array("sku_series", "sku_series_type1"));
+                    // $this->db->where('sub_category',$id);
+                    // $this->db->where('is_active', 1);
+                    // $this->db->limit($config["per_page"], $page);
+                    // $data['product']= $this->db->get();
+                    // print_r($data['product']);
+                    // exit;
+
+
+                }
+
+                //sorting logic end
+
+
+
+
+            }
+        } else {
+            // echo "hi";
+            // exit;
+            //minor subcategory
+
+
+
+            //pagination code
+            $config = array();
+            $config["base_url"] = base_url() . "Home/all_products/" . $id . "/" . $t;
+
+            $this->db->select('*');
+            $this->db->from('tbl_products');
+            $this->db->group_by(array("sku_series", "sku_series_type1"));
+            $this->db->where('minisub_category', $id);
+            $this->db->where('is_active', 1);
+            $config["total_rows"] = $this->db->count_all_results();
+
+            $config["per_page"] = 100;
+            $config["uri_segment"] = 6;
+
+
+            $this->pagination->initialize($config);
+
+            // $page = ($this->uri->segment(2)) ? $this->uri->segment(2) : 0;
+            $page = ($this->uri->segment(6)) ? $this->uri->segment(6) : 0;
+
+            $data["links"] = $this->pagination->create_links();
+
+
+            $data['minorsub_id'] = $idd;
+            $data['sub_id'] = "";
+
+
+            // 	$this->db->select('*');
+            // $this->db->from('tbl_products');
+            // $this->db->group_by(array("sku_series", "sku_series_type1"));
+            // $this->db->where('minisub_category',$id);
+            // $this->db->where('is_active', 1);
+            // $data['product_count']= $this->db->count_all_results();
+            $this->db->distinct();
+            $this->db->select('sku_series');
+            $this->db->from('tbl_products');
+            $this->db->group_by(array("sku_series", "sku_series_type1"));
+            $this->db->where('minisub_category', $id);
+            $this->db->where('is_active', 1);
+            $data['product_count'] = $this->db->count_all_results();
+
+            $this->db->select('*');
+            $this->db->from('tbl_minisubcategory');
+            $this->db->where('id', $id);
+            $this->db->where('is_active', 1);
+            $minorsubcate_da = $this->db->get()->row();
+            if (!empty($minorsubcate_da)) {
+                $minorsubcate_name = $minorsubcate_da->name;
+                $category_id = $minorsubcate_da->category;
+                $subcategory_id = $minorsubcate_da->subcategory;
+
+                $this->db->select('*');
+                $this->db->from('tbl_category');
+                $this->db->where('id', $category_id);
+                $this->db->where('is_active', 1);
+                $cate_da = $this->db->get()->row();
+                if (!empty($cate_da)) {
+                    $cate_name = $cate_da->name;
+                } else {
+                    $cate_name = "";
+                }
+
+                $this->db->select('*');
+                $this->db->from('tbl_sub_category');
+                $this->db->where('id', $subcategory_id);
+                $this->db->where('is_active', 1);
+                $subcate_da = $this->db->get()->row();
+                if (!empty($subcate_da)) {
+                    $subcate_name = $subcate_da->name;
+                } else {
+                    $subcate_name = "";
+                }
+            } else {
+                $category_id = "";
+                $subcategory_id = "";
+                $subcate_name = "N/A";
+                $cate_name = "N/A";
+                $minorsubcate_name = "N/A";
+            }
+
+            $data['category_id'] = $category_id;
+            $data['subcategory_id'] = $subcategory_id;
+            $data['subcategory_name'] = $subcate_name;
+            $data['category_name'] = $cate_name;
+            $data['minorsub_name'] = $minorsubcate_name;
+
+
+
+
+            $ringsize = $this->input->get('ringsize');
+            $product_type = $this->input->get('product_type');
+            $totalweight = $this->input->get('totalweight');
+            $dclarity = $this->input->get('dclarity');
+            $dcolor = $this->input->get('dcolor');
+
+
+
+            if (!empty($ringsize)) {
+
+
+                //sorting logic start
+
+                if (!empty($sort_type)) {
+
+                    if ($sort_type == 1) {
+                        $this->db->select('*');
+                        $this->db->from('tbl_products');
+                        $this->db->group_by(array("sku_series", "sku_series_type1"));
+                        $this->db->where('minisub_category', $id);
+                        $this->db->where('ringsize', $ringsize);
+                        $this->db->where('is_active', 1);
+                        $this->db->order_by('id', "DESC");
+                        $data['product'] = $this->db->get();
+                    } elseif ($sort_type == 2) {
+                        $this->db->select('*');
+                        $this->db->from('tbl_products');
+                        $this->db->group_by(array("sku_series", "sku_series_type1"));
+                        $this->db->where('minisub_category', $id);
+                        $this->db->where('ringsize', $ringsize);
+                        $this->db->where('is_active', 1);
+                        $this->db->order_by('price', "DESC");
+                        $data['product'] = $this->db->get();
+                    } else {
+                        $this->db->select('*');
+                        $this->db->from('tbl_products');
+                        $this->db->group_by(array("sku_series", "sku_series_type1"));
+                        $this->db->where('minisub_category', $id);
+                        $this->db->where('ringsize', $ringsize);
+                        $this->db->where('is_active', 1);
+                        $this->db->order_by('price', "ASC");
+                        $data['product'] = $this->db->get();
+                    }
+                } else {
+
+                    $this->db->select('*');
+                    $this->db->from('tbl_products');
+                    $this->db->group_by(array("sku_series", "sku_series_type1"));
+                    $this->db->where('minisub_category', $id);
+                    $this->db->where('ringsize', $ringsize);
+                    $this->db->where('is_active', 1);
+                    $data['product'] = $this->db->get();
+                }
+
+                //sorting logic end
+
+
+
+
+
+                $data['flter_name'] = $ringsize;
+            } elseif (!empty($dcolor)) {
+
+                //sorting logic start
+
+                if (!empty($sort_type)) {
+
+                    if ($sort_type == 1) {
+                        $this->db->select('*');
+                        $this->db->from('tbl_products');
+                        $this->db->group_by(array("sku_series", "sku_series_type1"));
+                        $this->db->where('minisub_category', $id);
+                        $this->db->where('dcolor', $dcolor);
+                        $this->db->where('is_active', 1);
+                        $this->db->order_by('id', "DESC");
+                        $data['product'] = $this->db->get();
+                    } elseif ($sort_type == 2) {
+                        $this->db->select('*');
+                        $this->db->from('tbl_products');
+                        $this->db->group_by(array("sku_series", "sku_series_type1"));
+                        $this->db->where('minisub_category', $id);
+                        $this->db->where('dcolor', $dcolor);
+                        $this->db->where('is_active', 1);
+                        $this->db->order_by('price', "DESC");
+                        $data['product'] = $this->db->get();
+                    } else {
+                        $this->db->select('*');
+                        $this->db->from('tbl_products');
+                        $this->db->group_by(array("sku_series", "sku_series_type1"));
+                        $this->db->where('minisub_category', $id);
+                        $this->db->where('dcolor', $dcolor);
+                        $this->db->where('is_active', 1);
+                        $this->db->order_by('price', "ASC");
+                        $data['product'] = $this->db->get();
+                    }
+                } else {
+
+                    $this->db->select('*');
+                    $this->db->from('tbl_products');
+                    $this->db->group_by(array("sku_series", "sku_series_type1"));
+                    $this->db->where('minisub_category', $id);
+                    $this->db->where('dcolor', $dcolor);
+                    $this->db->where('is_active', 1);
+                    $data['product'] = $this->db->get();
+                }
+
+                //sorting logic end
+
+
+
+
+                $data['flter_name'] = $dcolor;
+            } elseif (!empty($product_type)) {
+
+
+                //sorting logic start
+
+                if (!empty($sort_type)) {
+
+                    if ($sort_type == 1) {
+                        $this->db->select('*');
+                        $this->db->from('tbl_products');
+                        $this->db->group_by(array("sku_series", "sku_series_type1"));
+                        $this->db->where('minisub_category', $id);
+                        $this->db->where('product_type', $product_type);
+                        $this->db->where('is_active', 1);
+                        $this->db->order_by('id', "DESC");
+                        $data['product'] = $this->db->get();
+                    } elseif ($sort_type == 2) {
+                        $this->db->select('*');
+                        $this->db->from('tbl_products');
+                        $this->db->group_by(array("sku_series", "sku_series_type1"));
+                        $this->db->where('minisub_category', $id);
+                        $this->db->where('product_type', $product_type);
+                        $this->db->where('is_active', 1);
+                        $this->db->order_by('price', "DESC");
+                        $data['product'] = $this->db->get();
+                    } else {
+                        $this->db->select('*');
+                        $this->db->from('tbl_products');
+                        $this->db->group_by(array("sku_series", "sku_series_type1"));
+                        $this->db->where('minisub_category', $id);
+                        $this->db->where('product_type', $product_type);
+                        $this->db->where('is_active', 1);
+                        $this->db->order_by('price', "ASC");
+                        $data['product'] = $this->db->get();
+                    }
+                } else {
+
+                    $this->db->select('*');
+                    $this->db->from('tbl_products');
+                    $this->db->group_by(array("sku_series", "sku_series_type1"));
+                    $this->db->where('minisub_category', $id);
+                    $this->db->where('product_type', $product_type);
+                    $this->db->where('is_active', 1);
+                    $data['product'] = $this->db->get();
+                }
+
+                //sorting logic end
+
+
+
+
+
+                $data['flter_name'] = $product_type;
+            } elseif (!empty($totalweight)) {
+
+
+                //sorting logic start
+
+                if (!empty($sort_type)) {
+
+                    if ($sort_type == 1) {
+                        $this->db->select('*');
+                        $this->db->from('tbl_products');
+                        $this->db->group_by(array("sku_series", "sku_series_type1"));
+                        $this->db->where('minisub_category', $id);
+                        $this->db->where('totalweight', $totalweight);
+                        $this->db->where('is_active', 1);
+                        $this->db->order_by('id', "DESC");
+                        $data['product'] = $this->db->get();
+                    } elseif ($sort_type == 2) {
+                        $this->db->select('*');
+                        $this->db->from('tbl_products');
+                        $this->db->group_by(array("sku_series", "sku_series_type1"));
+                        $this->db->where('minisub_category', $id);
+                        $this->db->where('totalweight', $totalweight);
+                        $this->db->where('is_active', 1);
+                        $this->db->order_by('price', "DESC");
+                        $data['product'] = $this->db->get();
+                    } else {
+                        $this->db->select('*');
+                        $this->db->from('tbl_products');
+                        $this->db->group_by(array("sku_series", "sku_series_type1"));
+                        $this->db->where('minisub_category', $id);
+                        $this->db->where('totalweight', $totalweight);
+                        $this->db->where('is_active', 1);
+                        $this->db->order_by('price', "ASC");
+                        $data['product'] = $this->db->get();
+                    }
+                } else {
+
+                    $this->db->select('*');
+                    $this->db->from('tbl_products');
+                    $this->db->group_by(array("sku_series", "sku_series_type1"));
+                    $this->db->where('minisub_category', $id);
+                    $this->db->where('totalweight', $totalweight);
+                    $this->db->where('is_active', 1);
+                    $data['product'] = $this->db->get();
+                }
+
+                //sorting logic end
+
+
+
+
+
+                $data['flter_name'] = $totalweight;
+            } elseif (!empty($dclarity)) {
+
+
+                //sorting logic start
+
+                if (!empty($sort_type)) {
+
+                    if ($sort_type == 1) {
+                        $this->db->select('*');
+                        $this->db->from('tbl_products');
+                        $this->db->group_by(array("sku_series", "sku_series_type1"));
+                        $this->db->where('minisub_category', $id);
+                        $this->db->where('dclarity', $dclarity);
+                        $this->db->where('is_active', 1);
+                        $this->db->order_by('id', "DESC");
+                        $data['product'] = $this->db->get();
+                    } elseif ($sort_type == 2) {
+                        $this->db->select('*');
+                        $this->db->from('tbl_products');
+                        $this->db->group_by(array("sku_series", "sku_series_type1"));
+                        $this->db->where('minisub_category', $id);
+                        $this->db->where('dclarity', $dclarity);
+                        $this->db->where('is_active', 1);
+                        $this->db->order_by('price', "DESC");
+                        $data['product'] = $this->db->get();
+                    } else {
+                        $this->db->select('*');
+                        $this->db->from('tbl_products');
+                        $this->db->group_by(array("sku_series", "sku_series_type1"));
+                        $this->db->where('minisub_category', $id);
+                        $this->db->where('dclarity', $dclarity);
+                        $this->db->where('is_active', 1);
+                        $this->db->order_by('price', "ASC");
+                        $data['product'] = $this->db->get();
+                    }
+                } else {
+
+                    $this->db->select('*');
+                    $this->db->from('tbl_products');
+                    $this->db->group_by(array("sku_series", "sku_series_type1"));
+                    $this->db->where('minisub_category', $id);
+                    $this->db->where('dclarity', $dclarity);
+                    $this->db->where('is_active', 1);
+                    $data['product'] = $this->db->get();
+                }
+
+                //sorting logic end
+
+
+
+
+
+                $data['flter_name'] = $dclarity;
+            } else {
+
+
+
+                //sorting logic start
+
+                if (!empty($sort_type)) {
+
+                    if ($sort_type == 1) {
+                        $this->db->select('*');
+                        $this->db->from('tbl_products');
+                        $this->db->group_by(array("sku_series", "sku_series_type1"));
+                        $this->db->where('minisub_category', $id);
+                        $this->db->where('is_active', 1);
+                        $this->db->order_by('id', "DESC");
+                        $data['product'] = $this->db->get();
+                    } elseif ($sort_type == 2) {
+                        $this->db->select('*');
+                        $this->db->from('tbl_products');
+                        $this->db->group_by(array("sku_series", "sku_series_type1"));
+                        $this->db->where('minisub_category', $id);
+                        $this->db->where('is_active', 1);
+                        $this->db->order_by('price', "DESC");
+                        $data['product'] = $this->db->get();
+                    } else {
+                        $this->db->select('*');
+                        $this->db->from('tbl_products');
+                        $this->db->group_by(array("sku_series", "sku_series_type1"));
+                        $this->db->where('minisub_category', $id);
+                        $this->db->where('is_active', 1);
+                        $this->db->order_by('price', "ASC");
+                        $data['product'] = $this->db->get();
+                    }
+                } else {
+
+                    $this->db->select('*');
+                    $this->db->from('tbl_products');
+                    $this->db->group_by(array("sku_series", "sku_series_type1"));
+                    $this->db->where('minisub_category', $id);
+                    $this->db->where('is_active', 1);
+                    $this->db->limit($config["per_page"], $page);
+                    $data['product'] = $this->db->get();
+                }
+
+                //sorting logic end
+
+
+
+            }
+        }
+        $product1 = [];
+
+
+        foreach ($data['product']->result() as $count_data) {
+
+            // $sku1=explode(":",$data->sku);
+            // $sku = $sku1[0];
+            $a = 0;
+            if (!empty($product1)) {
+                foreach ($product1 as $value) {
+                    if ($count_data->sku_series == $value['sku_series']) {
+                        $a = 1;
+                    }
+                }
+            }
+            if ($a == 1) {
+                continue;
+            } else {
+                // $this->db->select('*');
+                // $this->db->from('tbl_products');
+                // $this->db->where('sku_series',$data->sku_series);
+                // $this->db->like('id',$data->sku_series);
+                // $data['']= $this->db->get()->row();
+                $product1[] = array(
+                    'id' => $count_data->id,
+                    'sku_series' => $count_data->sku_series,
+                    'image1' => $count_data->FullySetImage1,
+                    'image2' => $count_data->FullySetImage2,
+                    'description' => $count_data->description,
+                    'price' => $count_data->price,
+                    'currency' => $count_data->currency,
+                );
+            }
+        }
+        $counting = 0;
+        foreach ($product1 as $prod1) {
+            $counting++;
+        }
+        $data['productCount'] = $counting;
+
+
+
+
+        // $products=[];
+        // $ss=[];
+        //
+        // 		if(!empty($ringsize)){
+        // 		  $cc1= count($ringsize);
+        //
+        //
+        // 		for ($i=0; $i < $cc1 ; $i++) {
+        // 			 $ringsize= $ringsize[$i];
+        //
+        //
+        //
+        // 		       $this->db->select('*');
+        // 		       $this->db->from('tbl_products');
+        // 		       $this->db->where('ringsize',$ringsize);
+        // 		 			$this->db->where('sub_category',$id);
+        // 		       $this->db->where('is_active', 1);
+        // 		       $sub_all_products_da[]= $this->db->get();
+        // 		 // echo "   next   ";
+        // 		 // print_r($sub_all_products_da);
+        // 		       if(!empty($sub_all_products_da)){
+        //
+        //
+        // 		 $ss[] = array('id' => $sub_all_products_da->id, 'categories_id' => $sub_all_products_da->categories_id, 'subcategories_id' =>$sub_all_products_da->subcategories_id , 'vendor_id' => $sub_all_products_da->vendor_id, 'name' => $sub_all_products_da->name, 'details' =>$sub_all_products_da->details ,'ldesc' => $sub_all_products_da->ldesc, 'product_tag' => $sub_all_products_da->product_tag, 'brand' =>$sub_all_products_da->brand , 'date' => $sub_all_products_da->date, 'ip' => $sub_all_products_da->ip, 'added_by' =>$sub_all_products_da->added_by , 'is_active' =>$sub_all_products_da->is_active );
+        //
+        // 		       }
+        //
+        //
+        // 		 // print_r($ss);
+        //
+        // 		 // $data['products']= $ss;
+        //
+        //
+        //
+        // 		}
+        // 		$data['product']= $ss;
+        // 		}
+        // print_r($ss); die();
+
+
+        // echo "<pre>"; print_r($data); die();
+
+
+        $this->load->view('common/header', $data);
+        $this->load->view('all_products');
+        $this->load->view('common/footer');
+    }
+    public function product_detail($idd)
+    {
+        $data['page_t'] = 3; // 1 for quickshop product ,2 for new arrivals, 3 for normal products
+
+        $data['page'] = 0;
+        $id = $idd;
+        // echo $id;
+        // exit;
+        $this->db->select('*');
+        $this->db->from('tbl_products');
+        $this->db->where('sku', $id);
+        // $this->db->where('is_active',1);
+        $data['products'] = $this->db->get()->row();
+        if (empty($data['products'])) {
+            $this->session->set_flashdata('emessage', 'Product not found!');
+            redirect("/", "refresh");
+            die();
+        }
+        // echo($data['products']->category);	die();
+        $cat_data = $this->db->get_where('tbl_category', array('is_active' => 1, 'id' =>    $data['products']->category))->result();
+        $data['cat_name'] = $cat_data[0]->name;
+        $data['cat_id'] = $cat_data[0]->id;
+        $subcat_data = $this->db->get_where('tbl_sub_category', array('is_active' => 1, 'id' =>    $data['products']->sub_category))->result();
+        if (!empty($subcat_data)) {
+            $data['subcat_name'] = $subcat_data[0]->name;
+            $data['subcat_id'] = $subcat_data[0]->id;
+        } else {
+            $data['subcat_name'] = '';
+            $data['subcat_id'] = '';
+        }
+        // print_r($data);
+        // exit;
+        $this->db->select('*');
+        $this->db->from('tbl_products');
+        $this->db->where('sku', $id);
+        // $this->db->where('is_active',1);
+        $d1 = $this->db->get()->row();
+        // print_r($d1);
+
+        $val_e = array(
+            'desc_e_name1' => $d1->desc_e_name1,
+            'desc_e_name2' => $d1->desc_e_name2,
+            'desc_e_name3' => $d1->desc_e_name3,
+            'desc_e_name4' => $d1->desc_e_name4,
+            'desc_e_name5' => $d1->desc_e_name5,
+            'desc_e_name6' => $d1->desc_e_name6,
+            'desc_e_name7' => $d1->desc_e_name7,
+            'desc_e_name8' => $d1->desc_e_name8,
+            'desc_e_name9' => $d1->desc_e_name9,
+            'desc_e_name10' => $d1->desc_e_name10,
+            'desc_e_name11' => $d1->desc_e_name11,
+            'desc_e_name12' => $d1->desc_e_name12,
+            'desc_e_name13' => $d1->desc_e_name13,
+            'desc_e_name14' => $d1->desc_e_name14,
+            'desc_e_name15' => $d1->desc_e_name15,
+        );
+
+        $first = array_search('Stone Shape', $val_e);
+        $deal = array_search('Center Stone Shape', $val_e);
+        $breaker = array_search('Primary Stone Shape', $val_e);
+        $eng = array_search('Eng. Ctr. Stone Shape', $val_e);
+        $eng_center = array_search('Eng. Center Stone Shape', $val_e);
+        if (!empty($first)) {
+            $col = $first;
+        } elseif (!empty($deal)) {
+            $col = $deal;
+        } elseif (!empty($breaker)) {
+            $col = $breaker;
+        } elseif (!empty($eng)) {
+            $col = $eng;
+        } else {
+            $col = $eng_center;
+        }
+        // echo $col;die();
+        if (empty($col)) {
+            $s = "";
+            $value = "";
+        } else {
+            $number = explode("desc_e_name", $col);
+            $s = "desc_e_value" . $number[1];
+            $value = $d1->$s;
+        }
+        // echo $s.$value;die();
+
+        // echo $value;
+        // die();
+
+        $state = array_search('Jewelry State', $val_e);
+        if (empty($state)) {
+            $state_row = "";
+            $state_value = "";
+        } else {
+            $state_no = explode("desc_e_name", $state);
+            $state_row = "desc_e_value" . $state_no[1];
+            $state_value = $d1->$state_row;
+        }
+
+        $eng_band_shank = array_search('Product', $val_e);
+        if (empty($eng_band_shank)) {
+            $eng_band_shank_row = "";
+            $eng_band_shank_value = "";
+        } else {
+            $eng_band_shank_no = explode("desc_e_name", $eng_band_shank);
+            $eng_band_shank_row = "desc_e_value" . $eng_band_shank_no[1];
+            $eng_band_shank_value = $d1->$eng_band_shank_row;
+        }
+
+        // echo $state_row." ".$state_value;die();
+
+        if (empty($value)) {
+            $value = "";
+        }
+
+        $sub_id = $d1->sub_category;
+
+
+
+        //   if(!empty($d1->sub_category)){
+        // 	$sub_id=$d1->sub_category;
+        // }else{
+        //   $sub_id="";
+        // }
+        if (!empty($d1->minisub_category)) {
+            $minorsub_id = $d1->minisub_category;
+        } else {
+            $minorsub_id = "";
+        }
+        if (!empty($d1->desc_e_value1)) {
+            $row2 = 'desc_e_value1';
+            $a1 = $d1->desc_e_value1;
+        } else {
+            $row2 = '';
+            $a1 = "";
+        }
+        // print_r($a1);
+        // die();
+        // echo $row2;
+        // echo $a1;die();
+        // echo $s." ".$value;
+        // echo $row2." ".$a1;
+        // echo "sku_series"." ".$d1->sku_series;
+        // echo $state_row." ".$state_value;
+        // echo $state_value;
+        // die();
+
+        $this->db->select('*');
+        $this->db->from('tbl_products');
+        $this->db->where('sku_series', $d1->sku_series);
+        $this->db->where('gdesc', $d1->gdesc);
+        // $this->db->where('category',$d1->category);
+        if ($s !== "" || $value !== "") {
+            $this->db->where($s, $value);
+        }
+        // $this->db->where($row2,$a1);
+        if (!empty($state_value)) {
+            $this->db->where($state_row, $state_value);
+        }
+        if (!empty($eng_band_shank_value)) {
+            $this->db->where($eng_band_shank_row, $eng_band_shank_value);
+        }
+        $d2 = $this->db->get();
+        // print_r($d2->row());die();
+
+        $this->db->select('*');
+        $this->db->from('tbl_products');
+        if ($s !== "" || $value !== "") {
+            $this->db->where($s, $value);
+        }
+        $this->db->where($row2, $a1);
+        // $this->db->where('is_active',1);
+        $state_dropdown = $this->db->get();
+        if (!empty($state_row)) {
+            foreach ($state_dropdown->result() as $drop_state) {
+                $state_array[] = $drop_state->$state_row;
+            }
+            if (!empty($state_array)) {
+                $state_array = array_unique($state_array);
+                sort($state_array);
+            }
+            $data['state_array'] = $state_array;
+        }
+        if (!empty($eng_band_shank_row)) {
+            foreach ($state_dropdown->result() as $drop_state) {
+                $eng_band_shank_array[] = $drop_state->$eng_band_shank_row;
+            }
+            if (!empty($eng_band_shank_array)) {
+                $eng_band_shank_array = array_unique($eng_band_shank_array);
+                sort($eng_band_shank_array);
+            }
+            $data['eng_band_shank_array'] = $eng_band_shank_array;
+        }
+
+        $data['b1'] = $d1->desc_e_name2;
+        $data['b2'] = $d1->desc_e_name3;
+        $data['b3'] = $d1->desc_e_name4;
+        $data['b4'] = $d1->desc_e_name5;
+        $data['b5'] = $d1->desc_e_name6;
+        $data['b6'] = $d1->desc_e_name7;
+        $data['b7'] = $d1->desc_e_name8;
+        $data['b8'] = $d1->desc_e_name9;
+        $data['b9'] = $d1->desc_e_name10;
+        $data['b10'] = $d1->desc_e_name11;
+
+        $i = 1;
+        foreach ($d2->result() as $d3) {
+            // print_r($d3->desc_e_value1);die();
+            if ($d1->desc_e_value1 == $d3->desc_e_value1) {
+                $c1[] = $d3->desc_e_value2;
+            }
+        }
+        $i = 1;
+        foreach ($d2->result() as $d3) {
+            if ($d1->desc_e_value1 == $d3->desc_e_value1 && $d1->desc_e_value2 == $d3->desc_e_value2) {
+                $c2[] = $d3->desc_e_value3;
+            }
+        }
+        foreach ($d2->result() as $d3) {
+            if ($d1->desc_e_value1 == $d3->desc_e_value1 && $d1->desc_e_value2 == $d3->desc_e_value2 && $d1->desc_e_value3 == $d3->desc_e_value3) {
+                $c3[] = $d3->desc_e_value4;
+            }
+        }
+        foreach ($d2->result() as $d3) {
+            if ($d1->desc_e_value1 == $d3->desc_e_value1 && $d1->desc_e_value2 == $d3->desc_e_value2 && $d1->desc_e_value3 == $d3->desc_e_value3 && $d1->desc_e_value4 == $d3->desc_e_value4) {
+                $c4[] = $d3->desc_e_value5;
+            }
+        }
+        foreach ($d2->result() as $d3) {
+            if ($d1->desc_e_value1 == $d3->desc_e_value1 && $d1->desc_e_value2 == $d3->desc_e_value2 && $d1->desc_e_value3 == $d3->desc_e_value3 && $d1->desc_e_value4 == $d3->desc_e_value4 && $d1->desc_e_value5 == $d3->desc_e_value5) {
+                $c5[] = $d3->desc_e_value6;
+            }
+        }
+        foreach ($d2->result() as $d3) {
+            if ($d1->desc_e_value1 == $d3->desc_e_value1 && $d1->desc_e_value2 == $d3->desc_e_value2 && $d1->desc_e_value3 == $d3->desc_e_value3 && $d1->desc_e_value4 == $d3->desc_e_value4 && $d1->desc_e_value5 == $d3->desc_e_value5 && $d1->desc_e_value6 == $d3->desc_e_value6) {
+                $c6[] = $d3->desc_e_value7;
+            }
+        }
+        foreach ($d2->result() as $d3) {
+            if ($d1->desc_e_value1 == $d3->desc_e_value1 && $d1->desc_e_value2 == $d3->desc_e_value2 && $d1->desc_e_value3 == $d3->desc_e_value3 && $d1->desc_e_value4 == $d3->desc_e_value4 && $d1->desc_e_value5 == $d3->desc_e_value5 && $d1->desc_e_value6 == $d3->desc_e_value6 && $d1->desc_e_value7 == $d3->desc_e_value7) {
+                $c7[] = $d3->desc_e_value8;
+            }
+        }
+        foreach ($d2->result() as $d3) {
+            if ($d1->desc_e_value1 == $d3->desc_e_value1 && $d1->desc_e_value2 == $d3->desc_e_value2 && $d1->desc_e_value3 == $d3->desc_e_value3 && $d1->desc_e_value4 == $d3->desc_e_value4 && $d1->desc_e_value5 == $d3->desc_e_value5 && $d1->desc_e_value6 == $d3->desc_e_value6 && $d1->desc_e_value7 == $d3->desc_e_value7 && $d1->desc_e_value8 == $d3->desc_e_value8) {
+                $c8[] = $d3->desc_e_value9;
+            }
+        }
+        foreach ($d2->result() as $d3) {
+            if ($d1->desc_e_value1 == $d3->desc_e_value1 && $d1->desc_e_value2 == $d3->desc_e_value2 && $d1->desc_e_value3 == $d3->desc_e_value3 && $d1->desc_e_value4 == $d3->desc_e_value4 && $d1->desc_e_value5 == $d3->desc_e_value5 && $d1->desc_e_value6 == $d3->desc_e_value6 && $d1->desc_e_value7 == $d3->desc_e_value7 && $d1->desc_e_value8 == $d3->desc_e_value8 && $d1->desc_e_value9 == $d3->desc_e_value9) {
+                $c9[] = $d3->desc_e_value10;
+            }
+        }
+        foreach ($d2->result() as $d3) {
+            if ($d1->desc_e_value1 == $d3->desc_e_value1 && $d1->desc_e_value2 == $d3->desc_e_value2 && $d1->desc_e_value3 == $d3->desc_e_value3 && $d1->desc_e_value4 == $d3->desc_e_value4 && $d1->desc_e_value5 == $d3->desc_e_value5 && $d1->desc_e_value6 == $d3->desc_e_value6 && $d1->desc_e_value7 == $d3->desc_e_value7 && $d1->desc_e_value8 == $d3->desc_e_value8 && $d1->desc_e_value9 == $d3->desc_e_value9 && $d1->desc_e_value10 == $d3->desc_e_value11) {
+                $c10[] = $d3->desc_e_value11;
+            }
+        }
+
+        // print_r($c6);die();
+        //---------------------------------------------------------------------------------
+        $this->db->select('*');
+        $this->db->from('tbl_products');
+        // $this->db->where($s,$value);
+        // if($s ==""){
+        // 	$this->db->where('sku_series_type1',$d1->sku_series_type1);
+        // }
+        $this->db->where($row2, $a1);
+        $this->db->where('is_active', 1);
+        $e41 = $this->db->get();
+        // echo $row2.$a1;die();
+
+        foreach ($e41->result() as $d31) {
+
+            $data['b11'] = $d1->desc_e_name2;
+            $data['b21'] = $d1->desc_e_name3;
+            $data['b31'] = $d1->desc_e_name4;
+            $data['b41'] = $d1->desc_e_name5;
+            $data['b51'] = $d1->desc_e_name6;
+            $data['b61'] = $d1->desc_e_name7;
+            $data['b71'] = $d1->desc_e_name8;
+            $data['b81'] = $d1->desc_e_name9;
+            $data['b91'] = $d1->desc_e_name10;
+            $data['b101'] = $d1->desc_e_name11;
+
+            $c11[] = $d31->desc_e_value2;
+            $c21[] = $d31->desc_e_value3;
+            $c31[] = $d31->desc_e_value4;
+            $c41[] = $d31->desc_e_value5;
+            $c51[] = $d31->desc_e_value6;
+            $c61[] = $d31->desc_e_value7;
+            $c71[] = $d31->desc_e_value8;
+            $c81[] = $d31->desc_e_value9;
+            $c91[] = $d31->desc_e_value10;
+            $c101[] = $d31->desc_e_value11;
+        }
+
+        if (!empty($c11)) {
+            $j11 = array_unique($c11);
+            sort($j11);
+        } else {
+            $j11 = "";
+        }
+        if (!empty($c21)) {
+            $j21 = array_unique($c21);
+            sort($j21);
+        } else {
+            $j21 = "";
+        }
+        if (!empty($c31)) {
+            $j31 = array_unique($c31);
+            sort($j31);
+        } else {
+            $j31 = "";
+        }
+        if (!empty($c41)) {
+            $j41 = array_unique($c41);
+            sort($j41);
+        } else {
+            $j41 = "";
+        }
+        if (!empty($c51)) {
+            $j51 = array_unique($c51);
+            sort($j51);
+        } else {
+            $j51 = "";
+        }
+        if (!empty($c61)) {
+            $j61 = array_unique($c61);
+            sort($j61);
+        } else {
+            $j61 = "";
+        }
+        if (!empty($c71)) {
+            $j71 = array_unique($c71);
+            sort($j71);
+        } else {
+            $j71 = "";
+        }
+        if (!empty($c81)) {
+            $j81 = array_unique($c81);
+            sort($j81);
+        } else {
+            $j81 = "";
+        }
+        if (!empty($c91)) {
+            $j91 = array_unique($c91);
+            sort($j91);
+        } else {
+            $j91 = "";
+        }
+        if (!empty($c101)) {
+            $j101 = array_unique($c101);
+            sort($j101);
+        } else {
+            $j101 = "";
+        }
+
+
+        $data['d11'] = $j11;
+        $data['d21'] = $j21;
+        $data['d31'] = $j31;
+        $data['d41'] = $j41;
+        $data['d51'] = $j51;
+        $data['d61'] = $j61;
+        $data['d71'] = $j71;
+        $data['d81'] = $j81;
+        $data['d91'] = $j91;
+        $data['d101'] = $j101;
+
+        //-------------------------------------------------------------------------------
+
+        if (!empty($c1)) {
+            $j1 = array_unique($c1);
+            sort($j1);
+        } else {
+            $j1 = "";
+        }
+        if (!empty($c2)) {
+            $j2 = array_unique($c2);
+            sort($j2);
+        } else {
+            $j2 = "";
+        }
+        if (!empty($c3)) {
+            $j3 = array_unique($c3);
+            sort($j3);
+        } else {
+            $j3 = "";
+        }
+        if (!empty($c4)) {
+            $j4 = array_unique($c4);
+            sort($j4);
+        } else {
+            $j4 = "";
+        }
+        if (!empty($c5)) {
+            $j5 = array_unique($c5);
+            sort($j5);
+        } else {
+            $j5 = "";
+        }
+        if (!empty($c6)) {
+            $j6 = array_unique($c6);
+            sort($j6);
+        } else {
+            $j6 = "";
+        }
+        if (!empty($c7)) {
+            $j7 = array_unique($c7);
+            sort($j7);
+        } else {
+            $j7 = "";
+        }
+        if (!empty($c8)) {
+            $j8 = array_unique($c8);
+            sort($j8);
+        } else {
+            $j8 = "";
+        }
+        if (!empty($c9)) {
+            $j9 = array_unique($c9);
+            sort($j9);
+        } else {
+            $j9 = "";
+        }
+        if (!empty($c10)) {
+            $j10 = array_unique($c10);
+            sort($j10);
+        } else {
+            $j10 = "";
+        }
+        $data['d1'] = $j1;
+        $data['d2'] = $j2;
+        $data['d3'] = $j3;
+        $data['d4'] = $j4;
+        $data['d5'] = $j5;
+        $data['d6'] = $j6;
+        $data['d7'] = $j7;
+        $data['d8'] = $j8;
+        $data['d9'] = $j9;
+        $data['d10'] = $j10;
+        // print_r($j10);die();
+
+        // more items to Consider
+        $cat_id = $d1->category;
+
+        $this->db->select('*');
+        $this->db->from('tbl_products');
+        $this->db->where('category', $cat_id);
+        $this->db->order_by('rand()');
+        $more_to_cons = $this->db->limit(5000)->get();
+        $product1 = [];
+        if (!empty($more_to_cons)) {
+            $i = 1;
+            foreach ($more_to_cons->result() as $data1) {
+                // print_r($data1);die();
+                $a = 0;
+                if (!empty($product1)) {
+                    foreach ($product1 as $value) {
+                        if ($data1->sku_series == $value['sku_series']) {
+                            $a = 1;
+                        }
+                    }
+                }
+                if ($a == 1) {
+                    continue;
+                } else {
+                    $product1[] = array(
+                        'id' => $data1->id,
+                        'sku' => $data1->sku,
+                        'sku_series' => $data1->sku_series,
+                        'FullySetImage1' => $data1->FullySetImage1,
+                        'gimage1' => $data1->gimage1,
+                        'image2' => $data1->FullySetImage2,
+                        'description' => $data1->description,
+                        'price' => $data1->price,
+                        'currency' => $data1->currency
+                    );
+                }
+            }
+        }
+
+        $data['more'] = $product1;
+
+
+        $this->db->select('*');
+        $this->db->from('tbl_products');
+        // $this->db->where('category',$category);
+        $this->db->order_by('rand()');
+        $random = $this->db->limit(5000)->get();
+        $p_random = [];
+        if (!empty($random)) {
+            $i = 1;
+            foreach ($random->result() as $r_data) {
+                // print_r($data1);die();
+                $a = 0;
+                if (!empty($p_random)) {
+                    foreach ($p_random as $value) {
+                        if ($r_data->sku_series == $value['sku_series']) {
+                            $a = 1;
+                        }
+                    }
+                }
+                if ($a == 1) {
+                    continue;
+                } else {
+                    $p_random[] = array(
+                        'id' => $r_data->id,
+                        'sku' => $r_data->sku,
+                        'sku_series' => $r_data->sku_series,
+                        'FullySetImage1' => $r_data->FullySetImage1,
+                        'gimage1' => $r_data->gimage1,
+                        'image2' => $r_data->FullySetImage2,
+                        'description' => $r_data->description,
+                        'price' => $r_data->price,
+                        'currency' => $r_data->currency
+                    );
+                }
+            }
+        }
+
+        $data['random'] = $p_random;
+
+
+
+
+        // print_r($data);die();
+
+        //get related products(Shoppers Also Bought)
+        // if(!empty($minorsub_id)){
+        // 	$this->db->select('*');
+        // 	$this->db->from('tbl_products');
+        // 	$this->db->group_by(array("sku_series", "sku_series_type1"));
+        // 	$this->db->where('minisub_category',$minorsub_id);
+        // 	$this->db->where('is_active',1);
+        // 	$this->db->order_by('id','DESC');
+        // 	$data['ralated_products']= $this->db->limit(5000)->get();
+        // }else {
+        // 	$this->db->select('*');
+        // 	$this->db->from('tbl_products');
+        // 	$this->db->group_by(array("sku_series", "sku_series_type1"));
+        // 	$this->db->where('sub_category',$sub_id);
+        // 	$this->db->where('is_active',1);
+        // 	$this->db->order_by('id','DESC');
+        // 	$data['ralated_products']= $this->db->limit(5000)->get();
+        // }
+
+
+
+
+
+
+        //get trendings products(Popular Products)
+
+        // if(!empty($minorsub_id)){
+        // 	$this->db->select('*');
+        // 	$this->db->from('tbl_products');
+        // 	$this->db->where('minisub_category',$minorsub_id);
+        // 	$this->db->where('is_active',1);
+        // 	$this->db->order_by('id', 'RANDOM');
+        // 	$data['trending_products']= $this->db->limit(100)->get();
+        // }else {
+        // 	$this->db->select('*');
+        // 	$this->db->from('tbl_products');
+        // 	$this->db->where('sub_category',$sub_category);
+        // 	$this->db->where('is_active',1);
+        // 	$this->db->order_by('id', 'RANDOM');
+        // 	$data['trending_products']= $this->db->limit(100)->get();
+        // }
+
+
+
+
+        $this->load->view('common/header', $data);
+        $this->load->view('product_detail');
+        $this->load->view('common/footer');
+    }
+
+    public function pro_change()
+    {
+        $this->load->helper(array('form', 'url'));
+        $this->load->library('form_validation');
+        $this->load->helper('security');
+        if ($this->input->post()) {
+            $this->form_validation->set_rules('col', 'col', 'required|xss_clean|trim');
+            $this->form_validation->set_rules('value', 'value', 'required|xss_clean|trim');
+            $this->form_validation->set_rules('sku_series', 'sku_series', 'required|xss_clean|trim');
+            $this->form_validation->set_rules('gdesc', 'gdesc', 'xss_clean|trim');
+            $this->form_validation->set_rules('desc_e_value2', 'desc_e_value2', 'required|xss_clean|trim');
+            $this->form_validation->set_rules('desc_e_value3', 'desc_e_value3', 'required|xss_clean|trim');
+            $this->form_validation->set_rules('desc_e_value4', 'desc_e_value4', 'required|xss_clean|trim');
+            $this->form_validation->set_rules('desc_e_value5', 'desc_e_value5', 'xss_clean|trim');
+            $this->form_validation->set_rules('desc_e_value6', 'desc_e_value6', 'xss_clean|trim');
+            $this->form_validation->set_rules('desc_e_value7', 'desc_e_value7', 'xss_clean|trim');
+            $this->form_validation->set_rules('desc_e_value8', 'desc_e_value8', 'xss_clean|trim');
+            $this->form_validation->set_rules('desc_e_value9', 'desc_e_value9', 'xss_clean|trim');
+            $this->form_validation->set_rules('desc_e_value10', 'desc_e_value10', 'xss_clean|trim');
+            $this->form_validation->set_rules('desc_e_value11', 'desc_e_value11', 'xss_clean|trim');
+            $this->form_validation->set_rules('dropdownName', 'dropdownName', 'xss_clean|trim'); //--------Quality Name
+            $this->form_validation->set_rules('qty', 'qty', 'xss_clean|trim');
+            $this->form_validation->set_rules('pid', 'pid', 'xss_clean|trim');
+            $this->form_validation->set_rules('para', 'para', 'xss_clean|trim'); //------- 1 for image, 0 for dropdown, 2 for jewelry State
+            $this->form_validation->set_rules('active', 'active', 'xss_clean|trim'); //-------------Shape of stone
+
+
+
+            if ($this->form_validation->run() == TRUE) {
+
+                $pid = $this->input->post('pid');
+                $qty = $this->input->post('qty');
+                $col = $this->input->post('col');
+                $para = $this->input->post('para');
+                $value = $this->input->post('value');
+                $gdesc = $this->input->post('gdesc');
+                $active = $this->input->post('active');
+                $sku_series = $this->input->post('sku_series');
+                $desc_e_value2 = $this->input->post('desc_e_value2');
+                $desc_e_value3 = $this->input->post('desc_e_value3');
+                $desc_e_value4 = $this->input->post('desc_e_value4');
+                $desc_e_value5 = $this->input->post('desc_e_value5');
+                $desc_e_value6 = $this->input->post('desc_e_value6');
+                $desc_e_value7 = $this->input->post('desc_e_value7');
+                $desc_e_value8 = $this->input->post('desc_e_value8');
+                $desc_e_value9 = $this->input->post('desc_e_value9');
+                $desc_e_value10 = $this->input->post('desc_e_value10');
+                $desc_e_value11 = $this->input->post('desc_e_value11');
+                $dropdownName = $this->input->post('dropdownName');
+
+                //----------1 for image, 0 for dropdown, 2 for jewelry state--------------
+                if ($para == 0) {
+                    $this->db->select('*');
+                    $this->db->from('tbl_products');
+                    $this->db->where('sku_series', $sku_series);
+                    $this->db->where('desc_e_value2', $desc_e_value2);
+                    $this->db->where('desc_e_value3', $desc_e_value3);
+                    $this->db->where('desc_e_value4', $desc_e_value4);
+                    $this->db->where('desc_e_value5', $desc_e_value5);
+                    $this->db->where('desc_e_value6', $desc_e_value6);
+                    $this->db->where('desc_e_value7', $desc_e_value7);
+                    $this->db->where('desc_e_value8', $desc_e_value8);
+                    $this->db->where('desc_e_value9', $desc_e_value9);
+                    $this->db->where('desc_e_value10', $desc_e_value10);
+                    $this->db->where('desc_e_value11', $desc_e_value11);
+                    $pro_data = $this->db->get()->row();
+
+                    if (empty($pro_data)) {
+                        $this->db->select('*');
+                        $this->db->from('tbl_products');
+                        $this->db->where('sku_series', $sku_series);
+                        $this->db->where('desc_e_value2', $desc_e_value2);
+                        $this->db->where('desc_e_value3', $desc_e_value3);
+                        $this->db->where('desc_e_value4', $desc_e_value4);
+                        $this->db->where('desc_e_value5', $desc_e_value5);
+                        if ($col !== 'desc_e_value2' && $col !== 'desc_e_value3' && $col !== 'desc_e_value4' && $col !== 'desc_e_value5') {
+                            $this->db->where($col, $value);
+                        }
+                        $pro_data = $this->db->get()->row();
+                    }
+
+                    $this->db->select('*');
+                    $this->db->from('tbl_products');
+                    $this->db->where('sku_series', $sku_series);
+                    $this->db->where('gdesc', $gdesc);
+                    $this->db->where($col, $value);
+                    $quality_data = $this->db->get()->row();
+                    // print_r($pro_data);die();
+                    $column_shape = "";
+                    $column_quality = "";
+                    $column_jstate = "";
+                    $column_product = "";
+                    //-----shape of stone------
+                    if ($desc_e_value2 == $active && !empty($desc_e_value2) && $col !== 'desc_e_value2') {
+                        $column_shape = 'desc_e_value2';
+                    }
+                    if ($desc_e_value3 == $active && !empty($desc_e_value3) && $col !== 'desc_e_value3') {
+                        $column_shape = 'desc_e_value3';
+                    }
+                    if ($desc_e_value4 == $active && !empty($desc_e_value4) && $col !== 'desc_e_value4') {
+                        $column_shape = 'desc_e_value4';
+                    }
+                    if ($desc_e_value5 == $active && !empty($desc_e_value5) && $col !== 'desc_e_value5') {
+                        $column_shape = 'desc_e_value5';
+                    }
+                    if ($desc_e_value6 == $active && !empty($desc_e_value6) && $col !== 'desc_e_value6') {
+                        $column_shape = 'desc_e_value6';
+                    }
+                    if ($desc_e_value7 == $active && !empty($desc_e_value7) && $col !== 'desc_e_value7') {
+                        $column_shape = 'desc_e_value7';
+                    }
+                    if ($desc_e_value8 == $active && !empty($desc_e_value8) && $col !== 'desc_e_value8') {
+                        $column_shape = 'desc_e_value8';
+                    }
+                    if ($desc_e_value9 == $active && !empty($desc_e_value9) && $col !== 'desc_e_value9') {
+                        $column_shape = 'desc_e_value9';
+                    }
+                    if ($desc_e_value10 == $active && !empty($desc_e_value10)  && $col !== 'desc_e_value10') {
+                        $column_shape = 'desc_e_value10';
+                    }
+                    //-----quality----------
+                    if ($quality_data->desc_e_name2 == 'Quality' && $col !== 'desc_e_value2') {
+                        $column_quality = 'desc_e_value2';
+                    }
+                    if ($quality_data->desc_e_name3 == 'Quality' && $col !== 'desc_e_value3') {
+                        $column_quality = 'desc_e_value3';
+                    }
+                    if ($quality_data->desc_e_name4 == 'Quality' && $col !== 'desc_e_value4') {
+                        $column_quality = 'desc_e_value4';
+                    }
+                    if ($quality_data->desc_e_name5 == 'Quality' && $col !== 'desc_e_value5') {
+                        $column_quality = 'desc_e_value5';
+                    }
+                    if ($quality_data->desc_e_name6 == 'Quality' && $col !== 'desc_e_value6') {
+                        $column_quality = 'desc_e_value6';
+                    }
+                    if ($quality_data->desc_e_name7 == 'Quality' && $col !== 'desc_e_value7') {
+                        $column_quality = 'desc_e_value7';
+                    }
+                    if ($quality_data->desc_e_name8 == 'Quality' && $col !== 'desc_e_value8') {
+                        $column_quality = 'desc_e_value8';
+                    }
+                    if ($quality_data->desc_e_name9 == 'Quality' && $col !== 'desc_e_value9') {
+                        $column_quality = 'desc_e_value9';
+                    }
+                    //------ jewelry state---------
+                    if ($quality_data->desc_e_name2 == 'Jewelry State' && $col !== 'desc_e_value2') {
+                        $column_jstate = 'desc_e_value2';
+                        $value_jstate = $desc_e_value2;
+                    }
+                    if ($quality_data->desc_e_name3 == 'Jewelry State' && $col !== 'desc_e_value3') {
+                        $column_jstate = 'desc_e_value3';
+                        $value_jstate = $desc_e_value3;
+                    }
+                    if ($quality_data->desc_e_name4 == 'Jewelry State' && $col !== 'desc_e_value4') {
+                        $column_jstate = 'desc_e_value4';
+                        $value_jstate = $desc_e_value4;
+                    }
+                    if ($quality_data->desc_e_name5 == 'Jewelry State' && $col !== 'desc_e_value5') {
+                        $column_jstate = 'desc_e_value5';
+                        $value_jstate = $desc_e_value5;
+                    }
+                    if ($quality_data->desc_e_name6 == 'Jewelry State' && $col !== 'desc_e_value6') {
+                        $column_jstate = 'desc_e_value6';
+                        $value_jstate = $desc_e_value6;
+                    }
+                    if ($quality_data->desc_e_name7 == 'Jewelry State' && $col !== 'desc_e_value7') {
+                        $column_jstate = 'desc_e_value7';
+                        $value_jstate = $desc_e_value7;
+                    }
+                    if ($quality_data->desc_e_name8 == 'Jewelry State' && $col !== 'desc_e_value8') {
+                        $column_jstate = 'desc_e_value8';
+                        $value_jstate = $desc_e_value8;
+                    }
+                    if ($quality_data->desc_e_name9 == 'Jewelry State' && $col !== 'desc_e_value9') {
+                        $column_jstate = 'desc_e_value9';
+                        $value_jstate = $desc_e_value9;
+                    }
+                    //------ Product - Engagement ring/Band/Shank---------
+                    if ($quality_data->desc_e_name2 == 'Product' && $col !== 'desc_e_value2') {
+                        $column_product = 'desc_e_value2';
+                        $value_product = $desc_e_value2;
+                    }
+                    if ($quality_data->desc_e_name3 == 'Product' && $col !== 'desc_e_value3') {
+                        $column_product = 'desc_e_value3';
+                        $value_product = $desc_e_value3;
+                    }
+                    if ($quality_data->desc_e_name4 == 'Product' && $col !== 'desc_e_value4') {
+                        $column_product = 'desc_e_value4';
+                        $value_product = $desc_e_value4;
+                    }
+                    if ($quality_data->desc_e_name5 == 'Product' && $col !== 'desc_e_value5') {
+                        $column_product = 'desc_e_value5';
+                        $value_product = $desc_e_value5;
+                    }
+                    if ($quality_data->desc_e_name6 == 'Product' && $col !== 'desc_e_value6') {
+                        $column_product = 'desc_e_value6';
+                        $value_product = $desc_e_value6;
+                    }
+                    if ($quality_data->desc_e_name7 == 'Product' && $col !== 'desc_e_value7') {
+                        $column_product = 'desc_e_value7';
+                        $value_product = $desc_e_value7;
+                    }
+                    if ($quality_data->desc_e_name8 == 'Product' && $col !== 'desc_e_value8') {
+                        $column_product = 'desc_e_value8';
+                        $value_product = $desc_e_value8;
+                    }
+                    if ($quality_data->desc_e_name9 == 'Product' && $col !== 'desc_e_value9') {
+                        $column_product = 'desc_e_value9';
+                        $value_product = $desc_e_value9;
+                    }
+                    if (empty($pro_data)) {
+                        $this->db->select('*');
+                        $this->db->from('tbl_products');
+                        $this->db->where('sku_series', $sku_series);
+                        $this->db->where($col, $value);
+                        $this->db->where('gdesc', $gdesc);
+                        if (!empty($column_shape) && !empty($active)) {
+                            $this->db->where($column_shape, $active);
+                        }
+                        if (!empty($column_quality)) {
+                            $this->db->where($column_quality, $dropdownName);
+                        }
+                        if (!empty($column_jstate)) {
+                            $this->db->where($column_jstate, $value_jstate);
+                        }
+                        if (!empty($column_product)) {
+                            $this->db->where($column_product, $value_product);
+                        }
+                        $pro_data = $this->db->get()->row();
+
+                        if (empty($pro_data)) {
+                            $this->db->select('*');
+                            $this->db->from('tbl_products');
+                            $this->db->where('sku_series', $sku_series);
+                            $this->db->where('gdesc', $gdesc);
+                            $this->db->where($col, $value);
+                            if (!empty($column_jstate)) {
+                                $this->db->where($column_jstate, $value_jstate);
+                            }
+                            if (!empty($column_product)) {
+                                $this->db->where($column_product, $value_product);
+                            }
+                            $pro_data = $this->db->get()->row();
+                        }
+                    }
+                    $this->db->select('*');
+                    $this->db->from('tbl_products');
+                    $this->db->where('sku_series', $pro_data->sku_series);
+                    $this->db->where('gdesc', $pro_data->gdesc);
+                    if (!empty($column_shape) && !empty($active)) {
+                        $this->db->where($column_shape, $active);
+                    }
+                    if (!empty($column_quality)) {
+                        $this->db->where($column_quality, $dropdownName);
+                    }
+                    if (!empty($column_jstate)) {
+                        $this->db->where($column_jstate, $value_jstate);
+                    }
+                    if (!empty($column_product)) {
+                        $this->db->where($column_product, $value_product);
+                    }
+                    $d2 = $this->db->get();
+                    // echo $column_jstate;die();
+
+                    $b = 0;
+                    $Quality = [];
+                    foreach ($d2->result() as $quality) {
+                        if (!empty($s)) {
+                            $Quality = array_merge(array('quality' . $b => $quality->$s), $Quality);
+                            // print_r($B1);
+                        }
+                        $b++;
+                    }
+                    $Quality =  json_encode(array_unique($Quality));
+                    // echo $Quality;die();
+
+                    $b = 0;
+                    $B1 = [];
+                    if ($column_jstate != 'desc_e_value2' && $column_product != 'desc_e_value2') {
+                        foreach ($d2->result() as $b111) {
+                            if (!empty($desc_e_value2)) {
+                                if ($pro_data->desc_e_value1 == $b111->desc_e_value1) {
+                                    $B1 = array_merge(array('desc_e_value2' . $b => $b111->desc_e_value2), $B1);
+                                }
+                                // print_r($B1);
+                            }
+                            $b++;
+                        }
+                        $B1 =  json_encode(array_unique($B1));
+                    } else {
+                        $B1 = "";
+                    }
+
+                    $b = 0;
+                    $B2 = [];
+                    if ($column_jstate != 'desc_e_value3' && $column_product != 'desc_e_value3') {
+                        foreach ($d2->result() as $b222) {
+                            if (!empty($desc_e_value3)) {
+                                if ($pro_data->desc_e_value1 == $b222->desc_e_value1 && $pro_data->desc_e_value2 == $b222->desc_e_value2) {
+                                    $B2 = array_merge(array('desc_e_value3' . $b => $b222->desc_e_value3), $B2);
+                                }
+                            }
+                            $b++;
+                        }
+                        $B2 =  json_encode(array_unique($B2));
+                    } else {
+                        $B2 = "";
+                    }
+
+                    $b = 0;
+                    $B3 = [];
+                    if ($column_jstate != 'desc_e_value4' && $column_product != 'desc_e_value4') {
+                        foreach ($d2->result() as $b333) {
+                            if (!empty($desc_e_value4)) {
+                                if ($pro_data->desc_e_value1 == $b333->desc_e_value1 && $pro_data->desc_e_value2 == $b333->desc_e_value2 && $pro_data->desc_e_value3 == $b333->desc_e_value3) {
+                                    $B3 = array_merge(array('desc_e_value4' . $b => $b333->desc_e_value4), $B3);
+                                }
+                            }
+                            $b++;
+                        }
+                        $B3 =  json_encode(array_unique($B3));
+                    } else {
+                        $B3 = "";
+                    }
+
+                    $b = 0;
+                    $B4 = [];
+                    if ($column_jstate != 'desc_e_value5' && $column_product != 'desc_e_value5') {
+                        foreach ($d2->result() as $b444) {
+                            if (!empty($desc_e_value5)) {
+                                if ($pro_data->desc_e_value1 == $b444->desc_e_value1 && $pro_data->desc_e_value2 == $b444->desc_e_value2 && $pro_data->desc_e_value3 == $b444->desc_e_value3 && $pro_data->desc_e_value4 == $b444->desc_e_value4) {
+                                    $B4 = array_merge(array('desc_e_value5' . $b => $b444->desc_e_value5), $B4);
+                                }
+                            }
+                            $b++;
+                        }
+                        $B4 =  json_encode(array_unique($B4));
+                    } else {
+                        $B4 = "";
+                    }
+
+                    $b = 0;
+                    $B5 = [];
+                    if ($column_jstate != 'desc_e_value6' && $column_product != 'desc_e_value6') {
+                        foreach ($d2->result() as $b555) {
+                            if (!empty($desc_e_value6)) {
+                                if ($pro_data->desc_e_value1 == $b555->desc_e_value1 && $pro_data->desc_e_value2 == $b555->desc_e_value2 && $pro_data->desc_e_value3 == $b555->desc_e_value3 && $pro_data->desc_e_value4 == $b555->desc_e_value4 && $pro_data->desc_e_value5 == $b555->desc_e_value5) {
+                                    $B5 = array_merge(array('desc_e_value6' . $b => $b555->desc_e_value6), $B5);
+                                }
+                            }
+                            $b++;
+                        }
+                        $B5 =  json_encode(array_unique($B5));
+                    } else {
+                        $B5 = "";
+                    }
+
+                    $b = 0;
+                    $B6 = [];
+                    if ($column_jstate != 'desc_e_value7' && $column_product != 'desc_e_value7') {
+                        foreach ($d2->result() as $b666) {
+                            if (!empty($desc_e_value7)) {
+                                if ($pro_data->desc_e_value1 == $b666->desc_e_value1 && $pro_data->desc_e_value2 == $b666->desc_e_value2 && $pro_data->desc_e_value3 == $b666->desc_e_value3 && $pro_data->desc_e_value4 == $b666->desc_e_value4 && $pro_data->desc_e_value5 == $b666->desc_e_value5 && $pro_data->desc_e_value6 == $b666->desc_e_value6) {
+                                    $B6 = array_merge(array('desc_e_value7' . $b => $b666->desc_e_value7), $B6);
+                                }
+                            }
+                            $b++;
+                        }
+                        $B6 =  json_encode(array_unique($B6));
+                    } else {
+                        $B6 = "";
+                    }
+
+                    $b = 0;
+                    $B7 = [];
+                    foreach ($d2->result() as $b777) {
+                        if (!empty($desc_e_value8)) {
+                            if ($pro_data->desc_e_value1 == $b777->desc_e_value1 && $pro_data->desc_e_value2 == $b777->desc_e_value2 && $pro_data->desc_e_value3 == $b777->desc_e_value3 && $pro_data->desc_e_value4 == $b777->desc_e_value4 && $pro_data->desc_e_value5 == $b777->desc_e_value5 && $pro_data->desc_e_value6 == $b777->desc_e_value6 && $pro_data->desc_e_value7 == $b777->desc_e_value7) {
+                                $B7 = array_merge(array('desc_e_value8' . $b => $b777->desc_e_value8), $B7);
+                            }
+                        }
+                        $b++;
+                    }
+                    $B7 =  json_encode(array_unique($B7));
+
+                    $b = 0;
+                    $B8 = [];
+                    foreach ($d2->result() as $b888) {
+                        if (!empty($desc_e_value9)) {
+                            if ($pro_data->desc_e_value1 == $b888->desc_e_value1 && $pro_data->desc_e_value2 == $b888->desc_e_value2 && $pro_data->desc_e_value3 == $b888->desc_e_value3 && $pro_data->desc_e_value4 == $b888->desc_e_value4 && $pro_data->desc_e_value5 == $b888->desc_e_value5 && $pro_data->desc_e_value6 == $b888->desc_e_value6 && $pro_data->desc_e_value7 == $b888->desc_e_value7 && $pro_data->desc_e_value8 == $b888->desc_e_value8) {
+                                $B8 = array_merge(array('desc_e_value9' . $b => $b888->desc_e_value9), $B8);
+                            }
+                        }
+                        $b++;
+                    }
+                    $B8 =  json_encode(array_unique($B8));
+                    $b = 0;
+                    $B9 = [];
+                    foreach ($d2->result() as $b999) {
+                        if (!empty($desc_e_value10)) {
+                            if ($pro_data->desc_e_value1 == $b999->desc_e_value1 && $pro_data->desc_e_value2 == $b999->desc_e_value2 && $pro_data->desc_e_value3 == $b999->desc_e_value3 && $pro_data->desc_e_value4 == $b999->desc_e_value4 && $pro_data->desc_e_value5 == $b999->desc_e_value5 && $pro_data->desc_e_value6 == $b999->desc_e_value6 && $pro_data->desc_e_value7 == $b999->desc_e_value7 && $pro_data->desc_e_value8 == $b999->desc_e_value8 && $pro_data->desc_e_value9 == $b999->desc_e_value9) {
+                                $B9 = array_merge(array('desc_e_value10' . $b => $b999->desc_e_value10), $B9);
+                            }
+                        }
+                        $b++;
+                    }
+                    $B9 = json_encode(array_unique($B9));
+                    $b = 0;
+                    $B10 = [];
+                    foreach ($d2->result() as $b1010) {
+                        if (!empty($desc_e_value11)) {
+                            if ($pro_data->desc_e_value1 == $b1010->desc_e_value1 && $pro_data->desc_e_value2 == $b1010->desc_e_value2 && $pro_data->desc_e_value3 == $b1010->desc_e_value3 && $pro_data->desc_e_value4 == $b1010->desc_e_value4 && $pro_data->desc_e_value5 == $b1010->desc_e_value5 && $pro_data->desc_e_value6 == $b1010->desc_e_value6 && $pro_data->desc_e_value7 == $b1010->desc_e_value7 && $pro_data->desc_e_value8 == $b1010->desc_e_value8 && $pro_data->desc_e_value9 == $b1010->desc_e_value9 && $pro_data->desc_e_value10 == $b1010->desc_e_value10) {
+                                $B10 = array_merge(array('desc_e_value11' . $b => $b1010->desc_e_value11), $B10);
+                            }
+                        }
+                        $b++;
+                    }
+                    $B10 = json_encode(array_unique($B10));
+
+
+
+
+                    $specs = [];
+                    $canbe = [];
+                    $RingSize = [];
+                    $ringsizePriceadd = 0;
+                    $this->db->select('*');
+                    $this->db->from('tbl_product_specifications');
+                    $this->db->where('product_id', $pro_data->id);
+                    $spec_dataa = $this->db->get()->row();
+                    if (!empty($spec_dataa)) {
+                        $specs = $spec_dataa->specifications;
+                        $canbe = $spec_dataa->canbesetwith;
+                        $RingSize = $spec_dataa->ringsize;
+                        $RingSizeDecode = json_decode($spec_dataa->ringsize);
+                        if (!empty($RingSizeDecode)) {
+                            foreach ($RingSizeDecode as $priceout) {
+                                if ($priceout->Size == 7) {
+                                    $ringsizePriceadd = $priceout->Price;
+                                }
+                            }
+                        }
+                    } else {
+                        $specs = [];
+                        $canbe = [];
+                        $RingSize = [];
+                        $ringsizePriceadd = 0;
+                    }
+                    $this->db->select('*');
+                    $this->db->from('tbl_price_rule');
+                    $pr_data = $this->db->get()->row();
+                    $multiplier = $pr_data->multiplier;
+                    $cost_price11 = $pr_data->cost_price1;
+                    $cost_price22 = $pr_data->cost_price2;
+                    $cost_price33 = $pr_data->cost_price3;
+                    $cost_price44 = $pr_data->cost_price4;
+                    $cost_price55 = $pr_data->cost_price5;
+                    // echo $pro_data->price;
+                    // die();
+                    if (!empty($pro_data->price)) {
+                        $cost_price = $pro_data->price + $ringsizePriceadd;
+                        // $cost_price = $cost_price;
+                        $retail = $cost_price * $multiplier;
+                        $now_price = $cost_price;
+
+                        if ($cost_price <= 500) {
+                            $cost_price2 = $cost_price * $cost_price;
+                            // $now_price= $cost_price*0.00000264018*($cost_price*2)+(-0.002220133*$cost_price)+1.950022201-1+0.95;
+                            $number = round($cost_price * ($cost_price11 * $cost_price2 + $cost_price22 * $cost_price + $cost_price33), 2);
+                            $unit = 5;
+                            $remainder = $number % $unit;
+                            $mround = ($remainder < $unit / 2) ? $number - $remainder : $number + ($unit - $remainder);
+                            $now_price = round($mround) - 1 + 0.95;
+                            // $now_price = round($mround);
+                            // echo $cost_price;
+                            // exit;
+                        }
+                        if ($cost_price > 500) {
+                            $number = round($cost_price * ($cost_price44 * $cost_price / $multiplier + $cost_price55));
+                            $unit = 5;
+                            $remainder = $number % $unit;
+                            $mround = ($remainder < $unit / 2) ? $number - $remainder : $number + ($unit - $remainder);
+                            $now_price = round($mround) - 1 + 0.95;
+                            // $now_price = round($mround);
+                            // echo $cost_price;
+                        }
+                        $retail = $retail * $qty;
+                        $now_price = $now_price * $qty;
+                        $saved = round($retail - $now_price);
+                        $dis_percent = round($saved / $retail * 100);
+                        // $respone['retail'] = round($retail, 2);
+                        $respone['retail'] = round($retail);
+                        $respone['saved'] = $saved;
+                        $respone['dis'] = $dis_percent;
+                        $respone['price'] = number_format($now_price, 2);
+                    }
+                    $val_e = array(
+                        'desc_e_name1' => $pro_data->desc_e_name1,
+                        'desc_e_name2' => $pro_data->desc_e_name2,
+                        'desc_e_name3' => $pro_data->desc_e_name3,
+                        'desc_e_name4' => $pro_data->desc_e_name4,
+                        'desc_e_name5' => $pro_data->desc_e_name5,
+                        'desc_e_name6' => $pro_data->desc_e_name6,
+                        'desc_e_name7' => $pro_data->desc_e_name7,
+                        'desc_e_name8' => $pro_data->desc_e_name8,
+                        'desc_e_name9' => $pro_data->desc_e_name9,
+                        'desc_e_name10' => $pro_data->desc_e_name10,
+                        'desc_e_name11' => $pro_data->desc_e_name11,
+                    );
+
+                    $deal = array_search('Quality', $val_e);
+                    if (!empty($deal)) {
+                        $col = $deal;
+                    } else {
+                        $col = '';
+                    }
+                    // echo $col;die();
+                    if (empty($col)) {
+                        $s = "";
+                    } else {
+                        $number = explode("desc_e_name", $col);
+                        $s = "desc_e_value" . $number[1];
+                    }
+                    $respone['data'] = true;
+                    $respone['update_pro'] = $pro_data;
+                    $respone['quality'] = $pro_data->$s;
+                    $respone['b1'] = $B1;
+                    $respone['b2'] = $B2;
+                    $respone['b3'] = $B3;
+                    $respone['b4'] = $B4;
+                    $respone['b5'] = $B5;
+                    $respone['b6'] = $B6;
+                    $respone['b7'] = $B7;
+                    $respone['b8'] = $B8;
+                    $respone['b9'] = $B9;
+                    $respone['b10'] = $B10;
+                    $respone['specs'] = $specs;
+                    $respone['canbe'] = $canbe;
+                    $respone['RingSize'] = $RingSize;
+                    if ($B1 == '[]' && $B2 == '[]' && $B3 == '[]' && $B4 == '[]' && $B5 == '[]' && $B6 == '[]' && $B7 == '[]' && $B8 == '[]' && $B9 == '[]' && $B10 == '[]') {
+                        $respone['changeThem'] = 0;
+                    } else {
+                        $respone['changeThem'] = 1;
+                    }
+                    echo json_encode($respone);
+                } elseif ($para == 1) { //
+                    // die();
+                    // echo $col." ".$value;exit;
+                    $this->db->select('*');
+                    $this->db->from('tbl_products');
+                    $this->db->where('sku_series', $sku_series);
+                    $this->db->where('desc_e_value2', $desc_e_value2);
+                    $this->db->where('desc_e_value3', $desc_e_value3);
+                    $this->db->where('desc_e_value4', $desc_e_value4);
+                    $this->db->where('desc_e_value5', $desc_e_value5);
+                    $this->db->where('desc_e_value6', $desc_e_value6);
+                    $this->db->where('desc_e_value7', $desc_e_value7);
+                    $this->db->where('desc_e_value8', $desc_e_value8);
+                    $this->db->where('desc_e_value9', $desc_e_value9);
+                    $pro_dropdown = $this->db->get();
+                    $pro_data = $pro_dropdown->row();
+
+                    if (empty($pro_data)) {
+                        $this->db->select('*');
+                        $this->db->from('tbl_products');
+                        $this->db->where('sku_series', $sku_series);
+                        $this->db->where('gdesc', $gdesc);
+                        $this->db->where($col, $value);
+                        $pro_dropdown = $this->db->get();
+                        $pro_data = $pro_dropdown->row();
+                    }
+
+                    // print_r($pro_data);exit;
+
+
+                    //-----------------------Replace all dropdowns-------------------------------------------------
+
+
+                    $val_e = array(
+                        'desc_e_name2' => $pro_data->desc_e_name2,
+                        'desc_e_name3' => $pro_data->desc_e_name3,
+                        'desc_e_name4' => $pro_data->desc_e_name4,
+                        'desc_e_name5' => $pro_data->desc_e_name5,
+                        'desc_e_name6' => $pro_data->desc_e_name6,
+                        'desc_e_name7' => $pro_data->desc_e_name7,
+                        'desc_e_name8' => $pro_data->desc_e_name8,
+                        'desc_e_name9' => $pro_data->desc_e_name9,
+                        'desc_e_name10' => $pro_data->desc_e_name10,
+                        'desc_e_name11' => $pro_data->desc_e_name11,
+                    );
+
+                    $deal = array_search('Quality', $val_e);
+                    if (!empty($deal)) {
+                        $colo = $deal;
+                    } else {
+                        $colo = $eng_center;
+                    }
+                    // echo $col;die();
+                    if (empty($col)) {
+                        $s = "";
+                    } else {
+                        $number = explode("desc_e_name", $colo);
+                        $s = "desc_e_value" . $number[1];
+                    }
+                    // // echo $dropdownName;die();
+                    $this->db->select('*');
+                    $this->db->from('tbl_products');
+                    $this->db->where('sku_series', $sku_series);
+                    $this->db->where('gdesc', $gdesc);
+                    $this->db->where($col, $value);
+                    $this->db->where($s, $dropdownName);
+                    $pro_dropdown = $this->db->get();
+                    $pro_data = $pro_dropdown->row();
+                    // print_r($pro_data); echo "hi";
+                    // echo $col." ".$value;exit;
+                    //
+                    if (empty($pro_data)) {
+                        $this->db->select('*');
+                        $this->db->from('tbl_products');
+                        $this->db->where('sku_series', $sku_series);
+                        $this->db->where('gdesc', $gdesc);
+                        $this->db->where($col, $value);
+                        $pro_dropdown = $this->db->get();
+                        $pro_data = $pro_dropdown->row();
+                    }
+
+
+                    $b = 0;
+                    $Quality = [];
+                    foreach ($pro_dropdown->result() as $quality) {
+                        if (!empty($s)) {
+                            $Quality = array_merge(array('quality' . $b => $quality->$s), $Quality);
+                            // print_r($B1);
+                        }
+                        $b++;
+                    }
+                    $Quality =  json_encode(array_unique($Quality));
+                    // echo $Quality;die();
+
+                    $b = 0;
+                    $B1 = [];
+                    foreach ($pro_dropdown->result() as $b111) {
+                        if (!empty($desc_e_value2)) {
+                            if ($pro_data->desc_e_value1 == $b111->desc_e_value1) {
+                                $B1 = array_merge(array('desc_e_value2' . $b => $b111->desc_e_value2), $B1);
+                            }
+                            // print_r($B1);
+                        }
+                        $b++;
+                    }
+                    $B1 =  json_encode(array_unique($B1));
+
+                    $b = 0;
+                    $B2 = [];
+                    foreach ($pro_dropdown->result() as $b222) {
+                        if (!empty($desc_e_value3)) {
+                            if ($pro_data->desc_e_value1 == $b222->desc_e_value1 && $pro_data->desc_e_value2 == $b222->desc_e_value2) {
+                                $B2 = array_merge(array('desc_e_value3' . $b => $b222->desc_e_value3), $B2);
+                            }
+                        }
+                        $b++;
+                    }
+                    $B2 =  json_encode(array_unique($B2));
+
+                    $b = 0;
+                    $B3 = [];
+                    foreach ($pro_dropdown->result() as $b333) {
+                        if (!empty($desc_e_value4)) {
+                            if ($pro_data->desc_e_value1 == $b333->desc_e_value1 && $pro_data->desc_e_value2 == $b333->desc_e_value2 && $pro_data->desc_e_value3 == $b333->desc_e_value3) {
+                                $B3 = array_merge(array('desc_e_value4' . $b => $b333->desc_e_value4), $B3);
+                            }
+                        }
+                        $b++;
+                    }
+                    $B3 =  json_encode(array_unique($B3));
+
+                    $b = 0;
+                    $B4 = [];
+                    foreach ($pro_dropdown->result() as $b444) {
+                        if (!empty($desc_e_value5)) {
+                            if ($pro_data->desc_e_value1 == $b444->desc_e_value1 && $pro_data->desc_e_value2 == $b444->desc_e_value2 && $pro_data->desc_e_value3 == $b444->desc_e_value3 && $pro_data->desc_e_value4 == $b444->desc_e_value4) {
+                                $B4 = array_merge(array('desc_e_value5' . $b => $b444->desc_e_value5), $B4);
+                            }
+                        }
+                        $b++;
+                    }
+                    $B4 =  json_encode(array_unique($B4));
+
+                    $b = 0;
+                    $B5 = [];
+                    foreach ($pro_dropdown->result() as $b555) {
+                        if (!empty($desc_e_value6)) {
+                            if ($pro_data->desc_e_value1 == $b555->desc_e_value1 && $pro_data->desc_e_value2 == $b555->desc_e_value2 && $pro_data->desc_e_value3 == $b555->desc_e_value3 && $pro_data->desc_e_value4 == $b555->desc_e_value4 && $pro_data->desc_e_value5 == $b555->desc_e_value5) {
+                                $B5 = array_merge(array('desc_e_value6' . $b => $b555->desc_e_value6), $B5);
+                            }
+                        }
+                        $b++;
+                    }
+                    $B5 =  json_encode(array_unique($B5));
+
+                    $b = 0;
+                    $B6 = [];
+                    foreach ($pro_dropdown->result() as $b666) {
+                        if (!empty($desc_e_value7)) {
+                            if ($pro_data->desc_e_value1 == $b666->desc_e_value1 && $pro_data->desc_e_value2 == $b666->desc_e_value2 && $pro_data->desc_e_value3 == $b666->desc_e_value3 && $pro_data->desc_e_value4 == $b666->desc_e_value4 && $pro_data->desc_e_value5 == $b666->desc_e_value5 && $pro_data->desc_e_value6 == $b666->desc_e_value6) {
+                                $B6 = array_merge(array('desc_e_value7' . $b => $b666->desc_e_value7), $B6);
+                            }
+                        }
+                        $b++;
+                    }
+                    $B6 =  json_encode(array_unique($B6));
+
+                    $b = 0;
+                    $B7 = [];
+                    foreach ($pro_dropdown->result() as $b777) {
+                        if (!empty($desc_e_value8)) {
+                            if ($pro_data->desc_e_value1 == $b777->desc_e_value1 && $pro_data->desc_e_value2 == $b777->desc_e_value2 && $pro_data->desc_e_value3 == $b777->desc_e_value3 && $pro_data->desc_e_value4 == $b777->desc_e_value4 && $pro_data->desc_e_value5 == $b777->desc_e_value5 && $pro_data->desc_e_value6 == $b777->desc_e_value6 && $pro_data->desc_e_value7 == $b777->desc_e_value7) {
+                                $B7 = array_merge(array('desc_e_value8' . $b => $b777->desc_e_value8), $B7);
+                            }
+                        }
+                        $b++;
+                    }
+                    $B7 =  json_encode(array_unique($B7));
+
+                    $b = 0;
+                    $B8 = [];
+                    foreach ($pro_dropdown->result() as $b888) {
+                        if (!empty($desc_e_value9)) {
+                            if ($pro_data->desc_e_value1 == $b888->desc_e_value1 && $pro_data->desc_e_value2 == $b888->desc_e_value2 && $pro_data->desc_e_value3 == $b888->desc_e_value3 && $pro_data->desc_e_value4 == $b888->desc_e_value4 && $pro_data->desc_e_value5 == $b888->desc_e_value5 && $pro_data->desc_e_value6 == $b888->desc_e_value6 && $pro_data->desc_e_value7 == $b888->desc_e_value7 && $pro_data->desc_e_value8 == $b888->desc_e_value8) {
+                                $B8 = array_merge(array('desc_e_value9' . $b => $b888->desc_e_value9), $B8);
+                            }
+                        }
+                        $b++;
+                    }
+                    $B8 =  json_encode(array_unique($B8));
+                    $b = 0;
+                    $B9 = [];
+                    foreach ($pro_dropdown->result() as $b999) {
+                        if (!empty($desc_e_value10)) {
+                            if ($pro_data->desc_e_value1 == $b999->desc_e_value1 && $pro_data->desc_e_value2 == $b999->desc_e_value2 && $pro_data->desc_e_value3 == $b999->desc_e_value3 && $pro_data->desc_e_value4 == $b999->desc_e_value4 && $pro_data->desc_e_value5 == $b999->desc_e_value5 && $pro_data->desc_e_value6 == $b999->desc_e_value6 && $pro_data->desc_e_value7 == $b999->desc_e_value7 && $pro_data->desc_e_value8 == $b999->desc_e_value8 && $pro_data->desc_e_value9 == $b999->desc_e_value9) {
+                                $B9 = array_merge(array('desc_e_value10' . $b => $b999->desc_e_value10), $B9);
+                            }
+                        }
+                        $b++;
+                    }
+                    $B9 = json_encode(array_unique($B9));
+                    $b = 0;
+                    $B10 = [];
+                    foreach ($pro_dropdown->result() as $b1010) {
+                        if (!empty($desc_e_value11)) {
+                            if ($pro_data->desc_e_value1 == $b1010->desc_e_value1 && $pro_data->desc_e_value2 == $b1010->desc_e_value2 && $pro_data->desc_e_value3 == $b1010->desc_e_value3 && $pro_data->desc_e_value4 == $b1010->desc_e_value4 && $pro_data->desc_e_value5 == $b1010->desc_e_value5 && $pro_data->desc_e_value6 == $b1010->desc_e_value6 && $pro_data->desc_e_value7 == $b1010->desc_e_value7 && $pro_data->desc_e_value8 == $b1010->desc_e_value8 && $pro_data->desc_e_value9 == $b1010->desc_e_value9 && $pro_data->desc_e_value10 == $b1010->desc_e_value10) {
+                                $B10 = array_merge(array('desc_e_value11' . $b => $b1010->desc_e_value11), $B10);
+                            }
+                        }
+                        $b++;
+                    }
+                    $B10 = json_encode(array_unique($B10));
+                    // print_r($B9);die();
+                    if (!empty($pro_data)) {
+                        $specs = [];
+                        $canbe = [];
+                        $RingSize = [];
+                        $ringsizePriceadd = 0;
+                        $this->db->select('*');
+                        $this->db->from('tbl_product_specifications');
+                        $this->db->where('product_id', $pro_data->id);
+                        $spec_dataa = $this->db->get()->row();
+                        if (!empty($spec_dataa)) {
+                            $specs = $spec_dataa->specifications;
+                            $canbe = $spec_dataa->canbesetwith;
+                            $RingSize = $spec_dataa->ringsize;
+                            $RingSizeDecode = json_decode($spec_dataa->ringsize);
+                            if (!empty($RingSizeDecode)) {
+                                foreach ($RingSizeDecode as $priceout) {
+                                    if ($priceout->Size == 7) {
+                                        $ringsizePriceadd = $priceout->Price;
+                                    }
+                                }
+                            }
+                        } else {
+                            $specs = [];
+                            $canbe = [];
+                            $RingSize = [];
+                            $ringsizePriceadd = 0;
+                        }
+                        $this->db->select('*');
+                        $this->db->from('tbl_price_rule');
+                        $pr_data = $this->db->get()->row();
+                        $multiplier = $pr_data->multiplier;
+                        $cost_price11 = $pr_data->cost_price1;
+                        $cost_price22 = $pr_data->cost_price2;
+                        $cost_price33 = $pr_data->cost_price3;
+                        $cost_price44 = $pr_data->cost_price4;
+                        $cost_price55 = $pr_data->cost_price5;
+                        // echo $pro_data->price;die();
+                        if (!empty($pro_data->price)) {
+                            $cost_price = $pro_data->price + $ringsizePriceadd;
+                            // $cost_price = $cost_price;
+                            $retail = $cost_price * $multiplier;
+                            $now_price = $cost_price;
+                            // echo $now_price;
+                            // exit;
+                            if ($cost_price <= 500) {
+                                $cost_price2 = $cost_price * $cost_price;
+                                // $now_price= $cost_price*0.00000264018*($cost_price*2)+(-0.002220133*$cost_price)+1.950022201-1+0.95;
+                                $number = round($cost_price * ($cost_price11 * $cost_price2 + $cost_price22 * $cost_price + $cost_price33), 2);
+                                $unit = 5;
+                                $remainder = $number % $unit;
+                                $mround = ($remainder < $unit / 2) ? $number - $remainder : $number + ($unit - $remainder);
+                                $now_price = round($mround) - 1 + 0.95;
+                                // $now_price = round($mround);
+                                // echo $cost_price;
+                                // exit;
+                            }
+                            if ($cost_price > 500) {
+                                $number = round($cost_price * ($cost_price44 * $cost_price / $multiplier + $cost_price55));
+                                $unit = 5;
+                                $remainder = $number % $unit;
+                                $mround = ($remainder < $unit / 2) ? $number - $remainder : $number + ($unit - $remainder);
+                                $now_price = round($mround) - 1 + 0.95;
+                                // $now_price = round($mround);
+                                // echo $cost_price;
+                            }
+                            $retail = $retail * $qty;
+                            $now_price = $now_price * $qty;
+                            $saved = round($retail - $now_price);
+                            $dis_percent = round($saved / $retail * 100);
+                            // $respone['retail'] = round($retail, 2);
+                            // echo $now_price;die();
+                            // $respone['retail'] = round($retail, 2);
+                            $respone['retail'] = round($retail);
+                            $respone['saved'] = $saved;
+                            $respone['dis'] = $dis_percent;
+                            $respone['price'] = number_format($now_price, 2);
+                        }
+
+                        $respone['data'] = true;
+                        $respone['update_pro'] = $pro_data;
+                        $respone['quality'] = $Quality;
+                        $respone['b1'] = $B1;
+                        $respone['b2'] = $B2;
+                        $respone['b3'] = $B3;
+                        $respone['b4'] = $B4;
+                        $respone['b5'] = $B5;
+                        $respone['b6'] = $B6;
+                        $respone['b7'] = $B7;
+                        $respone['b8'] = $B8;
+                        $respone['b9'] = $B9;
+                        $respone['b10'] = $B10;
+                        $respone['specs'] = $specs;
+                        $respone['canbe'] = $canbe;
+                        $respone['RingSize'] = $RingSize;
+                        $respone['changeThem'] = 1;
+                        echo json_encode($respone);
+                    } else {
+                        $respone['data'] = false;
+                        echo json_encode($respone);
+                    }
+                } elseif ($para == 2) {
+                    // die();
+                    // // echo $col." ".$value;exit;
+                    $this->db->select('*');
+                    $this->db->from('tbl_products');
+                    $this->db->where('sku_series', $sku_series);
+                    $this->db->where('gdesc', $gdesc);
+                    $this->db->where('desc_e_value2', $desc_e_value2);
+                    $this->db->where('desc_e_value3', $desc_e_value3);
+                    $this->db->where('desc_e_value4', $desc_e_value4);
+                    $this->db->where('desc_e_value5', $desc_e_value5);
+                    // $this->db->where('desc_e_value6',$desc_e_value6);
+                    $pro_dropdown = $this->db->get();
+                    $pro_data = $pro_dropdown->row();
+                    // print_r($pro_data);die();
+                    // $pro_data = '';
+
+                    if (empty($pro_data)) {
+                        $this->db->select('*');
+                        $this->db->from('tbl_products');
+                        $this->db->where('sku_series', $sku_series);
+                        $this->db->where('gdesc', $gdesc);
+                        $this->db->where($col, $value);
+                        $pro_dropdown = $this->db->get();
+                        $pro_data = $pro_dropdown->row();
+                    }
+                    // echo $value;
+                    // print_r($pro_data);die();
+
+                    // die();
+
+                    //-----------------------Replace all but Jewelry State dropdowns------------------------------------------
+
+                    $val_e = array(
+                        'desc_e_name2' => $pro_data->desc_e_name2,
+                        'desc_e_name3' => $pro_data->desc_e_name3,
+                        'desc_e_name4' => $pro_data->desc_e_name4,
+                        'desc_e_name5' => $pro_data->desc_e_name5,
+                        'desc_e_name6' => $pro_data->desc_e_name6,
+                        'desc_e_name7' => $pro_data->desc_e_name7,
+                        'desc_e_name8' => $pro_data->desc_e_name8,
+                        'desc_e_name9' => $pro_data->desc_e_name9,
+                        'desc_e_name10' => $pro_data->desc_e_name10,
+                        'desc_e_name11' => $pro_data->desc_e_name11,
+                    );
+
+                    $deal = array_search('Quality', $val_e);
+                    if (!empty($deal)) {
+                        $colo = $deal;
+                    } else {
+                        $colo = $eng_center;
+                    }
+
+                    $state = array_search('Jewelry State', $val_e);
+                    if (empty($state)) {
+                        $state_row = "";
+                        $state_value = "";
+                    } else {
+                        $state_no = explode("desc_e_name", $state);
+                        $state_row = "desc_e_value" . $state_no[1];
+                        $state_value = $pro_data->$state_row;
+                    }
+
+                    $eng_band_shank = array_search('Product', $val_e);
+                    if (empty($eng_band_shank)) {
+                        $eng_band_shank_row = "";
+                        $eng_band_shank_value = "";
+                    } else {
+                        $eng_band_shank_no = explode("desc_e_name", $eng_band_shank);
+                        $eng_band_shank_row = "desc_e_value" . $eng_band_shank_no[1];
+                        $eng_band_shank_value = $pro_data->$eng_band_shank_row;
+                    }
+                    // echo $state_row;die();
+                    if (empty($col)) {
+                        $s = "";
+                    } else {
+                        $number = explode("desc_e_name", $colo);
+                        $s = "desc_e_value" . $number[1];
+                    }
+                    // echo $dropdownName;die();
+                    $this->db->select('*');
+                    $this->db->from('tbl_products');
+                    $this->db->where('sku_series', $sku_series);
+                    $this->db->where('gdesc', $gdesc);
+                    $this->db->where($col, $value);                        //-----Jewelry state
+                    $this->db->where($s, $dropdownName);            //-----Quality
+                    $pro_dropdown = $this->db->get();
+                    $pro_data = $pro_dropdown->row();
+                    // print_r($pro_data); echo "hi";
+                    // echo $col." ".$dropdownName;exit;
+                    //
+                    $this->db->select('*');
+                    $this->db->from('tbl_products');
+                    $this->db->where('sku_series', $sku_series);
+                    $this->db->where('gdesc', $gdesc);
+                    $this->db->where($col, $value);
+                    $pro_dropdown = $this->db->get();
+                    if (empty($pro_data)) {
+                        $pro_data = $pro_dropdown->row();
+                    }
+
+                    $b = 0;
+                    $Quality = [];
+                    foreach ($pro_dropdown->result() as $quality) {
+                        if (!empty($s)) {
+                            $Quality = array_merge(array('quality' . $b => $quality->$s), $Quality);
+                            // print_r($B1);
+                        }
+                        $b++;
+                    }
+                    $Quality =  json_encode(array_unique($Quality));
+                    // echo $Quality;die();
+
+                    $b = 0;
+                    $B1 = [];
+                    foreach ($pro_dropdown->result() as $b111) {
+                        if (!empty($desc_e_value2) && $state_row != 'desc_e_value2'  && $eng_band_shank_row != 'desc_e_value2') {
+                            $B1 = array_merge(array('desc_e_value2' . $b => $b111->desc_e_value2), $B1);
+                            // print_r($B1);
+                        } else {
+                            $B1 = "";
+                        }
+                        $b++;
+                    }
+                    if (!empty($B1)) {
+                        sort($B1);
+                        $B1 =  json_encode(array_unique($B1));
+                    } else {
+                        $B1 = "";
+                    }
+
+                    $b = 0;
+                    $B2 = [];
+                    foreach ($pro_dropdown->result() as $b222) {
+                        if (!empty($desc_e_value3) && $state_row != 'desc_e_value3'  && $eng_band_shank_row != 'desc_e_value3') {
+                            $B2 = array_merge(array('desc_e_value3' . $b => $b222->desc_e_value3), $B2);
+                        } else {
+                            $B2 = "";
+                        }
+                        $b++;
+                    }
+                    if (!empty($B2)) {
+                        sort($B2);
+                        $B2 =  json_encode(array_unique($B2));
+                    } else {
+                        $B2 = "";
+                    }
+                    $b = 0;
+                    $B3 = [];
+                    // echo "hi";die();
+                    foreach ($pro_dropdown->result() as $b333) {
+                        if (!empty($desc_e_value4) && $state_row != 'desc_e_value4'  && $eng_band_shank_row != 'desc_e_value4') {
+                            if ($pro_data->desc_e_value1 == $b333->desc_e_value1 && $pro_data->desc_e_value2 == $b333->desc_e_value2 && $pro_data->desc_e_value3 == $b333->desc_e_value3) {
+                                $B3 = array_merge(array('desc_e_value4' . $b => $b333->desc_e_value4), $B3);
+                            }
+                        } else {
+                            $B3 = "";
+                        }
+                        $b++;
+                    }
+                    if (!empty($B3)) {
+                        sort($B3);
+                        $B3 =  json_encode(array_unique($B3));
+                    } else {
+                        $B3 = "";
+                    }
+                    $b = 0;
+                    $B4 = [];
+                    foreach ($pro_dropdown->result() as $b444) {
+                        if (!empty($desc_e_value5) && $state_row != 'desc_e_value5'  && $eng_band_shank_row != 'desc_e_value5') {
+                            $B4 = array_merge(array('desc_e_value5' . $b => $b444->desc_e_value5), $B4);
+                        } else {
+                            $B4 = "";
+                        }
+                        $b++;
+                    }
+                    if (!empty($B4)) {
+                        sort($B4);
+                        $B4 =  json_encode(array_unique($B4));
+                    } else {
+                        $B4 = "";
+                    }
+                    $b = 0;
+                    $B5 = [];
+                    foreach ($pro_dropdown->result() as $b555) {
+                        if (!empty($desc_e_value6) && $state_row != 'desc_e_value6'  && $eng_band_shank_row != 'desc_e_value6') {
+                            $B5 = array_merge(array('desc_e_value6' . $b => $b555->desc_e_value6), $B5);
+                        } else {
+                            $B5 = "";
+                        }
+                        $b++;
+                    }
+                    if (!empty($B5)) {
+                        sort($B5);
+                        $B5 =  json_encode(array_unique($B5));
+                    } else {
+                        $B5 = "";
+                    }
+                    $b = 0;
+                    $B6 = [];
+                    foreach ($pro_dropdown->result() as $b666) {
+                        if (!empty($desc_e_value7) && $state_row != 'desc_e_value7'  && $eng_band_shank_row != 'desc_e_value7') {
+                            $B6 = array_merge(array('desc_e_value7' . $b => $b666->desc_e_value7), $B6);
+                        } else {
+                            $B6 = "";
+                        }
+                        $b++;
+                    }
+                    if (!empty($B6)) {
+                        sort($B6);
+                        $B6 =  json_encode(array_unique($B6));
+                    } else {
+                        $B6 = "";
+                    }
+                    $b = 0;
+                    $B7 = [];
+                    foreach ($pro_dropdown->result() as $b777) {
+                        if (!empty($desc_e_value8) && $state_row != 'desc_e_value8'  && $eng_band_shank_row != 'desc_e_value8') {
+                            $B7 = array_merge(array('desc_e_value8' . $b => $b777->desc_e_value8), $B7);
+                        } else {
+                            $B7 = "";
+                        }
+                        $b++;
+                    }
+                    if (!empty($B7)) {
+                        sort($B7);
+                        $B7 =  json_encode(array_unique($B7));
+                    } else {
+                        $B7 = "";
+                    }
+                    $b = 0;
+                    $B8 = [];
+                    foreach ($pro_dropdown->result() as $b888) {
+                        if (!empty($desc_e_value9) && $state_row != 'desc_e_value9'  && $eng_band_shank_row != 'desc_e_value9') {
+                            $B8 = array_merge(array('desc_e_value9' . $b => $b888->desc_e_value9), $B8);
+                        } else {
+                            $B8 = "";
+                        }
+                        $b++;
+                    }
+                    if (!empty($B8)) {
+                        $B8 =  json_encode(array_unique($B8));
+                    } else {
+                        $B8 = "";
+                    }
+                    $b = 0;
+                    $B9 = [];
+                    foreach ($pro_dropdown->result() as $b999) {
+                        if (!empty($desc_e_value10) && $state_row != 'desc_e_value10'  && $eng_band_shank_row != 'desc_e_value10') {
+                            $B9 = array_merge(array('desc_e_value10' . $b => $b999->desc_e_value10), $B9);
+                        } else {
+                            $B9 = "";
+                        }
+                        $b++;
+                    }
+                    if (!empty($B9)) {
+                        $B9 =  json_encode(array_unique($B9));
+                    } else {
+                        $B9 = "";
+                    }
+                    // print_r($B9);die();
+                    //-----------------------------------------------------------------------------------------------
+                    if (!empty($pro_data)) {
+                        $specs = [];
+                        $canbe = [];
+                        $RingSize = [];
+                        $ringsizePriceadd = 0;
+                        $this->db->select('*');
+                        $this->db->from('tbl_product_specifications');
+                        $this->db->where('product_id', $pro_data->id);
+                        $spec_dataa = $this->db->get()->row();
+                        if (!empty($spec_dataa)) {
+                            $specs = $spec_dataa->specifications;
+                            $canbe = $spec_dataa->canbesetwith;
+                            $RingSize = $spec_dataa->ringsize;
+                            $RingSizeDecode = json_decode($spec_dataa->ringsize);
+                            if (!empty($RingSizeDecode)) {
+                                foreach ($RingSizeDecode as $priceout) {
+                                    if ($priceout->Size == 7) {
+                                        $ringsizePriceadd = $priceout->Price;
+                                    }
+                                }
+                            }
+                        } else {
+                            $specs = [];
+                            $canbe = [];
+                            $RingSize = [];
+                            $ringsizePriceadd = 0;
+                        }
+                        $this->db->select('*');
+                        $this->db->from('tbl_price_rule');
+                        $pr_data = $this->db->get()->row();
+                        $multiplier = $pr_data->multiplier;
+                        $cost_price11 = $pr_data->cost_price1;
+                        $cost_price22 = $pr_data->cost_price2;
+                        $cost_price33 = $pr_data->cost_price3;
+                        $cost_price44 = $pr_data->cost_price4;
+                        $cost_price55 = $pr_data->cost_price5;
+                        // echo $pro_data->price;die();
+                        if (!empty($pro_data->price)) {
+                            $cost_price = $pro_data->price + $ringsizePriceadd;
+                            // $cost_price = $cost_price;
+                            $retail = $cost_price * $multiplier;
+                            $now_price = $cost_price;
+                            // echo $now_price;
+                            // exit;
+                            if ($cost_price <= 500) {
+                                $cost_price2 = $cost_price * $cost_price;
+                                // $now_price= $cost_price*0.00000264018*($cost_price*2)+(-0.002220133*$cost_price)+1.950022201-1+0.95;
+                                $number = round($cost_price * ($cost_price11 * $cost_price2 + $cost_price22 * $cost_price + $cost_price33), 2);
+                                $unit = 5;
+                                $remainder = $number % $unit;
+                                $mround = ($remainder < $unit / 2) ? $number - $remainder : $number + ($unit - $remainder);
+                                $now_price = round($mround) - 1 + 0.95;
+                                // $now_price = round($mround);
+                                // echo $cost_price;
+                                // exit;
+                            }
+                            if ($cost_price > 500) {
+                                $number = round($cost_price * ($cost_price44 * $cost_price / $multiplier + $cost_price55));
+                                $unit = 5;
+                                $remainder = $number % $unit;
+                                $mround = ($remainder < $unit / 2) ? $number - $remainder : $number + ($unit - $remainder);
+                                $now_price = round($mround) - 1 + 0.95;
+                                // $now_price = round($mround);
+                                // echo $cost_price;
+                            }
+                            $retail = $retail * $qty;
+                            $now_price = $now_price * $qty;
+                            $saved = round($retail - $now_price);
+                            $dis_percent = round($saved / $retail * 100);
+                            // $respone['retail'] = round($retail, 2);
+                            // echo $now_price;die();
+                            // $respone['retail'] = round($retail, 2);
+                            $respone['retail'] = round($retail);
+                            $respone['saved'] = $saved;
+                            $respone['dis'] = $dis_percent;
+                            $respone['price'] = number_format($now_price, 2);
+                        }
+
+                        $respone['data'] = true;
+                        $respone['update_pro'] = $pro_data;
+                        $respone['quality'] = $Quality;
+                        $respone['b1'] = $B1;
+                        $respone['b2'] = $B2;
+                        $respone['b3'] = $B3;
+                        $respone['b4'] = $B4;
+                        $respone['b5'] = $B5;
+                        $respone['b6'] = $B6;
+                        $respone['b7'] = $B7;
+                        $respone['b8'] = $B8;
+                        $respone['b9'] = $B9;
+                        $respone['specs'] = $specs;
+                        $respone['canbe'] = $canbe;
+                        $respone['RingSize'] = $RingSize;
+                        $respone['changeThem'] = 1;
+                        echo json_encode($respone);
+                    } else {
+                        $respone['data'] = false;
+                        echo json_encode($respone);
+                    }
+                }
+            } else {
+
+                $respone['data'] = false;
+                $respone['data_message'] = validation_errors();
+                echo json_encode($respone);
+            }
+        } else {
+            $respone['data'] = false;
+            $respone['data_message'] = "Please insert some data, No data available";
+            echo json_encode($respone);
+        }
+    }
+
+
+    public function sub_category($idd)
+    {
+
+        $id = $idd;
+
+        $this->db->select('*');
+        $this->db->from('tbl_sub_category');
+        $this->db->where('category', $id);
+        $this->db->where('is_active', 1);
+        $this->db->order_by('seq', 'ASC');
+        $data['sub_category'] = $this->db->get();
+
+
+        //get name Category
+        $this->db->select('*');
+        $this->db->from('tbl_category');
+        $this->db->where('id', $id);
+        $cate_da = $this->db->get()->row();
+        if (!empty($cate_da)) {
+            $cate_name = $cate_da->name;
+            $cate_description = $cate_da->description;
+        } else {
+            $cate_name = "";
+            $cate_description = "";
+        }
+
+        $data['category_id'] = $id;
+        $data['category_name'] = $cate_name;
+        $data['cate_description'] = $cate_description;
+
+        $this->load->view('common/header', $data);
+        $this->load->view('sub_category');
+        $this->load->view('common/footer');
+    }
+
+    public function minor_sub_products($idd)
+    {
+
+        $id = base64_decode($idd);
+        $data['subcategory_id'] = $idd;
+
+        $this->db->select('*');
+        $this->db->from('tbl_minisubcategory');
+        $this->db->where('subcategory', $id);
+        $this->db->where('is_active', 1);
+        $this->db->order_by('seq', 'ASC');
+        $data['minorsub_category'] = $this->db->get();
+
+        //get subcategory ans category name
+        $this->db->select('*');
+        $this->db->from('tbl_sub_category');
+        $this->db->where('id', $id);
+        // $this->db->where('is_active',1);
+        $subcate_da = $this->db->get()->row();
+        if (!empty($subcate_da)) {
+            $subcategory_name = $subcate_da->name;
+            $category_id = $subcate_da->category;
+
+            //get name Category
+            $this->db->select('*');
+            $this->db->from('tbl_category');
+            $this->db->where('id', $category_id);
+            $cate_da = $this->db->get()->row();
+            if (!empty($cate_da)) {
+                $cate_name = $cate_da->name;
+            } else {
+                $cate_name = "";
+            }
+        } else {
+            $category_id = "";
+            $cate_name = "N/A";
+            $subcategory_name = "N/A";
+        }
+
+
+
+
+        $data['category_id'] = $category_id;
+        $data['category_name'] = $cate_name;
+        $data['subcategory_name'] = $subcategory_name;
+
+        $this->load->view('common/header', $data);
+        $this->load->view('minorsub_category');
+        $this->load->view('common/footer');
+    }
+    // public function checkout()
+    // 	{
+    // 			$this->load->view('common/header');
+    // 			$this->load->view('checkout');
+    // 			$this->load->view('common/footer');
+    //
+    // 	}
+
+
+
+
+    public function checkout_af()
+
+    {
+
+
+        $selected_address = $this->input->get('addr');
+
+        $user_id = $this->session->userdata('user_id');
+
+        $this->db->select('*');
+        $this->db->from('tbl_cart');
+        $this->db->where('user_id', $user_id);
+        $data['cart_data'] = $this->db->get();
+
+        $data['address_id'] = base64_decode($selected_address);
+        $data['af'] = 1;
+
+        // echo $selected_address;
+        // 															echo 	$this->session->flashdata('data');
+        // 															 echo $this->session->flashdata('order_id');
+        // 															echo  $this->session->flashdata('amn');
+        // 															 echo $this->session->flashdata('return_url');
+        // 															 echo $this->session->flashdata('surl');
+        // 															 echo $this->session->flashdata('furl');
+        // 															 echo $this->session->flashdata('currency_code');
+        //
+        // die();
+        $this->load->view('common/header', $data);
+        $this->load->view('checkout');
+        $this->load->view('common/footer');
+    }
+
+
+
+    public function register()
+    {
+        $this->load->view('common/header');
+        $this->load->view('register');
+        $this->load->view('common/footer');
+    }
+    // public function cart()
+    // 	{
+    //
+    // 			$this->db->select('*');
+    // 			$this->db->from('tbl_cart');
+    // 			//$this->db->where('',);
+    // 			$data['cart']= $this->db->get();
+    //
+    // 			$this->load->view('common/header',$data);
+    // 			$this->load->view('cart');
+    // 			$this->load->view('common/footer');
+    //
+    // 	}
+
+
+    public function cart()
+    {
+
+        // $cart_page= $this->input->get('cart_page');
+        // $id = base64_decode($idd);
+
+
+        // if(!empty($cart_page) && $cart_page == 1){
+        // $cart_page= $cart_page;
+        // }else{
+        // $cart_page= 0;
+        // }
+
+        if (!empty($this->session->userdata('user_id'))) {
+
+            $user_id =  $this->session->userdata('usersid');
+
+            $this->db->select('*');
+            $this->db->from('tbl_cart');
+            //$this->db->where('',);
+            $data['cart'] = $this->db->get();
+
+            $this->load->view('common/header', $data);
+            $this->load->view('cart');
+            $this->load->view('common/footer');
+        } else {
+
+            // $data['cart_page']= $cart_page;
+            $data['data'] = true;
+
+            $this->load->view('common/header', $data);
+            $this->load->view('local_cart');
+            $this->load->view('common/footer');
+        }
+    }
+
+    public function wishlist()
+    {
+        if (!empty($this->session->userdata('user_id'))) {
+            $this->db->select('*');
+            $this->db->from('tbl_wishlist');
+            $this->db->where('user_id', $this->session->userdata('user_id'));
+            $data['wishlist_data'] = $this->db->get();
+            $data['wishlistCheck'] = $data['wishlist_data']->row();
+            $this->load->view('common/header', $data);
+            $this->load->view('wishlist');
+            $this->load->view('common/footer');
+        } else {
+            redirect("/");
+        }
+    }
+
+
+    public function add_quantity_data($t, $iw = "")
+
+    {
+
+        if (!empty($this->session->userdata('user_name'))) {
+
+            $this->load->helper(array('form', 'url'));
+            $this->load->library('form_validation');
+            $this->load->helper('security');
+            if ($this->input->post()) {
+
+                // print_r($this->input->post());
+                // exit;
+                $this->form_validation->set_rules('quantity', 'quantity', 'required|xss_clean|trim');
+                if ($this->form_validation->run() == TRUE)
+                // {			echo 'hi';exit;
+                {
+                    $qty = $this->input->post('quantity');
+                    $cid = $this->session->userdata('user_id');
+                    $idw = base64_decode($iw);
+                    $stuller_pro_id = $this->input->get('stuller');
+                    if (!empty($stuller_pro_id)) {
+                        $stuller_pro_idw = base64_decode($stuller_pro_id);
+                    } else {
+                        $stuller_pro_idw = "";
+                    }
+
+
+                    $typ = base64_decode($t);
+
+                    if ($qty <= 0) {
+                        $this->session->set_flashdata('emessage', 'Product quantity should be greater than 0.');
+                        redirect($_SERVER['HTTP_REFERER']);
+                    }
+
+
+                    if ($typ == 1) {
+
+                        $data_insert = array(
+                            'quantity' => $qty,
+                            'user_id' => $cid,
+                            'product_id' => $idw,
+
+                        );
+
+
+                        $last_id = $this->base_model->insert_table("tbl_cart", $data_insert, 1);
+                    }
+                    if ($typ == 2) {
+
+                        $idw = base64_decode($iw);
+
+
+                        $data_insert = array(
+                            'quantity' => $qty,
+
+                        );
+
+                        if (empty($stuller_pro_idw)) {
+                            $this->db->where('product_id', $idw);
+                            $last_id = $this->db->update('tbl_cart', $data_insert);
+                        } else {
+                            $this->db->where('stuller_pro_id', $stuller_pro_idw);
+                            $last_id = $this->db->update('tbl_cart', $data_insert);
+                        }
+                    }
+
+
+                    if ($last_id != 0) {
+
+                        $this->session->set_flashdata('smessage', 'Quantity updated successfully');
+
+                        redirect("Home/cart", "refresh");
+                    } else {
+
+                        $this->session->set_flashdata('emessage', 'Sorry error occured');
+                        redirect($_SERVER['HTTP_REFERER']);
+                    }
+                } else {
+
+                    $this->session->set_flashdata('emessage', validation_errors());
+                    redirect($_SERVER['HTTP_REFERER']);
+                }
+            } else {
+
+                $this->session->set_flashdata('emessage', 'Please insert some data, No data available');
+                redirect($_SERVER['HTTP_REFERER']);
+            }
+        } else {
+
+            redirect("login/admin_login", "refresh");
+        }
+    }
+
+
+    // 	public function add_quantity_data($t,$iw="")
+    //
+    // 					{
+    //
+    // 						if(!empty($this->session->userdata('user_name'))){
+    //
+    //
+    // 				$this->load->helper(array('form', 'url'));
+    // 				$this->load->library('form_validation');
+    // 				$this->load->helper('security');
+    // 				if($this->input->post())
+    // 				{
+    // 					// print_r($this->input->post());
+    // 					// exit;
+    // 			$this->form_validation->set_rules('quantity', 'quantity', 'required|xss_clean|trim');
+    // 					if($this->form_validation->run()== TRUE)
+    // 					{
+    // 						$quan=$this->input->post('quantity');
+    // 						$cid = $this->session->userdata('user_id');
+    // 					$idw=base64_decode($iw);
+    //
+    // 				$typ=base64_decode($t);
+    //
+    // 				// echo $typ;exit;
+    //
+    // 			if($typ==1){
+    //
+    // 				$data_insert = array(
+    // 									'quantity'=>$quan,
+    // 									'user_id'=>$cid,
+    // 									'product_id'=>$idw
+    //
+    // 									);
+    //
+    // 				$last_id=$this->base_model->insert_table("tbl_cart",$data_insert,1) ;
+    //
+    //
+    //
+    // 													if($last_id!=0){
+    //
+    // 													$this->session->set_flashdata('smessage','Data inserted successfully');
+    // 													//echo "saved";
+    // 													redirect("Home/cart","refresh");
+    //
+    // 																	}
+    //
+    // 																	else
+    //
+    // 																	{
+    // 																		//echo('items left');
+    //
+    // 															 $this->session->set_flashdata('emessage','Only '.$invent.' items left');
+    // 																 redirect($_SERVER['HTTP_REFERER']);
+    //
+    //
+    // 																	}
+    // }
+    //
+    //
+    // 					}
+    // 				else{
+    //
+    // 			$this->session->set_flashdata('emessage',validation_errors());
+    // 			redirect($_SERVER['HTTP_REFERER']);
+    //
+    // 				}
+    //
+    // 				}
+    // 			else{
+    //
+    // 			$this->session->set_flashdata('emessage','Please insert some data, No data available');
+    // 			redirect($_SERVER['HTTP_REFERER']);
+    //
+    // 			}
+    // 			}
+    // 			else{
+    //
+    // 			redirect("login/admin_login","refresh");
+    //
+    //
+    // 			}
+    //
+    // 			}
+
+
+
+
+    public function add_address()
+    {
+        if (!empty($this->session->userdata('user_id'))) {
+            $user_id = $this->session->userdata('user_id');
+            $this->db->select('*');
+            $this->db->from('tbl_user_address');
+            $this->db->where('user_id', $user_id);
+            $data['user_addr_data'] = $this->db->get();
+            $this->db->select('*');
+            $this->db->from('tbl_country');
+            // $this->db->where('is_active', 1);
+            $data['country_data'] = $this->db->get();
+
+            // die();
+            $this->load->view('common/header', $data);
+            $this->load->view('add_address');
+            $this->load->view('common/footer');
+        } else {
+            redirect("Home/register", "refresh");
+        }
+    }
+
+
+    public function contact_us()
+    {
+        $data['contact_data'] = $this->db->get_where('tbl_contact_us_page', array('is_active' => 1))->result();
+
+        $this->load->view('common/header', $data);
+        $this->load->view('contact_us');
+        $this->load->view('common/footer');
+    }
+    public function faq()
+    {
+        // $data['contact_data'] = $this->db->get_where('tbl_contact_us_page', array('is_active'=> 1))->result();
+        $this->db->select('*');
+        $this->db->from('tbl_faq_category');
+        $this->db->where('is_active', 1);
+        $this->db->order_by('sequence', 'asc');
+        $data['faq_category_data'] = $this->db->get();
+
+        $this->db->select('*');
+        $this->db->from('tbl_faq_category');
+        $this->db->where('is_active', 1);
+        $this->db->order_by('sequence', 'asc');
+        $data['faq_category_data2'] = $this->db->get();
+
+        $this->load->view('common/header', $data);
+        $this->load->view('faq');
+        $this->load->view('common/footer');
+    }
+
+
+    //add contact process
+    public function add_contact_process()
+    {
+
+        $this->load->helper(array('form', 'url'));
+        $this->load->library('form_validation');
+        $this->load->helper('security');
+        if ($this->input->post()) {
+
+
+            $this->form_validation->set_rules('fname', 'fname', 'required|xss_clean|trim');
+            $this->form_validation->set_rules('lname', 'lname', 'required|xss_clean|trim');
+            $this->form_validation->set_rules('email', 'email', 'required|xss_clean|valid_email|trim');
+            $this->form_validation->set_rules('phone', 'phone', 'xss_clean|trim');
+            $this->form_validation->set_rules('message', 'message', 'required|xss_clean|trim');
+
+            if ($this->form_validation->run() == TRUE) {
+
+                $fname = $this->input->post('fname');
+                $lname = $this->input->post('lname');
+                $email = $this->input->post('email');
+                $phone = $this->input->post('phone');
+                $message = $this->input->post('message');
+                // $user_id=$this->input->post('user_id');
+
+                $ip = $this->input->ip_address();
+                date_default_timezone_set("Asia/Calcutta");
+                $cur_date = date("Y-m-d H:i:s");
+
+
+
+
+                $recaptchaResponse = trim($this->input->post('g-recaptcha-response'));
+
+                $userIp =  $ip;
+
+                $secret = "6LeDYngaAAAAAB1AU0hanfWa6uoG9ABELXmZJzoa";
+
+                $url = "https://www.google.com/recaptcha/api/siteverify?secret=" . $secret . "&response=" . $recaptchaResponse . "&remoteip=" . $userIp;
+
+                $ch = curl_init();
+                curl_setopt($ch, CURLOPT_URL, $url);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+                $output = curl_exec($ch);
+                curl_close($ch);
+                $status = json_decode($output, true);
+
+                if ($status['success']) {
+
+
+                    // $user_id = $this->session->userdata('usersid');
+                    $data_insert = array(
+                        'fname' => $fname,
+                        'lname' => $lname,
+                        'email' => $email,
+                        'phone' => $phone,
+                        'message' => $message,
+
+                        'ip' => $ip,
+                        'date' => $cur_date
+
+                    );
+
+
+
+
+
+                    $last_id = $this->base_model->insert_table("tbl_contact", $data_insert, 1);
+
+
+
+
+                    if ($last_id != 0) {
+
+                        $this->session->set_flashdata('smessage', 'Thankyou for contacting us. We will get back to you.');
+
+                        redirect("Home/contact_us", "refresh");
+                    } else {
+
+                        $this->session->set_flashdata('emessage', 'Sorry error occured');
+                        redirect($_SERVER['HTTP_REFERER']);
+                    }
+                } else {
+
+                    $this->session->set_flashdata('emessage', 'Failed to validate reCAPTCHA.');
+                    redirect($_SERVER['HTTP_REFERER']);
+                }
+            } else {
+
+                $this->session->set_flashdata('emessage', validation_errors());
+                redirect($_SERVER['HTTP_REFERER']);
+            }
+        } else {
+
+            $this->session->set_flashdata('emessage', 'Please insert some data, No data available');
+            redirect($_SERVER['HTTP_REFERER']);
+        }
+    }
+
+
+    public function add_new_address()
+
+    {
+
+        $this->load->helper(array('form', 'url'));
+        $this->load->library('form_validation');
+        $this->load->helper('security');
+        if ($this->input->post()) {
+            // print_r($this->input->post());
+            // exit;
+            $this->form_validation->set_rules('address', 'address', 'required|xss_clean|trim');
+            $this->form_validation->set_rules('country_id', 'country_id', 'required|xss_clean|trim');
+            $this->form_validation->set_rules('state', 'state', 'required|xss_clean|trim');
+            $this->form_validation->set_rules('city', 'city', 'required|xss_clean|trim');
+            $this->form_validation->set_rules('zipcode', 'zipcode', 'required|xss_clean|trim');
+            $this->form_validation->set_rules('customer_phone', 'customer_phone', 'required|xss_clean|trim');
+
+            if ($this->form_validation->run() == TRUE) {
+                $address = $this->input->post('address');
+                $country_id = $this->input->post('country_id');
+                $state = $this->input->post('state');
+                $city = $this->input->post('city');
+                $zipcode = $this->input->post('zipcode');
+                $customer_phone = $this->input->post('customer_phone');
+
+                $user_id = $this->session->userdata('user_id');
+
+
+
+                $data_insert = array(
+                    'user_id' => $user_id,
+                    'customer_phone' => $customer_phone,
+                    'address' => $address,
+                    'country_id' => $country_id,
+                    'state' => $state,
+                    'town_city' => $city,
+                    'postal_code' => $zipcode,
+
+                );
+
+                $last_id = $this->base_model->insert_table("tbl_user_address", $data_insert, 1);
+            }
+
+
+            if ($last_id != 0) {
+
+                $this->session->set_flashdata('smessage', 'Address added Successfully.');
+
+                // redirect($_SERVER['HTTP_REFERER']);
+                redirect('Home/add_address');
+            } else {
+
+                $this->session->set_flashdata('emessage', 'Sorry error occured');
+                redirect($_SERVER['HTTP_REFERER']);
+            }
+        } else {
+
+            $this->session->set_flashdata('emessage', validation_errors());
+            redirect($_SERVER['HTTP_REFERER']);
+        }
+    }
+
+
+
+
+
+    public function ask_question()
+
+    {
+
+        $this->load->helper(array('form', 'url'));
+        $this->load->library('form_validation');
+        $this->load->helper('security');
+        if ($this->input->post()) {
+            // print_r($this->input->post());
+            // exit;
+            $this->form_validation->set_rules('name', 'name', 'required|xss_clean|trim');
+            $this->form_validation->set_rules('email', 'email', 'required|xss_clean|trim');
+            $this->form_validation->set_rules('phone', 'phone', 'xss_clean|trim');
+            $this->form_validation->set_rules('query', 'query', 'required|xss_clean|trim');
+
+            if ($this->form_validation->run() == TRUE) {
+                $name = $this->input->post('name');
+                $email = $this->input->post('email');
+                $phone = $this->input->post('phone');
+                $query = $this->input->post('query');
+                $product_id = $this->input->post('product_id');
+
+                $user_id = $this->session->userdata('user_id');
+
+                $ip = $this->input->ip_address();
+                date_default_timezone_set("Asia/Calcutta");
+                $cur_date = date("Y-m-d H:i:s");
+
+
+                $recaptchaResponse = trim($this->input->post('g-recaptcha-response'));
+
+                $userIp = $ip;
+
+                $secret = "6LeDYngaAAAAAB1AU0hanfWa6uoG9ABELXmZJzoa";
+
+                $url = "https://www.google.com/recaptcha/api/siteverify?secret=" . $secret . "&response=" . $recaptchaResponse . "&remoteip=" . $userIp;
+
+                $ch = curl_init();
+                curl_setopt($ch, CURLOPT_URL, $url);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+                $output = curl_exec($ch);
+                curl_close($ch);
+                $status = json_decode($output, true);
+
+                if ($status['success']) {
+
+                    $data_insert = array(
+                        'name' => $name,
+                        'email' => $email,
+                        'phone' => $phone,
+                        'query' => $query,
+                        'product_id' => $product_id,
+
+                        'ip' => $ip,
+                        'date' => $cur_date,
+
+                    );
+
+                    $last_id = $this->base_model->insert_table("tbl_ask_questions", $data_insert, 1);
+
+                    // }
+
+
+                    if ($last_id != 0) {
+
+                        $this->session->set_flashdata('smessage', 'Question Submitted Successfully.');
+
+                        redirect($_SERVER['HTTP_REFERER']);
+                        // redirect('Home/add_address');
+                    } else {
+
+                        $this->session->set_flashdata('emessage', 'Sorry error occured');
+                        redirect($_SERVER['HTTP_REFERER']);
+                    }
+                } else {
+
+                    $this->session->set_flashdata('emessage', 'Failed to validate reCAPTCHA.');
+                    redirect($_SERVER['HTTP_REFERER']);
+                }
+            } else {
+
+                $this->session->set_flashdata('emessage', validation_errors());
+                redirect($_SERVER['HTTP_REFERER']);
+            }
+        }
+    }
+
+
+
+    //order place start
+    public function  affrim_place_order()
+    {
+        $this->load->helper(array('form', 'url'));
+        $this->load->library('form_validation');
+        $this->load->helper('security');
+        if ($this->input->post()) {
+            $this->form_validation->set_rules('addresss_id', 'addresss_id', 'xss_clean|trim');
+            // $this->form_validation->set_rules('payment_type', 'payment_type', 'xss_clean|trim');
+            $this->form_validation->set_rules('applied_promocode', 'applied_promocode', 'xss_clean|trim');
+
+
+            if ($this->form_validation->run() == TRUE) {
+
+                $payment_type = 2;
+                // echo 	$address_id=$this->input->post('addresss_id'); die();
+                $address_id = $this->input->post('addresss_id');
+
+                $applied_promocode = $this->input->post('applied_promocode');
+                // $page=$this->input->post('page');
+
+                $user_id = $this->session->userdata('user_id');
+                $ip = $this->input->ip_address();
+                date_default_timezone_set("Asia/Calcutta");
+                $cur_date = date("Y-m-d H:i:s");
+
+                $totalAmount = 0;
+                $txnid =  substr(hash('sha256', mt_rand() . microtime()), 0, 20);
+
+                $promocode_id = "";
+                if (!empty($applied_promocode)) {
+                    $this->db->select('*');
+                    $this->db->from('tbl_promocode');
+                    $this->db->where('promo_code', $applied_promocode);
+                    $this->db->where('is_active', 1);
+                    $promocode_da = $this->db->get()->row();
+
+                    if (!empty($promocode_da)) {
+                        $promocode_id = $promocode_da->id;
+                    } else {
+                        $promocode_id = "";
+                    }
+                } else {
+                    $promocode_id = "";
+                }
+
+
+
+                if ($payment_type == 2) {
+
+
+                    // if($page != 0){
+                    // 			$this->db->select('*');
+                    // 			$this->db->from('tbl_cart');
+                    // 			$this->db->where('user_id',$user_id);
+                    // 			$this->db->where('product_id',$page);
+                    // 			$cart_da= $this->db->get();
+                    // }else {
+                    $this->db->select('*');
+                    $this->db->from('tbl_cart');
+                    $this->db->where('user_id', $user_id);
+                    $cart_da = $this->db->get();
+                    // }
+
+
+
+                    if (!empty($cart_da)) {
+                        // echo "f"; echo '<pre>'; print_r($cart_da->result()); die();
+                        $i = 1;
+                        foreach ($cart_da->result() as $data) {
+
+                            $product_id = $data->product_id;
+                            $quantity = $data->quantity;
+
+                            $inventory = 0;
+                            $status = "";
+
+                            //get product sku start
+
+
+                            if (empty($data->stuller_pro_id)) {
+
+                                $this->db->select('*');
+                                $this->db->from('tbl_products');
+                                $this->db->where('id', $product_id);
+                                $this->db->where('is_active', 1);
+                                $pro_da = $this->db->get()->row();
+                            } else {
+                                $this->db->select('*');
+                                $this->db->from('tbl_quickshop_products');
+                                $this->db->where('product_id', $data->stuller_pro_id);
+                                $this->db->where('is_active', 1);
+                                $pro_da = $this->db->get()->row();
+                            }
+
+
+                            if (!empty($pro_da)) {
+                                $sku = $pro_da->sku;
+                            } else {
+                                $sku = "";
+                                $this->session->set_flashdata('emessage', 'Some error occured.');
+                                redirect($_SERVER['HTTP_REFERER']);
+                            }
+                            //get product sku end
+
+
+                            //Inventory Check api start
+
+                            $curl = curl_init();
+
+                            curl_setopt_array($curl, array(
+                                CURLOPT_URL => 'https://api.stuller.com/v2/products?SKU=' . $sku,
+                                CURLOPT_RETURNTRANSFER => true,
+                                CURLOPT_ENCODING => '',
+                                CURLOPT_MAXREDIRS => 10,
+                                CURLOPT_TIMEOUT => 0,
+                                CURLOPT_FOLLOWLOCATION => true,
+                                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                                CURLOPT_CUSTOMREQUEST => 'GET',
+                                CURLOPT_HTTPHEADER => array(
+                                    'Authorization: Basic ZGV2amV3ZWw6Q29kaW5nMjA9',
+                                    'Host: api.stuller.com',
+                                    'Cookie: AWSALB=1Sg7jQ5WrUEnBoDmGaVnJorbqXXyK+dQqUw2GqaBRbmyB6wS6B3VR4K87ey+TZIJ5mvDqbTHnp6sD/1ka744OTa6umVGWUfMgFASSRnN0Qg1xRkh7tPLbCA3hfBh; AWSALBCORS=1Sg7jQ5WrUEnBoDmGaVnJorbqXXyK+dQqUw2GqaBRbmyB6wS6B3VR4K87ey+TZIJ5mvDqbTHnp6sD/1ka744OTa6umVGWUfMgFASSRnN0Qg1xRkh7tPLbCA3hfBh'
+                                ),
+                            ));
+
+                            $response = curl_exec($curl);
+
+                            curl_close($curl);
+                            // echo $response;
+                            $response_dec = json_decode($response);
+                            // print_r( $response_dec->Products);die();
+
+                            if (!empty($response_dec->Products)) {
+                                foreach ($response_dec->Products as $res) {
+                                    $inventory = $res->OnHand;
+                                    $status = $res->Status;
+                                }
+                            }
+
+                            // echo $status;
+                            // echo $inventory;
+
+                            // die();
+
+                            //Inventory Check api end
+
+                            if (!empty($status) && $status != 'Out Of Stock') {
+                                // $db_quantity=$pro_inv_da->inventory;
+                                $db_quantity = $inventory;
+
+                                if ($status == 'Made To Order') {
+
+
+
+                                    if ($i == 1) {
+
+                                        //tbl order1 entry
+                                        $data_insert_order1 = array(
+                                            'user_id' => $user_id,
+                                            'total_amount' => 0,
+                                            'address_id' => $address_id,
+                                            'payment_type' => $payment_type,
+                                            'payment_status' => 0,
+                                            'order_status' => 0,
+                                            'delivery_charge' => 0,
+                                            'txnid' => $txnid,
+                                            'ip' => $ip,
+                                            'date' => $cur_date
+
+                                        );
+
+                                        $last_order_id = $this->base_model->insert_table("tbl_order1", $data_insert_order1, 1);
+                                    }
+
+
+                                    if (empty($data->stuller_pro_id)) {
+
+                                        $this->db->select('*');
+                                        $this->db->from('tbl_products');
+                                        $this->db->where('id', $data->product_id);
+                                        $this->db->where('is_active', 1);
+                                        $prod_data = $this->db->get()->row();
+                                    } else {
+                                        $this->db->select('*');
+                                        $this->db->from('tbl_quickshop_products');
+                                        $this->db->where('product_id', $data->stuller_pro_id);
+                                        $this->db->where('is_active', 1);
+                                        $prod_data = $this->db->get()->row();
+                                    }
+
+
+                                    if (!empty($prod_data)) {
+                                        $selling_price = $prod_data->price;
+                                        $product_qty_price = $selling_price * $data->quantity;
+                                    } else {
+                                        $selling_price = 0;
+                                        $product_qty_price = 0;
+                                    }
+
+
+                                    //tbl order2 entry
+                                    $data_insert = array(
+                                        'product_id' => $data->product_id,
+                                        'desc_e_name2' => $data->desc_e_name2,
+                                        'desc_e_value2' => $data->desc_e_value2,
+                                        'desc_e_name3' => $data->desc_e_name3,
+                                        'desc_e_value3' => $data->desc_e_value3,
+                                        'desc_e_name4' => $data->desc_e_name4,
+                                        'desc_e_value4' => $data->desc_e_value4,
+                                        'desc_e_name5' => $data->desc_e_name5,
+                                        'desc_e_value5' => $data->desc_e_value5,
+                                        'quantity' => $data->quantity,
+                                        'amount' => $product_qty_price,
+                                        'main_id' => $last_order_id,
+
+                                        'date' => $cur_date
+
+                                    );
+
+
+                                    $last_id = $this->base_model->insert_table("tbl_order2", $data_insert, 1);
+
+
+                                    //calculate total cart amount
+                                    $totalAmount = $totalAmount + $product_qty_price;
+
+
+                                    $i++;
+                                } else {
+
+                                    if ($db_quantity >= $quantity) {
+                                        if ($i == 1) {
+                                            //tbl order1 entry
+                                            $data_insert_order1 = array(
+                                                'user_id' => $user_id,
+                                                'total_amount' => 0,
+                                                'address_id' => $address_id,
+                                                'payment_type' => $payment_type,
+                                                'payment_status' => 0,
+                                                'order_status' => 0,
+                                                'delivery_charge' => 0,
+                                                'txnid' => $txnid,
+                                                'ip' => $ip,
+                                                'date' => $cur_date
+
+                                            );
+
+                                            $last_order_id = $this->base_model->insert_table("tbl_order1", $data_insert_order1, 1);
+                                        }
+
+
+                                        if (empty($data->stuller_pro_id)) {
+
+                                            $this->db->select('*');
+                                            $this->db->from('tbl_products');
+                                            $this->db->where('id', $data->product_id);
+                                            $this->db->where('is_active', 1);
+                                            $prod_data = $this->db->get()->row();
+                                        } else {
+
+                                            $this->db->select('*');
+                                            $this->db->from('tbl_quickshop_products');
+                                            $this->db->where('product_id', $data->stuller_pro_id);
+                                            $this->db->where('is_active', 1);
+                                            $prod_data = $this->db->get()->row();
+                                        }
+
+                                        if (!empty($prod_data)) {
+                                            $selling_price = $prod_data->price;
+                                            $product_qty_price = $selling_price * $data->quantity;
+                                        } else {
+                                            $selling_price = 0;
+                                            $product_qty_price = 0;
+                                        }
+
+
+                                        //tbl order2 entry
+                                        $data_insert = array(
+                                            'product_id' => $data->product_id,
+                                            'desc_e_name2' => $data->desc_e_name2,
+                                            'desc_e_value2' => $data->desc_e_value2,
+                                            'desc_e_name3' => $data->desc_e_name3,
+                                            'desc_e_value3' => $data->desc_e_value3,
+                                            'desc_e_name4' => $data->desc_e_name4,
+                                            'desc_e_value4' => $data->desc_e_value4,
+                                            'desc_e_name5' => $data->desc_e_name5,
+                                            'desc_e_value5' => $data->desc_e_value5,
+                                            'ringsize' => $data->ringsize,
+                                            'ringprice' => $data->ringprice,
+                                            'quantity' => $data->quantity,
+                                            'amount' => $product_qty_price,
+                                            'main_id' => $last_order_id,
+
+                                            'date' => $cur_date
+
+                                        );
+
+
+                                        $last_id = $this->base_model->insert_table("tbl_order2", $data_insert, 1);
+
+
+                                        //calculate total cart amount
+                                        $totalAmount = $totalAmount + $product_qty_price;
+
+
+                                        $i++;
+                                    } else {
+
+                                        if (empty($data->stuller_pro_id)) {
+
+                                            $this->db->select('*');
+                                            $this->db->from('tbl_products');
+                                            $this->db->where('id', $data->product_id);
+                                            $this->db->where('is_active', 1);
+                                            $prodata = $this->db->get()->row();
+                                        } else {
+                                            $this->db->select('*');
+                                            $this->db->from('tbl_quickshop_products');
+                                            $this->db->where('product_id', $data->stuller_pro_id);
+                                            $this->db->where('is_active', 1);
+                                            $prodata = $this->db->get()->row();
+                                        }
+
+                                        if (!empty($prodata)) {
+                                            $product_name = $prodata->description;
+                                        } else {
+                                            $product_name = "";
+                                        }
+
+
+                                        $this->session->set_flashdata('emessage', 'This product ' . $product_name . ' is out of stock.Please remove this product before order place.');
+                                        redirect($_SERVER['HTTP_REFERER']);
+                                    }
+                                }
+                            } else {
+
+
+                                if (empty($data->stuller_pro_id)) {
+
+                                    $this->db->select('*');
+                                    $this->db->from('tbl_products');
+                                    $this->db->where('id', $data->product_id);
+                                    $this->db->where('is_active', 1);
+                                    $prodata = $this->db->get()->row();
+                                } else {
+                                    $this->db->select('*');
+                                    $this->db->from('tbl_quickshop_products');
+                                    $this->db->where('product_id', $data->stuller_pro_id);
+                                    $this->db->where('is_active', 1);
+                                    $prodata = $this->db->get()->row();
+                                }
+
+                                if (!empty($prodata)) {
+                                    $product_name = $prodata->description;
+                                } else {
+                                    $product_name = "";
+                                }
+
+
+                                $this->session->set_flashdata('emessage', 'This product ' . $product_name . ' is out of stock.Please remove this product before order place.');
+                                redirect($_SERVER['HTTP_REFERER']);
+                            }
+                        }
+                    }
+                    if ($last_order_id != 0) {
+                        if (!empty($applied_promocode)) {
+                            $totalAmount = $this->isValidPromocode($last_order_id, $totalAmount, $applied_promocode);
+                        }
+
+                        //update order details full information of order
+                        $data_update_ordr = array(
+                            'total_amount' => $totalAmount,
+                            'payment_status' => 0,
+                            'order_status' => 0,
+                            'promocode' => $promocode_id,
+
+                        );
+
+                        $this->db->where('id', $last_order_id);
+                        $order = $this->db->update('tbl_order1', $data_update_ordr);
+                        $address_data = $this->db->get_where('tbl_user_address', array('id' => $address_id))->result();
+                        $user_data = $this->db->get_where('tbl_users', array('id' => $user_id))->result();
+
+                        $amu = base64_encode($totalAmount);
+                        $idd = base64_encode($last_order_id);
+                        $addr_id = base64_encode($address_id);
+                        $id = base64_decode($idd);
+                        $amu = base64_decode($amu);
+
+                        $this->session->unset_userdata("data");
+                        $this->session->unset_userdata("order_id");
+                        $this->session->unset_userdata("amn");
+                        // $this->session->unset_userdata("return_url");
+                        // $this->session->unset_userdata("surl");
+                        // $this->session->unset_userdata("furl");
+                        $this->session->unset_userdata("currency_code");
+                        $this->session->unset_userdata("address_data");
+                        $this->session->unset_userdata("user_data");
+
+
+                        $this->session->set_flashdata('data', 1);
+                        $this->session->set_flashdata('order_id', $id);
+                        $this->session->set_flashdata('amn', $amu);
+                        // $this->session->set_flashdata('return_url', site_url() . 'Home/callback/' . $idd);
+                        // $this->session->set_flashdata('surl', site_url() . 'Home/order_success');
+                        // $this->session->set_flashdata('furl', site_url() . 'Home/order_failed');
+                        $this->session->set_flashdata('currency_code', 'USD');
+                        $this->session->set_flashdata('address_data', $address_data);
+                        $this->session->set_flashdata('user_data', $user_data);
+
+                        // redirect("Home/checkout_af?addr=" . $addr_id, "refresh");
+                        $this->load->view('affirm_confirm');
+                    } else {
+
+                        $this->session->set_flashdata('emessage', 'Sorry error occured');
+                        redirect($_SERVER['HTTP_REFERER']);
+                    }
+                }
+            } else {
+
+                $this->session->set_flashdata('emessage', validation_errors());
+                redirect($_SERVER['HTTP_REFERER']);
+            }
+        } else {
+
+            $this->session->set_flashdata('emessage', 'Please insert some data, No data available');
+            redirect($_SERVER['HTTP_REFERER']);
+        }
+    }
+    public function  gpay_place_order()
+    {
+        $this->load->helper(array('form', 'url'));
+        $this->load->library('form_validation');
+        $this->load->helper('security');
+        if ($this->input->post()) {
+            $this->form_validation->set_rules('addresss_id', 'addresss_id', 'xss_clean|trim');
+            // $this->form_validation->set_rules('payment_type', 'payment_type', 'xss_clean|trim');
+            $this->form_validation->set_rules('applied_promocode', 'applied_promocode', 'xss_clean|trim');
+
+
+            if ($this->form_validation->run() == TRUE) {
+
+                $payment_type = 2;
+                // echo 	$address_id=$this->input->post('addresss_id'); die();
+                $address_id = $this->input->post('addresss_id');
+
+                $applied_promocode = $this->input->post('applied_promocode');
+                // $page=$this->input->post('page');
+
+                $user_id = $this->session->userdata('user_id');
+                $ip = $this->input->ip_address();
+                date_default_timezone_set("Asia/Calcutta");
+                $cur_date = date("Y-m-d H:i:s");
+
+                $totalAmount = 0;
+                $txnid =  substr(hash('sha256', mt_rand() . microtime()), 0, 20);
+
+                $promocode_id = "";
+                if (!empty($applied_promocode)) {
+                    $this->db->select('*');
+                    $this->db->from('tbl_promocode');
+                    $this->db->where('promo_code', $applied_promocode);
+                    $this->db->where('is_active', 1);
+                    $promocode_da = $this->db->get()->row();
+
+                    if (!empty($promocode_da)) {
+                        $promocode_id = $promocode_da->id;
+                    } else {
+                        $promocode_id = "";
+                    }
+                } else {
+                    $promocode_id = "";
+                }
+
+
+
+                if ($payment_type == 2) {
+
+
+                    // if($page != 0){
+                    // 			$this->db->select('*');
+                    // 			$this->db->from('tbl_cart');
+                    // 			$this->db->where('user_id',$user_id);
+                    // 			$this->db->where('product_id',$page);
+                    // 			$cart_da= $this->db->get();
+                    // }else {
+                    $this->db->select('*');
+                    $this->db->from('tbl_cart');
+                    $this->db->where('user_id', $user_id);
+                    $cart_da = $this->db->get();
+                    // }
+
+
+
+                    if (!empty($cart_da)) {
+                        // echo "f"; echo '<pre>'; print_r($cart_da->result()); die();
+                        $i = 1;
+                        foreach ($cart_da->result() as $data) {
+
+                            $product_id = $data->product_id;
+                            $quantity = $data->quantity;
+
+                            $inventory = 0;
+                            $status = "";
+
+                            //get product sku start
+
+
+                            if (empty($data->stuller_pro_id)) {
+
+                                $this->db->select('*');
+                                $this->db->from('tbl_products');
+                                $this->db->where('id', $product_id);
+                                $this->db->where('is_active', 1);
+                                $pro_da = $this->db->get()->row();
+                            } else {
+                                $this->db->select('*');
+                                $this->db->from('tbl_quickshop_products');
+                                $this->db->where('product_id', $data->stuller_pro_id);
+                                $this->db->where('is_active', 1);
+                                $pro_da = $this->db->get()->row();
+                            }
+
+
+                            if (!empty($pro_da)) {
+                                $sku = $pro_da->sku;
+                            } else {
+                                $sku = "";
+                                $this->session->set_flashdata('emessage', 'Some error occured.');
+                                redirect($_SERVER['HTTP_REFERER']);
+                            }
+                            //get product sku end
+
+
+                            //Inventory Check api start
+
+                            $curl = curl_init();
+
+                            curl_setopt_array($curl, array(
+                                CURLOPT_URL => 'https://api.stuller.com/v2/products?SKU=' . $sku,
+                                CURLOPT_RETURNTRANSFER => true,
+                                CURLOPT_ENCODING => '',
+                                CURLOPT_MAXREDIRS => 10,
+                                CURLOPT_TIMEOUT => 0,
+                                CURLOPT_FOLLOWLOCATION => true,
+                                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                                CURLOPT_CUSTOMREQUEST => 'GET',
+                                CURLOPT_HTTPHEADER => array(
+                                    'Authorization: Basic ZGV2amV3ZWw6Q29kaW5nMjA9',
+                                    'Host: api.stuller.com',
+                                    'Cookie: AWSALB=1Sg7jQ5WrUEnBoDmGaVnJorbqXXyK+dQqUw2GqaBRbmyB6wS6B3VR4K87ey+TZIJ5mvDqbTHnp6sD/1ka744OTa6umVGWUfMgFASSRnN0Qg1xRkh7tPLbCA3hfBh; AWSALBCORS=1Sg7jQ5WrUEnBoDmGaVnJorbqXXyK+dQqUw2GqaBRbmyB6wS6B3VR4K87ey+TZIJ5mvDqbTHnp6sD/1ka744OTa6umVGWUfMgFASSRnN0Qg1xRkh7tPLbCA3hfBh'
+                                ),
+                            ));
+
+                            $response = curl_exec($curl);
+
+                            curl_close($curl);
+                            // echo $response;
+                            $response_dec = json_decode($response);
+                            // print_r( $response_dec->Products);die();
+
+                            if (!empty($response_dec->Products)) {
+                                foreach ($response_dec->Products as $res) {
+                                    $inventory = $res->OnHand;
+                                    $status = $res->Status;
+                                }
+                            }
+
+                            // echo $status;
+                            // echo $inventory;
+
+                            // die();
+
+                            //Inventory Check api end
+
+                            if (!empty($status) && $status != 'Out Of Stock') {
+                                // $db_quantity=$pro_inv_da->inventory;
+                                $db_quantity = $inventory;
+
+                                if ($status == 'Made To Order') {
+
+
+
+                                    if ($i == 1) {
+
+                                        //tbl order1 entry
+                                        $data_insert_order1 = array(
+                                            'user_id' => $user_id,
+                                            'total_amount' => 0,
+                                            'address_id' => $address_id,
+                                            'payment_type' => $payment_type,
+                                            'payment_status' => 0,
+                                            'order_status' => 0,
+                                            'delivery_charge' => 0,
+                                            'txnid' => $txnid,
+                                            'ip' => $ip,
+                                            'date' => $cur_date
+
+                                        );
+
+                                        $last_order_id = $this->base_model->insert_table("tbl_order1", $data_insert_order1, 1);
+                                    }
+
+
+                                    if (empty($data->stuller_pro_id)) {
+
+                                        $this->db->select('*');
+                                        $this->db->from('tbl_products');
+                                        $this->db->where('id', $data->product_id);
+                                        $this->db->where('is_active', 1);
+                                        $prod_data = $this->db->get()->row();
+                                    } else {
+                                        $this->db->select('*');
+                                        $this->db->from('tbl_quickshop_products');
+                                        $this->db->where('product_id', $data->stuller_pro_id);
+                                        $this->db->where('is_active', 1);
+                                        $prod_data = $this->db->get()->row();
+                                    }
+
+
+                                    if (!empty($prod_data)) {
+                                        $selling_price = $prod_data->price;
+                                        $product_qty_price = $selling_price * $data->quantity;
+                                    } else {
+                                        $selling_price = 0;
+                                        $product_qty_price = 0;
+                                    }
+
+
+                                    //tbl order2 entry
+                                    $data_insert = array(
+                                        'product_id' => $data->product_id,
+                                        'desc_e_name2' => $data->desc_e_name2,
+                                        'desc_e_value2' => $data->desc_e_value2,
+                                        'desc_e_name3' => $data->desc_e_name3,
+                                        'desc_e_value3' => $data->desc_e_value3,
+                                        'desc_e_name4' => $data->desc_e_name4,
+                                        'desc_e_value4' => $data->desc_e_value4,
+                                        'desc_e_name5' => $data->desc_e_name5,
+                                        'desc_e_value5' => $data->desc_e_value5,
+                                        'quantity' => $data->quantity,
+                                        'amount' => $product_qty_price,
+                                        'main_id' => $last_order_id,
+
+                                        'date' => $cur_date
+
+                                    );
+
+
+                                    $last_id = $this->base_model->insert_table("tbl_order2", $data_insert, 1);
+
+
+                                    //calculate total cart amount
+                                    $totalAmount = $totalAmount + $product_qty_price;
+
+
+                                    $i++;
+                                } else {
+
+                                    if ($db_quantity >= $quantity) {
+                                        if ($i == 1) {
+                                            //tbl order1 entry
+                                            $data_insert_order1 = array(
+                                                'user_id' => $user_id,
+                                                'total_amount' => 0,
+                                                'address_id' => $address_id,
+                                                'payment_type' => $payment_type,
+                                                'payment_status' => 0,
+                                                'order_status' => 0,
+                                                'delivery_charge' => 0,
+                                                'txnid' => $txnid,
+                                                'ip' => $ip,
+                                                'date' => $cur_date
+
+                                            );
+
+                                            $last_order_id = $this->base_model->insert_table("tbl_order1", $data_insert_order1, 1);
+                                        }
+
+
+                                        if (empty($data->stuller_pro_id)) {
+
+                                            $this->db->select('*');
+                                            $this->db->from('tbl_products');
+                                            $this->db->where('id', $data->product_id);
+                                            $this->db->where('is_active', 1);
+                                            $prod_data = $this->db->get()->row();
+                                        } else {
+
+                                            $this->db->select('*');
+                                            $this->db->from('tbl_quickshop_products');
+                                            $this->db->where('product_id', $data->stuller_pro_id);
+                                            $this->db->where('is_active', 1);
+                                            $prod_data = $this->db->get()->row();
+                                        }
+
+                                        if (!empty($prod_data)) {
+                                            $selling_price = $prod_data->price;
+                                            $product_qty_price = $selling_price * $data->quantity;
+                                        } else {
+                                            $selling_price = 0;
+                                            $product_qty_price = 0;
+                                        }
+
+
+                                        //tbl order2 entry
+                                        $data_insert = array(
+                                            'product_id' => $data->product_id,
+                                            'desc_e_name2' => $data->desc_e_name2,
+                                            'desc_e_value2' => $data->desc_e_value2,
+                                            'desc_e_name3' => $data->desc_e_name3,
+                                            'desc_e_value3' => $data->desc_e_value3,
+                                            'desc_e_name4' => $data->desc_e_name4,
+                                            'desc_e_value4' => $data->desc_e_value4,
+                                            'desc_e_name5' => $data->desc_e_name5,
+                                            'desc_e_value5' => $data->desc_e_value5,
+                                            'ringsize' => $data->ringsize,
+                                            'ringprice' => $data->ringprice,
+                                            'quantity' => $data->quantity,
+                                            'amount' => $product_qty_price,
+                                            'main_id' => $last_order_id,
+
+                                            'date' => $cur_date
+
+                                        );
+
+
+                                        $last_id = $this->base_model->insert_table("tbl_order2", $data_insert, 1);
+
+
+                                        //calculate total cart amount
+                                        $totalAmount = $totalAmount + $product_qty_price;
+
+
+                                        $i++;
+                                    } else {
+
+                                        if (empty($data->stuller_pro_id)) {
+
+                                            $this->db->select('*');
+                                            $this->db->from('tbl_products');
+                                            $this->db->where('id', $data->product_id);
+                                            $this->db->where('is_active', 1);
+                                            $prodata = $this->db->get()->row();
+                                        } else {
+                                            $this->db->select('*');
+                                            $this->db->from('tbl_quickshop_products');
+                                            $this->db->where('product_id', $data->stuller_pro_id);
+                                            $this->db->where('is_active', 1);
+                                            $prodata = $this->db->get()->row();
+                                        }
+
+                                        if (!empty($prodata)) {
+                                            $product_name = $prodata->description;
+                                        } else {
+                                            $product_name = "";
+                                        }
+
+
+                                        $this->session->set_flashdata('emessage', 'This product ' . $product_name . ' is out of stock.Please remove this product before order place.');
+                                        redirect($_SERVER['HTTP_REFERER']);
+                                    }
+                                }
+                            } else {
+
+
+                                if (empty($data->stuller_pro_id)) {
+
+                                    $this->db->select('*');
+                                    $this->db->from('tbl_products');
+                                    $this->db->where('id', $data->product_id);
+                                    $this->db->where('is_active', 1);
+                                    $prodata = $this->db->get()->row();
+                                } else {
+                                    $this->db->select('*');
+                                    $this->db->from('tbl_quickshop_products');
+                                    $this->db->where('product_id', $data->stuller_pro_id);
+                                    $this->db->where('is_active', 1);
+                                    $prodata = $this->db->get()->row();
+                                }
+
+                                if (!empty($prodata)) {
+                                    $product_name = $prodata->description;
+                                } else {
+                                    $product_name = "";
+                                }
+
+
+                                $this->session->set_flashdata('emessage', 'This product ' . $product_name . ' is out of stock.Please remove this product before order place.');
+                                redirect($_SERVER['HTTP_REFERER']);
+                            }
+                        }
+                    }
+                    if ($last_order_id != 0) {
+                        if (!empty($applied_promocode)) {
+                            $totalAmount = $this->isValidPromocode($last_order_id, $totalAmount, $applied_promocode);
+                        }
+
+                        //update order details full information of order
+                        $data_update_ordr = array(
+                            'total_amount' => $totalAmount,
+                            'payment_status' => 0,
+                            'order_status' => 0,
+                            'promocode' => $promocode_id,
+
+                        );
+
+                        $this->db->where('id', $last_order_id);
+                        $order = $this->db->update('tbl_order1', $data_update_ordr);
+                        $address_data = $this->db->get_where('tbl_user_address', array('id' => $address_id))->result();
+                        $user_data = $this->db->get_where('tbl_users', array('id' => $user_id))->result();
+
+                        $amu = base64_encode($totalAmount);
+                        $idd = base64_encode($last_order_id);
+                        $addr_id = base64_encode($address_id);
+                        $id = base64_decode($idd);
+                        $amu = base64_decode($amu);
+
+                        $this->session->unset_userdata("data");
+                        $this->session->unset_userdata("order_id");
+                        $this->session->unset_userdata("amn");
+                        // $this->session->unset_userdata("return_url");
+                        // $this->session->unset_userdata("surl");
+                        // $this->session->unset_userdata("furl");
+                        $this->session->unset_userdata("currency_code");
+                        $this->session->unset_userdata("address_data");
+                        $this->session->unset_userdata("user_data");
+
+
+                        $this->session->set_flashdata('data', 1);
+                        $this->session->set_flashdata('order_id', $id);
+                        $this->session->set_flashdata('amn', $amu);
+                        // $this->session->set_flashdata('return_url', site_url() . 'Home/callback/' . $idd);
+                        // $this->session->set_flashdata('surl', site_url() . 'Home/order_success');
+                        // $this->session->set_flashdata('furl', site_url() . 'Home/order_failed');
+                        $this->session->set_flashdata('currency_code', 'USD');
+                        $this->session->set_flashdata('address_data', $address_data);
+                        $this->session->set_flashdata('user_data', $user_data);
+
+                        // redirect("Home/checkout_af?addr=" . $addr_id, "refresh");
+                        $this->load->view('gpay_confirm');
+                    } else {
+
+                        $this->session->set_flashdata('emessage', 'Sorry error occured');
+                        redirect($_SERVER['HTTP_REFERER']);
+                    }
+                }
+            } else {
+
+                $this->session->set_flashdata('emessage', validation_errors());
+                redirect($_SERVER['HTTP_REFERER']);
+            }
+        } else {
+
+            $this->session->set_flashdata('emessage', 'Please insert some data, No data available');
+            redirect($_SERVER['HTTP_REFERER']);
+        }
+    }
+
+    public function place_order()
+    {
+        $this->load->helper(array('form', 'url'));
+        $this->load->library('form_validation');
+        $this->load->helper('security');
+        if ($this->input->post()) {
+            $this->form_validation->set_rules('addresss_id', 'addresss_id', 'xss_clean|trim');
+            // $this->form_validation->set_rules('payment_type', 'payment_type', 'xss_clean|trim');
+            $this->form_validation->set_rules('applied_promocode', 'applied_promocode', 'xss_clean|trim');
+
+
+            if ($this->form_validation->run() == TRUE) {
+
+                $payment_type = 2;
+                // echo 	$address_id=$this->input->post('addresss_id'); die();
+                $address_id = $this->input->post('addresss_id');
+
+                $applied_promocode = $this->input->post('applied_promocode');
+                // $page=$this->input->post('page');
+
+                $user_id = $this->session->userdata('user_id');
+                $ip = $this->input->ip_address();
+                date_default_timezone_set("Asia/Calcutta");
+                $cur_date = date("Y-m-d H:i:s");
+
+                $totalAmount = 0;
+                $txnid =  substr(hash('sha256', mt_rand() . microtime()), 0, 20);
+
+                $promocode_id = "";
+                if (!empty($applied_promocode)) {
+                    $this->db->select('*');
+                    $this->db->from('tbl_promocode');
+                    $this->db->where('promo_code', $applied_promocode);
+                    $this->db->where('is_active', 1);
+                    $promocode_da = $this->db->get()->row();
+
+                    if (!empty($promocode_da)) {
+                        $promocode_id = $promocode_da->id;
+                    } else {
+                        $promocode_id = "";
+                    }
+                } else {
+                    $promocode_id = "";
+                }
+
+
+
+                if ($payment_type == 2) {
+
+
+                    // if($page != 0){
+                    // 			$this->db->select('*');
+                    // 			$this->db->from('tbl_cart');
+                    // 			$this->db->where('user_id',$user_id);
+                    // 			$this->db->where('product_id',$page);
+                    // 			$cart_da= $this->db->get();
+                    // }else {
+                    $this->db->select('*');
+                    $this->db->from('tbl_cart');
+                    $this->db->where('user_id', $user_id);
+                    $cart_da = $this->db->get();
+                    // }
+
+
+
+                    if (!empty($cart_da)) {
+                        // echo "f"; echo '<pre>'; print_r($cart_da->result()); die();
+                        $i = 1;
+                        foreach ($cart_da->result() as $data) {
+
+                            $product_id = $data->product_id;
+                            $quantity = $data->quantity;
+
+                            $inventory = 0;
+                            $status = "";
+
+                            //get product sku start
+
+
+                            if (empty($data->stuller_pro_id)) {
+
+                                $this->db->select('*');
+                                $this->db->from('tbl_products');
+                                $this->db->where('id', $product_id);
+                                $this->db->where('is_active', 1);
+                                $pro_da = $this->db->get()->row();
+                            } else {
+                                $this->db->select('*');
+                                $this->db->from('tbl_quickshop_products');
+                                $this->db->where('product_id', $data->stuller_pro_id);
+                                $this->db->where('is_active', 1);
+                                $pro_da = $this->db->get()->row();
+                            }
+
+
+                            if (!empty($pro_da)) {
+                                $sku = $pro_da->sku;
+                            } else {
+                                $sku = "";
+                                $this->session->set_flashdata('emessage', 'Some error occured.');
+                                redirect($_SERVER['HTTP_REFERER']);
+                            }
+                            //get product sku end
+
+
+                            //Inventory Check api start
+
+                            $curl = curl_init();
+
+                            curl_setopt_array($curl, array(
+                                CURLOPT_URL => 'https://api.stuller.com/v2/products?SKU=' . $sku,
+                                CURLOPT_RETURNTRANSFER => true,
+                                CURLOPT_ENCODING => '',
+                                CURLOPT_MAXREDIRS => 10,
+                                CURLOPT_TIMEOUT => 0,
+                                CURLOPT_FOLLOWLOCATION => true,
+                                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                                CURLOPT_CUSTOMREQUEST => 'GET',
+                                CURLOPT_HTTPHEADER => array(
+                                    'Authorization: Basic ZGV2amV3ZWw6Q29kaW5nMjA9',
+                                    'Host: api.stuller.com',
+                                    'Cookie: AWSALB=1Sg7jQ5WrUEnBoDmGaVnJorbqXXyK+dQqUw2GqaBRbmyB6wS6B3VR4K87ey+TZIJ5mvDqbTHnp6sD/1ka744OTa6umVGWUfMgFASSRnN0Qg1xRkh7tPLbCA3hfBh; AWSALBCORS=1Sg7jQ5WrUEnBoDmGaVnJorbqXXyK+dQqUw2GqaBRbmyB6wS6B3VR4K87ey+TZIJ5mvDqbTHnp6sD/1ka744OTa6umVGWUfMgFASSRnN0Qg1xRkh7tPLbCA3hfBh'
+                                ),
+                            ));
+
+                            $response = curl_exec($curl);
+
+                            curl_close($curl);
+                            // echo $response;
+                            $response_dec = json_decode($response);
+                            // print_r( $response_dec->Products);die();
+
+                            if (!empty($response_dec->Products)) {
+                                foreach ($response_dec->Products as $res) {
+                                    $inventory = $res->OnHand;
+                                    $status = $res->Status;
+                                }
+                            }
+
+                            // echo $status;
+                            // echo $inventory;
+
+                            // die();
+
+                            //Inventory Check api end
+
+
+
+                            if (!empty($status) && $status != 'Out Of Stock') {
+                                // $db_quantity=$pro_inv_da->inventory;
+                                $db_quantity = $inventory;
+
+                                if ($status == 'Made To Order') {
+
+
+
+                                    if ($i == 1) {
+
+                                        //tbl order1 entry
+                                        $data_insert_order1 = array(
+                                            'user_id' => $user_id,
+                                            'total_amount' => 0,
+                                            'address_id' => $address_id,
+                                            'payment_type' => $payment_type,
+                                            'payment_status' => 0,
+                                            'order_status' => 0,
+                                            'delivery_charge' => 0,
+                                            'txnid' => $txnid,
+                                            'ip' => $ip,
+                                            'date' => $cur_date
+
+                                        );
+
+                                        $last_order_id = $this->base_model->insert_table("tbl_order1", $data_insert_order1, 1);
+                                    }
+
+
+                                    if (empty($data->stuller_pro_id)) {
+
+                                        $this->db->select('*');
+                                        $this->db->from('tbl_products');
+                                        $this->db->where('id', $data->product_id);
+                                        $this->db->where('is_active', 1);
+                                        $prod_data = $this->db->get()->row();
+                                    } else {
+                                        $this->db->select('*');
+                                        $this->db->from('tbl_quickshop_products');
+                                        $this->db->where('product_id', $data->stuller_pro_id);
+                                        $this->db->where('is_active', 1);
+                                        $prod_data = $this->db->get()->row();
+                                    }
+
+
+                                    if (!empty($prod_data)) {
+                                        $selling_price = $prod_data->price;
+                                        $product_qty_price = $selling_price * $data->quantity;
+                                    } else {
+                                        $selling_price = 0;
+                                        $product_qty_price = 0;
+                                    }
+
+
+                                    //tbl order2 entry
+                                    $data_insert = array(
+                                        'product_id' => $data->product_id,
+                                        'desc_e_name2' => $data->desc_e_name2,
+                                        'desc_e_value2' => $data->desc_e_value2,
+                                        'desc_e_name3' => $data->desc_e_name3,
+                                        'desc_e_value3' => $data->desc_e_value3,
+                                        'desc_e_name4' => $data->desc_e_name4,
+                                        'desc_e_value4' => $data->desc_e_value4,
+                                        'desc_e_name5' => $data->desc_e_name5,
+                                        'desc_e_value5' => $data->desc_e_value5,
+                                        'quantity' => $data->quantity,
+                                        'amount' => $product_qty_price,
+                                        'main_id' => $last_order_id,
+
+                                        'date' => $cur_date
+
+                                    );
+
+
+                                    $last_id = $this->base_model->insert_table("tbl_order2", $data_insert, 1);
+
+
+                                    //calculate total cart amount
+                                    $totalAmount = $totalAmount + $product_qty_price;
+
+
+                                    $i++;
+                                } else {
+
+                                    if ($db_quantity >= $quantity) {
+
+
+
+
+                                        if ($i == 1) {
+
+                                            //tbl order1 entry
+                                            $data_insert_order1 = array(
+                                                'user_id' => $user_id,
+                                                'total_amount' => 0,
+                                                'address_id' => $address_id,
+                                                'payment_type' => $payment_type,
+                                                'payment_status' => 0,
+                                                'order_status' => 0,
+                                                'delivery_charge' => 0,
+                                                'txnid' => $txnid,
+                                                'ip' => $ip,
+                                                'date' => $cur_date
+
+                                            );
+
+                                            $last_order_id = $this->base_model->insert_table("tbl_order1", $data_insert_order1, 1);
+                                        }
+
+
+                                        if (empty($data->stuller_pro_id)) {
+
+                                            $this->db->select('*');
+                                            $this->db->from('tbl_products');
+                                            $this->db->where('id', $data->product_id);
+                                            $this->db->where('is_active', 1);
+                                            $prod_data = $this->db->get()->row();
+                                        } else {
+
+                                            $this->db->select('*');
+                                            $this->db->from('tbl_quickshop_products');
+                                            $this->db->where('product_id', $data->stuller_pro_id);
+                                            $this->db->where('is_active', 1);
+                                            $prod_data = $this->db->get()->row();
+                                        }
+
+                                        if (!empty($prod_data)) {
+                                            $selling_price = $prod_data->price;
+                                            $product_qty_price = $selling_price * $data->quantity;
+                                        } else {
+                                            $selling_price = 0;
+                                            $product_qty_price = 0;
+                                        }
+
+
+                                        //tbl order2 entry
+                                        $data_insert = array(
+                                            'product_id' => $data->product_id,
+                                            'desc_e_name2' => $data->desc_e_name2,
+                                            'desc_e_value2' => $data->desc_e_value2,
+                                            'desc_e_name3' => $data->desc_e_name3,
+                                            'desc_e_value3' => $data->desc_e_value3,
+                                            'desc_e_name4' => $data->desc_e_name4,
+                                            'desc_e_value4' => $data->desc_e_value4,
+                                            'desc_e_name5' => $data->desc_e_name5,
+                                            'desc_e_value5' => $data->desc_e_value5,
+                                            'ringsize' => $data->ringsize,
+                                            'ringprice' => $data->ringprice,
+                                            'quantity' => $data->quantity,
+                                            'amount' => $product_qty_price,
+                                            'main_id' => $last_order_id,
+
+                                            'date' => $cur_date
+
+                                        );
+
+
+                                        $last_id = $this->base_model->insert_table("tbl_order2", $data_insert, 1);
+
+
+                                        //calculate total cart amount
+                                        $totalAmount = $totalAmount + $product_qty_price;
+
+
+                                        $i++;
+                                    } else {
+
+                                        if (empty($data->stuller_pro_id)) {
+
+                                            $this->db->select('*');
+                                            $this->db->from('tbl_products');
+                                            $this->db->where('id', $data->product_id);
+                                            $this->db->where('is_active', 1);
+                                            $prodata = $this->db->get()->row();
+                                        } else {
+                                            $this->db->select('*');
+                                            $this->db->from('tbl_quickshop_products');
+                                            $this->db->where('product_id', $data->stuller_pro_id);
+                                            $this->db->where('is_active', 1);
+                                            $prodata = $this->db->get()->row();
+                                        }
+
+                                        if (!empty($prodata)) {
+                                            $product_name = $prodata->description;
+                                        } else {
+                                            $product_name = "";
+                                        }
+
+
+                                        $this->session->set_flashdata('emessage', 'This product ' . $product_name . ' is out of stock.Please remove this product before order place.');
+                                        redirect($_SERVER['HTTP_REFERER']);
+                                    }
+                                }
+                            } else {
+
+
+                                if (empty($data->stuller_pro_id)) {
+
+                                    $this->db->select('*');
+                                    $this->db->from('tbl_products');
+                                    $this->db->where('id', $data->product_id);
+                                    $this->db->where('is_active', 1);
+                                    $prodata = $this->db->get()->row();
+                                } else {
+                                    $this->db->select('*');
+                                    $this->db->from('tbl_quickshop_products');
+                                    $this->db->where('product_id', $data->stuller_pro_id);
+                                    $this->db->where('is_active', 1);
+                                    $prodata = $this->db->get()->row();
+                                }
+
+                                if (!empty($prodata)) {
+                                    $product_name = $prodata->description;
+                                } else {
+                                    $product_name = "";
+                                }
+
+
+                                $this->session->set_flashdata('emessage', 'This product ' . $product_name . ' is out of stock.Please remove this product before order place.');
+                                redirect($_SERVER['HTTP_REFERER']);
+                            }
+                        }
+                    }
+
+
+
+
+
+
+                    if ($last_order_id != 0) {
+
+
+                        if (!empty($applied_promocode)) {
+
+
+                            $totalAmount = $this->isValidPromocode($last_order_id, $totalAmount, $applied_promocode);
+                        }
+
+
+
+                        //update order details full information of order
+                        $data_update_ordr = array(
+                            'total_amount' => $totalAmount,
+                            'payment_status' => 0,
+                            'order_status' => 0,
+                            'promocode' => $promocode_id,
+
+                        );
+
+                        $this->db->where('id', $last_order_id);
+                        $order = $this->db->update('tbl_order1', $data_update_ordr);
+
+
+
+
+
+                        //delete Tbl Cart data of user
+
+                        // if($page != 0){
+                        // 			$this->db->select('*');
+                        // 			$this->db->from('tbl_cart');
+                        // 			$this->db->where('user_id',$user_id);
+                        // 			$this->db->where('product_id',$page);
+                        // 			$cart_dat= $this->db->get();
+                        // }else {
+
+                        // $this->db->select('*');
+                        // 			$this->db->from('tbl_cart');
+                        // 			$this->db->where('user_id',$user_id);
+                        // 			$cart_dat= $this->db->get();
+                        // // }
+                        //
+                        //
+                        // if(!empty($cart_dat)){
+                        // foreach ($cart_dat->result() as $cart) {
+                        //
+                        // $del_cart=$this->db->delete('tbl_cart', array('id' => $cart->id));
+                        //
+                        // }
+                        // }
+
+
+
+                        //send email to user's email start
+                        //
+                        // $config = Array(
+                        // 							'protocol' => 'smtp',
+                        // 							// 'smtp_host' => 'mail.fineoutput.co.in',
+                        // 							'smtp_host' => SMTP_HOST,
+                        // 							'smtp_port' => 26,
+                        // 							// 'smtp_user' => 'info@fineoutput.co.in', // change it to yours
+                        // 							// 'smtp_pass' => 'info@fineoutput2019', // change it to yours
+                        // 							'smtp_user' => USER_NAME, // change it to yours
+                        // 							'smtp_pass' => PASSWORD, // change it to yours
+                        // 							'mailtype' => 'html',
+                        // 							'charset' => 'iso-8859-1',
+                        // 							'wordwrap' => TRUE
+                        // 							);
+                        //
+                        // 							$this->db->select('*');
+                        // 										$this->db->from('tbl_users');
+                        // 										$this->db->where('id',$user_id);
+                        // 										$user_data= $this->db->get()->row();
+                        // 					$email = '';
+                        // 										if(!empty($user_data)){
+                        // 											$email =  $user_data->email;
+                        // 										}
+                        //
+                        // 							$to=$email;
+                        //
+                        // 							$email_data = array("order1_id"=>$last_order_id, "type"=>"1"
+                        // 							);
+                        //
+                        // 							$message = 	$this->load->view('emails/order-success',$email_data,TRUE);
+                        // 							// $message = 	"HELLO";
+                        // 							$this->load->library('email', $config);
+                        // 							$this->email->set_newline("");
+                        // 							// $this->email->from('info@fineoutput.co.in'); // change it to yours
+                        // 							$this->email->from(EMAIL); // change it to yours
+                        // 							$this->email->to($to);// change it to yours
+                        // 							$this->email->subject('Order Placed Successfully');
+                        // 							$this->email->message($message);
+                        // 							if($this->email->send()){
+                        // 							//  echo 'Email sent.';
+                        // 							}else{
+                        // 							// show_error($this->email->print_debugger());
+                        // 							}
+
+                        //send email to user's email end
+
+
+
+
+
+                        // $this->session->set_flashdata('smessage','Register successfully');
+                        // redirect("Home/order_success","refresh");
+                        $amu = base64_encode($totalAmount);
+                        $idd = base64_encode($last_order_id);
+                        $addr_id = base64_encode($address_id);
+
+                        // redirect("Home/charge/".$amu."/".$idd,"refresh");
+
+                        $id = base64_decode($idd);
+                        $amu = base64_decode($amu);
+                        // $data['title'] = 'Checkout payment | TechArise';
+                        // // $this->site->setProductID($id);
+                        // $data['order_id'] =  $id;
+                        // $data['amn'] =  $amu;
+                        // $data['return_url'] = site_url().'Home/callback/'.$idd;
+                        // $data['surl'] = site_url().'Home/order_success';
+                        // $data['furl'] = site_url().'Home/order_failed';
+                        // $data['currency_code'] = 'USD';
+                        // $this->load->view('paypal/checkout', $data);
+
+                        // 	 $this->load->view('common/header',$data);
+                        // 	 $this->load->view('confirmation');
+                        // 	 $this->load->view('common/footer');
+
+                        $this->session->unset_userdata("data");
+                        $this->session->unset_userdata("order_id");
+                        $this->session->unset_userdata("amn");
+                        $this->session->unset_userdata("return_url");
+                        $this->session->unset_userdata("surl");
+                        $this->session->unset_userdata("furl");
+                        $this->session->unset_userdata("currency_code");
+
+
+                        $this->session->set_flashdata('data', 1);
+                        $this->session->set_flashdata('order_id', $id);
+                        $this->session->set_flashdata('amn', $amu);
+                        $this->session->set_flashdata('return_url', site_url() . 'Home/callback/' . $idd);
+                        $this->session->set_flashdata('surl', site_url() . 'Home/order_success');
+                        $this->session->set_flashdata('furl', site_url() . 'Home/order_failed');
+                        $this->session->set_flashdata('currency_code', 'USD');
+
+                        // $this->session->flashdata('data');
+                        // $this->session->flashdata('order_id');
+                        // $this->session->flashdata('amn');
+                        // $this->session->flashdata('return_url');
+                        // $this->session->flashdata('surl');
+                        // $this->session->flashdata('furl');
+                        // $this->session->flashdata('currency_code');
+
+                        redirect("Home/checkout_af?addr=" . $addr_id, "refresh");
+                    } else {
+
+                        $this->session->set_flashdata('emessage', 'Sorry error occured');
+                        redirect($_SERVER['HTTP_REFERER']);
+                    }
+                }
+            } else {
+
+                $this->session->set_flashdata('emessage', validation_errors());
+                redirect($_SERVER['HTTP_REFERER']);
+            }
+        } else {
+
+            $this->session->set_flashdata('emessage', 'Please insert some data, No data available');
+            redirect($_SERVER['HTTP_REFERER']);
+        }
+    }
+
+
+    //order place end
+
+
+    public function order_success()
+    {
+
+
+        $data['data'] = "";
+        $this->load->view('common/header', $data);
+        $this->load->view('order_success');
+        $this->load->view('common/footer');
+    }
+
+
+    public function order_failed()
+    {
+
+        $data['data'] = "";
+        $this->load->view('common/header', $data);
+        $this->load->view('order_failed');
+        $this->load->view('common/footer');
+    }
+
+
+
+    public function myorder()
+    {
+
+        if (!empty($this->session->userdata('user_id'))) {
+
+            $user_id = $this->session->userdata('user_id');
+
+            $this->db->select('*');
+            $this->db->from('tbl_order1');
+            $this->db->where('user_id', $user_id);
+            // $this->db->where('order_status', '!=',  0);
+            $this->db->order_by('id', "desc");
+            $data['orders_data'] = $this->db->get();
+
+            $this->load->view('common/header', $data);
+            $this->load->view('myorder');
+            $this->load->view('common/footer');
+        } else {
+            redirect("Home/register", "refresh");
+        }
+    }
+
+
+
+
+    //cancel order by user
+
+
+    public function cancel_order($idd)
+    {
+
+        if (!empty($this->session->userdata('user_id'))) {
+
+
+            $id = base64_decode($idd);
+            $typ = 5;
+            date_default_timezone_set("Asia/Calcutta");
+            $cur_date = date("Y-m-d H:i:s");
+            $user_id = $this->session->userdata('user_id');
+
+            $data_update = array(
+                'rejected_by' => 1,
+                'rejected_by_id' => $user_id,
+                'order_status' => $typ,
+                'last_update_date' => $cur_date,
+            );
+
+            $this->db->where('id', $id);
+            $zapak = $this->db->update('tbl_order1', $data_update);
+
+            if ($zapak != 0) {
+                $this->session->set_flashdata('smessage', 'Order #' . $id . ' cancelled successfully.');
+                redirect("Home/myorder", "refresh");
+            } else {
+                $this->session->set_flashdata('emessage', 'Sorry error occured');
+                redirect($_SERVER['HTTP_REFERER']);
+            }
+        } else {
+            redirect("Home/register", "refresh");
+        }
+    }
+
+
+
+
+
+
+    public function profile()
+    {
+        if (!empty($this->session->userdata('user_id'))) {
+
+            $this->db->select('*');
+            $this->db->from('tbl_users');
+            $this->db->where('id', $this->session->userdata('user_id'));
+            $data['users'] = $this->db->get()->row();
+
+            $this->load->view('common/header', $data);
+            $this->load->view('profile');
+            $this->load->view('common/footer');
+        } else {
+            redirect("Home/register", "refresh");
+        }
+    }
+    public function edit_profile()
+    {
+        $this->load->view('common/header');
+        $this->load->view('edit_profile');
+        $this->load->view('common/footer');
+    }
+
+
+    public function add_register_data()
+
+    {
+
+        $this->load->helper(array('form', 'url'));
+        $this->load->library('form_validation');
+        $this->load->helper('security');
+        if ($this->input->post()) {
+            // print_r($this->input->post());
+            // exit;
+            $this->form_validation->set_rules('psw', 'psw', 'required|xss_clean|trim');
+            $this->form_validation->set_rules('name', 'name', 'required|xss_clean|trim');
+            $this->form_validation->set_rules('email', 'email', 'required|xss_clean|valid_email|trim|is_unique[tbl_users.email]');
+
+            if ($this->form_validation->run() == TRUE) {
+                $email = $this->input->post('email');
+                $passw = $this->input->post('psw');
+                $name = $this->input->post('name');
+
+                $pass = md5($passw);
+
+                $data_insert = array(
+                    'email' => $email,
+                    'psw' => $pass,
+                    'name' => $name
+
+                );
+
+                $last_id = $this->base_model->insert_table("tbl_users", $data_insert, 1);
+                $this->session->set_userdata('id', $last_id);
+                $this->session->set_userdata('name', $name);
+            }
+
+
+            if ($last_id != 0) {
+
+                $this->session->set_flashdata('smessage', 'Sign Up Success');
+
+                redirect($_SERVER['HTTP_REFERER']);
+            } else {
+
+                $this->session->set_flashdata('emessage', 'Sorry error occured');
+                redirect($_SERVER['HTTP_REFERER']);
+            }
+        } else {
+
+            $this->session->set_flashdata('emessage', validation_errors());
+            redirect($_SERVER['HTTP_REFERER']);
+        }
+    }
+
+
+    public function login()
+    {
+
+        $this->load->helper(array('form', 'url'));
+        $this->load->library('form_validation');
+        $this->load->helper('security');
+        if ($this->input->post()) {
+
+            $this->form_validation->set_rules('email', 'email', 'required|valid_email|xss_clean|trim');
+            $this->form_validation->set_rules('psw', 'psw', 'required|xss_clean|trim');
+            if ($this->form_validation->run() == TRUE) {
+
+                $email = $this->input->post('email');
+                $passw = $this->input->post('psw');
+                $pass = md5($passw);
+                $this->db->select('*');
+                $this->db->from('tbl_users');
+                $this->db->where('email', $email);
+                $this->db->where('psw', $pass);
+                $da_teacher = $this->db->get();
+                $da = $da_teacher->row();
+                if (!empty($da)) {
+
+                    $nnn1 = $da->email;
+                    $nnn2 = $da->psw;
+                    $nnn3 = $da->name;
+                    $nnn4 = $da->id;
+
+                    $this->session->set_userdata('user_name', $nnn3);
+                    $this->session->set_userdata('user_id', $nnn4);
+                    //$this->session->set_userdata('name',$name);
+
+                    redirect("Home/index", "refresh");
+                } else {
+
+
+                    $this->session->set_flashdata('emessage', 'wrong password');
+                    // redirect("auth/login","refresh");
+                    redirect($_SERVER['HTTP_REFERER']);
+                }
+            } else {
+
+                //echo $pass;
+                $this->session->set_flashdata('emessage', 'Wrong Details Entered');
+                redirect($_SERVER['HTTP_REFERER']);
+            }
+        } else {
+
+            $this->session->set_flashdata('emessage', validation_errors());
+            // redirect("auth/login","refresh");
+            redirect($_SERVER['HTTP_REFERER']);
+        }
+    }
+
+    public function logout()
+    {
+
+        if (!empty($this->session->userdata('user_name'))) {
+
+            $this->session->unset_userdata('user_id');
+            $this->session->unset_userdata('user_name');
+
+            redirect("Home/index", "refresh");
+        } else {
+            echo "Error Loging out";
+        }
+    }
+
+
+    public function getSub_category()
+    {
+
+        if (!empty($this->session->userdata('admin_data'))) {
+
+            // $data['user_name']=$this->load->get_var('user_name');
+
+            $isl = $_GET['isl'];
+
+            $this->db->select('*');
+            $this->db->from('tbl_sub_category');
+            $this->db->where('category', $isl);
+            $this->db->where('is_active', 1);
+            $data = $this->db->get();
+
+            $i = 1;
+            foreach ($data->result() as $row) {
+
+                $sub_category[] = array('id' => $row->id, 'name' => $row->name);
+
+
+                $i++;
+            }
+            if (!empty($sub_category)) {
+                // code...
+
+                echo json_encode($sub_category);
+            } else {
+                echo 'NA';
+            }
+        } else {
+
+            redirect("login/admin_login", "refresh");
+        }
+    }
+
+
+    public function delete_cart($idd)
+    {
+
+        if (!empty($this->session->userdata('user_name'))) {
+
+
+
+            $id = base64_decode($idd);
+
+
+
+
+            $zapak = $this->db->delete('tbl_cart', array('id' => $id));
+            if ($zapak != 0) {
+                $this->session->set_flashdata('smessage', 'Item removed successfully');
+                redirect("Home/cart", "refresh");
+            } else {
+                $this->session->set_flashdata('emessage', 'Sorry error occured');
+                redirect($_SERVER['HTTP_REFERER']);
+            }
+        } else {
+
+            redirect("login/admin_login", "refresh");
+        }
+    }
+
+    public function delete_all_cart()
+    {
+
+        if (!empty($this->session->userdata('user_id'))) {
+
+            $cid = $this->session->userdata('user_id');
+            // echo $cid;exit;
+
+            $zapak = $this->db->delete('tbl_cart', array('user_id' => $cid));
+            if ($zapak != 0) {
+                redirect("Home/cart", "refresh");
+            } else {
+                $this->session->set_flashdata('emessage', 'Sorry error occured');
+                redirect($_SERVER['HTTP_REFERER']);
+            }
+        } else {
+
+            redirect("login/admin_login", "refresh");
+        }
+    }
+
+    // public function update_quantity($idd){
+    //
+    // 													if(!empty($this->session->userdata('user_name'))){
+    //
+    //
+    // 														$idw=$idd;
+    //
+    //
+    // 																	 $data_insert = array('quantity'=>$name,
+    // 																						 'phone'=>$phone,
+    // 																						 'address'=>$address,
+    // 																						 'email'=>$email,
+    // 																						 'password'=>$pass,
+    // 																						 'power'=>$position,
+    // 																						 'services'=>$ser
+    //
+    // 																						 );
+    //
+    //
+    //
+    //
+    // 																		 $this->db->where('id', $idw);
+    // 																		 $last_id=$this->db->update('tbl_', $data_insert);
+    //
+    // 																	 }
+    //
+    //
+    // 																											 if($last_id!=0){
+    //
+    // 																											 $this->session->set_flashdata('smessage','Data inserted successfully');
+    //
+    // 																											 redirect("dcadmin//view_","refresh");
+    //
+    // 																															 }
+    //
+    // 																															 else
+    //
+    // 																															 {
+    //
+    // 																														$this->session->set_flashdata('emessage','Sorry error occured');
+    // 																															redirect($_SERVER['HTTP_REFERER']);
+    //
+    //
+    // 																															 }
+    //
+    // 												}
+    // 												else{
+    //
+    // 													 redirect("login/admin_login","refresh");
+    // 												}
+    //
+    // 												}
+    //
+
+
+
+
+    //footer pages start
+
+    public function about_us()
+    {
+
+        $this->db->select('*');
+        $this->db->from('tbl_about_us');
+        $this->db->where('is_active', 1);
+        $data['about_us'] = $this->db->get()->row();
+
+        $this->load->view('common/header', $data);
+        $this->load->view('about_us');
+        $this->load->view('common/footer');
+    }
+    public function email_view()
+    {
+
+        $this->load->view('email');
+    }
+
+
+    public function terms_and_conditions()
+    {
+
+        $this->db->select('*');
+        $this->db->from('tbl_terms_and_conditions');
+        $this->db->where('is_active', 1);
+        $data['terms_and_conditions'] = $this->db->get()->row();
+
+        $this->load->view('common/header', $data);
+        $this->load->view('terms_and_conditions');
+        $this->load->view('common/footer');
+    }
+
+
+    public function return_policy()
+    {
+
+        $this->db->select('*');
+        $this->db->from('tbl_return_policy');
+        $this->db->where('is_active', 1);
+        $data['return_policy'] = $this->db->get()->row();
+
+        $this->load->view('common/header', $data);
+        $this->load->view('return_policy');
+        $this->load->view('common/footer');
+    }
+
+
+    public function privacy_policy()
+    {
+
+        $this->db->select('*');
+        $this->db->from('tbl_privacy_policy');
+        $this->db->where('is_active', 1);
+        $data['privacy_policy'] = $this->db->get()->row();
+
+        $this->load->view('common/header', $data);
+        $this->load->view('privacy_policy');
+        $this->load->view('common/footer');
+    }
+
+
+    public function why_us()
+    {
+
+        $this->db->select('*');
+        $this->db->from('tbl_why_us');
+        $this->db->where('is_active', 1);
+        $data['why_us_data'] = $this->db->get()->row();
+
+        $this->load->view('common/header', $data);
+        $this->load->view('why_us');
+        $this->load->view('common/footer');
+    }
+
+
+
+
+
+
+    public function flexiblefinancing()
+    {
+
+        $this->db->select('*');
+        $this->db->from('tbl_flexiblefinancing');
+        $this->db->where('is_active', 1);
+        $data['flexiblefinancing_data'] = $this->db->get()->row();
+
+        $this->load->view('common/header', $data);
+        $this->load->view('flexiblefinancing');
+        $this->load->view('common/footer');
+    }
+
+
+
+
+
+    public function free_shipping()
+    {
+
+        $this->db->select('*');
+        $this->db->from('tbl_free_shipping');
+        $this->db->where('is_active', 1);
+        $data['free_shipping_data'] = $this->db->get()->row();
+
+        $this->load->view('common/header', $data);
+        $this->load->view('free_shipping');
+        $this->load->view('common/footer');
+    }
+
+
+
+
+    public function lifetime_upgrades()
+    {
+
+        $this->db->select('*');
+        $this->db->from('tbl_lifetime_upgrades');
+        $this->db->where('is_active', 1);
+        $data['lifetime_upgrades_data'] = $this->db->get()->row();
+
+        $this->load->view('common/header', $data);
+        $this->load->view('lifetime_upgrades');
+        $this->load->view('common/footer');
+    }
+
+
+
+
+    public function lifetime_warranty()
+    {
+
+        $this->db->select('*');
+        $this->db->from('tbl_lifetime_warranty');
+        $this->db->where('is_active', 1);
+        $data['lifetime_warranty_data'] = $this->db->get()->row();
+
+        $this->load->view('common/header', $data);
+        $this->load->view('lifetime_warranty');
+        $this->load->view('common/footer');
+    }
+
+
+
+
+    public function visit_our_showroom()
+    {
+
+        $this->db->select('*');
+        $this->db->from('tbl_visit_our_showroom');
+        $this->db->where('is_active', 1);
+        $data['visit_us'] = $this->db->get()->row();
+
+        $this->load->view('common/header', $data);
+        $this->load->view('visit_our_showroom');
+        $this->load->view('common/footer');
+    }
+    public function visit_showroom()
+    {
+
+
+        $this->load->view('visit_showroom');
+    }
+
+
+
+
+    public function services()
+    {
+
+        $this->db->select('*');
+        $this->db->from('tbl_services');
+        $this->db->where('is_active', 1);
+        $data['services_data'] = $this->db->get()->row();
+
+        $this->load->view('common/header', $data);
+        $this->load->view('services');
+        $this->load->view('common/footer');
+    }
+
+
+
+
+    //open iframes start
+
+    public function subcategories($t)
+    {
+
+        $t_decode = base64_decode($t);
+        $data['t_dec'] = $t_decode;
+
+        $this->load->view('common/header', $data);
+        $this->load->view('iframe_subcategory');
+        $this->load->view('common/footer');
+    }
+
+
+    //open iframes end
+
+
+
+    //open show header signup page start
+
+    public function signup_special_offers()
+    {
+
+
+        $this->load->view('common/header');
+        $this->load->view('signup_offer');
+        $this->load->view('common/footer');
+    }
+
+    //open show header signup page end
+
+
+    //footer pages end
+
+
+    //
+    //
+    //
+    // public function cancel_order_data($idd)
+    // {
+    //
+    // if(!empty($this->session->userdata(user_id))){
+    //
+    // $id= base64_decode($idd);
+    // $user_id = $this->session->userdata('user_id');
+    //
+    // $ip = $this->input->ip_address();
+    // date_default_timezone_set("Asia/Calcutta");
+    // $cur_date=date("Y-m-d H:i:s");
+    //
+    // $this->db->select('*');
+    // $this->db->from('tbl_order1');
+    // $this->db->where('id',$id);
+    // $order1_data= $this->db->get()->row();
+    //
+    // if(!empty($order1_data)){
+    //
+    // 	$data_update= array(
+    // 		'order_status'=> 5,
+    // 		'rejected_by'=> "USER",
+    // 		'rejected_by_id'=> $user_id,
+    // 		'last_update_date'=> $cur_date,
+    // 	);
+    //
+    //
+    // $this->db->where('id',$order1_data->id);
+    // $this->db->where('id',$order1_data->id);
+    // $updated_row= $this->db->update('tbl_order1',$data_update);
+    //
+    // if($updated_row != 0){
+    //
+    // }else
+    //
+    //
+    // }
+    //
+    //
+    // }else{
+    // 	  redirect("login/admin_login","refresh");
+    // }
+    //
+    //
+    // }
+    public function price_change()
+    {
+        $this->load->helper(array('form', 'url'));
+        $this->load->library('form_validation');
+        $this->load->helper('security');
+        if ($this->input->post()) {
+            $this->form_validation->set_rules('pid', 'pid', 'xss_clean|trim');
+            $this->form_validation->set_rules('qty', 'qty', 'xss_clean|trim');
+            $this->form_validation->set_rules('ringsizeprice', 'ringsizeprice', 'xss_clean|trim');
+
+
+            if ($this->form_validation->run() == TRUE) {
+
+                $qty = $this->input->post('qty');
+                $pid = $this->input->post('pid');
+                $ringsizeprice = $this->input->post('ringsizeprice');
+
+
+                $this->db->select('*');
+                $this->db->from('tbl_products');
+                $this->db->where('id', $pid);
+                $pro_data = $this->db->get()->row();
+                if (!empty($pro_data)) {
+
+                    $this->db->select('*');
+                    $this->db->from('tbl_price_rule');
+                    $pr_data = $this->db->get()->row();
+                    $multiplier = $pr_data->multiplier;
+                    $cost_price11 = $pr_data->cost_price1;
+                    $cost_price22 = $pr_data->cost_price2;
+                    $cost_price33 = $pr_data->cost_price3;
+                    $cost_price44 = $pr_data->cost_price4;
+                    $cost_price55 = $pr_data->cost_price5;
+                    if (!empty($pro_data->price)) {
+                        $cost_price = $pro_data->price + $ringsizeprice;
+                        $cost_price = $cost_price;
+                        $retail = $cost_price * $multiplier;
+                        $now_price = $cost_price;
+                        // echo $now_price;
+                        // exit;
+                        if ($cost_price <= 500) {
+                            $cost_price2 = $cost_price * $cost_price;
+                            // $now_price= $cost_price*0.00000264018*($cost_price*2)+(-0.002220133*$cost_price)+1.950022201-1+0.95;
+                            $number = round($cost_price * ($cost_price11 * $cost_price2 + $cost_price22 * $cost_price + $cost_price33), 2);
+                            $unit = 5;
+                            $remainder = $number % $unit;
+                            $mround = ($remainder < $unit / 2) ? $number - $remainder : $number + ($unit - $remainder);
+                            $now_price = round($mround) - 1 + 0.95;
+                            // $now_price = round($mround);
+                            // echo $cost_price;
+                            // exit;
+                        }
+                        if ($cost_price > 500) {
+                            $number = round($cost_price * ($cost_price44 * $cost_price / $multiplier + $cost_price55));
+                            $unit = 5;
+                            $remainder = $number % $unit;
+                            $mround = ($remainder < $unit / 2) ? $number - $remainder : $number + ($unit - $remainder);
+                            $now_price = round($mround) - 1 + 0.95;
+                            // $now_price = round($mround);
+                            // echo $cost_price;
+                        }
+                        $retail = $retail * $qty;
+                        $now_price = $now_price * $qty;
+                        $saved = round($retail - $now_price);
+                        $dis_percent = round($saved / $retail * 100);
+                        // $respone['retail'] = round($retail, 2);
+                        $respone['retail'] = round($retail);
+                        $respone['saved'] = $saved;
+                        $respone['dis'] = $dis_percent;
+                        $respone['price'] = number_format($now_price, 2);
+                    }
+                    $respone['data'] = true;
+                    echo json_encode($respone);
+                }
+            } else {
+
+                $respone['data'] = false;
+                $respone['data_message'] = validation_errors();
+                echo json_encode($respone);
+            }
+        } else {
+            $respone['data'] = false;
+            $respone['data_message'] = "Please insert some data, No data available";
+            echo json_encode($respone);
+        }
+    }
+
+    public function load_modify_contact($id)
+    {
+
+        // echo $id; die();
+        $data['id'] = $id;
+        $this->db->select('*');
+        $this->db->from('tbl_modify_info_content');
+        //$this->db->where('id',$usr);
+        $data['content_data'] = $this->db->get()->row();
+        $this->db->select('*');
+        $this->db->from('tbl_products');
+        $this->db->where('id', $id);
+        $data['product_data'] = $this->db->get()->row();
+        // echo $product_data->description;die();
+        $this->load->view('common/header', $data);
+        $this->load->view('modify_contact');
+        $this->load->view('common/footer');
+    }
+
+    public function modify_contact($id)
+    {
+        $this->load->helper(array('form', 'url'));
+        $this->load->library('form_validation');
+        $this->load->helper('security');
+        if ($this->input->post()) {
+            $this->form_validation->set_rules('name', 'name', 'xss_clean|trim');
+            $this->form_validation->set_rules('email', 'email', 'required|xss_clean|trim');
+            $this->form_validation->set_rules('b_phone', 'b_phone', 'xss_clean|trim');
+            $this->form_validation->set_rules('m_phone', 'm_phone', 'xss_clean|trim');
+            $this->form_validation->set_rules('acc_no', 'acc_no', 'xss_clean|trim');
+
+
+            if ($this->form_validation->run() == TRUE) {
+                $name = $this->input->post('name');
+                $email = $this->input->post('email');
+                $b_phone = $this->input->post('b_phone');
+                $m_phone = $this->input->post('m_phone');
+                $acc_no = $this->input->post('acc_no');
+                $ip = $this->input->ip_address();
+                date_default_timezone_set("Asia/Calcutta");
+                $cur_date = date("Y-m-d H:i:s");
+                $addedby = $this->session->userdata('admin_id');
+                $data_insert = array(
+                    'product_id' => $id,
+                    'name' => $name,
+                    'email' => $email,
+                    'b_phone' => $b_phone,
+                    'm_phone' => $m_phone,
+                    'acc_no' => $acc_no,
+                    'ip' => $ip,
+                    'added_by' => $addedby,
+                    'is_active' => 1,
+                    'date' => $cur_date
+                );
+                $last_id = $this->base_model->insert_table("tbl_modify_contact", $data_insert, 1);
+                if ($last_id == 0) {
+                    $this->session->set_flashdata('emessage', 'Some error occured');
+                    redirect($_SERVER['HTTP_REFERER']);
+                } else {
+                    $this->session->set_flashdata('smessage', 'Your request was submitted successfully');
+                    redirect('Home/product_detail/' . $id);
+                }
+            } else {
+                $this->session->set_flashdata('emessage', validation_errors());
+                redirect($_SERVER['HTTP_REFERER']);
+            }
+        } else {
+            $respone['data'] = false;
+            $respone['data_message'] = "Please insert some data, No data available";
+            echo json_encode($respone);
+        }
+    }
+
+    public function share_with()
+    {
+
+        $this->load->helper(array('form', 'url'));
+        $this->load->library('form_validation');
+        $this->load->helper('security');
+        if ($this->input->post()) {
+            $this->form_validation->set_rules('link', 'link', 'required|xss_clean|trim');
+            $this->form_validation->set_rules('from_email', 'from_email', 'required|xss_clean|trim');
+            $this->form_validation->set_rules('to_email', 'to_email', 'required|xss_clean|trim');
+            $this->form_validation->set_rules('name', 'name', 'required|xss_clean|trim');
+            $this->form_validation->set_rules('shared_product', 'shared_product', 'required|xss_clean|trim');
+            $this->form_validation->set_rules('message', 'message', 'required|xss_clean|trim');
+
+
+            if ($this->form_validation->run() == TRUE) {
+                $link = $this->input->post('link');
+                $from_email = $this->input->post('from_email');
+                $to_email = $this->input->post('to_email');
+                $name = $this->input->post('name');
+                $shared_product = $this->input->post('shared_product');
+                $message = $this->input->post('message');
+                $ip = $this->input->ip_address();
+                date_default_timezone_set("Asia/Calcutta");
+                $cur_date = date("Y-m-d H:i:s");
+
+                $data_insert = array(
+                    'name' => $name,
+                    'from_email' => $from_email,
+                    'to_email' => $to_email,
+                    'message' => $message,
+                    'shared_product' => $shared_product
+                );
+                $last_id = $this->base_model->insert_table("tbl_shared_products", $data_insert, 1);
+                if ($last_id != 0) {
+                    // $config = array(
+                    // 											'protocol' => 'smtp',
+                    // 											'smtp_host' => SMTP_HOST,
+                    // 											'smtp_port' => SMTP_PORT,
+                    // 											'smtp_user' => USER_NAME, // change it to yours
+                    // 											'smtp_pass' => PASSWORD, // change it to yours
+                    // 											'mailtype' => 'html',
+                    // 											'charset' => 'iso-8859-1',
+                    // 											'wordwrap' => true
+                    // 											);
+                    // 								$to=$to_email;
+                    // 								$data['name']= $name;
+                    // 								$data['date']= $cur_date;
+                    //
+                    //
+                    //
+                    // 								$message = $message."<br>".$link."<br>From- ".$name;
+                    // 								// echo $to;
+                    // 								// print_r($message);
+                    // 								// exit;
+                    //
+                    // 								$this->load->library('email', $config);
+                    // 								$this->email->set_newline("");
+                    // 								$this->email->from(EMAIL); // change it to yours
+                    // 								$this->email->to($to);// change it to yours
+                    // 								$this->email->subject('Order Placed');
+                    // 								$this->email->message($message);
+                    // 								if ($this->email->send()) {
+                    // 										// echo 'Email sent.';
+                    // 								} else {
+                    // 										show_error($this->email->print_debugger());
+                    // 								}
+                    $this->session->set_flashdata('smessage', 'Your message has been sent successfully.');
+                    redirect($_SERVER['HTTP_REFERER']);
+                } else {
+                    $this->session->set_flashdata('emessage', 'Some error occured');
+                    redirect($_SERVER['HTTP_REFERER']);
+                }
+            } else {
+                $this->session->set_flashdata('emessage', validation_errors());
+                redirect($_SERVER['HTTP_REFERER']);
+            }
+        } else {
+            $this->session->set_flashdata('emessage', 'Please insert some data, No data available');
+            redirect($_SERVER['HTTP_REFERER']);
+        }
+    }
+}

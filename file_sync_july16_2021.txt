@@ -1,0 +1,4 @@
+DDjewellers file sync:-
+
+application\controllers\f9admin\QuickshopProducts.php
+application\views\admin\quickshop_products\add_products.php
