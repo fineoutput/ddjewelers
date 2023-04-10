@@ -16,7 +16,7 @@
   href="https://unpkg.com/video.js@7/dist/video-js.min.css"
   rel="stylesheet"
 />
-
+<script src="https://js.braintreegateway.com/web/dropin/1.34.0/js/dropin.min.js"></script>
 <!-- City -->
 <link
   href="https://unpkg.com/@videojs/themes@1/dist/city/index.css"
@@ -35,7 +35,6 @@
   background-color: #fff;
   z-index: 99;
         }
-
         .loader {
             border: 16px solid #f3f3f3; 
             border-top: 16px solid #1A2F64; 
@@ -44,9 +43,7 @@
             height: 120px;
             animation: spin 2s linear infinite;
             z-index: 100;
-            
         }
-
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
@@ -58,8 +55,6 @@
     </div> 
 <!-- header start -->
 <script defer src="https://use.fontawesome.com/releases/v5.0.8/js/all.js" integrity="sha384-SlE991lGASHoBfWbelyBPLsUlwY1GwNDJo3jSJO04KZ33K2bwfV9YBauFfnzvynJ" crossorigin="anonymous"></script>
-
-
 <style media="screen">
   @media (max-width:992px){
     .cart-value{
@@ -94,8 +89,6 @@
     background: #333366;
     color: white !important;
   }
-
-
   	.pro_ul::-webkit-scrollbar-thumb
   	{
   		background: #1a2f64 !important;
@@ -112,7 +105,6 @@
       display: none;
     }
   }
-
   .ulcontent
   {
     display: none;
@@ -133,7 +125,6 @@
   {
     .ulcontent
   {
-   
     top: 45%;
   }
   }
@@ -141,7 +132,6 @@
   {
     .ulcontent
   {
-   
     top: 42%;
   }
   }
@@ -149,7 +139,6 @@
   {
     .ulcontent
   {
-   
     top: 40%;
   }
   }
@@ -160,16 +149,11 @@
   .showcontent
   {
     cursor: pointer;
-
   }
   @media (min-width: 1025px) and (max-width: 1350px)
   {
- 
   }
- 
 </style>
-
-
 <section class="top_her">
    <div class="container-fluid pt-0 pb-0 pl-5 pr-5 h-100">
      <div class="row h-100">
@@ -195,14 +179,11 @@
           <a href="<?=base_url(); ?>Home/faq"> <p>FAQ </p></a> -->
          </div>
        </div>
-
-
        <!-- <div class="col-md-6">
          <div class="row h-100">
            <div class="col-md-9 h-100">
              <div  class="d-flex text-right cart_div h-100">
                <div class="h-100 new_HOV">
-
                  <span class="d-flex align-items-center h-100 ">
                    <i class="fa fa-user mr-2"></i>
                 <? if(!empty($this->session->userdata('user_id'))) { ?>
@@ -218,12 +199,8 @@
                    <p><a href="<?=base_url(); ?>Home/register">Login</a> </p>
                  <? } ?>
                  </span>
-
-
-
                </div>
              </div>
-
            </div>
            <div class="col-md-3 h-100">
              <div  class="d-flex text-right cart_div h-100">
@@ -232,12 +209,9 @@
              </div></div>
          </div>
        </div> -->
-
      </div>
    </div>
  </section>
-
- 
   <section class="header">
     <header>
       <div class="container-fluid Pad_new">
@@ -249,25 +223,19 @@
           </div>
           <!-- mobile search -->
           <style>
-
           </style>
           <!-- <div class="col-8 d-lg-none d-sm-block text-center m-auto" style="padding:unset !important;">
             <a href="<?=base_url(); ?>Home/index">
               <img src="<?=base_url()?>assets/jewel/img/
-              
-              
               .png" class="img-fluid logo1" style="width:25%" />
               <h3 class=" text-center lobi">D&D Jewelry</h3>
               <h5>Since 1985</h5>
             </a> -->
             <!-- <button type="button" class="btn signup" style="font-size: x-small;">Sign Up for Special Offer</button> -->
-
           <!-- </div> -->
-
           <!-- <div class="col-6 col-md-4 m-auto text-center offer_btn"> -->
           <div class="col-md-4 m-auto  d-none d-lg-block iconimg">
             <!-- <button class="offer_btn">SignUp For Special Offers</button> -->
-
             <div class="d-flex pt-3 pb-3">
               <div class="w-30 mr-3">
                 <img src="<?=base_url()?>assets/jewel/img/shipping.png" class="img-fluid" />
@@ -283,13 +251,7 @@
             <div class="mt-2" style="padding-left:70px;">
               <button type="button" class="btn-md btn signup text-right">Sign Up for Special Offer</button>
             </div>
-
-
           </div>
-
-
-
-
           <div class="col-md-4 d-none d-lg-block">
               <!-- d-none d-lg-block -->
             <a href="<?=base_url(); ?>Home/index">
@@ -300,7 +262,6 @@
               <!-- <h4 class=" text-center">D&D Jewelry</h4>
               <div class="text-center">
                   <h6>Since 1985</h6>
-
               </div> -->
             </a>
           </div>
@@ -309,26 +270,16 @@
             <a href="<?=base_url(); ?>Home/index">
               <div class=" text-center">
                 <img src="<?=base_url()?>assets/jewel\img\dd.jewelplus.com_Website_Latest_-removebg-preview.png" class="" style="width:100px" />
-            
               </div>
-            
             </a>
           </div>
-
-
-
-
           <div class="col-4 lardis align-self-center" style="margin:0;padding:0px;justify-content: end; text-align: right;">
-
 <a href="#!" role="button" onclick="mobSearch()" style="padding-right:7px;">
    <!--  -->
 <img src="https://www.monicavinader.com/images/2020/search-black.svg" width="28px" height="20px" class="" alt="" style="Width:20px;">
 </a>
-
             <!-- </div> -->
-
             <? if(!empty($this->session->userdata('user_id'))) { ?>
-
 <?php
 $user_id= $this->session->userdata('user_id');
             $this->db->select('*');
@@ -336,14 +287,10 @@ $this->db->from('tbl_cart');
 $this->db->where('user_id',$user_id);
 $data_count= $this->db->count_all_results();
 ?>
-
 <a href="<?=base_url(); ?>Home/cart" class=""  style="position:relative;">
   <i class="fa fa-shopping-cart" style="margin-right:7px;" ></i>
   <small class="cart-value" style="left: 19px;"><span id="totalCartItems">0</span></small>
 </a>
-
-
-         
             <a href="<?=base_url(); ?>Home/wishlist" class="" style="position:relative;">
                <!-- margin-right:1.5rem;  -->
                <i class="fa fa-heart" style="margin-right:18px;font-size:22px; display:inline;" ></i>
@@ -352,27 +299,13 @@ $data_count= $this->db->count_all_results();
               $this->db->where('user_id',$this->session->userdata('user_id'));
               $wish_count = $this->db->count_all_results(); echo $wish_count?></span></small>
             </a>
-
-       
-
-
 <?php }else{?>
-
   <a href="<?=base_url(); ?>Home/cart" class="carticon"  style="position:relative;margin-right: 1.5rem;">
     <i class="fa fa-shopping-cart" ></i>
     <small class="cart-value" style="left: 19px;"><span id="totalCartItems">0</span></small>
   </a>
-
-
 <?php }?>
-
-
-
           </div>
-
-
-
-
           <div class="col-md-4 ser_col d-flex justify-content-between align-content-center" style="flex-wrap:wrap">
             <div class="text-center d-none d-lg-block">
               <i class="fa fa-phone I_size"></i>
@@ -380,7 +313,6 @@ $data_count= $this->db->count_all_results();
             </div>
             <div class="text-center d-none d-lg-block">
               <i class="	fas fa-chart-pie I_size" ></i>
-
               <p class="B_size">Financing</p>
             </div>
             <div class="text-center d-none d-lg-block">
@@ -439,55 +371,39 @@ $data_count= $this->db->count_all_results();
             <form class="d-none d-lg-block" action="<?=base_url()?>Home/search_products" method="POST" enctype="multipart/form-data" style="margin-left:10px;">
             <div>
             <div class="w-100 float-right d-flex">
-
               <input type="text" id="searchinput" name="search_input" placeholder="What can we help you find?" class="ser_top"  style="min-width:100%;">
               <!-- <button class="ser_btn" >SEARCH</button> -->
               <button class="ser_btn" style="Width:85px !important; min-width:25%;"><i class="fa fa-search"></i></button>
-
             </div>
             <!-- search show search data div start-->
                 <div class="row searc">
                   <div class="col divpro">
                     <ul class="pro_ul" id="serc">
-
                     </ul>
                   </div>
                 </div>
                 </div>
             <!-- search show search data div end-->
             </form>
-
           </div>
             <!-- <form action="" method="post" enctype="multipart/form-data">
             <div class="w-100 float-right d-flex ">
-
               <input type="text" name="" placeholder="Search" class="ser_top"> -->
               <!-- <button class="ser_btn" >SEARCH</button> -->
               <!-- <button class="ser_btn" style="Width:60px !important;"><i class="fa fa-search"></i></button>
-
             </div>
             </form> -->
-
-
             <!-- search  icons start -->
-
                         <!-- <a href="#">
                           <i class="fa fa-search"></i>
                         </a> -->
-
             <!-- search  icons end -->
-
             <? if(!empty($this->session->userdata('user_id'))) { ?>
-
 <!--  wishlist icons start -->
-
        <!-- <a href="#">
               <i class="fa fa-heart"></i>
             </a> -->
-
 <!--  wishlist icons end -->
-
-
 <?php
 $user_id= $this->session->userdata('user_id');
             $this->db->select('*');
@@ -498,22 +414,15 @@ $data_count= $this->db->count_all_results();
 <style>
 .carticon{
   padding-right: 1rem;
-  
 }
-
 </style>
-
-
           <?php }else{?>
-
             <a href="<?=base_url(); ?>Home/cart" class="carticon" style="position:relative;padding-right:1.5rem;">
               <!-- margin-right:1.5rem; -->
               <!-- <i class="fa fa-shopping-cart"></i> -->
               <!-- <small class="cart-value"><span id="totalCartItemsM">0</span></small> -->
             </a>
-
           <?php }?>
-
             <?if (empty($cid = $this->session->userdata('user_name'))) {?>
               <!-- <a href="<?=base_url(); ?>Home/profile" style="padding-left:15px;">
                 <i class="fa fa-user"></i>
@@ -526,11 +435,7 @@ $data_count= $this->db->count_all_results();
               <i class="fas fa-sign-out-alt"></i>
             </a> -->
             <?}?>
-
-
-
           </div>
-
         </div>
         <style>
 .form-control:focus{
@@ -540,7 +445,6 @@ $data_count= $this->db->count_all_results();
   display:none;
 }
         </style>
-
         <div id="mobSearch" class="modalsearch" style="width:94%;padding-left:21px;">
           <div class="row mb-1 search d-sm-block d-lg-none d-flex" style="border: 1px solid #ced4da;">
             <div class="col-1" style="padding:0px;">
@@ -554,7 +458,6 @@ $data_count= $this->db->count_all_results();
                   <div class="row searc" style="top:143px;z-index:99999;">
                     <div class="col divpro">
                       <ul class="pro_ul" id="serch">
-
                       </ul>
                     </div>
                   </div>
@@ -564,17 +467,12 @@ $data_count= $this->db->count_all_results();
               <button type="button" class="close" onclick="mobSearch()" style="float: unset;">
             <span aria-hidden="true" style="vertical-align: sub;font-size: 35px;">&times;</span>
           </button>
-
-
-
             </div>
           </div>
         </div>
-
       </div>
     </header>
   </section>
-
   <section id="menu">
     <div class="container-fluid ">
       <div class="row">
@@ -586,40 +484,27 @@ $data_count= $this->db->count_all_results();
         $this->db->where('is_active', 1);
         $this->db->order_by('seq', "ASC");
         $data= $this->db->limit(8)->get();
-
         $i=1; foreach($data->result() as $da) {
           $cid=$da->id?>
         <div class=" menu_col">
-
           <p class="text-center menu_p">
-
             <?php
             $this->db->select('*');
         $this->db->from('tbl_sub_category');
         $this->db->where('is_active',1);
         $this->db->where('category',$da->id);
         $subcategory_da= $this->db->get()->row();
-
 if($da->name == 'DIAMONDS'){ ?>
-
         <?=$da->name?>
-
 <?php   }else{ ?>
-
-
 <?php  if(!empty($subcategory_da)){ ?>
-
 <a href="<?=base_url();?>Home/sub_category/<?=$da->id?>">
-
 <?php   }else{ ?>
   <a href="<?=base_url(); ?>Home/all_products/<?=$da->id?>/<?=base64_encode(3);?>">
 <?php  } ?>
         <?=$da->name?>
 </a>
-
-
 <?php  } ?>
-
           </p>
           <?$this->db->select('*');
           $this->db->from('tbl_sub_category');
@@ -630,53 +515,38 @@ if($da->name == 'DIAMONDS'){ ?>
           ?>
           <ul class="hov_ul" style="height: 250px;
     overflow: auto;">
-    
-
           <? $i=1; foreach($db->result() as $df) {
-
-
 if($df->name == "Loose Natural Diamonds without Grading Report"){ ?>
-
-
   <li>
       <a href="<?=base_url();?>Home/subcategories/<?=base64_encode(1);?>" target="_blank">
       <?=$df->name?>
     </a>
   </li>
-
 <?php }elseif ($df->name == "Loose Lab-Grown Diamonds without Grading Report") {?>
-
   <li>
       <a href="<?=base_url();?>Home/subcategories/<?=base64_encode(2);?>" target="_blank">
       <?=$df->name?>
     </a>
   </li>
-
 <?php }elseif ($df->name == "Loose Lab-Grown Diamonds with Grading Report") { ?>
-
   <li>
       <a href="<?=base_url();?>Home/subcategories/<?=base64_encode(3);?>" target="_blank">
       <?=$df->name?>
     </a>
   </li>
-
 <?php }elseif ($df->name == "Loose Natural Diamonds with Grading Report") {?>
-
   <li>
       <a href="<?=base_url();?>Home/subcategories/<?=base64_encode(4);?>" target="_blank">
       <?=$df->name?>
     </a>
   </li>
-
 <?php }else{
-
   $this->db->select('*');
   $this->db->from('tbl_minisubcategory');
   $this->db->where('subcategory',$df->id);
   // $this->db->order_by('seq','ASC');
   $this->db->where('is_active',1);
   $minorsub_category= $this->db->get()->row();
-
   if(empty($minorsub_category)){
              ?>
       <li>
@@ -684,27 +554,19 @@ if($df->name == "Loose Natural Diamonds without Grading Report"){ ?>
           <?=$df->name?>
         </a>
       </li>
-
 <?php }else{ ?>
-
       <li>
           <a href="<?=base_url(); ?>Home/minor_sub_products/<?=base64_encode($df->id);?>">
           <?=$df->name?>
         </a>
       </li>
-
 <?php } ?>
-
-
-
 <?php } ?>
-
           <?php $i++; } ?>
         </ul>
 <?}?>
         </div>
         <?php $i++; } ?>
-
         <!-- <div class=" menu_col">
           <p class="text-center menu_p">
           <a href="<?=base_url(); ?>Home/new_arrivals">
@@ -712,7 +574,6 @@ if($df->name == "Loose Natural Diamonds without Grading Report"){ ?>
           </a>
           </p>
         </div> -->
-
         <div class=" menu_col">
           <p class="text-center menu_p">
           <a href="<?=base_url(); ?>QuickShops/quickshops_category">
@@ -720,7 +581,6 @@ if($df->name == "Loose Natural Diamonds without Grading Report"){ ?>
           </a>
           </p>
         </div>
-
           <div class="col-md-12 phonetab">
           <p><span class="mr-3"><i class="fa fa-phone"></i></span>(925) 274-1444</p>
         </div>
@@ -728,7 +588,6 @@ if($df->name == "Loose Natural Diamonds without Grading Report"){ ?>
     </div>
   </section>
 <!-- header end -->
-
 <script>
 function mobSearch() {
   // alert();
@@ -740,7 +599,6 @@ x.style.display = "none";
 }
 }
 // When the user clicks anywhere outside of the modal, close it
-
 // window.onclick = mobSearch(event) {
 //
 //   if (event.target == modalsearch) {

@@ -248,7 +248,11 @@
                                     <div style="text-align:center;" id="paypal-button"></div>
                                 </div>
                                 <div class="justify-content-center text-center">
-                                    <div id="container"></div>
+                                    <div id="google-pay-button"></div>
+                                    <!-- <button id="google-pay-button"></button> -->
+                                </div>
+                                <div class="justify-content-center text-center">
+                                    <div id="dropin-container"></div>
                                 </div>
                             <? } ?>
                         </div>
@@ -512,302 +516,118 @@ $return_url = site_url() . 'Home/callback/' . $ordr_id_enc;
     }
 </script>
 <!-- //------- gpay ------- -->
-<script async   src="https://pay.google.com/gp/p/js/pay.js"   onload="onGooglePayLoaded()"></script>
+<script src="https://pay.google.com/gp/p/js/pay.js"></script>
+<script src="https://js.braintreegateway.com/web/3.91.0/js/client.min.js"></script>
+<script src="https://js.braintreegateway.com/web/3.91.0/js/google-payment.min.js"></script>
 <script>
-    /**
-     * Define the version of the Google Pay API referenced when creating your
-     * configuration
-     *
-     * @see {@link https://developers.google.com/pay/api/web/reference/request-objects#PaymentDataRequest|apiVersion in PaymentDataRequest}
-     */
-    const baseRequest = {
-        apiVersion: 2,
-        apiVersionMinor: 0
-    };
-    /**
-     * Card networks supported by your site and your gateway
-     *
-     * @see {@link https://developers.google.com/pay/api/web/reference/request-objects#CardParameters|CardParameters}
-     * @todo confirm card networks supported by your site and gateway
-     */
-    const allowedCardNetworks = ["AMEX", "DISCOVER", "INTERAC", "JCB", "MASTERCARD", "VISA"];
-    /**
-     * Card authentication methods supported by your site and your gateway
-     *
-     * @see {@link https://developers.google.com/pay/api/web/reference/request-objects#CardParameters|CardParameters}
-     * @todo confirm your processor supports Android device tokens for your
-     * supported card networks
-     */
-    const allowedCardAuthMethods = ["PAN_ONLY", "CRYPTOGRAM_3DS"];
-    /**
-     * Identify your gateway and your site's gateway merchant identifier
-     *
-     * The Google Pay API response will return an encrypted payment method capable
-     * of being charged by a supported gateway after payer authorization
-     *
-     * @todo check with your gateway on the parameters to pass
-     * @see {@link https://developers.google.com/pay/api/web/reference/request-objects#gateway|PaymentMethodTokenizationSpecification}
-     */
-    const tokenizationSpecification = {
-        type: 'PAYMENT_GATEWAY',
-        parameters: {
-            'gateway': 'example',
-            'gatewayMerchantId': 'BCR2DN6T7P04XAJG'
-        }
-    };
-    /**
-     * Describe your site's support for the CARD payment method and its required
-     * fields
-     *
-     * @see {@link https://developers.google.com/pay/api/web/reference/request-objects#CardParameters|CardParameters}
-     */
-    const baseCardPaymentMethod = {
-        type: 'CARD',
-        parameters: {
-            allowedAuthMethods: allowedCardAuthMethods,
-            allowedCardNetworks: allowedCardNetworks
-        }
-    };
-    /**
-     * Describe your site's support for the CARD payment method including optional
-     * fields
-     *
-     * @see {@link https://developers.google.com/pay/api/web/reference/request-objects#CardParameters|CardParameters}
-     */
-    const cardPaymentMethod = Object.assign({},
-        baseCardPaymentMethod, {
-            tokenizationSpecification: tokenizationSpecification
-        }
-    );
-    /**
-     * An initialized google.payments.api.PaymentsClient object or null if not yet set
-     *
-     * @see {@link getGooglePaymentsClient}
-     */
-    let paymentsClient = null;
-    /**
-     * Configure your site's support for payment methods supported by the Google Pay
-     * API.
-     *
-     * Each member of allowedPaymentMethods should contain only the required fields,
-     * allowing reuse of this base request when determining a viewer's ability
-     * to pay and later requesting a supported payment method
-     *
-     * @returns {object} Google Pay API version, payment methods supported by the site
-     */
-    function getGoogleIsReadyToPayRequest() {
-        return Object.assign({},
-            baseRequest, {
-                allowedPaymentMethods: [baseCardPaymentMethod]
-            }
-        );
-    }
-    /**
-     * Configure support for the Google Pay API
-     *
-     * @see {@link https://developers.google.com/pay/api/web/reference/request-objects#PaymentDataRequest|PaymentDataRequest}
-     * @returns {object} PaymentDataRequest fields
-     */
-    function getGooglePaymentDataRequest() {
-        const paymentDataRequest = Object.assign({}, baseRequest);
-        paymentDataRequest.allowedPaymentMethods = [cardPaymentMethod];
-        paymentDataRequest.transactionInfo = getGoogleTransactionInfo();
-        paymentDataRequest.merchantInfo = {
-            // @todo a merchant ID is available for a production environment after approval by Google
-            // See {@link https://developers.google.com/pay/api/web/guides/test-and-deploy/integration-checklist|Integration checklist}
-            merchantId: 'BCR2DN6TU7ZYT2CP',
-            merchantName: 'D&D Jewelry'
-        };
-        paymentDataRequest.callbackIntents = ["PAYMENT_AUTHORIZATION"];
-        return paymentDataRequest;
-    }
-    /**
-     * Return an active PaymentsClient or initialize
-     *
-     * @see {@link https://developers.google.com/pay/api/web/reference/client#PaymentsClient|PaymentsClient constructor}
-     * @returns {google.payments.api.PaymentsClient} Google Pay API client
-     */
-    function getGooglePaymentsClient() {
-        if (paymentsClient === null) {
-            paymentsClient = new google.payments.api.PaymentsClient({
-                environment: 'PRODUCTION',
-                paymentDataCallbacks: {
-                    onPaymentAuthorized: onPaymentAuthorized
-                }
-            });
-        }
-        return paymentsClient;
-    }
-    /**
-     * Handles authorize payments callback intents.
-     *
-     * @param {object} paymentData response from Google Pay API after a payer approves payment through user gesture.
-     * @see {@link https://developers.google.com/pay/api/web/reference/response-objects#PaymentData object reference}
-     *
-     * @see {@link https://developers.google.com/pay/api/web/reference/response-objects#PaymentAuthorizationResult}
-     * @returns Promise<{object}> Promise of PaymentAuthorizationResult object to acknowledge the payment authorization status.
-     */
-    function onPaymentAuthorized(paymentData) {
-        return new Promise(function(resolve, reject) {
-            // handle the response
-            processPayment(paymentData)
-                .then(function() {
-                    resolve({
-                        transactionState: 'SUCCESS'
-                    });
-                    $.ajax({
-                        url: '<?= base_url() ?>Order/google_success',
-                        method: 'post',
-                        data: {
-                            order_id: <?= $order1_data[0]->id ?>,
-                            // gpay_token: paymentToken,
-                        },
-                        dataType: 'json',
-                        success: function(response) {
-                            if (response.status == true) {
-                                window.open('<?= base_url() ?>Home/order_success',);
-                            } else if (response.status == false) {
-                                alert('fail')
-                            }
-                        }
-                    });
-                })
-                .catch(function() {
-                    // alert('failed');
-                    resolve({
-                        transactionState: 'ERROR',
-                        error: {
-                            intent: 'PAYMENT_AUTHORIZATION',
-                            message: 'Insufficient funds, try again. Next attempt should work.',
-                            reason: 'PAYMENT_DATA_INVALID'
-                        }
-                    });
-                });
-        });
-    }
-    /**
-     * Initialize Google PaymentsClient after Google-hosted JavaScript has loaded
-     *
-     * Display a Google Pay payment button after confirmation of the viewer's
-     * ability to pay.
-     */
-    function onGooglePayLoaded() {
-        const paymentsClient = getGooglePaymentsClient();
-        paymentsClient.isReadyToPay(getGoogleIsReadyToPayRequest())
-            .then(function(response) {
+    // Make sure to have https://pay.google.com/gp/p/js/pay.js loaded on your page
+    // You will need a button element on your page styled according to Google's brand guidelines
+    // https://developers.google.com/pay/api/web/guides/brand-guidelines
+    // var button = document.querySelector('#google-pay-button');
+    var paymentsClient = new google.payments.api.PaymentsClient({
+        environment: 'TEST' // Or 'PRODUCTION'
+    });
+    const button =
+        paymentsClient.createButton({});
+    document.getElementById('google-pay-button').appendChild(button);
+    const nodes = document.getElementsByTagName("button");
+    //   setTimeout(() => {
+    //   $("button").click();
+    // $('button').trigger('click');
+    //   }, 1000);
+    var amount = $("#amt").val();
+    braintree.client.create({
+        authorization: "<?= $braintree_auth ?>"
+    }, function(clientErr, clientInstance) {
+        braintree.googlePayment.create({
+            client: clientInstance,
+            googlePayVersion: 2,
+            googleMerchantId: 'BCR2DN6TU7ZYT2CP' // Optional in sandbox; if set in sandbox, this value must be a valid production Google Merchant ID
+        }, function(googlePaymentErr, googlePaymentInstance) {
+            paymentsClient.isReadyToPay({
+                // see https://developers.google.com/pay/api/web/reference/object#IsReadyToPayRequest
+                apiVersion: 2,
+                apiVersionMinor: 0,
+                allowedPaymentMethods: googlePaymentInstance.createPaymentDataRequest().allowedPaymentMethods,
+                existingPaymentMethodRequired: true // Optional
+            }).then(function(response) {
                 if (response.result) {
-                    // onGooglePaymentButtonClicked();
-                    addGooglePayButton();
+                    button.addEventListener('click', function(event) {
+                        event.preventDefault();
+                        var paymentDataRequest = googlePaymentInstance.createPaymentDataRequest({
+                            transactionInfo: {
+                                displayItems: [{
+                                        label: "Subtotal",
+                                        type: "SUBTOTAL",
+                                        price: "" + amount + "",
+                                    },
+                                ],
+                                countryCode: 'US',
+                                currencyCode: "USD",
+                                totalPriceStatus: "FINAL",
+                                totalPrice: "" + amount + "",
+                                totalPriceLabel: "Total"
+                            },
+                            merchantInfo: {
+                                merchantId: 'BCR2DN6TU7ZYT2CP',
+                                merchantName: 'D&D Jewelry'
+                            },
+                        });
+                        // We recommend collecting billing address information, at minimum
+                        // billing postal code, and passing that billing postal code with all
+                        // Google Pay card transactions as a best practice.
+                        // See all available options at https://developers.google.com/pay/api/web/reference/object
+                        var cardPaymentMethod = paymentDataRequest.allowedPaymentMethods[0];
+                        cardPaymentMethod.parameters.billingAddressRequired = true;
+                        cardPaymentMethod.parameters.billingAddressParameters = {
+                            format: 'FULL',
+                            phoneNumberRequired: true
+                        };
+                        paymentsClient.loadPaymentData(paymentDataRequest).then(function(paymentData) {
+                            googlePaymentInstance.parseResponse(paymentData, function(err, result) {
+                                if (err) {
+                                    // Handle parsing error
+                                    alert("hello")
+                                }
+                                var nonce = paymentData.paymentMethodData.tokenizationData.token;
+                                // console.log(JSON.stringify(paymentDataRequest))
+                                // console.log(JSON.stringify(result))
+                                // alert("hi")
+                                // return;
+                                var base_url = "<?= base_url() ?>";
+                                $.ajax({
+                                    url: base_url + 'Order/googlePay_verify',
+                                    method: 'post',
+                                    data: {
+                                        id: <?= $order1_data[0]->id ?>,
+                                        amount: amount,
+                                        nonce: result.nonce,
+                                    },
+                                    dataType: 'json',
+                                    success: function(response) {
+                                        if (response.status == true) {
+                                            window.open(base_url + 'Home/order_success', "_self");
+                                        } else if (response.status == false) {
+                                            window.open(base_url + 'Home/order_failed', "_self");
+                                        }
+                                    }
+                                });
+                                // Send result.nonce to your server
+                                // result.type may be either "AndroidPayCard" or "PayPalAccount", and
+                                // paymentData will contain the billingAddress for card payments
+                            });
+                        }).catch(function(err) {
+                            // Handle errors
+                            alert("bye")
+                        });
+                    });
                 }
-            })
-            .catch(function(err) {
-                // show error in developer console for debugging
-                console.error(err);
+            }).catch(function(err) {
+                // Handle errors
+                alert("tata")
             });
-    }
-    /**
-     * Add a Google Pay purchase button alongside an existing checkout button
-     *
-     * @see {@link https://developers.google.com/pay/api/web/reference/request-objects#ButtonOptions|Button options}
-     * @see {@link https://developers.google.com/pay/api/web/guides/brand-guidelines|Google Pay brand guidelines}
-     */
-    function addGooglePayButton() {
-        const paymentsClient = getGooglePaymentsClient();
-        const button =
-            paymentsClient.createButton({
-                onClick: onGooglePaymentButtonClicked
-            });
-        document.getElementById('container').appendChild(button);
-        const nodes = document.getElementsByTagName("button");
-        //   setTimeout(() => {
-        //   $("button").click();
-        // $('button').trigger('click');
-        //   }, 1000);
-    }
-    /**
-     * Provide Google Pay API with a payment amount, currency, and amount status
-     *
-     * @see {@link https://developers.google.com/pay/api/web/reference/request-objects#TransactionInfo|TransactionInfo}
-     * @returns {object} transaction info, suitable for use as transactionInfo property of PaymentDataRequest
-     */
-    <?
-    // $amount = $this->session->flashdata('amn');
-    // $order_id = $this->session->flashdata('order_id');
-    // $currency_code = $this->session->flashdata('currency_code');
-    // $address_data = $this->session->flashdata('address_data');
-    // $user_data = $this->session->flashdata('user_data');
-    ?>
-    // var amount = $("#amt").val();
-    var amount = 1;
-    function getGoogleTransactionInfo() {
-        return {
-            displayItems: [{
-                    label: "Subtotal",
-                    type: "SUBTOTAL",
-                    price: "" + amount + "",
-                },
-                {
-                    label: "Tax",
-                    type: "TAX",
-                    price: "0.00",
-                }
-            ],
-            countryCode: 'US',
-            currencyCode: "USD",
-            totalPriceStatus: "FINAL",
-            totalPrice: "" + amount + "",
-            totalPriceLabel: "Total"
-        };
-    }
-    /**
-     * Show Google Pay payment sheet when Google Pay payment button is clicked
-     */
-    function onGooglePaymentButtonClicked() {
-        const paymentDataRequest = getGooglePaymentDataRequest();
-        paymentDataRequest.transactionInfo = getGoogleTransactionInfo();
-        const paymentsClient = getGooglePaymentsClient();
-        paymentsClient.loadPaymentData(paymentDataRequest);
-    }
-    let attempts = 0;
-    /**
-     * Process payment data returned by the Google Pay API
-     *
-     * @param {object} paymentData response from Google Pay API after user approves payment
-     * @see {@link https://developers.google.com/pay/api/web/reference/response-objects#PaymentData|PaymentData object reference}
-     */
-    function processPayment(paymentData) {
-        return new Promise(function(resolve, reject) {
-            setTimeout(function() {
-                // @todo pass payment token to your gateway to process payment
-                paymentToken = paymentData.paymentMethodData.tokenizationData.token;
-                // success()
-                console.log(paymentToken)
-                if (attempts++ % 2 == 0) {
-                    reject(new Error('Every other attempt fails, next one should succeed'));
-                } else {
-                    resolve({});
-                }
-            }, 500);
         });
-    }
-    function pay_success() {
-        console.log("hi")
-        $.ajax({
-            url: '<?= base_url() ?>Order/google_success',
-            method: 'post',
-            data: {
-                order_id: <?= $order1_data[0]->id ?>,
-                // gpay_token: paymentToken,
-            },
-            dataType: 'json',
-            success: function(response) {
-                if (response.status == true) {
-                    alert('success')
-                } else if (response.status == false) {
-                    alert('fail')
-                }
-            }
-        });
-    }
+        // Set up other Braintree components
+    });
 </script>
 <!-- payment model end-->

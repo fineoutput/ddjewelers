@@ -3,6 +3,7 @@ class Order extends CI_Controller
 {
     function __construct()
     {
+        require_once('./vendor/autoload.php');
         parent::__construct();
         $this->load->library('user_agent');
         // $this->load->library('paypal_lib');
@@ -36,7 +37,7 @@ class Order extends CI_Controller
                 if (!empty($cart_da)) {
                     // echo "f"; echo '<pre>'; print_r($cart_da->result()); die();
                     $i = 1;
-                    $last_order_id=0;
+                    $last_order_id = 0;
                     foreach ($cart_da->result() as $data) {
                         $product_id = $data->product_id;
                         $quantity = $data->quantity;
@@ -521,6 +522,17 @@ class Order extends CI_Controller
             $data2['cart_data'] = $cart_da;
             $data2['methods_data'] = array_values($temp_array);
             $data2['shipping_costs'] = array_values($shipping_costs);
+            $gateway = new Braintree\Gateway([
+                'environment' => 'sandbox',
+                'merchantId' => 't88vsbn73n3ktmvc',
+                'publicKey' => 'jwvgk8z38gwjywgr',
+                'privateKey' => '880e71aeb8ff9eed853f45dc76627f86'
+            ]);
+            // pass $clientToken to your front-end
+            // $clientToken = $gateway->clientToken()->generate([
+            //     "customerId" => $aCustomerId
+            // ]);
+            $data2['braintree_auth'] = ($clientToken = $gateway->clientToken()->generate());
             $this->load->view('common/header', $data2);
             $this->load->view('checkout');
             $this->load->view('common/footer');
@@ -529,6 +541,80 @@ class Order extends CI_Controller
             // }
         } else {
             redirect("/", "refresh");
+        }
+    }
+    //==================== Google Pay order placing ==============
+    public function  googlePay_verify()
+    {
+        $this->load->helper(array('form', 'url'));
+        $this->load->library('form_validation');
+        $this->load->helper('security');
+        if ($this->input->post()) {
+            $this->form_validation->set_rules('id', 'id', 'required|xss_clean|trim');
+            $this->form_validation->set_rules('nonce', 'nonce', 'required|xss_clean|trim');
+            $this->form_validation->set_rules('amount', 'amount', 'required|xss_clean|trim');
+            if ($this->form_validation->run() == TRUE) {
+                $id = $this->input->post('id');
+                $nonce = $this->input->post('nonce');
+                $amount = $this->input->post('amount');
+                $ip = $this->input->ip_address();
+                date_default_timezone_set("Asia/Calcutta");
+                $cur_date = date("Y-m-d H:i:s");
+                $gateway = new Braintree\Gateway([
+                    'environment' => 'sandbox',
+                    'merchantId' => 't88vsbn73n3ktmvc',
+                    'publicKey' => 'jwvgk8z38gwjywgr',
+                    'privateKey' => '880e71aeb8ff9eed853f45dc76627f86'
+                ]);
+                $result = $gateway->transaction()->sale([
+                    'amount' => $amount,
+                    'paymentMethodNonce' => $nonce,
+                    'deviceData' => '',
+                    'orderId' => $id,
+                    // 'options' => [
+                    //     'submitForSettlement' => True,
+                    //     'paypal' => [
+                    //         'customField' => $_POST["PayPal custom field"],
+                    //         'description' => $_POST["Description for PayPal email receipt"],
+                    //   ],
+                    // ],
+                ]);
+                if ($result->success) {
+                    // print_r("Success ID: " . $result->transaction->id);
+                    $order1_data = $this->db->get_where('tbl_order1', array('id' => $id))->result();
+                    $data_update = array(
+                        'gpay_token' => $result->transaction->id,
+                        'payment_type' => 'Google Pay',
+                        'payment_status' => 1,
+                        'order_status' => 1,
+                    );
+                    $this->db->where('id', $id);
+                    $zapak = $this->db->update('tbl_order1', $data_update);
+                    $user_id = $this->session->userdata('user_id');
+                    if ($zapak != 0) {
+                        $this->session->set_flashdata('order_id', $id);
+                        $this->session->set_flashdata('amount', $order1_data[0]->final_amount);
+                        // redirect("Home/order_success", "refresh");
+                        $delete = $this->db->delete('tbl_cart', array('user_id' => $user_id));
+                        $respone['status'] = true;
+                        $respone['message'] = "Success";
+                        echo json_encode($respone);
+                    }
+                } else {
+                    // print_r("Error Message: " . $result->message);
+                    $respone['status'] = false;
+                    $respone['message'] = $result->message;
+                    echo json_encode($respone);
+                }
+            } else {
+                $respone['status'] = false;
+                $respone['message'] = validation_errors();
+                echo json_encode($respone);
+            }
+        } else {
+            $respone['status'] = false;
+            $respone['message'] = 'Please insert some data, No data available';
+            echo json_encode($respone);
         }
     }
     //------ change shipping method  ----------

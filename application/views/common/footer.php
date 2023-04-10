@@ -165,7 +165,6 @@
 <script src="<?=base_url();?>assets/jewel/js/jquery3.js"></script> -->
 <script src="<?=base_url();?>assets/jewel/js/jquery.zoom.js"></script>
 <script>
-  
 		$(document).ready(function(){
 			jQuery('#pic-1').zoom();
 			jQuery('#pic-2').zoom();
@@ -386,9 +385,7 @@ if(response.data == true){
       var cookieData =JSON.parse(localStorage.getItem("cartItems"));
 if(cookieData != "" || typeof cookieData !=="undefined" || cookieData !=null)   {
     $('.center').hide();
-
-
-  var a= cookieData.length;
+  var a= cookieData?.length;
 } else{
   var a= 0;
 }
