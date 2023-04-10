@@ -309,14 +309,14 @@ class Products extends CI_finecontrol
                             if (!empty($include_series)) {
                                 $includeSeries = explode(",", $include_series);
                                 if (count($includeSeries) > 0) {
-                                    $last_id = $this->stuller_data($includeSeries, $category, $sub_category, $minisubcategory, $minisubcategory2, 2, $finshed,0);
+                                    $last_id = $this->stuller_data($includeSeries, $category, $sub_category, $minisubcategory, $minisubcategory2, 2, $finshed, 0);
                                 }
                                 //    $last_id2= $this->include_serieswise($apis2, $category, $sub_category, $minisubcategory, $minisubcategory2, $type, $finshed);
                             }
                             if (!empty($include_sku)) {
                                 $includeSKU = explode(",", $include_sku);
                                 if (count($includeSKU) > 0) {
-                                    $last_id = $this->stuller_data($includeSKU, $category, $sub_category, $minisubcategory, $minisubcategory2, 3, $finshed,0);
+                                    $last_id = $this->stuller_data($includeSKU, $category, $sub_category, $minisubcategory, $minisubcategory2, 3, $finshed, 0);
                                 }
                                 //    $last_id2= $this->include_serieswise($apis2, $category, $sub_category, $minisubcategory, $minisubcategory2, $type, $finshed);
                             }
@@ -757,7 +757,7 @@ class Products extends CI_finecontrol
         return $this->stuller_data(27268, 1, 2);
     }
     //main function for  add data from stuller api
-    public function stuller_data($api_id, $category_id, $subcategory, $minorsub = null, $minorsub2 = null, $type = null, $finshed = 0,$delete=1)
+    public function stuller_data($api_id, $category_id, $subcategory, $minorsub = null, $minorsub2 = null, $type = null, $finshed = 0, $delete = 1)
     {
         // echo $minorsub2;
         ini_set('memory_limit', '3000M');
@@ -783,7 +783,7 @@ class Products extends CI_finecontrol
         // print_r($api_ids);
         // exit;
         $else = 0;
-        $del=1;
+        $del = 1;
         foreach ($api_ids as  $value) {
             if (empty($minorsub)) {
                 if (empty($subcategory)) {
@@ -794,7 +794,7 @@ class Products extends CI_finecontrol
                         $this->db->where('sub_category  IS NULL', null);
                         // $this->db->where('minisub_category IS NULL' ,NULL);
                         $product_data = $this->db->get();
-                        if (!empty($product_data && $delete ==1)) {
+                        if (!empty($product_data && $delete == 1)) {
                             foreach ($product_data->result() as $pro) {
                                 $this->db->delete('tbl_products', array('id' => $pro->id));
                             }
@@ -843,7 +843,6 @@ class Products extends CI_finecontrol
                         // echo $total_pages; die();
                         //delete previous data from the table start
                         $c_api = count($api_ids);
-                        
                         //delete previous data from the table end
                         //product data insert from the api start
                         $NextPage = "";
@@ -2111,7 +2110,6 @@ class Products extends CI_finecontrol
                         // echo $total_pages; die();
                         //delete previous data from the table start
                         $c_api = count($api_ids);
-                        
                         //delete previous data from the table end
                         //product data insert from the api start
                         $NextPage = "";
@@ -3798,15 +3796,16 @@ class Products extends CI_finecontrol
                     $this->db->where('minisub_category IS NULL', null);
                     $product_data = $this->db->get();
                     $c_api = count($api_ids);
+                    // echo $type;die();
                     if ($del == 1) {
-                        if (!empty($product_data && $delete ==1)) {
+                        if (!empty($product_data && $delete == 1)) {
                             foreach ($product_data->result() as $pro) {
                                 $this->db->delete('tbl_products', array('id' => $pro->id));
                             }
                         }
                     }
                     //delete previous data from the table end
-                    if ($type != 3) {
+                    if ($type == 1) {
                         if ($finshed == 1) {
                             $data = '{"Include":["All", "Media", "DescriptiveElements"],"Filter":["Orderable","OnPriceList","Finished"],"CategoryIds":["' . $value . '"]}';
                             // $data = '{"Filter":["Orderable","OnPriceList","Finished"],"Series":["'.$api_id.'"]}';
@@ -3814,39 +3813,44 @@ class Products extends CI_finecontrol
                         } else {
                             $data = '{"Include":["All", "Media", "DescriptiveElements"],"Filter":["Orderable","OnPriceList"],"CategoryIds":["' . $value . '"]}';
                         }
-                        //product data insert from the api start
-                        $postdata = $data;
-                        // echo $postdata;
-                        // exit;
-                        $header = array();
-                        $header[] = 'Host:api.stuller.com';
-                        $header[] = 'Content-Type:application/json';
-                        $header[] = 'Authorization:Basic ZGV2amV3ZWw6Q29kaW5nMjA9';
-                        $ch = curl_init($url);
-                        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
-                        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
-                        curl_setopt($ch, CURLOPT_POST, 1);
-                        curl_setopt($ch, CURLOPT_POSTFIELDS, $postdata);
-                        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-                        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
-                        curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
-                        $result = curl_exec($ch);
-                        curl_close($ch);
-                        // print_r ($result);
-                        $result_da = json_decode($result);
-                        // print_r($result_da);
-                        // exit;
-                        if (!empty($result_da->TotalNumberOfProducts)) {
-                            $TotalNumberOfProducts = $result_da->TotalNumberOfProducts;
-                            $total_pages = round($TotalNumberOfProducts / 500) + 1;
+                    } else if ($type == 2) {
+                        if ($finshed == 1) {
+                            // $data = '{"Filter":["Orderable","OnPriceList","Finished"],"CategoryIds":["'.$api_id.'"]}';
+                            $data = '{"Include":["All", "Media", "DescriptiveElements"],"Filter":["Orderable","OnPriceList","Finished"],"Series":["' . $value . '"]}';
+                            // $data = '{"Filter":[],"CategoryIds":["'.$api_id.'"]}';
+                        } else {
+                            $data = '{"Include":["All", "Media", "DescriptiveElements"],"Filter":["Orderable","OnPriceList"],"Series":["' . $value . '"]}';
                         }
-                    } else {
-                        $total_pages = 1;
+                    }
+                    //product data insert from the api start
+                    $postdata = $data;
+                    // echo $postdata;
+                    // exit;
+                    $header = array();
+                    $header[] = 'Host:api.stuller.com';
+                    $header[] = 'Content-Type:application/json';
+                    $header[] = 'Authorization:Basic ZGV2amV3ZWw6Q29kaW5nMjA9';
+                    $ch = curl_init($url);
+                    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+                    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+                    curl_setopt($ch, CURLOPT_POST, 1);
+                    curl_setopt($ch, CURLOPT_POSTFIELDS, $postdata);
+                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+                    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+                    curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
+                    $result = curl_exec($ch);
+                    curl_close($ch);
+                    // print_r($result);
+                    $result_da = json_decode($result);
+                    // print_r($result_da);
+                    // exit;
+                    if (!empty($result_da->TotalNumberOfProducts)) {
+                        $TotalNumberOfProducts = $result_da->TotalNumberOfProducts;
+                        $total_pages = round($TotalNumberOfProducts / 500) + 1;
                     }
                     $NextPage = "";
                     // $total_pages=2;
-                    // print_r($TotalNumberOfProducts);
-                    // exit;
+                    // print_r($total_pages);
                     //    echo $type;die();
                     for ($i = 0; $i < $total_pages; $i++) {
                         // code...
@@ -3886,7 +3890,8 @@ class Products extends CI_finecontrol
                             $result = curl_exec($ch);
                             curl_close($ch);
                             $result_da = json_decode($result);
-                            // print_r($result_da);exit;
+                            // print_r($result_da);
+                            // exit;
                             if (!empty($result_da)) {
                                 foreach ($result_da->Products as $prod) {
                                     $specifications = [];
@@ -7429,7 +7434,7 @@ class Products extends CI_finecontrol
                     $product_data = $this->db->get();
                     $c_api = count($api_ids);
                     if ($del == 1) {
-                        if (!empty($product_data && $delete ==1)) {
+                        if (!empty($product_data && $delete == 1)) {
                             foreach ($product_data->result() as $pro) {
                                 $this->db->delete('tbl_products', array('id' => $pro->id));
                             }
@@ -9368,6 +9373,4 @@ class Products extends CI_finecontrol
         // echo json_encode($response);
         // exit;
     }
-   
-    
 }
