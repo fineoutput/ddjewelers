@@ -827,7 +827,7 @@ $this->db->select('*');
                             <!-- <img src="https://meteor.stullercloud.com/das/68074515?scl=1&$sharpen$" alt="img"> -->
                             <?
                             if(!empty($dai)){
-                              $imgd=$dai->image;
+                              $imgd=$dai->banner;
                             ?>
                               <img src="<?php echo base_url().$imgd ?>" alt="img" height="500">
                               <?

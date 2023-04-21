@@ -29,7 +29,7 @@ if($ss==999){
 	$a_ser=1;
 	$this->db->select('*');
 	$this->db->from('tbl_admin_sidebar');
-	// $this->db->where('id',$ss);
+	$this->db->order_by('seq','ASC');
 	$dsa= $this->db->get();
 foreach($dsa->result() as $dda){
 	$ss=$dda->id;

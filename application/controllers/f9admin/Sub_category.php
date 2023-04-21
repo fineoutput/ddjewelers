@@ -205,7 +205,7 @@ if($file_check!=4){
                      }
         }
         //Banner
-        $bann2='banner';
+        $ban2='banner';
 
 
                    $file_check=($_FILES['banner']['error']);
@@ -224,7 +224,7 @@ if($file_check!=4){
                                      'max_size'      => 25000
                              );
                              $this->upload->initialize($this->upload_config);
-                             if (!$this->upload->do_upload($bann2))
+                             if (!$this->upload->do_upload($ban2))
                              {
                                  $upload_error = $this->upload->display_errors();
                                  // echo json_encode($upload_error);
@@ -286,10 +286,8 @@ if($file_check!=4){
  $this->db->where('id',$idw);
  $dsa=$this->db->get();
  $da=$dsa->row();
-
-
-
 $img2='image';
+
 
 
            $file_check=($_FILES['image']['error']);
@@ -330,17 +328,67 @@ if($file_check!=4){
                          // echo json_encode($file_info);
                      }
         }
+        //banner
+        $ban2='banner';
+        $file_check=($_FILES['banner']['error']);
+if($file_check!=4){
 
+      $image_upload_folder = FCPATH . "assets/uploads/sub_category/";
+                  if (!file_exists($image_upload_folder))
+                  {
+                      mkdir($image_upload_folder, DIR_WRITE_MODE, true);
+                  }
+                  $new_file_name="sub_category2".date("Ymdhms");
+                  $this->upload_config = array(
+                          'upload_path'   => $image_upload_folder,
+                          'file_name' => $new_file_name,
+                          'allowed_types' =>'xlsx|csv|xls|pdf|doc|docx|txt|jpg|jpeg|png|webp',
+                          'max_size'      => 25000
+                  );
+                  $this->upload->initialize($this->upload_config);
+                  if (!$this->upload->do_upload($ban2))
+                  {
+                      $upload_error = $this->upload->display_errors();
+                      // echo json_encode($upload_error);
+                      // exit;
 
+        //$this->session->set_flashdata('emessage',$upload_error);
+          //redirect($_SERVER['HTTP_REFERER']);
+                  }
+                  else
+                  {
 
+                      $file_info = $this->upload->data();
+
+                      $videoNAmePath = "assets/uploads/sub_category/".$new_file_name.$file_info['file_ext'];
+                      $file_info['new_name']=$videoNAmePath;
+                      // $this->step6_model->updateappIconImage($imageNAmePath,$appInfoId);
+                      $nnnn=$file_info['file_name'];
+                      $banner2=$videoNAmePath;
+
+                      // echo json_encode($file_info);
+                  }
+     }
+    
  if(!empty($da)){ $img = $da ->image;
 if(!empty($img)) { if(empty($nnnn2)){ $nnnn2 = $img; } }else{ if(empty($nnnn2)){ $nnnn2= ""; } } }
+
+
+if(!empty($banner2)){
+  $nnn_ban=$banner2;
+}else{
+  if(!empty($da)){
+    $nnn_ban=$da->banner;
+  }
+}
+
 
            $data_insert = array(
                   'category'=>$category,
   'name'=>$name,
     'type'=>$type,
   'image'=>$nnnn2,
+  'banner'=>$nnn_ban,
   'api_id'=>$api_id,
   'seq'=>$seq,
   'finshed'=>$finshed,

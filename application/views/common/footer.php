@@ -54,7 +54,7 @@
   <div class="container-fluid pt-5 fot_main">
 			<div class="row">
 				<div class="col-md-2 foot_logo mt-5 ">
-          <h3><b>INFORMATION</b></h3>
+          <h3><b>Company</b></h3>
 					<P ><a href="<?=base_url();?>Home/about_us">About Us</a></P>
 					<P ><a href="<?=base_url();?>Home/terms_and_conditions">Terms and Conditions</a></P>
 					<P ><a href="<?=base_url();?>Home/privacy_policy">Privacy Policy</a></P>
@@ -107,7 +107,7 @@
             <a href="https://www.instagram.com/danddjewelry/">
               <i style="    color: #517fa4;font-size: 1.7rem;" class="fab fa-instagram"></i>
             </a>
-            <a href="https://www.pinterest.com/jewelplus/jewelry/">
+            <a href="https://www.pinterest.com/jewelplus">
               <i style="    color: #cb2027;font-size: 1.7rem;" class="fab fa-pinterest"></i>
             </a>
             <a href="https://www.youtube.com/user/jewelplus1">

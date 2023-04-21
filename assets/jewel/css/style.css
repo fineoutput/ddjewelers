@@ -1,5 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;300&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Spectral:wght@500;600;700;800&display=swap'); 
+@import url('https://fonts.googleapis.com/css2?family=Spectral:wght@500;600;700;800&display=swap');
 *{
 	scroll-behavior: smooth;
 }
@@ -202,7 +202,7 @@ justify-content: center;
     background: url(../img/footer-bg.png)0 0 repeat-x;
 	/* background-color: #fff;
 	padding: 1rem 0rem; */
-} 
+}
 
 .ser_top{
 	    height: 37px;
@@ -299,38 +299,38 @@ width: 100%;
 font-family: 'Spectral', serif!important;
 font-size: 12px;
 }
-@media (min-width:1950px) 
+@media (min-width:1950px)
 {
     #menu p{
         font-size: 21px;
-    } 
+    }
     .B_size {
         font-size: 20px;
     }
     .cart-value {
         font-size: 20px;
         height: 28px !important;
-   
+
         width: 28px !important;
-      
+
         left: 27px;
-       
+
             background: #e21837 none repeat scroll 0 0;
             border-radius: 50px;
-   
+
             font-weight: 500;
-            
+
             line-height: 17px;
-         
+
             position: absolute;
-         
+
             /* left: 0; */
             top: -3px;
             color: #fff;
             display: flex;
             align-items: center;
             justify-content: center;
-        
+
     }
     .ser_col a {
         /* border-right: 1px solid #adadad; */
@@ -344,13 +344,13 @@ font-size: 12px;
     }
      h5 {
         font-size: 28px;
-    } 
+    }
     .d-lg-block img{
        width: 80px;
     }
-   
+
     .btn {
-       
+
         font-size: 26px;
         padding: 10px 15px;
         border-radius: 0.55rem;
@@ -363,7 +363,7 @@ font-size: 12px;
     .sign_btn_new{
         padding: .375rem .75rem;
         font-size: 26px;
-       
+
   }
   .payiconn
   {
@@ -371,7 +371,7 @@ font-size: 12px;
        height: 73px;
         margin-left: 10px;
   }
-  .payicon 
+  .payicon
   {
       width: 80px;
        height: 80px;
@@ -386,7 +386,7 @@ font-size: 12px;
 {
     font-size: 35px;
 }
-       
+
 .logo img {
     width: 45%;
     height: 38%;
@@ -445,7 +445,7 @@ h6{
         font-size: 24px;
     }
     .btn {
-       
+
         font-size: 22px;
         padding: 10px 15px;
         border-radius: 0.55rem;
@@ -497,19 +497,19 @@ h6{
 {
     #menu p{
         font-size: 16px;
-    }   
+    }
     .top_her p{
         margin-bottom: 0;
         font-size: 17px;
         font-weight: 400;
     }
-   
+
     .sign_btn_new {
-    
+
         font-size: 22px;
-       
+
     }
-    .payicon 
+    .payicon
     {
         width: 73px;
          height: 73px;
@@ -525,7 +525,7 @@ h6{
 .sign_btn_new{
     padding: .375rem .75rem;
     font-size: 1rem;
-   
+
 }
 .foot_logo p
 {
@@ -595,7 +595,7 @@ h6 {
     .sign_btn_new{
         padding: .375rem .75rem;
         font-size: 1rem;
-       
+
   }
   .foot_logo p
 {
@@ -638,7 +638,7 @@ h6 {
 }
 @media (min-width:1025px) and (max-width:1799px)
 {
- 
+
 .ser_col a{
 	/* border-right: 1px solid #adadad; */
 display: flex;
@@ -683,7 +683,7 @@ position: relative;
 }
 @media (min-width:768px) and (max-width:1150px)
 {
-    .payicon 
+    .payicon
     {
         width: 40px;
          height: 40px;
@@ -697,7 +697,7 @@ position: relative;
     .sign_btn_new{
         padding: .375rem .75rem;
         font-size: 1rem;
-       
+
   }
   .foot_logo p
 {
@@ -732,7 +732,7 @@ h6 {
 
 @media (min-width:320px) and (max-width:767px)
 {
-    .payicon 
+    .payicon
     {
         width: 30px;
          height: 30px;
@@ -747,7 +747,7 @@ h6 {
     .sign_btn_new{
 	  padding: .375rem .75rem;
 	  font-size: 1rem;
-	 
+
 }
 .foot_logo p
 {
@@ -807,7 +807,7 @@ h6 {
     border-top: 0;
     display: none;
     z-index: 50;
-  
+
 }
 
 
@@ -1064,10 +1064,15 @@ span#totalCartItemsM {
 
 .pay_ic {
     justify-content: center;
+		margin-left: 5em;
     font-size: 30px;
     color: #000000;
 }
-
+@media only screen and (max-width: 600px) {
+  .pay_ic{
+    	margin-left: 0em;
+  }
+}
 .pay_ic i {
     margin-right: 11px;
 }
@@ -1078,7 +1083,7 @@ span#totalCartItemsM {
 	/*background-size: 100%;*/
 	width: 100%;
 	height: 100%;
-   
+
 	/* background-color: #e2bf71; */
 	/*padding: 1rem 0rem;*/
 }
@@ -2703,7 +2708,7 @@ min-height: 48px!important;
     height: 60px!important;
 }
 .paypal-button-text {
-   
+
     color: #fff!important;
 }
 .paypal-button-shape-pill {

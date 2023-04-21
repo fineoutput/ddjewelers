@@ -36,8 +36,8 @@
   z-index: 99;
         }
         .loader {
-            border: 16px solid #f3f3f3; 
-            border-top: 16px solid #1A2F64; 
+            border: 16px solid #f3f3f3;
+            border-top: 16px solid #1A2F64;
             border-radius: 50%;
             width: 120px;
             height: 120px;
@@ -52,7 +52,7 @@
 <body >
 <div class="center">
         <div class="loader"></div>
-    </div> 
+    </div>
 <!-- header start -->
 <script defer src="https://use.fontawesome.com/releases/v5.0.8/js/all.js" integrity="sha384-SlE991lGASHoBfWbelyBPLsUlwY1GwNDJo3jSJO04KZ33K2bwfV9YBauFfnzvynJ" crossorigin="anonymous"></script>
 <style media="screen">
@@ -249,7 +249,8 @@
               <h6 class="m-auto" >100% Satisfaction Guarantee</h6>
             </div>
             <div class="mt-2" style="padding-left:70px;">
-              <button type="button" class="btn-md btn signup text-right">Sign Up for Special Offer</button>
+
+                <a aria-label="Sign Special Offers m-auto"  class="btn-md btn signup text-right" data-tspages="true" href="<?=base_url()?>Home/signup_special_offers">Sign Up For Special Offers</a>
             </div>
           </div>
           <div class="col-md-4 d-none d-lg-block">
@@ -312,12 +313,12 @@ $data_count= $this->db->count_all_results();
               <p class="B_size" >(925) 274-1444</p>
             </div>
             <div class="text-center d-none d-lg-block">
-              <i class="	fas fa-chart-pie I_size" ></i>
-              <p class="B_size">Financing</p>
+           <i class="	fas fa-chart-pie I_size" ></i>
+              <p class="B_size"><a href="<? echo base_url()?>Home/flexiblefinancing">Financing</a></p>
             </div>
             <div class="text-center d-none d-lg-block">
               <i class="fas fa-user-md I_size" ></i>
-              <p class="B_size">Book Appointment </p>
+              <p class="B_size"><a href="<? echo base_url()?>Home/contact_us">Book Appointment</a> </p>
             </div>
             <div class="text-center d-none d-lg-block showcontent">
               <? if(empty($this->session->userdata('user_id'))) { ?>

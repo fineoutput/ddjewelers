@@ -66,6 +66,11 @@
 <?php if($sub_category_data->image!=""){ ?> <img id="slide_img_path" height=200 width=300 src="<?php echo base_url().$sub_category_data->image; ?> "> <?php }else{ ?> Sorry No File Found <?php } ?>  </td>
 </tr>
 <tr>
+<td> <strong>Banner</strong>  <span style="color:red;">*</span></strong> </td>
+<td> <input type="file" name="banner"  class="form-control" placeholder="" />
+<?php if($sub_category_data->banner!=""){ ?> <img id="slide_img_path" height=200 width=300 src="<?php echo base_url().$sub_category_data->banner; ?> "> <?php }else{ ?> Sorry No File Found <?php } ?>  </td>
+</tr>
+<tr>
 <td> <strong>Type</strong>  <span style="color:red;">*</span></strong> </td>
 <td>
   <select class="form-control" name="type" required>
@@ -99,7 +104,7 @@ $api=implode(',',$d_api)
                       <td> <strong>Excluded Series Ex(1235,ch12)</strong> <span style="color:red;">*</span></strong> </td>
                       <td> <input type="text" name="exlude_series" class="form-control" placeholder="" value="<?=$sub_category_data->exlude_series;?>" /> </td>
                     </tr>
-                    
+
                     <tr>
                     <td> <strong>Excluded Sku Ex(1235,ch12)</strong> <span style="color:red;">*</span></strong> </td>
                       <td> <input type="text" name="exlude_sku" class="form-control" placeholder="" value="<?=$sub_category_data->exlude_sku;?>" /> </td>
@@ -109,7 +114,7 @@ $api=implode(',',$d_api)
                       <td> <strong>Include Series Ex(1235,ch12)</strong> <span style="color:red;">*</span></strong> </td>
                       <td> <input type="text" name="include_series" class="form-control" placeholder="" value="<?=$sub_category_data->include_series;?>" /> </td>
                     </tr>
-                    
+
                     <tr>
                     <td> <strong>Include Sku Ex(1235,ch12)</strong> <span style="color:red;">*</span></strong> </td>
                       <td> <input type="text" name="include_sku" class="form-control" placeholder="" value="<?=$sub_category_data->include_sku;?>" /> </td>

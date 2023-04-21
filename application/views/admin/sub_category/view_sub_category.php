@@ -44,6 +44,7 @@
  	 <th>Category Level</th>
  	 <th>SubCategory Level2</th>
  	 <th>Image</th>
+ 	 <th>Banner</th>
  	 <th>Api Id</th>
  	 <th>Sequence</th>
       <th>Excluded Series</th>
@@ -76,6 +77,13 @@ $dc=$da->name;
         <?php if($data->image!=""){ ?>
         <img id="slide_img_path" height=50 width=100 src="<?php echo base_url().$data->image
         ?>" >
+        <?php }else { ?>
+        Sorry No File Found
+        <?php } ?>
+        </td>
+        <td>
+        <?php if($data->banner!=""){ ?>
+        <img id="slide_img_path" height=50 width=100 src="<?php echo base_url() ?>/<? echo $data->banner;?>" >
         <?php }else { ?>
         Sorry No File Found
         <?php } ?>
