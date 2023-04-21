@@ -39,9 +39,9 @@
         <tr>
         <th>#</th>
 
- 	 <th>Category</th>
- 	 <th>Subcategory</th>
- 	 <th>Name</th>
+ 	 <th>Category Level1</th>
+ 	 <th>Subcategory Level2</th>
+ 	 <th>Subcategory Level3</th>
  	 <th>Image</th>
  	 <th>Api Id</th>
    <th>Sequence</th>

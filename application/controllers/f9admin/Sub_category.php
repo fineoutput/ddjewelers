@@ -150,7 +150,7 @@
 
 
       $api_id=json_encode($api_id);
-  
+
 
                    $ip = $this->input->ip_address();
                    date_default_timezone_set("Asia/Calcutta");
@@ -204,6 +204,50 @@ if($file_check!=4){
                          // echo json_encode($file_info);
                      }
         }
+        //Banner
+        $bann2='banner';
+
+
+                   $file_check=($_FILES['banner']['error']);
+        if($file_check!=4){
+
+                 $image_upload_folder = FCPATH . "assets/uploads/sub_category/";
+                             if (!file_exists($image_upload_folder))
+                             {
+                                 mkdir($image_upload_folder, DIR_WRITE_MODE, true);
+                             }
+                             $new_file_name="sub_category2".date("Ymdhms");
+                             $this->upload_config = array(
+                                     'upload_path'   => $image_upload_folder,
+                                     'file_name' => $new_file_name,
+                                     'allowed_types' =>'xlsx|csv|xls|pdf|doc|docx|txt|jpg|jpeg|png',
+                                     'max_size'      => 25000
+                             );
+                             $this->upload->initialize($this->upload_config);
+                             if (!$this->upload->do_upload($bann2))
+                             {
+                                 $upload_error = $this->upload->display_errors();
+                                 // echo json_encode($upload_error);
+
+                   //$this->session->set_flashdata('emessage',$upload_error);
+                     //redirect($_SERVER['HTTP_REFERER']);
+                             }
+                             else
+                             {
+
+                                 $file_info = $this->upload->data();
+
+                                 $videoNAmePath = "assets/uploads/sub_category/".$new_file_name.$file_info['file_ext'];
+                                 $file_info['new_name']=$videoNAmePath;
+                                 // $this->step6_model->updateappIconImage($imageNAmePath,$appInfoId);
+                                 $banner=$file_info['file_name'];
+                                 $banner2=$videoNAmePath;
+
+                                 // echo json_encode($file_info);
+                             }
+                }else{
+                  $banner2='';
+                }
 
 
 
@@ -211,6 +255,7 @@ if($file_check!=4){
                   'category'=>$category,
   'name'=>$name,
   'image'=>$nnnn2,
+  'banner'=>$banner2,
   'type'=>$type,
   'api_id'=>$api_id,
   'seq'=>$seq,

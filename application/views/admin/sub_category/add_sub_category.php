@@ -56,6 +56,10 @@
 <td> <input type="file" name="image"  class="form-control" placeholder=""  value="" />  </td>
 </tr>
 <tr>
+<td> <strong>Banner</strong>  <span style="color:red;">*</span></strong> </td>
+<td> <input type="file" name="banner"  class="form-control" placeholder=""  value="" />  </td>
+</tr>
+<tr>
 <td> <strong>Type</strong>  <span style="color:red;">*</span></strong> </td>
 <td>
   <select class="form-control" name="type" required>

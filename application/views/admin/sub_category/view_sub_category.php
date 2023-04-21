@@ -41,8 +41,8 @@
         <tr>
         <th>#</th>
 
- 	 <th>Category</th>
- 	 <th>Name</th>
+ 	 <th>Category Level</th>
+ 	 <th>SubCategory Level2</th>
  	 <th>Image</th>
  	 <th>Api Id</th>
  	 <th>Sequence</th>
@@ -80,6 +80,7 @@ $dc=$da->name;
         Sorry No File Found
         <?php } ?>
         </td>
+
 
 <td><?php echo $data->api_id ?></td>
 <td><?php echo $data->seq ?></td>

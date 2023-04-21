@@ -814,10 +814,27 @@ if(!empty($minorsub_name)){
 }else{
   echo $category_name." ( ".$productCount." )";
 }
+
+$this->db->select('*');
+            $this->db->from('tbl_sub_category');
+            $this->db->where('id',$level_id);
+          //  $this->db->where('id',44);
+            $dsa= $this->db->get();
+            $dai=$dsa->row();
 ?>
                                 </h1>
                             </div>
-                            <img src="https://meteor.stullercloud.com/das/68074515?scl=1&$sharpen$" alt="img">
+                            <!-- <img src="https://meteor.stullercloud.com/das/68074515?scl=1&$sharpen$" alt="img"> -->
+                            <?
+                            if(!empty($dai)){
+                              $imgd=$dai->image;
+                            ?>
+                              <img src="<?php echo base_url().$imgd ?>" alt="img" height="500">
+                              <?
+                            }else{
+                              echo "No Image Found";
+                            }
+                              ?>
 
                             <!-- <div class="col-md-12">
                                 <div class="pd-toggle">

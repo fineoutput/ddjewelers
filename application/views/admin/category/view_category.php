@@ -41,7 +41,7 @@
         <tr>
         <th>#</th>
 
- 	 <th>Name</th>
+ 	 <th>Category Leval1</th>
  	 <th>Image</th>
  	 <th>Description</th>
  	 <th>Api Id</th>
