@@ -1,4 +1,4 @@
-<h4 class="text-center mb-4 mt-4"><?if(!empty($why_us_data)){echo $why_us_data->title;}?></h4>
+<h1 class="text-center mb-4 mt-4" style="font-weight:bold;"><?if(!empty($why_us_data)){echo $why_us_data->title;}?></h1>
 
 <div class="container terms_h3">
 <div class="row">
