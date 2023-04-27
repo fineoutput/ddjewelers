@@ -234,7 +234,7 @@
   <div class="container-fluid pt-0 pb-0 pl-5 pr-5 mb-3">
     <div class="row not_sure">
       <div class="col-md-12">
-        <p class="mb-0"><a href="<?=base_url(); ?>QuickShops/quickshops_category">Not sure what you need? browse our quick shops</a></p>
+        <h5 class="mb-0"><a href="<?=base_url(); ?>QuickShops/quickshops_category">Not sure what you need? browse our quick shops</a></h5>
       </div>
     </div>
   </div>

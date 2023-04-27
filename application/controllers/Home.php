@@ -6,26 +6,17 @@ class Home extends CI_Controller
         parent::__construct();
         $this->load->library('user_agent');
         // $this->load->library('paypal_lib');
-
         $this->load->model("admin/login_model");
         $this->load->model("admin/base_model");
-
         $this->load->library("pagination");
     }
-
-
     // 	function  __construct() {
     // 		parent::__construct();
     // 		$this->load->library('paypal_lib');
     // 		$this->load->model('product');
     // 		$this->load->database();
     // }
-
-
-
     //paypal integration methods starts
-
-
     // checkout page
     // public function charge($am,$idd) {
     //
@@ -45,14 +36,11 @@ class Home extends CI_Controller
     // 	 $this->load->view('confirmation');
     // 	 $this->load->view('common/footer');
     // }
-
     // success method for order place paypal
     public function callback($idd)
     {
-
         $order_id = base64_decode($idd);
         $user_id = $this->session->userdata('user_id');
-
         $datas['title'] = 'Paypal Success | TechArise';
         $paymentID = $this->input->post('paymentID');
         $payerID = $this->input->post('payerID');
@@ -64,7 +52,6 @@ class Home extends CI_Controller
             // $data['token'] = $token;
             // $data['pid'] = $pid;
             // $this->load->view('paypal/success', $data);
-
             $data['txn_id']    = $token;
             $data['payment_id'] = $paymentID;
             $data['payer_id'] = $payerID;
@@ -75,16 +62,9 @@ class Home extends CI_Controller
             $data['payment_status']    = 1;
             $data['order_status']    = 1;
             $data['payment_type']    = 'Paypal';
-
-
             $order1_da = Order1::wherenull('deleted_at')->where('id', $order_id)->first();
             $order1_da->update($data);
-
-
-
-
             //delete Tbl Cart data of user
-
             // if($page != 0){
             // 			$this->db->select('*');
             // 			$this->db->from('tbl_cart');
@@ -97,17 +77,11 @@ class Home extends CI_Controller
             $this->db->where('user_id', $user_id);
             $cart_dat = $this->db->get();
             // }
-
-
             if (!empty($cart_dat)) {
                 foreach ($cart_dat->result() as $cart) {
-
                     $del_cart = $this->db->delete('tbl_cart', array('id' => $cart->id));
                 }
             }
-
-
-
             //send email to user's email start
             //
             // $config = Array(
@@ -152,17 +126,12 @@ class Home extends CI_Controller
             // 							}else{
             // 							// show_error($this->email->print_debugger());
             // 							}
-
             //send email to user's email end
-
             redirect("Home/order_success", "refresh");
         } else {
             $this->load->view('Home/order_failed', $data);
         }
     }
-
-
-
     // function charge($am,$idd){
     //
     // 	$amu= base64_decode($am);
@@ -188,10 +157,6 @@ class Home extends CI_Controller
     //
     // 		$this->paypal_lib->paypal_auto_form();
     // }
-
-
-
-
     // public function payment_success($idd){
     //
     // 	$order_id= base64_decode($idd);
@@ -313,82 +278,54 @@ class Home extends CI_Controller
     //
     //
     // 						}
-
-
     //paypal integration methods end
-
-
-
-
     public function index()
     {
-
         $this->db->select('*');
         $this->db->from('tbl_category');
         $this->db->where('is_active', 1);
         $this->db->order_by('id', 'ASC');
         $data['category'] = $this->db->get();
-
         $this->db->select('*');
         $this->db->from('tbl_slider');
         $this->db->where('is_active', 1);
         $this->db->order_by('seq', 'ASC');
         $data['slider'] = $this->db->get();
-
         $this->db->select('*');
         $this->db->from('tbl_slider1');
         $this->db->where('is_active', 1);
         $this->db->order_by('seq', 'ASC');
         $data['slider1'] = $this->db->get();
-
         $this->db->select('*');
         $this->db->from('tbl_slider2');
         $this->db->where('is_active', 1);
         $this->db->order_by('seq', 'ASC');
         $data['slider2'] = $this->db->get();
-
         $this->db->select('*');
         $this->db->from('tbl_slider3');
         $this->db->where('is_active', 1);
         $this->db->order_by('seq', 'ASC');
         $data['slider3'] = $this->db->get();
-
         $this->load->view('common/header', $data);
         $this->load->view('index');
         $this->load->view('common/footer');
     }
-
-
-
-
-
-
-
     //Search Products  by subcategory Page after search
     public function search_sub_products($idd)
     {
-
         $this->load->helper(array('form', 'url'));
         $this->load->library('form_validation');
         $this->load->helper('security');
-
-
         $id = base64_decode($idd);
-
-
         // $id = base64_decode($idd);
-
         //  $this->db->select('*');
         // $this->db->from('tbl_categories');
         // $this->db->where('id',$id);
         // $data['categories_data']= $this->db->get();
-
         $this->db->select('*');
         $this->db->from('tbl_category');
         $this->db->where('is_active', 1);
         $data['categories'] = $this->db->get();
-
-
         $this->db->select('*');
         $this->db->from('tbl_sub_category');
         $this->db->where('id', $id);
@@ -399,27 +336,16 @@ class Home extends CI_Controller
         } else {
             $subcategory_name = "";
         }
-
-
         $user_id = $this->session->userdata('user_id');
-
-
-
         // $data['products']= $this->db->select('*')->from('tbl_vendors_product')->where('is_active', 1)->where("name LIKE '%$string%'")->or_where('product_tag', 'like', '%' . $string . '%')->get();
-
-
         // 				$this->db->select('*');
         // $this->db->from('tbl_vendors_product');
         // $this->db->where("name LIKE '%$string%'");
         // $this->db->or_where("product_tag LIKE '%$string%'");
         // $this->db->where('is_active', 1);
         // $data['products']= $this->db->get();
-
-
-
         //new search code start
         $ss = [];
-
         // $string1 = explode(" ", $string);
         // $st_count= count($string1);
         // // print_r($string1);
@@ -462,28 +388,18 @@ class Home extends CI_Controller
         // // $det4="->where('name','LIKE', '%{$a}%' )";
         // $det6 = "AND description LIKE '%". $f . "%' ";
         // }
-
-
         $isactiveProductCondition = "AND is_active = 1";
         $subcategory_condition = " sub_category = " . $id;
         // $isSubCatDeleteProductCondition = "AND is_subcat_delete = 0";
         // $deleteAtProductCondition = "AND deleted_at IS NULL";
-
-
         // $details= "SELECT * FROM `tbl_products` WHERE name LIKE '%silver%' AND name LIKE '%gemstone%' AND name LIKE '%chain%'";
-
         $native_query = "SELECT * FROM tbl_products WHERE  " . $subcategory_condition . "  " . $isactiveProductCondition;
-
         // echo $native_query; die();
-
         // $details = DB::select($native_query);
         $details = $this->db->query($native_query);
         // echo "<pre>";	print_r($details->result()); die();
-
         // SELECT * FROM tbl_products WHERE name LIKE '%lapis%' AND name LIKE '%tyre%' AND name LIKE '%beads%' AND is_active = 1 AND is_cat_delete = 0 AND is_subcat_delete = 0
-
         // print_r($details); echo count($details); die();
-
         if (!empty($details)) {
             $ss = [];
             foreach ($details->result() as $dt) {
@@ -499,7 +415,6 @@ class Home extends CI_Controller
                 if ($a == 1) {
                     continue;
                 } else {
-
                     $ss[] = array(
                         'id' => $dt->id, 'product_id' => $dt->product_id, 'category' => $dt->category, 'sub_category' => $dt->sub_category, 'minisub_category' => $dt->minisub_category, 'minisub_category2' => $dt->minisub_category2, 'vendor' => $dt->vendor, 'sku' => $dt->sku, 'sku_series' => $dt->sku_series, 'description' => $dt->description, 'sdesc' => $dt->sdesc, 'gdesc' => $dt->gdesc, 'mcat1' => $dt->mcat1, 'mcat2' => $dt->mcat2,
                         'mcat3' => $dt->mcat3, 'mcat4' => $dt->mcat4, 'mcat5' => $dt->mcat5, 'product_type' => $dt->product_type, 'collection' => $dt->collection, 'onhand' => $dt->onhand, 'status' => $dt->status, 'price' => $dt->price, 'currency' => $dt->currency, 'unitofsale' => $dt->unitofsale, 'weight' => $dt->weight, 'weightunit' => $dt->weightunit, 'gramweight' => $dt->gramweight, 'ringsizable' => $dt->ringsizable, 'ringsize' => $dt->ringsize, 'ringsizetype' => $dt->ringsizetype, 'leadtime' => $dt->leadtime, 'agta' => $dt->agta, 'desc_e_grp' => $dt->desc_e_grp, 'desc_e_name1' => $dt->desc_e_name1, 'desc_e_value1' => $dt->desc_e_value1, 'desc_e_name2' => $dt->desc_e_name2, 'desc_e_value2' => $dt->desc_e_value2, 'desc_e_name3' => $dt->desc_e_name3, 'desc_e_value3' => $dt->desc_e_value3, 'desc_e_name4' => $dt->desc_e_name4, 'desc_e_value4' => $dt->desc_e_value4, 'desc_e_name5' => $dt->desc_e_name5, 'desc_e_value5' => $dt->desc_e_value5, 'desc_e_name6' => $dt->desc_e_name6,
@@ -513,102 +428,57 @@ class Home extends CI_Controller
         } else {
             $ss = [];
         }
-
         $detail_name = $ss;
-
-
-
-
-
         // $detail_sku = Product::wherenull('deleted_at')->where('is_active', 1)->where('is_cat_delete', 0)->where('is_subcat_delete', 0)
         // ->where('sku_id','LIKE', "%{$string}%" )->get()->toArray();
-
-
         // $detail_tag = Product::wherenull('deleted_at')->where('is_active', 1)->where('is_cat_delete', 0)->where('is_subcat_delete', 0)
         // ->where('tag','LIKE', "%{$string}%" )->get()->toArray();
-
         // 						$this->db->select('*');
         // $this->db->from('tbl_products');
         // $this->db->where("sku LIKE '%$string%'");
         // $this->db->where('is_active', 1);
         // $detail_sku= $this->db->get()->result_array();
-
-
         $detail_sku = [];
         // $detail_tag=[];
         // print_r($detail_tag);
         // echo "df";
-
         $detail = array_merge($detail_name, $detail_sku);
         // print_r($detail); die();
-
-
         //duplicate objects will be removed
         $detail = array_map("unserialize", array_unique(array_map("serialize", $detail)));
         //array is sorted on the bases of id
         sort($detail);
-
         //new search code end
-
         // echo "<pre>"; print_r($detail); die();
-
         $data['product'] = $detail;
         $data['search_string'] = $subcategory_name;
-
-
-
-
         $this->load->view('common/header', $data);
         $this->load->view('search_products');
         $this->load->view('common/footer');
     }
-
-
-
-
-
-
-
-
     //Search Products Page after search
     public function search_products()
     {
-
         $this->load->helper(array('form', 'url'));
         $this->load->library('form_validation');
         $this->load->helper('security');
         if ($this->input->post()) {
-
             $this->form_validation->set_rules('search_input', 'search_input', 'required|xss_clean|trim');
-
             if ($this->form_validation->run() == TRUE) {
-
                 $string_main = $this->input->post('search_input');
-
-
                 $string = str_replace('SLR-', '', $string_main);
                 // echo $string; exit;
-
                 // $id = base64_decode($idd);
-
                 //  $this->db->select('*');
                 // $this->db->from('tbl_categories');
                 // $this->db->where('id',$id);
                 // $data['categories_data']= $this->db->get();
-
                 $this->db->select('*');
                 $this->db->from('tbl_category');
                 $this->db->where('is_active', 1);
                 $data['categories'] = $this->db->get();
-
-
                 $user_id = $this->session->userdata('user_id');
-
-
-
                 // $data['products']= $this->db->select('*')->from('tbl_vendors_product')->where('is_active', 1)->where("name LIKE '%$string%'")->or_where('product_tag', 'like', '%' . $string . '%')->get();
-
-
                 // 				$this->db->select('*');
                 // $this->db->from('tbl_vendors_product');
                 // $this->db->where("name LIKE '%$string%'");
@@ -625,16 +495,11 @@ class Home extends CI_Controller
                 // }
                 // die();
                 // ---------------------------------------------------------------
-
-
-
                 //new search code start
                 $ss = [];
-
                 $string1 = explode(" ", $string);
                 $st_count = count($string1);
                 // print_r($st_count);die();
-
                 $det1 = "";
                 $det2 = "";
                 $det3 = "";
@@ -686,45 +551,33 @@ class Home extends CI_Controller
                     // $det4="->where('name','LIKE', '%{$a}%' )";
                     $det4 = "AND sdesc LIKE '%" . $d . "%' ";
                 }
-
                 if ($st_count >= 5) {
                     $e = $string1[4];
                     // $det4="->where('name','LIKE', '%{$a}%' )";
                     $det5 = "AND sdesc LIKE '%" . $e . "%' ";
                 }
-
                 if ($st_count >= 6) {
                     $f = $string1[5];
                     // $det4="->where('name','LIKE', '%{$a}%' )";
                     $det6 = "AND sdesc LIKE '%" . $f . "%' ";
                 }
-
-
                 $isactiveProductCondition = "AND is_active = 1";
                 $groupByCondition = " group by sku_series, sku_series_type1";
                 // $isCatDeleteProductCondition = "AND is_cat_delete = 0";
                 // $isSubCatDeleteProductCondition = "AND is_subcat_delete = 0";
                 // $deleteAtProductCondition = "AND deleted_at IS NULL";
-
-
                 // $details= "SELECT * FROM `tbl_products` WHERE name LIKE '%silver%' AND name LIKE '%gemstone%' AND name LIKE '%chain%'";
                 if (!empty($findProduct)) {
                     $native_query = "SELECT * FROM tbl_products WHERE product_type='" . $findProduct . "'  " . $isactiveProductCondition . " " . $groupByCondition . " LIMIT 5000";
                 } else {
                     $native_query = "SELECT * FROM tbl_products WHERE " . $det1 . "  " . $det2 . "  " . $det3 . "  " . $det4 . "  " . $det5 . "  " . $det6 . "  " . $isactiveProductCondition . " " . $groupByCondition . " LIMIT 5000";
                 }
-
-
                 // echo $native_query; die();
-
                 // $details = DB::select($native_query);
                 $details = $this->db->query($native_query);
                 // echo "<pre>";	print_r($details->result()); die();
-
                 // SELECT * FROM tbl_products WHERE name LIKE '%lapis%' AND name LIKE '%tyre%' AND name LIKE '%beads%' AND is_active = 1 AND is_cat_delete = 0 AND is_subcat_delete = 0
-
                 // print_r($details); die();
-
                 if (!empty($details)) {
                     $ss = [];
                     foreach ($details->result() as $dt) {
@@ -741,7 +594,6 @@ class Home extends CI_Controller
                         if ($a == 1) {
                             continue;
                         } else {
-
                             $ss[] = array(
                                 'id' => $dt->id, 'product_id' => $dt->product_id, 'category' => $dt->category, 'sub_category' => $dt->sub_category, 'minisub_category' => $dt->minisub_category, 'minisub_category2' => $dt->minisub_category2, 'vendor' => $dt->vendor, 'sku' => $dt->sku, 'sku_series' => $dt->sku_series, 'description' => $dt->description, 'sdesc' => $dt->sdesc, 'gdesc' => $dt->gdesc, 'mcat1' => $dt->mcat1, 'mcat2' => $dt->mcat2,
                                 'mcat3' => $dt->mcat3, 'mcat4' => $dt->mcat4, 'mcat5' => $dt->mcat5, 'product_type' => $dt->product_type, 'collection' => $dt->collection, 'onhand' => $dt->onhand, 'status' => $dt->status, 'price' => $dt->price, 'currency' => $dt->currency, 'unitofsale' => $dt->unitofsale, 'weight' => $dt->weight, 'weightunit' => $dt->weightunit, 'gramweight' => $dt->gramweight, 'ringsizable' => $dt->ringsizable, 'ringsize' => $dt->ringsize, 'ringsizetype' => $dt->ringsizetype, 'leadtime' => $dt->leadtime, 'agta' => $dt->agta, 'desc_e_grp' => $dt->desc_e_grp, 'desc_e_name1' => $dt->desc_e_name1, 'desc_e_value1' => $dt->desc_e_value1, 'desc_e_name2' => $dt->desc_e_name2, 'desc_e_value2' => $dt->desc_e_value2, 'desc_e_name3' => $dt->desc_e_name3, 'desc_e_value3' => $dt->desc_e_value3, 'desc_e_name4' => $dt->desc_e_name4, 'desc_e_value4' => $dt->desc_e_value4, 'desc_e_name5' => $dt->desc_e_name5, 'desc_e_value5' => $dt->desc_e_value5, 'desc_e_name6' => $dt->desc_e_name6,
@@ -755,20 +607,12 @@ class Home extends CI_Controller
                 } else {
                     $ss = [];
                 }
-
                 $detail_name = $ss;
                 // print_r($detail_name);die();
-
-
-
-
                 // $detail_sku = Product::wherenull('deleted_at')->where('is_active', 1)->where('is_cat_delete', 0)->where('is_subcat_delete', 0)
                 // ->where('sku_id','LIKE', "%{$string}%" )->get()->toArray();
-
-
                 // $detail_tag = Product::wherenull('deleted_at')->where('is_active', 1)->where('is_cat_delete', 0)->where('is_subcat_delete', 0)
                 // ->where('tag','LIKE', "%{$string}%" )->get()->toArray();
-
                 $this->db->select('*');
                 $this->db->from('tbl_products');
                 $this->db->group_by(array("sku_series", "sku_series_type1"));
@@ -803,7 +647,6 @@ class Home extends CI_Controller
                     }
                 }
                 // exit;
-
                 $detail = array_merge($detail_name, $yy);
                 // print_r($yy);die();
                 if (empty($detail)) {
@@ -811,36 +654,26 @@ class Home extends CI_Controller
                 }
                 // $detail = array_merge( $detail_name, $detail_sku );
                 // print_r($detail); die();
-
-
                 //duplicate objects will be removed
                 $detail = array_map("unserialize", array_unique(array_map("serialize", $detail)));
                 // print_r($detail); die();
-
                 //array is sorted on the bases of id
                 sort($detail);
-
                 //new search code end
-
                 // echo "<pre>";
                 // print_r($detail); die();
-
                 $data['product'] = $detail;
                 $data['search_string'] = $string_main;
                 // echo count($detail);die();
-
                 if (count($detail) == 1) {
                     // echo "hi";die();
                     redirect('Home/product_detail/' . $detail[0]['sku']);
                 } else {
-
-
                     $this->load->view('common/header', $data);
                     $this->load->view('search_products');
                     $this->load->view('common/footer');
                 }
             } else {
-
                 $this->session->set_flashdata('emessage', validation_errors());
                 // redirect("auth/login","refresh");
                 redirect($_SERVER['HTTP_REFERER']);
@@ -851,32 +684,18 @@ class Home extends CI_Controller
             redirect($_SERVER['HTTP_REFERER']);
         }
     }
-
-
-
-
     //search result data
-
     public function search_results()
     {
-
         $data['data'] = '';
         // if(!empty($this->session->userdata('user_data'))){
-
         $string = $this->input->post('string');
-
-
-
         $user_id = $this->session->userdata('usersid');
-
-
         //new search code start
         $ss = [];
-
         $string1 = explode(" ", $string);
         $st_count = count($string1);
         // print_r($string1);
-
         $det1 = "";
         $det2 = "";
         $det3 = "";
@@ -903,102 +722,65 @@ class Home extends CI_Controller
             // $det4="->where('name','LIKE', '%{$a}%' )";
             $det4 = "AND name LIKE '%" . $d . "%' ";
         }
-
         if ($st_count >= 5) {
             $e = $string1[4];
             // $det4="->where('name','LIKE', '%{$a}%' )";
             $det5 = "AND name LIKE '%" . $e . "%' ";
         }
-
         if ($st_count >= 6) {
             $f = $string1[5];
             // $det4="->where('name','LIKE', '%{$a}%' )";
             $det6 = "AND name LIKE '%" . $f . "%' ";
         }
-
-
         $isactiveProductCondition = "AND is_active = 1";
         // $isCatDeleteProductCondition = "AND is_cat_delete = 0";
         // $isSubCatDeleteProductCondition = "AND is_subcat_delete = 0";
         // $deleteAtProductCondition = "AND deleted_at IS NULL";
-
-
         // $details= "SELECT * FROM `tbl_products` WHERE name LIKE '%silver%' AND name LIKE '%gemstone%' AND name LIKE '%chain%'";
-
         $native_query = "SELECT * FROM tbl_sub_category WHERE " . $det1 . "  " . $det2 . "  " . $det3 . "  " . $det4 . "  " . $det5 . "  " . $det6 . "  " . $isactiveProductCondition;
-
         // echo $native_query; die();
-
         // $details = DB::select($native_query);
         $details = $this->db->query($native_query);
         // echo "<pre>";	print_r($details->result()); die();
-
         // SELECT * FROM tbl_products WHERE name LIKE '%lapis%' AND name LIKE '%tyre%' AND name LIKE '%beads%' AND is_active = 1 AND is_cat_delete = 0 AND is_subcat_delete = 0
-
         // print_r($details); echo count($details); die();
-
         if (!empty($details)) {
             foreach ($details->result() as $dt) {
                 // code...
-
-
                 $ss[] = array('id' => $dt->id, 'category' => $dt->category, 'api_id' => $dt->api_id, 'name' => $dt->name, 'image' => $dt->image, 'seq' => $dt->seq,  'ip' => $dt->ip,  'date' => $dt->date,  'added_by' => $dt->added_by,  'is_active' => $dt->is_active);
             }
         } else {
             $ss = [];
         }
-
         $detail_name = $ss;
-
-
-
-
-
         // $detail_sku = Product::wherenull('deleted_at')->where('is_active', 1)->where('is_cat_delete', 0)->where('is_subcat_delete', 0)
         // ->where('sku_id','LIKE', "%{$string}%" )->get()->toArray();
-
-
         // $detail_tag = Product::wherenull('deleted_at')->where('is_active', 1)->where('is_cat_delete', 0)->where('is_subcat_delete', 0)
         // ->where('tag','LIKE', "%{$string}%" )->get()->toArray();
-
         // 						$this->db->select('*');
         // $this->db->from('tbl_products');
         // $this->db->where("sku LIKE '%$string%'");
         // $this->db->where('is_active', 1);
         // $detail_sku= $this->db->get()->result_array();
-
-
         $detail_sku = [];
         // $detail_tag=[];
         // print_r($detail_tag);
         // echo "df";
-
         $detail = array_merge($detail_name, $detail_sku);
         // print_r($detail); die();
-
-
         //duplicate objects will be removed
         $detail = array_map("unserialize", array_unique(array_map("serialize", $detail)));
         //array is sorted on the bases of id
         sort($detail);
-
         //new search code end
-
-
         $data['data'] = true;
         $data['result_da'] = $detail;
-
-
-
-
-
         // $this->db->select('*');
         // $this->db->from('tbl_ecom_products');
         // $this->db->where('category_id',$catid);
         // $this->db->where("is_active", 1);
         // $this->db->where("is_cat_delete", 0);
         // $data['ecom_product_data']= $this->db->get();
-
         // $this->load->view('layout/withoutheader');
         // $this->load->view('view_wishlist',$data);
         // $this->load->view('layout/footer');
@@ -1009,42 +791,27 @@ class Home extends CI_Controller
         // }
         echo json_encode($data);
     }
-
-
-
-
-
-
     public function new_arrivals()
     {
-
         $this->db->select('*');
         $this->db->from('tbl_new_arrival_products');
         $this->db->group_by(array("sku_series", "sku_series_type1"));
         $this->db->where('is_active', 1);
         $this->db->order_by('id', 'ASC');
         $data['product'] = $this->db->get();
-
         //get product count
         $this->db->select('*');
         $this->db->from('tbl_new_arrival_products');
         $this->db->group_by(array("sku_series", "sku_series_type1"));
         $this->db->where('is_active', 1);
         $data['product_count'] = $this->db->count_all_results();
-
-
         $this->load->view('common/header', $data);
         $this->load->view('new_arrival_products');
         $this->load->view('common/footer');
     }
-
-
-
-
     public function new_arrive_product_detail($idd)
     {
         $data['page_t'] = 2; // 1 for quickshop product ,2 for new arrivals, 3 for normal products
-
         $data['page'] = 0;
         $id = $idd;
         // echo $id;
@@ -1054,29 +821,21 @@ class Home extends CI_Controller
         $this->db->where('id', $id);
         $this->db->where('is_active', 1);
         $data['products'] = $this->db->get()->row();
-
-
         $this->db->select('*');
         $this->db->from('tbl_new_arrival_products');
         $this->db->where('id', $id);
         $this->db->where('is_active', 1);
         $d1 = $this->db->get()->row();
-
-
         $sub_id = $d1->sub_category;
         $minorsub_id = $d1->minisub_category;
         $a1 = $d1->desc_e_value1;
-
-
         $this->db->select('*');
         $this->db->from('tbl_new_arrival_products');
         $this->db->where('desc_e_value1', $a1);
         $this->db->where('is_active', 1);
         $d2 = $this->db->get();
-
         $i = 1;
         foreach ($d2->result() as $d3) {
-
             $data['b1'] = $d1->desc_e_name2;
             $data['b2'] = $d1->desc_e_name3;
             $data['b3'] = $d1->desc_e_name4;
@@ -1087,7 +846,6 @@ class Home extends CI_Controller
             $data['b8'] = $d1->desc_e_name9;
             $data['b9'] = $d1->desc_e_name10;
             $data['b10'] = $d1->desc_e_name11;
-
             $c1[] = $d3->desc_e_value2;
             $c2[] = $d3->desc_e_value3;
             $c3[] = $d3->desc_e_value4;
@@ -1099,7 +857,6 @@ class Home extends CI_Controller
             $c9[] = $d3->desc_e_value10;
             $c10[] = $d3->desc_e_value11;
         }
-
         $data['d1'] = array_unique($c1);
         $data['d2'] = array_unique($c2);
         $data['d3'] = array_unique($c3);
@@ -1110,20 +867,14 @@ class Home extends CI_Controller
         $data['d8'] = array_unique($c8);
         $data['d9'] = array_unique($c9);
         $data['d10'] = array_unique($c10);
-
-
         // print_r($d1);
         // exit;
-
         //
         // $this->db->select('*');
         // $this->db->from('tbl_types');
         // $this->db->where('product',$id);
         // $data['types']= $this->db->get();
-
-
         //get related products(Shoppers Also Bought)
-
         // if(!empty($minorsub_id)){
         // 	$this->db->select('*');
         // 	$this->db->from('tbl_new_arrival_products');
@@ -1141,11 +892,7 @@ class Home extends CI_Controller
         $this->db->order_by('id', 'DESC');
         $data['ralated_products'] = $this->db->limit(100)->get();
         // }
-
-
-
         //get trendings products(Popular Products)
-
         // if(!empty($minorsub_id)){
         // 	$this->db->select('*');
         // 	$this->db->from('tbl_products');
@@ -1161,44 +908,26 @@ class Home extends CI_Controller
         // 	$this->db->order_by('id', 'RANDOM');
         // 	$data['trending_products']= $this->db->limit(100)->get();
         // }
-
-
-
-
         $this->load->view('common/header', $data);
         $this->load->view('product_detail');
         $this->load->view('common/footer');
     }
-
-
-
-
     public function all_products($idd, $t)
     {
+// echo 4;die();
         $id = $idd;
         $page = base64_decode($t);
-
         $sort_type = $this->input->get('sort_type');
-
         $data['page'] = $t;
         $data['level_id'] = $idd;
         $data['sort_type'] = $sort_type;
-
-
-
         if ($sort_type == 0) {
             $sort_type = "";
         }
-
         if ($page == 3) {
-
-
-
-
             //pagination code
             $config = array();
             $config["base_url"] = base_url() . "Home/all_products/" . $id . "/" . $t;
-
             $this->db->select('*');
             $this->db->from('tbl_products');
             $this->db->group_by(array("sku_series", "sku_series_type1"));
@@ -1206,47 +935,30 @@ class Home extends CI_Controller
             $this->db->where('is_active', 1);
             $config["total_rows"] = $this->db->count_all_results();
             // echo  $config["total_rows"];die();
-
             $config["per_page"] = 100;
             $config["uri_segment"] = 6;
-
-
             $this->pagination->initialize($config);
-
             // $page = ($this->uri->segment(2)) ? $this->uri->segment(2) : 0;
             $page = ($this->uri->segment(6)) ? $this->uri->segment(6) : 0;
-
             $data["links"] = $this->pagination->create_links();
-
-
-
-
-
-
             // Category
-
             // $data['cate_id']= $idd;
             $data['sub_id'] = "";
             $data['minorsub_id'] = "";
             $data['minorsub_name'] = "";
             $data['subcategory_id'] = "";
-
             $this->db->distinct();
             $this->db->select('sku_series');
             $this->db->where('sub_category', $id);
             $this->db->where('is_active', 1);
             $query = $this->db->get('tbl_products');
             $data['product_count'] = $query->num_rows();
-
             // 	$this->db->select('*');
             // $this->db->from('tbl_products');
             // $this->db->group_by(array("sku_series", "sku_series_type1"));
             // $this->db->where('category',$id);
             // $this->db->where('is_active', 1);
             // $data['product_count']= $this->db->count_all_results();
-
-
-
             $this->db->select('*');
             $this->db->from('tbl_category');
             $this->db->where('id', $id);
@@ -1260,27 +972,17 @@ class Home extends CI_Controller
                 $subcate_name = "";
                 $cate_name = "";
             }
-
-
             $data['category_id'] = $idd;
             $data['subcategory_name'] = "";
             $data['category_name'] = $cate_name;
-
             $ringsize = $this->input->get('ringsize');
             $product_type = $this->input->get('product_type');
             $totalweight = $this->input->get('totalweight');
             $dclarity = $this->input->get('dclarity');
             $dcolor = $this->input->get('dcolor');
-
-
-
             if (!empty($ringsize)) {
-
-
                 //sorting logic start
-
                 if (!empty($sort_type)) {
-
                     if ($sort_type == 1) {
                         $this->db->select('*');
                         $this->db->from('tbl_products');
@@ -1310,8 +1012,6 @@ class Home extends CI_Controller
                         $data['product'] = $this->db->get();
                     }
                 } else {
-
-
                     $this->db->select('*');
                     $this->db->from('tbl_products');
                     $this->db->group_by(array("sku_series", "sku_series_type1"));
@@ -1320,21 +1020,11 @@ class Home extends CI_Controller
                     $this->db->where('is_active', 1);
                     $data['product'] = $this->db->get();
                 }
-
                 //sorting logic end
-
-
-
-
-
                 $data['flter_name'] = $ringsize;
             } elseif (!empty($dcolor)) {
-
-
                 //sorting logic start
-
                 if (!empty($sort_type)) {
-
                     if ($sort_type == 1) {
                         $this->db->select('*');
                         $this->db->from('tbl_products');
@@ -1364,8 +1054,6 @@ class Home extends CI_Controller
                         $data['product'] = $this->db->get();
                     }
                 } else {
-
-
                     $this->db->select('*');
                     $this->db->from('tbl_products');
                     $this->db->group_by(array("sku_series", "sku_series_type1"));
@@ -1374,20 +1062,11 @@ class Home extends CI_Controller
                     $this->db->where('is_active', 1);
                     $data['product'] = $this->db->get();
                 }
-
                 //sorting logic end
-
-
-
-
-
                 $data['flter_name'] = $dcolor;
             } elseif (!empty($product_type)) {
-
                 //sorting logic start
-
                 if (!empty($sort_type)) {
-
                     if ($sort_type == 1) {
                         $this->db->select('*');
                         $this->db->from('tbl_products');
@@ -1417,8 +1096,6 @@ class Home extends CI_Controller
                         $data['product'] = $this->db->get();
                     }
                 } else {
-
-
                     $this->db->select('*');
                     $this->db->from('tbl_products');
                     $this->db->group_by(array("sku_series", "sku_series_type1"));
@@ -1427,20 +1104,11 @@ class Home extends CI_Controller
                     $this->db->where('is_active', 1);
                     $data['product'] = $this->db->get();
                 }
-
                 //sorting logic end
-
-
-
-
                 $data['flter_name'] = $product_type;
             } elseif (!empty($totalweight)) {
-
-
                 //sorting logic start
-
                 if (!empty($sort_type)) {
-
                     if ($sort_type == 1) {
                         $this->db->select('*');
                         $this->db->from('tbl_products');
@@ -1470,8 +1138,6 @@ class Home extends CI_Controller
                         $data['product'] = $this->db->get();
                     }
                 } else {
-
-
                     $this->db->select('*');
                     $this->db->from('tbl_products');
                     $this->db->group_by(array("sku_series", "sku_series_type1"));
@@ -1480,21 +1146,11 @@ class Home extends CI_Controller
                     $this->db->where('is_active', 1);
                     $data['product'] = $this->db->get();
                 }
-
                 //sorting logic end
-
-
-
-
                 $data['flter_name'] = $totalweight;
             } elseif (!empty($dclarity)) {
-
-
-
                 //sorting logic start
-
                 if (!empty($sort_type)) {
-
                     if ($sort_type == 1) {
                         $this->db->select('*');
                         $this->db->from('tbl_products');
@@ -1524,8 +1180,6 @@ class Home extends CI_Controller
                         $data['product'] = $this->db->get();
                     }
                 } else {
-
-
                     $this->db->select('*');
                     $this->db->from('tbl_products');
                     $this->db->group_by(array("sku_series", "sku_series_type1"));
@@ -1534,20 +1188,11 @@ class Home extends CI_Controller
                     $this->db->where('is_active', 1);
                     $data['product'] = $this->db->get();
                 }
-
                 //sorting logic end
-
-
-
-
-
                 $data['flter_name'] = $dclarity;
             } else {
-
                 //sorting logic start
-
                 if (!empty($sort_type)) {
-
                     if ($sort_type == 1) {
                         $this->db->select('*');
                         $this->db->from('tbl_products');
@@ -1574,7 +1219,6 @@ class Home extends CI_Controller
                         $data['product'] = $this->db->get();
                     }
                 } else {
-
                     $this->db->select('*');
                     $this->db->from('tbl_products');
                     // $this->db->group_by(array("sku_series", "sku_series_type1"));
@@ -1585,18 +1229,12 @@ class Home extends CI_Controller
                     // echo $data['product'];
                     // exit;
                 }
-
                 //sorting logic end
-
-
             }
         } elseif ($page == 0) {
-
-
             //pagination code
             $config = array();
             $config["base_url"] = base_url() . "Home/all_products/" . $id . "/" . $t;
-
             $this->db->distinct();
             $this->db->select('sku_series');
             $this->db->where('sub_category', $id);
@@ -1606,39 +1244,29 @@ class Home extends CI_Controller
             // exit;
             $config["per_page"] = 100;
             $config["uri_segment"] = 4;
-
-
             $this->pagination->initialize($config);
-
             // $page = ($this->uri->segment(2)) ? $this->uri->segment(2) : 0;
             $page = ($this->uri->segment(4)) ? $this->uri->segment(4) : 0;
-
             $data["links"] = $this->pagination->create_links();
-
             // echo $page; print_r($data["links"]); die();
-
             // echo "f"; die();
             // subcategory
-
             $data['sub_id'] = $idd;
             $data['minorsub_id'] = "";
             $data['minorsub_name'] = "";
             $data['subcategory_id'] = $idd;
-
             $this->db->distinct();
             $this->db->select('sku_series');
             $this->db->where('sub_category', $id);
             $this->db->where('is_active', 1);
             $query = $this->db->get('tbl_products');
             $data['product_count'] = $query->num_rows();
-
             // 	$this->db->select('*');
             // $this->db->from('tbl_products');
             // $this->db->group_by(array("sku_series", "sku_series_type1"));
             // $this->db->where('sub_category',$id);
             // $this->db->where('is_active', 1);
             // $data['product_count']= $this->db->count_all_results();
-
             $this->db->select('*');
             $this->db->from('tbl_sub_category');
             $this->db->where('id', $id);
@@ -1647,7 +1275,6 @@ class Home extends CI_Controller
             if (!empty($subcate_da)) {
                 $subcate_name = $subcate_da->name;
                 $category_id = $subcate_da->category;
-
                 $this->db->select('*');
                 $this->db->from('tbl_category');
                 $this->db->where('id', $category_id);
@@ -1663,27 +1290,17 @@ class Home extends CI_Controller
                 $subcate_name = "";
                 $cate_name = "";
             }
-
             $data['category_id'] = $category_id;
             $data['subcategory_name'] = $subcate_name;
             $data['category_name'] = $cate_name;
-
             $ringsize = $this->input->get('ringsize');
             $product_type = $this->input->get('product_type');
             $totalweight = $this->input->get('totalweight');
             $dclarity = $this->input->get('dclarity');
             $dcolor = $this->input->get('dcolor');
-
-
-
             if (!empty($ringsize)) {
-
-
-
                 //sorting logic start
-
                 if (!empty($sort_type)) {
-
                     if ($sort_type == 1) {
                         $this->db->select('*');
                         $this->db->from('tbl_products');
@@ -1713,7 +1330,6 @@ class Home extends CI_Controller
                         $data['product'] = $this->db->get();
                     }
                 } else {
-
                     $this->db->select('*');
                     $this->db->from('tbl_products');
                     $this->db->group_by(array("sku_series", "sku_series_type1"));
@@ -1722,21 +1338,11 @@ class Home extends CI_Controller
                     $this->db->where('is_active', 1);
                     $data['product'] = $this->db->get();
                 }
-
                 //sorting logic end
-
-
-
-
-
                 $data['flter_name'] = $ringsize;
             } elseif (!empty($dcolor)) {
-
-
                 //sorting logic start
-
                 if (!empty($sort_type)) {
-
                     if ($sort_type == 1) {
                         $this->db->select('*');
                         $this->db->from('tbl_products');
@@ -1766,7 +1372,6 @@ class Home extends CI_Controller
                         $data['product'] = $this->db->get();
                     }
                 } else {
-
                     $this->db->select('*');
                     $this->db->from('tbl_products');
                     $this->db->group_by(array("sku_series", "sku_series_type1"));
@@ -1775,20 +1380,11 @@ class Home extends CI_Controller
                     $this->db->where('is_active', 1);
                     $data['product'] = $this->db->get();
                 }
-
                 //sorting logic end
-
-
-
                 $data['flter_name'] = $dcolor;
             } elseif (!empty($product_type)) {
-
-
-
                 //sorting logic start
-
                 if (!empty($sort_type)) {
-
                     if ($sort_type == 1) {
                         $this->db->select('*');
                         $this->db->from('tbl_products');
@@ -1818,7 +1414,6 @@ class Home extends CI_Controller
                         $data['product'] = $this->db->get();
                     }
                 } else {
-
                     $this->db->select('*');
                     $this->db->from('tbl_products');
                     $this->db->group_by(array("sku_series", "sku_series_type1"));
@@ -1827,21 +1422,11 @@ class Home extends CI_Controller
                     $this->db->where('is_active', 1);
                     $data['product'] = $this->db->get();
                 }
-
                 //sorting logic end
-
-
-
-
-
                 $data['flter_name'] = $product_type;
             } elseif (!empty($totalweight)) {
-
-
                 //sorting logic start
-
                 if (!empty($sort_type)) {
-
                     if ($sort_type == 1) {
                         $this->db->select('*');
                         $this->db->from('tbl_products');
@@ -1871,7 +1456,6 @@ class Home extends CI_Controller
                         $data['product'] = $this->db->get();
                     }
                 } else {
-
                     $this->db->select('*');
                     $this->db->from('tbl_products');
                     $this->db->group_by(array("sku_series", "sku_series_type1"));
@@ -1880,20 +1464,11 @@ class Home extends CI_Controller
                     $this->db->where('is_active', 1);
                     $data['product'] = $this->db->get();
                 }
-
                 //sorting logic end
-
-
-
-
                 $data['flter_name'] = $totalweight;
             } elseif (!empty($dclarity)) {
-
-
                 //sorting logic start
-
                 if (!empty($sort_type)) {
-
                     if ($sort_type == 1) {
                         $this->db->select('*');
                         $this->db->from('tbl_products');
@@ -1923,7 +1498,6 @@ class Home extends CI_Controller
                         $data['product'] = $this->db->get();
                     }
                 } else {
-
                     $this->db->select('*');
                     $this->db->from('tbl_products');
                     $this->db->group_by(array("sku_series", "sku_series_type1"));
@@ -1932,22 +1506,13 @@ class Home extends CI_Controller
                     $this->db->where('is_active', 1);
                     $data['product'] = $this->db->get();
                 }
-
                 //sorting logic end
-
-
-
-
-
                 $data['flter_name'] = $dclarity;
             } else {
-
                 // echo "hi";
                 // exit;
                 //sorting logic start
-
                 if (!empty($sort_type)) {
-
                     if ($sort_type == 1) {
                         $this->db->select('*');
                         $this->db->from('tbl_products');
@@ -1974,13 +1539,11 @@ class Home extends CI_Controller
                         $data['product'] = $this->db->get();
                     }
                 } else {
-
                     $this->db->distinct();
                     $this->db->select('*');
                     $this->db->where('sub_category', $id);
                     $this->db->where('is_active', 1);
                     $data['product'] = $this->db->get('tbl_products');
-
                     // $this->db->select('*');
                     //
                     // $this->db->from('tbl_products');
@@ -1991,50 +1554,30 @@ class Home extends CI_Controller
                     // $data['product']= $this->db->get();
                     // print_r($data['product']);
                     // exit;
-
-
                 }
-
                 //sorting logic end
-
-
-
-
             }
         } else {
             // echo "hi";
             // exit;
             //minor subcategory
-
-
-
             //pagination code
             $config = array();
             $config["base_url"] = base_url() . "Home/all_products/" . $id . "/" . $t;
-
             $this->db->select('*');
             $this->db->from('tbl_products');
             $this->db->group_by(array("sku_series", "sku_series_type1"));
             $this->db->where('minisub_category', $id);
             $this->db->where('is_active', 1);
             $config["total_rows"] = $this->db->count_all_results();
-
             $config["per_page"] = 100;
             $config["uri_segment"] = 6;
-
-
             $this->pagination->initialize($config);
-
             // $page = ($this->uri->segment(2)) ? $this->uri->segment(2) : 0;
             $page = ($this->uri->segment(6)) ? $this->uri->segment(6) : 0;
-
             $data["links"] = $this->pagination->create_links();
-
-
             $data['minorsub_id'] = $idd;
             $data['sub_id'] = "";
-
-
             // 	$this->db->select('*');
             // $this->db->from('tbl_products');
             // $this->db->group_by(array("sku_series", "sku_series_type1"));
@@ -2048,7 +1591,6 @@ class Home extends CI_Controller
             $this->db->where('minisub_category', $id);
             $this->db->where('is_active', 1);
             $data['product_count'] = $this->db->count_all_results();
-
             $this->db->select('*');
             $this->db->from('tbl_minisubcategory');
             $this->db->where('id', $id);
@@ -2058,7 +1600,6 @@ class Home extends CI_Controller
                 $minorsubcate_name = $minorsubcate_da->name;
                 $category_id = $minorsubcate_da->category;
                 $subcategory_id = $minorsubcate_da->subcategory;
-
                 $this->db->select('*');
                 $this->db->from('tbl_category');
                 $this->db->where('id', $category_id);
@@ -2069,7 +1610,6 @@ class Home extends CI_Controller
                 } else {
                     $cate_name = "";
                 }
-
                 $this->db->select('*');
                 $this->db->from('tbl_sub_category');
                 $this->db->where('id', $subcategory_id);
@@ -2087,31 +1627,19 @@ class Home extends CI_Controller
                 $cate_name = "N/A";
                 $minorsubcate_name = "N/A";
             }
-
             $data['category_id'] = $category_id;
             $data['subcategory_id'] = $subcategory_id;
             $data['subcategory_name'] = $subcate_name;
             $data['category_name'] = $cate_name;
             $data['minorsub_name'] = $minorsubcate_name;
-
-
-
-
             $ringsize = $this->input->get('ringsize');
             $product_type = $this->input->get('product_type');
             $totalweight = $this->input->get('totalweight');
             $dclarity = $this->input->get('dclarity');
             $dcolor = $this->input->get('dcolor');
-
-
-
             if (!empty($ringsize)) {
-
-
                 //sorting logic start
-
                 if (!empty($sort_type)) {
-
                     if ($sort_type == 1) {
                         $this->db->select('*');
                         $this->db->from('tbl_products');
@@ -2141,7 +1669,6 @@ class Home extends CI_Controller
                         $data['product'] = $this->db->get();
                     }
                 } else {
-
                     $this->db->select('*');
                     $this->db->from('tbl_products');
                     $this->db->group_by(array("sku_series", "sku_series_type1"));
@@ -2150,20 +1677,11 @@ class Home extends CI_Controller
                     $this->db->where('is_active', 1);
                     $data['product'] = $this->db->get();
                 }
-
                 //sorting logic end
-
-
-
-
-
                 $data['flter_name'] = $ringsize;
             } elseif (!empty($dcolor)) {
-
                 //sorting logic start
-
                 if (!empty($sort_type)) {
-
                     if ($sort_type == 1) {
                         $this->db->select('*');
                         $this->db->from('tbl_products');
@@ -2193,7 +1711,6 @@ class Home extends CI_Controller
                         $data['product'] = $this->db->get();
                     }
                 } else {
-
                     $this->db->select('*');
                     $this->db->from('tbl_products');
                     $this->db->group_by(array("sku_series", "sku_series_type1"));
@@ -2202,20 +1719,11 @@ class Home extends CI_Controller
                     $this->db->where('is_active', 1);
                     $data['product'] = $this->db->get();
                 }
-
                 //sorting logic end
-
-
-
-
                 $data['flter_name'] = $dcolor;
             } elseif (!empty($product_type)) {
-
-
                 //sorting logic start
-
                 if (!empty($sort_type)) {
-
                     if ($sort_type == 1) {
                         $this->db->select('*');
                         $this->db->from('tbl_products');
@@ -2245,7 +1753,6 @@ class Home extends CI_Controller
                         $data['product'] = $this->db->get();
                     }
                 } else {
-
                     $this->db->select('*');
                     $this->db->from('tbl_products');
                     $this->db->group_by(array("sku_series", "sku_series_type1"));
@@ -2254,21 +1761,11 @@ class Home extends CI_Controller
                     $this->db->where('is_active', 1);
                     $data['product'] = $this->db->get();
                 }
-
                 //sorting logic end
-
-
-
-
-
                 $data['flter_name'] = $product_type;
             } elseif (!empty($totalweight)) {
-
-
                 //sorting logic start
-
                 if (!empty($sort_type)) {
-
                     if ($sort_type == 1) {
                         $this->db->select('*');
                         $this->db->from('tbl_products');
@@ -2298,7 +1795,6 @@ class Home extends CI_Controller
                         $data['product'] = $this->db->get();
                     }
                 } else {
-
                     $this->db->select('*');
                     $this->db->from('tbl_products');
                     $this->db->group_by(array("sku_series", "sku_series_type1"));
@@ -2307,21 +1803,11 @@ class Home extends CI_Controller
                     $this->db->where('is_active', 1);
                     $data['product'] = $this->db->get();
                 }
-
                 //sorting logic end
-
-
-
-
-
                 $data['flter_name'] = $totalweight;
             } elseif (!empty($dclarity)) {
-
-
                 //sorting logic start
-
                 if (!empty($sort_type)) {
-
                     if ($sort_type == 1) {
                         $this->db->select('*');
                         $this->db->from('tbl_products');
@@ -2351,7 +1837,6 @@ class Home extends CI_Controller
                         $data['product'] = $this->db->get();
                     }
                 } else {
-
                     $this->db->select('*');
                     $this->db->from('tbl_products');
                     $this->db->group_by(array("sku_series", "sku_series_type1"));
@@ -2360,22 +1845,11 @@ class Home extends CI_Controller
                     $this->db->where('is_active', 1);
                     $data['product'] = $this->db->get();
                 }
-
                 //sorting logic end
-
-
-
-
-
                 $data['flter_name'] = $dclarity;
             } else {
-
-
-
                 //sorting logic start
-
                 if (!empty($sort_type)) {
-
                     if ($sort_type == 1) {
                         $this->db->select('*');
                         $this->db->from('tbl_products');
@@ -2402,7 +1876,6 @@ class Home extends CI_Controller
                         $data['product'] = $this->db->get();
                     }
                 } else {
-
                     $this->db->select('*');
                     $this->db->from('tbl_products');
                     $this->db->group_by(array("sku_series", "sku_series_type1"));
@@ -2411,18 +1884,11 @@ class Home extends CI_Controller
                     $this->db->limit($config["per_page"], $page);
                     $data['product'] = $this->db->get();
                 }
-
                 //sorting logic end
-
-
-
             }
         }
         $product1 = [];
-
-
         foreach ($data['product']->result() as $count_data) {
-
             // $sku1=explode(":",$data->sku);
             // $sku = $sku1[0];
             $a = 0;
@@ -2457,10 +1923,6 @@ class Home extends CI_Controller
             $counting++;
         }
         $data['productCount'] = $counting;
-
-
-
-
         // $products=[];
         // $ss=[];
         //
@@ -2499,11 +1961,7 @@ class Home extends CI_Controller
         // 		$data['product']= $ss;
         // 		}
         // print_r($ss); die();
-
-
         // echo "<pre>"; print_r($data); die();
-
-
         $this->load->view('common/header', $data);
         $this->load->view('all_products');
         $this->load->view('common/footer');
@@ -2511,7 +1969,6 @@ class Home extends CI_Controller
     public function product_detail($idd)
     {
         $data['page_t'] = 3; // 1 for quickshop product ,2 for new arrivals, 3 for normal products
-
         $data['page'] = 0;
         $id = $idd;
         // echo $id;
@@ -2546,7 +2003,6 @@ class Home extends CI_Controller
         // $this->db->where('is_active',1);
         $d1 = $this->db->get()->row();
         // print_r($d1);
-
         $val_e = array(
             'desc_e_name1' => $d1->desc_e_name1,
             'desc_e_name2' => $d1->desc_e_name2,
@@ -2564,7 +2020,6 @@ class Home extends CI_Controller
             'desc_e_name14' => $d1->desc_e_name14,
             'desc_e_name15' => $d1->desc_e_name15,
         );
-
         $first = array_search('Stone Shape', $val_e);
         $deal = array_search('Center Stone Shape', $val_e);
         $breaker = array_search('Primary Stone Shape', $val_e);
@@ -2591,10 +2046,8 @@ class Home extends CI_Controller
             $value = $d1->$s;
         }
         // echo $s.$value;die();
-
         // echo $value;
         // die();
-
         $state = array_search('Jewelry State', $val_e);
         if (empty($state)) {
             $state_row = "";
@@ -2604,7 +2057,6 @@ class Home extends CI_Controller
             $state_row = "desc_e_value" . $state_no[1];
             $state_value = $d1->$state_row;
         }
-
         $eng_band_shank = array_search('Product', $val_e);
         if (empty($eng_band_shank)) {
             $eng_band_shank_row = "";
@@ -2614,17 +2066,11 @@ class Home extends CI_Controller
             $eng_band_shank_row = "desc_e_value" . $eng_band_shank_no[1];
             $eng_band_shank_value = $d1->$eng_band_shank_row;
         }
-
         // echo $state_row." ".$state_value;die();
-
         if (empty($value)) {
             $value = "";
         }
-
         $sub_id = $d1->sub_category;
-
-
-
         //   if(!empty($d1->sub_category)){
         // 	$sub_id=$d1->sub_category;
         // }else{
@@ -2652,7 +2098,6 @@ class Home extends CI_Controller
         // echo $state_row." ".$state_value;
         // echo $state_value;
         // die();
-
         $this->db->select('*');
         $this->db->from('tbl_products');
         $this->db->where('sku_series', $d1->sku_series);
@@ -2670,7 +2115,6 @@ class Home extends CI_Controller
         }
         $d2 = $this->db->get();
         // print_r($d2->row());die();
-
         $this->db->select('*');
         $this->db->from('tbl_products');
         if ($s !== "" || $value !== "") {
@@ -2699,7 +2143,6 @@ class Home extends CI_Controller
             }
             $data['eng_band_shank_array'] = $eng_band_shank_array;
         }
-
         $data['b1'] = $d1->desc_e_name2;
         $data['b2'] = $d1->desc_e_name3;
         $data['b3'] = $d1->desc_e_name4;
@@ -2710,7 +2153,6 @@ class Home extends CI_Controller
         $data['b8'] = $d1->desc_e_name9;
         $data['b9'] = $d1->desc_e_name10;
         $data['b10'] = $d1->desc_e_name11;
-
         $i = 1;
         foreach ($d2->result() as $d3) {
             // print_r($d3->desc_e_value1);die();
@@ -2764,7 +2206,6 @@ class Home extends CI_Controller
                 $c10[] = $d3->desc_e_value11;
             }
         }
-
         // print_r($c6);die();
         //---------------------------------------------------------------------------------
         $this->db->select('*');
@@ -2777,9 +2218,7 @@ class Home extends CI_Controller
         $this->db->where('is_active', 1);
         $e41 = $this->db->get();
         // echo $row2.$a1;die();
-
         foreach ($e41->result() as $d31) {
-
             $data['b11'] = $d1->desc_e_name2;
             $data['b21'] = $d1->desc_e_name3;
             $data['b31'] = $d1->desc_e_name4;
@@ -2790,7 +2229,6 @@ class Home extends CI_Controller
             $data['b81'] = $d1->desc_e_name9;
             $data['b91'] = $d1->desc_e_name10;
             $data['b101'] = $d1->desc_e_name11;
-
             $c11[] = $d31->desc_e_value2;
             $c21[] = $d31->desc_e_value3;
             $c31[] = $d31->desc_e_value4;
@@ -2802,7 +2240,6 @@ class Home extends CI_Controller
             $c91[] = $d31->desc_e_value10;
             $c101[] = $d31->desc_e_value11;
         }
-
         if (!empty($c11)) {
             $j11 = array_unique($c11);
             sort($j11);
@@ -2863,8 +2300,6 @@ class Home extends CI_Controller
         } else {
             $j101 = "";
         }
-
-
         $data['d11'] = $j11;
         $data['d21'] = $j21;
         $data['d31'] = $j31;
@@ -2875,9 +2310,7 @@ class Home extends CI_Controller
         $data['d81'] = $j81;
         $data['d91'] = $j91;
         $data['d101'] = $j101;
-
         //-------------------------------------------------------------------------------
-
         if (!empty($c1)) {
             $j1 = array_unique($c1);
             sort($j1);
@@ -2949,10 +2382,8 @@ class Home extends CI_Controller
         $data['d9'] = $j9;
         $data['d10'] = $j10;
         // print_r($j10);die();
-
         // more items to Consider
         $cat_id = $d1->category;
-
         $this->db->select('*');
         $this->db->from('tbl_products');
         $this->db->where('category', $cat_id);
@@ -2988,10 +2419,7 @@ class Home extends CI_Controller
                 }
             }
         }
-
         $data['more'] = $product1;
-
-
         $this->db->select('*');
         $this->db->from('tbl_products');
         // $this->db->where('category',$category);
@@ -3027,14 +2455,8 @@ class Home extends CI_Controller
                 }
             }
         }
-
         $data['random'] = $p_random;
-
-
-
-
         // print_r($data);die();
-
         //get related products(Shoppers Also Bought)
         // if(!empty($minorsub_id)){
         // 	$this->db->select('*');
@@ -3053,14 +2475,7 @@ class Home extends CI_Controller
         // 	$this->db->order_by('id','DESC');
         // 	$data['ralated_products']= $this->db->limit(5000)->get();
         // }
-
-
-
-
-
-
         //get trendings products(Popular Products)
-
         // if(!empty($minorsub_id)){
         // 	$this->db->select('*');
         // 	$this->db->from('tbl_products');
@@ -3076,15 +2491,10 @@ class Home extends CI_Controller
         // 	$this->db->order_by('id', 'RANDOM');
         // 	$data['trending_products']= $this->db->limit(100)->get();
         // }
-
-
-
-
         $this->load->view('common/header', $data);
         $this->load->view('product_detail');
         $this->load->view('common/footer');
     }
-
     public function pro_change()
     {
         $this->load->helper(array('form', 'url'));
@@ -3110,11 +2520,7 @@ class Home extends CI_Controller
             $this->form_validation->set_rules('pid', 'pid', 'xss_clean|trim');
             $this->form_validation->set_rules('para', 'para', 'xss_clean|trim'); //------- 1 for image, 0 for dropdown, 2 for jewelry State
             $this->form_validation->set_rules('active', 'active', 'xss_clean|trim'); //-------------Shape of stone
-
-
-
             if ($this->form_validation->run() == TRUE) {
-
                 $pid = $this->input->post('pid');
                 $qty = $this->input->post('qty');
                 $col = $this->input->post('col');
@@ -3134,7 +2540,6 @@ class Home extends CI_Controller
                 $desc_e_value10 = $this->input->post('desc_e_value10');
                 $desc_e_value11 = $this->input->post('desc_e_value11');
                 $dropdownName = $this->input->post('dropdownName');
-
                 //----------1 for image, 0 for dropdown, 2 for jewelry state--------------
                 if ($para == 0) {
                     $this->db->select('*');
@@ -3151,7 +2556,6 @@ class Home extends CI_Controller
                     $this->db->where('desc_e_value10', $desc_e_value10);
                     $this->db->where('desc_e_value11', $desc_e_value11);
                     $pro_data = $this->db->get()->row();
-
                     if (empty($pro_data)) {
                         $this->db->select('*');
                         $this->db->from('tbl_products');
@@ -3165,7 +2569,6 @@ class Home extends CI_Controller
                         }
                         $pro_data = $this->db->get()->row();
                     }
-
                     $this->db->select('*');
                     $this->db->from('tbl_products');
                     $this->db->where('sku_series', $sku_series);
@@ -3315,7 +2718,6 @@ class Home extends CI_Controller
                             $this->db->where($column_product, $value_product);
                         }
                         $pro_data = $this->db->get()->row();
-
                         if (empty($pro_data)) {
                             $this->db->select('*');
                             $this->db->from('tbl_products');
@@ -3349,7 +2751,6 @@ class Home extends CI_Controller
                     }
                     $d2 = $this->db->get();
                     // echo $column_jstate;die();
-
                     $b = 0;
                     $Quality = [];
                     foreach ($d2->result() as $quality) {
@@ -3361,7 +2762,6 @@ class Home extends CI_Controller
                     }
                     $Quality =  json_encode(array_unique($Quality));
                     // echo $Quality;die();
-
                     $b = 0;
                     $B1 = [];
                     if ($column_jstate != 'desc_e_value2' && $column_product != 'desc_e_value2') {
@@ -3378,7 +2778,6 @@ class Home extends CI_Controller
                     } else {
                         $B1 = "";
                     }
-
                     $b = 0;
                     $B2 = [];
                     if ($column_jstate != 'desc_e_value3' && $column_product != 'desc_e_value3') {
@@ -3394,7 +2793,6 @@ class Home extends CI_Controller
                     } else {
                         $B2 = "";
                     }
-
                     $b = 0;
                     $B3 = [];
                     if ($column_jstate != 'desc_e_value4' && $column_product != 'desc_e_value4') {
@@ -3410,7 +2808,6 @@ class Home extends CI_Controller
                     } else {
                         $B3 = "";
                     }
-
                     $b = 0;
                     $B4 = [];
                     if ($column_jstate != 'desc_e_value5' && $column_product != 'desc_e_value5') {
@@ -3426,7 +2823,6 @@ class Home extends CI_Controller
                     } else {
                         $B4 = "";
                     }
-
                     $b = 0;
                     $B5 = [];
                     if ($column_jstate != 'desc_e_value6' && $column_product != 'desc_e_value6') {
@@ -3442,7 +2838,6 @@ class Home extends CI_Controller
                     } else {
                         $B5 = "";
                     }
-
                     $b = 0;
                     $B6 = [];
                     if ($column_jstate != 'desc_e_value7' && $column_product != 'desc_e_value7') {
@@ -3458,7 +2853,6 @@ class Home extends CI_Controller
                     } else {
                         $B6 = "";
                     }
-
                     $b = 0;
                     $B7 = [];
                     foreach ($d2->result() as $b777) {
@@ -3470,7 +2864,6 @@ class Home extends CI_Controller
                         $b++;
                     }
                     $B7 =  json_encode(array_unique($B7));
-
                     $b = 0;
                     $B8 = [];
                     foreach ($d2->result() as $b888) {
@@ -3504,10 +2897,6 @@ class Home extends CI_Controller
                         $b++;
                     }
                     $B10 = json_encode(array_unique($B10));
-
-
-
-
                     $specs = [];
                     $canbe = [];
                     $RingSize = [];
@@ -3550,7 +2939,6 @@ class Home extends CI_Controller
                         // $cost_price = $cost_price;
                         $retail = $cost_price * $multiplier;
                         $now_price = $cost_price;
-
                         if ($cost_price <= 500) {
                             $cost_price2 = $cost_price * $cost_price;
                             // $now_price= $cost_price*0.00000264018*($cost_price*2)+(-0.002220133*$cost_price)+1.950022201-1+0.95;
@@ -3595,7 +2983,6 @@ class Home extends CI_Controller
                         'desc_e_name10' => $pro_data->desc_e_name10,
                         'desc_e_name11' => $pro_data->desc_e_name11,
                     );
-
                     $deal = array_search('Quality', $val_e);
                     if (!empty($deal)) {
                         $col = $deal;
@@ -3647,7 +3034,6 @@ class Home extends CI_Controller
                     $this->db->where('desc_e_value9', $desc_e_value9);
                     $pro_dropdown = $this->db->get();
                     $pro_data = $pro_dropdown->row();
-
                     if (empty($pro_data)) {
                         $this->db->select('*');
                         $this->db->from('tbl_products');
@@ -3657,13 +3043,8 @@ class Home extends CI_Controller
                         $pro_dropdown = $this->db->get();
                         $pro_data = $pro_dropdown->row();
                     }
-
                     // print_r($pro_data);exit;
-
-
                     //-----------------------Replace all dropdowns-------------------------------------------------
-
-
                     $val_e = array(
                         'desc_e_name2' => $pro_data->desc_e_name2,
                         'desc_e_name3' => $pro_data->desc_e_name3,
@@ -3676,7 +3057,6 @@ class Home extends CI_Controller
                         'desc_e_name10' => $pro_data->desc_e_name10,
                         'desc_e_name11' => $pro_data->desc_e_name11,
                     );
-
                     $deal = array_search('Quality', $val_e);
                     if (!empty($deal)) {
                         $colo = $deal;
@@ -3711,8 +3091,6 @@ class Home extends CI_Controller
                         $pro_dropdown = $this->db->get();
                         $pro_data = $pro_dropdown->row();
                     }
-
-
                     $b = 0;
                     $Quality = [];
                     foreach ($pro_dropdown->result() as $quality) {
@@ -3724,7 +3102,6 @@ class Home extends CI_Controller
                     }
                     $Quality =  json_encode(array_unique($Quality));
                     // echo $Quality;die();
-
                     $b = 0;
                     $B1 = [];
                     foreach ($pro_dropdown->result() as $b111) {
@@ -3737,7 +3114,6 @@ class Home extends CI_Controller
                         $b++;
                     }
                     $B1 =  json_encode(array_unique($B1));
-
                     $b = 0;
                     $B2 = [];
                     foreach ($pro_dropdown->result() as $b222) {
@@ -3749,7 +3125,6 @@ class Home extends CI_Controller
                         $b++;
                     }
                     $B2 =  json_encode(array_unique($B2));
-
                     $b = 0;
                     $B3 = [];
                     foreach ($pro_dropdown->result() as $b333) {
@@ -3761,7 +3136,6 @@ class Home extends CI_Controller
                         $b++;
                     }
                     $B3 =  json_encode(array_unique($B3));
-
                     $b = 0;
                     $B4 = [];
                     foreach ($pro_dropdown->result() as $b444) {
@@ -3773,7 +3147,6 @@ class Home extends CI_Controller
                         $b++;
                     }
                     $B4 =  json_encode(array_unique($B4));
-
                     $b = 0;
                     $B5 = [];
                     foreach ($pro_dropdown->result() as $b555) {
@@ -3785,7 +3158,6 @@ class Home extends CI_Controller
                         $b++;
                     }
                     $B5 =  json_encode(array_unique($B5));
-
                     $b = 0;
                     $B6 = [];
                     foreach ($pro_dropdown->result() as $b666) {
@@ -3797,7 +3169,6 @@ class Home extends CI_Controller
                         $b++;
                     }
                     $B6 =  json_encode(array_unique($B6));
-
                     $b = 0;
                     $B7 = [];
                     foreach ($pro_dropdown->result() as $b777) {
@@ -3809,7 +3180,6 @@ class Home extends CI_Controller
                         $b++;
                     }
                     $B7 =  json_encode(array_unique($B7));
-
                     $b = 0;
                     $B8 = [];
                     foreach ($pro_dropdown->result() as $b888) {
@@ -3921,7 +3291,6 @@ class Home extends CI_Controller
                             $respone['dis'] = $dis_percent;
                             $respone['price'] = number_format($now_price, 2);
                         }
-
                         $respone['data'] = true;
                         $respone['update_pro'] = $pro_data;
                         $respone['quality'] = $Quality;
@@ -3960,7 +3329,6 @@ class Home extends CI_Controller
                     $pro_data = $pro_dropdown->row();
                     // print_r($pro_data);die();
                     // $pro_data = '';
-
                     if (empty($pro_data)) {
                         $this->db->select('*');
                         $this->db->from('tbl_products');
@@ -3972,11 +3340,8 @@ class Home extends CI_Controller
                     }
                     // echo $value;
                     // print_r($pro_data);die();
-
                     // die();
-
                     //-----------------------Replace all but Jewelry State dropdowns------------------------------------------
-
                     $val_e = array(
                         'desc_e_name2' => $pro_data->desc_e_name2,
                         'desc_e_name3' => $pro_data->desc_e_name3,
@@ -3989,14 +3354,12 @@ class Home extends CI_Controller
                         'desc_e_name10' => $pro_data->desc_e_name10,
                         'desc_e_name11' => $pro_data->desc_e_name11,
                     );
-
                     $deal = array_search('Quality', $val_e);
                     if (!empty($deal)) {
                         $colo = $deal;
                     } else {
                         $colo = $eng_center;
                     }
-
                     $state = array_search('Jewelry State', $val_e);
                     if (empty($state)) {
                         $state_row = "";
@@ -4006,7 +3369,6 @@ class Home extends CI_Controller
                         $state_row = "desc_e_value" . $state_no[1];
                         $state_value = $pro_data->$state_row;
                     }
-
                     $eng_band_shank = array_search('Product', $val_e);
                     if (empty($eng_band_shank)) {
                         $eng_band_shank_row = "";
@@ -4044,7 +3406,6 @@ class Home extends CI_Controller
                     if (empty($pro_data)) {
                         $pro_data = $pro_dropdown->row();
                     }
-
                     $b = 0;
                     $Quality = [];
                     foreach ($pro_dropdown->result() as $quality) {
@@ -4056,7 +3417,6 @@ class Home extends CI_Controller
                     }
                     $Quality =  json_encode(array_unique($Quality));
                     // echo $Quality;die();
-
                     $b = 0;
                     $B1 = [];
                     foreach ($pro_dropdown->result() as $b111) {
@@ -4074,7 +3434,6 @@ class Home extends CI_Controller
                     } else {
                         $B1 = "";
                     }
-
                     $b = 0;
                     $B2 = [];
                     foreach ($pro_dropdown->result() as $b222) {
@@ -4283,7 +3642,6 @@ class Home extends CI_Controller
                             $respone['dis'] = $dis_percent;
                             $respone['price'] = number_format($now_price, 2);
                         }
-
                         $respone['data'] = true;
                         $respone['update_pro'] = $pro_data;
                         $respone['quality'] = $Quality;
@@ -4307,7 +3665,6 @@ class Home extends CI_Controller
                     }
                 }
             } else {
-
                 $respone['data'] = false;
                 $respone['data_message'] = validation_errors();
                 echo json_encode($respone);
@@ -4318,21 +3675,15 @@ class Home extends CI_Controller
             echo json_encode($respone);
         }
     }
-
-
     public function sub_category($idd)
     {
-
         $id = $idd;
-
         $this->db->select('*');
         $this->db->from('tbl_sub_category');
         $this->db->where('category', $id);
         $this->db->where('is_active', 1);
         $this->db->order_by('seq', 'ASC');
         $data['sub_category'] = $this->db->get();
-
-
         //get name Category
         $this->db->select('*');
         $this->db->from('tbl_category');
@@ -4345,29 +3696,23 @@ class Home extends CI_Controller
             $cate_name = "";
             $cate_description = "";
         }
-
         $data['category_id'] = $id;
         $data['category_name'] = $cate_name;
         $data['cate_description'] = $cate_description;
-
         $this->load->view('common/header', $data);
         $this->load->view('sub_category');
         $this->load->view('common/footer');
     }
-
     public function minor_sub_products($idd)
     {
-
         $id = base64_decode($idd);
         $data['subcategory_id'] = $idd;
-
         $this->db->select('*');
         $this->db->from('tbl_minisubcategory');
         $this->db->where('subcategory', $id);
         $this->db->where('is_active', 1);
         $this->db->order_by('seq', 'ASC');
         $data['minorsub_category'] = $this->db->get();
-
         //get subcategory ans category name
         $this->db->select('*');
         $this->db->from('tbl_sub_category');
@@ -4377,7 +3722,6 @@ class Home extends CI_Controller
         if (!empty($subcate_da)) {
             $subcategory_name = $subcate_da->name;
             $category_id = $subcate_da->category;
-
             //get name Category
             $this->db->select('*');
             $this->db->from('tbl_category');
@@ -4393,14 +3737,9 @@ class Home extends CI_Controller
             $cate_name = "N/A";
             $subcategory_name = "N/A";
         }
-
-
-
-
         $data['category_id'] = $category_id;
         $data['category_name'] = $cate_name;
         $data['subcategory_name'] = $subcategory_name;
-
         $this->load->view('common/header', $data);
         $this->load->view('minorsub_category');
         $this->load->view('common/footer');
@@ -4412,27 +3751,16 @@ class Home extends CI_Controller
     // 			$this->load->view('common/footer');
     //
     // 	}
-
-
-
-
     public function checkout_af()
-
     {
-
-
         $selected_address = $this->input->get('addr');
-
         $user_id = $this->session->userdata('user_id');
-
         $this->db->select('*');
         $this->db->from('tbl_cart');
         $this->db->where('user_id', $user_id);
         $data['cart_data'] = $this->db->get();
-
         $data['address_id'] = base64_decode($selected_address);
         $data['af'] = 1;
-
         // echo $selected_address;
         // 															echo 	$this->session->flashdata('data');
         // 															 echo $this->session->flashdata('order_id');
@@ -4447,9 +3775,6 @@ class Home extends CI_Controller
         $this->load->view('checkout');
         $this->load->view('common/footer');
     }
-
-
-
     public function register()
     {
         $this->load->view('common/header');
@@ -4469,44 +3794,32 @@ class Home extends CI_Controller
     // 			$this->load->view('common/footer');
     //
     // 	}
-
-
     public function cart()
     {
-
         // $cart_page= $this->input->get('cart_page');
         // $id = base64_decode($idd);
-
-
         // if(!empty($cart_page) && $cart_page == 1){
         // $cart_page= $cart_page;
         // }else{
         // $cart_page= 0;
         // }
-
         if (!empty($this->session->userdata('user_id'))) {
-
             $user_id =  $this->session->userdata('usersid');
-
             $this->db->select('*');
             $this->db->from('tbl_cart');
             //$this->db->where('',);
             $data['cart'] = $this->db->get();
-
             $this->load->view('common/header', $data);
             $this->load->view('cart');
             $this->load->view('common/footer');
         } else {
-
             // $data['cart_page']= $cart_page;
             $data['data'] = true;
-
             $this->load->view('common/header', $data);
             $this->load->view('local_cart');
             $this->load->view('common/footer');
         }
     }
-
     public function wishlist()
     {
         if (!empty($this->session->userdata('user_id'))) {
@@ -4522,19 +3835,13 @@ class Home extends CI_Controller
             redirect("/");
         }
     }
-
-
     public function add_quantity_data($t, $iw = "")
-
     {
-
         if (!empty($this->session->userdata('user_name'))) {
-
             $this->load->helper(array('form', 'url'));
             $this->load->library('form_validation');
             $this->load->helper('security');
             if ($this->input->post()) {
-
                 // print_r($this->input->post());
                 // exit;
                 $this->form_validation->set_rules('quantity', 'quantity', 'required|xss_clean|trim');
@@ -4550,38 +3857,24 @@ class Home extends CI_Controller
                     } else {
                         $stuller_pro_idw = "";
                     }
-
-
                     $typ = base64_decode($t);
-
                     if ($qty <= 0) {
                         $this->session->set_flashdata('emessage', 'Product quantity should be greater than 0.');
                         redirect($_SERVER['HTTP_REFERER']);
                     }
-
-
                     if ($typ == 1) {
-
                         $data_insert = array(
                             'quantity' => $qty,
                             'user_id' => $cid,
                             'product_id' => $idw,
-
                         );
-
-
                         $last_id = $this->base_model->insert_table("tbl_cart", $data_insert, 1);
                     }
                     if ($typ == 2) {
-
                         $idw = base64_decode($iw);
-
-
                         $data_insert = array(
                             'quantity' => $qty,
-
                         );
-
                         if (empty($stuller_pro_idw)) {
                             $this->db->where('product_id', $idw);
                             $last_id = $this->db->update('tbl_cart', $data_insert);
@@ -4590,35 +3883,25 @@ class Home extends CI_Controller
                             $last_id = $this->db->update('tbl_cart', $data_insert);
                         }
                     }
-
-
                     if ($last_id != 0) {
-
                         $this->session->set_flashdata('smessage', 'Quantity updated successfully');
-
                         redirect("Home/cart", "refresh");
                     } else {
-
                         $this->session->set_flashdata('emessage', 'Sorry error occured');
                         redirect($_SERVER['HTTP_REFERER']);
                     }
                 } else {
-
                     $this->session->set_flashdata('emessage', validation_errors());
                     redirect($_SERVER['HTTP_REFERER']);
                 }
             } else {
-
                 $this->session->set_flashdata('emessage', 'Please insert some data, No data available');
                 redirect($_SERVER['HTTP_REFERER']);
             }
         } else {
-
             redirect("login/admin_login", "refresh");
         }
     }
-
-
     // 	public function add_quantity_data($t,$iw="")
     //
     // 					{
@@ -4702,10 +3985,6 @@ class Home extends CI_Controller
     // 			}
     //
     // 			}
-
-
-
-
     public function add_address()
     {
         if (!empty($this->session->userdata('user_id'))) {
@@ -4718,7 +3997,6 @@ class Home extends CI_Controller
             $this->db->from('tbl_country');
             // $this->db->where('is_active', 1);
             $data['country_data'] = $this->db->get();
-
             // die();
             $this->load->view('common/header', $data);
             $this->load->view('add_address');
@@ -4727,12 +4005,9 @@ class Home extends CI_Controller
             redirect("Home/register", "refresh");
         }
     }
-
-
     public function contact_us()
     {
         $data['contact_data'] = $this->db->get_where('tbl_contact_us_page', array('is_active' => 1))->result();
-
         $this->load->view('common/header', $data);
         $this->load->view('contact_us');
         $this->load->view('common/footer');
@@ -4745,69 +4020,48 @@ class Home extends CI_Controller
         $this->db->where('is_active', 1);
         $this->db->order_by('sequence', 'asc');
         $data['faq_category_data'] = $this->db->get();
-
         $this->db->select('*');
         $this->db->from('tbl_faq_category');
         $this->db->where('is_active', 1);
         $this->db->order_by('sequence', 'asc');
         $data['faq_category_data2'] = $this->db->get();
-
         $this->load->view('common/header', $data);
         $this->load->view('faq');
         $this->load->view('common/footer');
     }
-
-
     //add contact process
     public function add_contact_process()
     {
-
         $this->load->helper(array('form', 'url'));
         $this->load->library('form_validation');
         $this->load->helper('security');
         if ($this->input->post()) {
-
-
             $this->form_validation->set_rules('fname', 'fname', 'required|xss_clean|trim');
             $this->form_validation->set_rules('lname', 'lname', 'required|xss_clean|trim');
             $this->form_validation->set_rules('email', 'email', 'required|xss_clean|valid_email|trim');
             $this->form_validation->set_rules('phone', 'phone', 'xss_clean|trim');
             $this->form_validation->set_rules('message', 'message', 'required|xss_clean|trim');
-
             if ($this->form_validation->run() == TRUE) {
-
                 $fname = $this->input->post('fname');
                 $lname = $this->input->post('lname');
                 $email = $this->input->post('email');
                 $phone = $this->input->post('phone');
                 $message = $this->input->post('message');
                 // $user_id=$this->input->post('user_id');
-
                 $ip = $this->input->ip_address();
                 date_default_timezone_set("Asia/Calcutta");
                 $cur_date = date("Y-m-d H:i:s");
-
-
-
-
                 $recaptchaResponse = trim($this->input->post('g-recaptcha-response'));
-
                 $userIp =  $ip;
-
                 $secret = "6LeDYngaAAAAAB1AU0hanfWa6uoG9ABELXmZJzoa";
-
                 $url = "https://www.google.com/recaptcha/api/siteverify?secret=" . $secret . "&response=" . $recaptchaResponse . "&remoteip=" . $userIp;
-
                 $ch = curl_init();
                 curl_setopt($ch, CURLOPT_URL, $url);
                 curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
                 $output = curl_exec($ch);
                 curl_close($ch);
                 $status = json_decode($output, true);
-
                 if ($status['success']) {
-
-
                     // $user_id = $this->session->userdata('usersid');
                     $data_insert = array(
                         'fname' => $fname,
@@ -4815,53 +4069,32 @@ class Home extends CI_Controller
                         'email' => $email,
                         'phone' => $phone,
                         'message' => $message,
-
                         'ip' => $ip,
                         'date' => $cur_date
-
                     );
-
-
-
-
-
                     $last_id = $this->base_model->insert_table("tbl_contact", $data_insert, 1);
-
-
-
-
                     if ($last_id != 0) {
-
                         $this->session->set_flashdata('smessage', 'Thankyou for contacting us. We will get back to you.');
-
                         redirect("Home/contact_us", "refresh");
                     } else {
-
                         $this->session->set_flashdata('emessage', 'Sorry error occured');
                         redirect($_SERVER['HTTP_REFERER']);
                     }
                 } else {
-
                     $this->session->set_flashdata('emessage', 'Failed to validate reCAPTCHA.');
                     redirect($_SERVER['HTTP_REFERER']);
                 }
             } else {
-
                 $this->session->set_flashdata('emessage', validation_errors());
                 redirect($_SERVER['HTTP_REFERER']);
             }
         } else {
-
             $this->session->set_flashdata('emessage', 'Please insert some data, No data available');
             redirect($_SERVER['HTTP_REFERER']);
         }
     }
-
-
     public function add_new_address()
-
     {
-
         $this->load->helper(array('form', 'url'));
         $this->load->library('form_validation');
         $this->load->helper('security');
@@ -4874,7 +4107,6 @@ class Home extends CI_Controller
             $this->form_validation->set_rules('city', 'city', 'required|xss_clean|trim');
             $this->form_validation->set_rules('zipcode', 'zipcode', 'required|xss_clean|trim');
             $this->form_validation->set_rules('customer_phone', 'customer_phone', 'required|xss_clean|trim');
-
             if ($this->form_validation->run() == TRUE) {
                 $address = $this->input->post('address');
                 $country_id = $this->input->post('country_id');
@@ -4882,11 +4114,7 @@ class Home extends CI_Controller
                 $city = $this->input->post('city');
                 $zipcode = $this->input->post('zipcode');
                 $customer_phone = $this->input->post('customer_phone');
-
                 $user_id = $this->session->userdata('user_id');
-
-
-
                 $data_insert = array(
                     'user_id' => $user_id,
                     'customer_phone' => $customer_phone,
@@ -4895,39 +4123,24 @@ class Home extends CI_Controller
                     'state' => $state,
                     'town_city' => $city,
                     'postal_code' => $zipcode,
-
                 );
-
                 $last_id = $this->base_model->insert_table("tbl_user_address", $data_insert, 1);
             }
-
-
             if ($last_id != 0) {
-
                 $this->session->set_flashdata('smessage', 'Address added Successfully.');
-
                 // redirect($_SERVER['HTTP_REFERER']);
                 redirect('Home/add_address');
             } else {
-
                 $this->session->set_flashdata('emessage', 'Sorry error occured');
                 redirect($_SERVER['HTTP_REFERER']);
             }
         } else {
-
             $this->session->set_flashdata('emessage', validation_errors());
             redirect($_SERVER['HTTP_REFERER']);
         }
     }
-
-
-
-
-
     public function ask_question()
-
     {
-
         $this->load->helper(array('form', 'url'));
         $this->load->library('form_validation');
         $this->load->helper('security');
@@ -4938,81 +4151,56 @@ class Home extends CI_Controller
             $this->form_validation->set_rules('email', 'email', 'required|xss_clean|trim');
             $this->form_validation->set_rules('phone', 'phone', 'xss_clean|trim');
             $this->form_validation->set_rules('query', 'query', 'required|xss_clean|trim');
-
             if ($this->form_validation->run() == TRUE) {
                 $name = $this->input->post('name');
                 $email = $this->input->post('email');
                 $phone = $this->input->post('phone');
                 $query = $this->input->post('query');
                 $product_id = $this->input->post('product_id');
-
                 $user_id = $this->session->userdata('user_id');
-
                 $ip = $this->input->ip_address();
                 date_default_timezone_set("Asia/Calcutta");
                 $cur_date = date("Y-m-d H:i:s");
-
-
                 $recaptchaResponse = trim($this->input->post('g-recaptcha-response'));
-
                 $userIp = $ip;
-
                 $secret = "6LeDYngaAAAAAB1AU0hanfWa6uoG9ABELXmZJzoa";
-
                 $url = "https://www.google.com/recaptcha/api/siteverify?secret=" . $secret . "&response=" . $recaptchaResponse . "&remoteip=" . $userIp;
-
                 $ch = curl_init();
                 curl_setopt($ch, CURLOPT_URL, $url);
                 curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
                 $output = curl_exec($ch);
                 curl_close($ch);
                 $status = json_decode($output, true);
-
                 if ($status['success']) {
-
                     $data_insert = array(
                         'name' => $name,
                         'email' => $email,
                         'phone' => $phone,
                         'query' => $query,
                         'product_id' => $product_id,
-
                         'ip' => $ip,
                         'date' => $cur_date,
-
                     );
-
                     $last_id = $this->base_model->insert_table("tbl_ask_questions", $data_insert, 1);
-
                     // }
-
-
                     if ($last_id != 0) {
-
                         $this->session->set_flashdata('smessage', 'Question Submitted Successfully.');
-
                         redirect($_SERVER['HTTP_REFERER']);
                         // redirect('Home/add_address');
                     } else {
-
                         $this->session->set_flashdata('emessage', 'Sorry error occured');
                         redirect($_SERVER['HTTP_REFERER']);
                     }
                 } else {
-
                     $this->session->set_flashdata('emessage', 'Failed to validate reCAPTCHA.');
                     redirect($_SERVER['HTTP_REFERER']);
                 }
             } else {
-
                 $this->session->set_flashdata('emessage', validation_errors());
                 redirect($_SERVER['HTTP_REFERER']);
             }
         }
     }
-
-
-
     //order place start
     public function  affrim_place_order()
     {
@@ -5023,25 +4211,18 @@ class Home extends CI_Controller
             $this->form_validation->set_rules('addresss_id', 'addresss_id', 'xss_clean|trim');
             // $this->form_validation->set_rules('payment_type', 'payment_type', 'xss_clean|trim');
             $this->form_validation->set_rules('applied_promocode', 'applied_promocode', 'xss_clean|trim');
-
-
             if ($this->form_validation->run() == TRUE) {
-
                 $payment_type = 2;
                 // echo 	$address_id=$this->input->post('addresss_id'); die();
                 $address_id = $this->input->post('addresss_id');
-
                 $applied_promocode = $this->input->post('applied_promocode');
                 // $page=$this->input->post('page');
-
                 $user_id = $this->session->userdata('user_id');
                 $ip = $this->input->ip_address();
                 date_default_timezone_set("Asia/Calcutta");
                 $cur_date = date("Y-m-d H:i:s");
-
                 $totalAmount = 0;
                 $txnid =  substr(hash('sha256', mt_rand() . microtime()), 0, 20);
-
                 $promocode_id = "";
                 if (!empty($applied_promocode)) {
                     $this->db->select('*');
@@ -5049,7 +4230,6 @@ class Home extends CI_Controller
                     $this->db->where('promo_code', $applied_promocode);
                     $this->db->where('is_active', 1);
                     $promocode_da = $this->db->get()->row();
-
                     if (!empty($promocode_da)) {
                         $promocode_id = $promocode_da->id;
                     } else {
@@ -5058,12 +4238,7 @@ class Home extends CI_Controller
                 } else {
                     $promocode_id = "";
                 }
-
-
-
                 if ($payment_type == 2) {
-
-
                     // if($page != 0){
                     // 			$this->db->select('*');
                     // 			$this->db->from('tbl_cart');
@@ -5076,25 +4251,16 @@ class Home extends CI_Controller
                     $this->db->where('user_id', $user_id);
                     $cart_da = $this->db->get();
                     // }
-
-
-
                     if (!empty($cart_da)) {
                         // echo "f"; echo '<pre>'; print_r($cart_da->result()); die();
                         $i = 1;
                         foreach ($cart_da->result() as $data) {
-
                             $product_id = $data->product_id;
                             $quantity = $data->quantity;
-
                             $inventory = 0;
                             $status = "";
-
                             //get product sku start
-
-
                             if (empty($data->stuller_pro_id)) {
-
                                 $this->db->select('*');
                                 $this->db->from('tbl_products');
                                 $this->db->where('id', $product_id);
@@ -5107,8 +4273,6 @@ class Home extends CI_Controller
                                 $this->db->where('is_active', 1);
                                 $pro_da = $this->db->get()->row();
                             }
-
-
                             if (!empty($pro_da)) {
                                 $sku = $pro_da->sku;
                             } else {
@@ -5117,12 +4281,8 @@ class Home extends CI_Controller
                                 redirect($_SERVER['HTTP_REFERER']);
                             }
                             //get product sku end
-
-
                             //Inventory Check api start
-
                             $curl = curl_init();
-
                             curl_setopt_array($curl, array(
                                 CURLOPT_URL => 'https://api.stuller.com/v2/products?SKU=' . $sku,
                                 CURLOPT_RETURNTRANSFER => true,
@@ -5138,38 +4298,26 @@ class Home extends CI_Controller
                                     'Cookie: AWSALB=1Sg7jQ5WrUEnBoDmGaVnJorbqXXyK+dQqUw2GqaBRbmyB6wS6B3VR4K87ey+TZIJ5mvDqbTHnp6sD/1ka744OTa6umVGWUfMgFASSRnN0Qg1xRkh7tPLbCA3hfBh; AWSALBCORS=1Sg7jQ5WrUEnBoDmGaVnJorbqXXyK+dQqUw2GqaBRbmyB6wS6B3VR4K87ey+TZIJ5mvDqbTHnp6sD/1ka744OTa6umVGWUfMgFASSRnN0Qg1xRkh7tPLbCA3hfBh'
                                 ),
                             ));
-
                             $response = curl_exec($curl);
-
                             curl_close($curl);
                             // echo $response;
                             $response_dec = json_decode($response);
                             // print_r( $response_dec->Products);die();
-
                             if (!empty($response_dec->Products)) {
                                 foreach ($response_dec->Products as $res) {
                                     $inventory = $res->OnHand;
                                     $status = $res->Status;
                                 }
                             }
-
                             // echo $status;
                             // echo $inventory;
-
                             // die();
-
                             //Inventory Check api end
-
                             if (!empty($status) && $status != 'Out Of Stock') {
                                 // $db_quantity=$pro_inv_da->inventory;
                                 $db_quantity = $inventory;
-
                                 if ($status == 'Made To Order') {
-
-
-
                                     if ($i == 1) {
-
                                         //tbl order1 entry
                                         $data_insert_order1 = array(
                                             'user_id' => $user_id,
@@ -5182,15 +4330,10 @@ class Home extends CI_Controller
                                             'txnid' => $txnid,
                                             'ip' => $ip,
                                             'date' => $cur_date
-
                                         );
-
                                         $last_order_id = $this->base_model->insert_table("tbl_order1", $data_insert_order1, 1);
                                     }
-
-
                                     if (empty($data->stuller_pro_id)) {
-
                                         $this->db->select('*');
                                         $this->db->from('tbl_products');
                                         $this->db->where('id', $data->product_id);
@@ -5203,8 +4346,6 @@ class Home extends CI_Controller
                                         $this->db->where('is_active', 1);
                                         $prod_data = $this->db->get()->row();
                                     }
-
-
                                     if (!empty($prod_data)) {
                                         $selling_price = $prod_data->price;
                                         $product_qty_price = $selling_price * $data->quantity;
@@ -5212,8 +4353,6 @@ class Home extends CI_Controller
                                         $selling_price = 0;
                                         $product_qty_price = 0;
                                     }
-
-
                                     //tbl order2 entry
                                     $data_insert = array(
                                         'product_id' => $data->product_id,
@@ -5228,22 +4367,13 @@ class Home extends CI_Controller
                                         'quantity' => $data->quantity,
                                         'amount' => $product_qty_price,
                                         'main_id' => $last_order_id,
-
                                         'date' => $cur_date
-
                                     );
-
-
                                     $last_id = $this->base_model->insert_table("tbl_order2", $data_insert, 1);
-
-
                                     //calculate total cart amount
                                     $totalAmount = $totalAmount + $product_qty_price;
-
-
                                     $i++;
                                 } else {
-
                                     if ($db_quantity >= $quantity) {
                                         if ($i == 1) {
                                             //tbl order1 entry
@@ -5258,29 +4388,22 @@ class Home extends CI_Controller
                                                 'txnid' => $txnid,
                                                 'ip' => $ip,
                                                 'date' => $cur_date
-
                                             );
-
                                             $last_order_id = $this->base_model->insert_table("tbl_order1", $data_insert_order1, 1);
                                         }
-
-
                                         if (empty($data->stuller_pro_id)) {
-
                                             $this->db->select('*');
                                             $this->db->from('tbl_products');
                                             $this->db->where('id', $data->product_id);
                                             $this->db->where('is_active', 1);
                                             $prod_data = $this->db->get()->row();
                                         } else {
-
                                             $this->db->select('*');
                                             $this->db->from('tbl_quickshop_products');
                                             $this->db->where('product_id', $data->stuller_pro_id);
                                             $this->db->where('is_active', 1);
                                             $prod_data = $this->db->get()->row();
                                         }
-
                                         if (!empty($prod_data)) {
                                             $selling_price = $prod_data->price;
                                             $product_qty_price = $selling_price * $data->quantity;
@@ -5288,8 +4411,6 @@ class Home extends CI_Controller
                                             $selling_price = 0;
                                             $product_qty_price = 0;
                                         }
-
-
                                         //tbl order2 entry
                                         $data_insert = array(
                                             'product_id' => $data->product_id,
@@ -5306,24 +4427,14 @@ class Home extends CI_Controller
                                             'quantity' => $data->quantity,
                                             'amount' => $product_qty_price,
                                             'main_id' => $last_order_id,
-
                                             'date' => $cur_date
-
                                         );
-
-
                                         $last_id = $this->base_model->insert_table("tbl_order2", $data_insert, 1);
-
-
                                         //calculate total cart amount
                                         $totalAmount = $totalAmount + $product_qty_price;
-
-
                                         $i++;
                                     } else {
-
                                         if (empty($data->stuller_pro_id)) {
-
                                             $this->db->select('*');
                                             $this->db->from('tbl_products');
                                             $this->db->where('id', $data->product_id);
@@ -5336,23 +4447,17 @@ class Home extends CI_Controller
                                             $this->db->where('is_active', 1);
                                             $prodata = $this->db->get()->row();
                                         }
-
                                         if (!empty($prodata)) {
                                             $product_name = $prodata->description;
                                         } else {
                                             $product_name = "";
                                         }
-
-
                                         $this->session->set_flashdata('emessage', 'This product ' . $product_name . ' is out of stock.Please remove this product before order place.');
                                         redirect($_SERVER['HTTP_REFERER']);
                                     }
                                 }
                             } else {
-
-
                                 if (empty($data->stuller_pro_id)) {
-
                                     $this->db->select('*');
                                     $this->db->from('tbl_products');
                                     $this->db->where('id', $data->product_id);
@@ -5365,14 +4470,11 @@ class Home extends CI_Controller
                                     $this->db->where('is_active', 1);
                                     $prodata = $this->db->get()->row();
                                 }
-
                                 if (!empty($prodata)) {
                                     $product_name = $prodata->description;
                                 } else {
                                     $product_name = "";
                                 }
-
-
                                 $this->session->set_flashdata('emessage', 'This product ' . $product_name . ' is out of stock.Please remove this product before order place.');
                                 redirect($_SERVER['HTTP_REFERER']);
                             }
@@ -5382,27 +4484,22 @@ class Home extends CI_Controller
                         if (!empty($applied_promocode)) {
                             $totalAmount = $this->isValidPromocode($last_order_id, $totalAmount, $applied_promocode);
                         }
-
                         //update order details full information of order
                         $data_update_ordr = array(
                             'total_amount' => $totalAmount,
                             'payment_status' => 0,
                             'order_status' => 0,
                             'promocode' => $promocode_id,
-
                         );
-
                         $this->db->where('id', $last_order_id);
                         $order = $this->db->update('tbl_order1', $data_update_ordr);
                         $address_data = $this->db->get_where('tbl_user_address', array('id' => $address_id))->result();
                         $user_data = $this->db->get_where('tbl_users', array('id' => $user_id))->result();
-
                         $amu = base64_encode($totalAmount);
                         $idd = base64_encode($last_order_id);
                         $addr_id = base64_encode($address_id);
                         $id = base64_decode($idd);
                         $amu = base64_decode($amu);
-
                         $this->session->unset_userdata("data");
                         $this->session->unset_userdata("order_id");
                         $this->session->unset_userdata("amn");
@@ -5412,8 +4509,6 @@ class Home extends CI_Controller
                         $this->session->unset_userdata("currency_code");
                         $this->session->unset_userdata("address_data");
                         $this->session->unset_userdata("user_data");
-
-
                         $this->session->set_flashdata('data', 1);
                         $this->session->set_flashdata('order_id', $id);
                         $this->session->set_flashdata('amn', $amu);
@@ -5423,22 +4518,18 @@ class Home extends CI_Controller
                         $this->session->set_flashdata('currency_code', 'USD');
                         $this->session->set_flashdata('address_data', $address_data);
                         $this->session->set_flashdata('user_data', $user_data);
-
                         // redirect("Home/checkout_af?addr=" . $addr_id, "refresh");
                         $this->load->view('affirm_confirm');
                     } else {
-
                         $this->session->set_flashdata('emessage', 'Sorry error occured');
                         redirect($_SERVER['HTTP_REFERER']);
                     }
                 }
             } else {
-
                 $this->session->set_flashdata('emessage', validation_errors());
                 redirect($_SERVER['HTTP_REFERER']);
             }
         } else {
-
             $this->session->set_flashdata('emessage', 'Please insert some data, No data available');
             redirect($_SERVER['HTTP_REFERER']);
         }
@@ -5452,25 +4543,18 @@ class Home extends CI_Controller
             $this->form_validation->set_rules('addresss_id', 'addresss_id', 'xss_clean|trim');
             // $this->form_validation->set_rules('payment_type', 'payment_type', 'xss_clean|trim');
             $this->form_validation->set_rules('applied_promocode', 'applied_promocode', 'xss_clean|trim');
-
-
             if ($this->form_validation->run() == TRUE) {
-
                 $payment_type = 2;
                 // echo 	$address_id=$this->input->post('addresss_id'); die();
                 $address_id = $this->input->post('addresss_id');
-
                 $applied_promocode = $this->input->post('applied_promocode');
                 // $page=$this->input->post('page');
-
                 $user_id = $this->session->userdata('user_id');
                 $ip = $this->input->ip_address();
                 date_default_timezone_set("Asia/Calcutta");
                 $cur_date = date("Y-m-d H:i:s");
-
                 $totalAmount = 0;
                 $txnid =  substr(hash('sha256', mt_rand() . microtime()), 0, 20);
-
                 $promocode_id = "";
                 if (!empty($applied_promocode)) {
                     $this->db->select('*');
@@ -5478,7 +4562,6 @@ class Home extends CI_Controller
                     $this->db->where('promo_code', $applied_promocode);
                     $this->db->where('is_active', 1);
                     $promocode_da = $this->db->get()->row();
-
                     if (!empty($promocode_da)) {
                         $promocode_id = $promocode_da->id;
                     } else {
@@ -5487,12 +4570,7 @@ class Home extends CI_Controller
                 } else {
                     $promocode_id = "";
                 }
-
-
-
                 if ($payment_type == 2) {
-
-
                     // if($page != 0){
                     // 			$this->db->select('*');
                     // 			$this->db->from('tbl_cart');
@@ -5505,25 +4583,16 @@ class Home extends CI_Controller
                     $this->db->where('user_id', $user_id);
                     $cart_da = $this->db->get();
                     // }
-
-
-
                     if (!empty($cart_da)) {
                         // echo "f"; echo '<pre>'; print_r($cart_da->result()); die();
                         $i = 1;
                         foreach ($cart_da->result() as $data) {
-
                             $product_id = $data->product_id;
                             $quantity = $data->quantity;
-
                             $inventory = 0;
                             $status = "";
-
                             //get product sku start
-
-
                             if (empty($data->stuller_pro_id)) {
-
                                 $this->db->select('*');
                                 $this->db->from('tbl_products');
                                 $this->db->where('id', $product_id);
@@ -5536,8 +4605,6 @@ class Home extends CI_Controller
                                 $this->db->where('is_active', 1);
                                 $pro_da = $this->db->get()->row();
                             }
-
-
                             if (!empty($pro_da)) {
                                 $sku = $pro_da->sku;
                             } else {
@@ -5546,12 +4613,8 @@ class Home extends CI_Controller
                                 redirect($_SERVER['HTTP_REFERER']);
                             }
                             //get product sku end
-
-
                             //Inventory Check api start
-
                             $curl = curl_init();
-
                             curl_setopt_array($curl, array(
                                 CURLOPT_URL => 'https://api.stuller.com/v2/products?SKU=' . $sku,
                                 CURLOPT_RETURNTRANSFER => true,
@@ -5567,38 +4630,26 @@ class Home extends CI_Controller
                                     'Cookie: AWSALB=1Sg7jQ5WrUEnBoDmGaVnJorbqXXyK+dQqUw2GqaBRbmyB6wS6B3VR4K87ey+TZIJ5mvDqbTHnp6sD/1ka744OTa6umVGWUfMgFASSRnN0Qg1xRkh7tPLbCA3hfBh; AWSALBCORS=1Sg7jQ5WrUEnBoDmGaVnJorbqXXyK+dQqUw2GqaBRbmyB6wS6B3VR4K87ey+TZIJ5mvDqbTHnp6sD/1ka744OTa6umVGWUfMgFASSRnN0Qg1xRkh7tPLbCA3hfBh'
                                 ),
                             ));
-
                             $response = curl_exec($curl);
-
                             curl_close($curl);
                             // echo $response;
                             $response_dec = json_decode($response);
                             // print_r( $response_dec->Products);die();
-
                             if (!empty($response_dec->Products)) {
                                 foreach ($response_dec->Products as $res) {
                                     $inventory = $res->OnHand;
                                     $status = $res->Status;
                                 }
                             }
-
                             // echo $status;
                             // echo $inventory;
-
                             // die();
-
                             //Inventory Check api end
-
                             if (!empty($status) && $status != 'Out Of Stock') {
                                 // $db_quantity=$pro_inv_da->inventory;
                                 $db_quantity = $inventory;
-
                                 if ($status == 'Made To Order') {
-
-
-
                                     if ($i == 1) {
-
                                         //tbl order1 entry
                                         $data_insert_order1 = array(
                                             'user_id' => $user_id,
@@ -5611,15 +4662,10 @@ class Home extends CI_Controller
                                             'txnid' => $txnid,
                                             'ip' => $ip,
                                             'date' => $cur_date
-
                                         );
-
                                         $last_order_id = $this->base_model->insert_table("tbl_order1", $data_insert_order1, 1);
                                     }
-
-
                                     if (empty($data->stuller_pro_id)) {
-
                                         $this->db->select('*');
                                         $this->db->from('tbl_products');
                                         $this->db->where('id', $data->product_id);
@@ -5632,8 +4678,6 @@ class Home extends CI_Controller
                                         $this->db->where('is_active', 1);
                                         $prod_data = $this->db->get()->row();
                                     }
-
-
                                     if (!empty($prod_data)) {
                                         $selling_price = $prod_data->price;
                                         $product_qty_price = $selling_price * $data->quantity;
@@ -5641,8 +4685,6 @@ class Home extends CI_Controller
                                         $selling_price = 0;
                                         $product_qty_price = 0;
                                     }
-
-
                                     //tbl order2 entry
                                     $data_insert = array(
                                         'product_id' => $data->product_id,
@@ -5657,22 +4699,13 @@ class Home extends CI_Controller
                                         'quantity' => $data->quantity,
                                         'amount' => $product_qty_price,
                                         'main_id' => $last_order_id,
-
                                         'date' => $cur_date
-
                                     );
-
-
                                     $last_id = $this->base_model->insert_table("tbl_order2", $data_insert, 1);
-
-
                                     //calculate total cart amount
                                     $totalAmount = $totalAmount + $product_qty_price;
-
-
                                     $i++;
                                 } else {
-
                                     if ($db_quantity >= $quantity) {
                                         if ($i == 1) {
                                             //tbl order1 entry
@@ -5687,29 +4720,22 @@ class Home extends CI_Controller
                                                 'txnid' => $txnid,
                                                 'ip' => $ip,
                                                 'date' => $cur_date
-
                                             );
-
                                             $last_order_id = $this->base_model->insert_table("tbl_order1", $data_insert_order1, 1);
                                         }
-
-
                                         if (empty($data->stuller_pro_id)) {
-
                                             $this->db->select('*');
                                             $this->db->from('tbl_products');
                                             $this->db->where('id', $data->product_id);
                                             $this->db->where('is_active', 1);
                                             $prod_data = $this->db->get()->row();
                                         } else {
-
                                             $this->db->select('*');
                                             $this->db->from('tbl_quickshop_products');
                                             $this->db->where('product_id', $data->stuller_pro_id);
                                             $this->db->where('is_active', 1);
                                             $prod_data = $this->db->get()->row();
                                         }
-
                                         if (!empty($prod_data)) {
                                             $selling_price = $prod_data->price;
                                             $product_qty_price = $selling_price * $data->quantity;
@@ -5717,8 +4743,6 @@ class Home extends CI_Controller
                                             $selling_price = 0;
                                             $product_qty_price = 0;
                                         }
-
-
                                         //tbl order2 entry
                                         $data_insert = array(
                                             'product_id' => $data->product_id,
@@ -5735,24 +4759,14 @@ class Home extends CI_Controller
                                             'quantity' => $data->quantity,
                                             'amount' => $product_qty_price,
                                             'main_id' => $last_order_id,
-
                                             'date' => $cur_date
-
                                         );
-
-
                                         $last_id = $this->base_model->insert_table("tbl_order2", $data_insert, 1);
-
-
                                         //calculate total cart amount
                                         $totalAmount = $totalAmount + $product_qty_price;
-
-
                                         $i++;
                                     } else {
-
                                         if (empty($data->stuller_pro_id)) {
-
                                             $this->db->select('*');
                                             $this->db->from('tbl_products');
                                             $this->db->where('id', $data->product_id);
@@ -5765,23 +4779,17 @@ class Home extends CI_Controller
                                             $this->db->where('is_active', 1);
                                             $prodata = $this->db->get()->row();
                                         }
-
                                         if (!empty($prodata)) {
                                             $product_name = $prodata->description;
                                         } else {
                                             $product_name = "";
                                         }
-
-
                                         $this->session->set_flashdata('emessage', 'This product ' . $product_name . ' is out of stock.Please remove this product before order place.');
                                         redirect($_SERVER['HTTP_REFERER']);
                                     }
                                 }
                             } else {
-
-
                                 if (empty($data->stuller_pro_id)) {
-
                                     $this->db->select('*');
                                     $this->db->from('tbl_products');
                                     $this->db->where('id', $data->product_id);
@@ -5794,14 +4802,11 @@ class Home extends CI_Controller
                                     $this->db->where('is_active', 1);
                                     $prodata = $this->db->get()->row();
                                 }
-
                                 if (!empty($prodata)) {
                                     $product_name = $prodata->description;
                                 } else {
                                     $product_name = "";
                                 }
-
-
                                 $this->session->set_flashdata('emessage', 'This product ' . $product_name . ' is out of stock.Please remove this product before order place.');
                                 redirect($_SERVER['HTTP_REFERER']);
                             }
@@ -5811,27 +4816,22 @@ class Home extends CI_Controller
                         if (!empty($applied_promocode)) {
                             $totalAmount = $this->isValidPromocode($last_order_id, $totalAmount, $applied_promocode);
                         }
-
                         //update order details full information of order
                         $data_update_ordr = array(
                             'total_amount' => $totalAmount,
                             'payment_status' => 0,
                             'order_status' => 0,
                             'promocode' => $promocode_id,
-
                         );
-
                         $this->db->where('id', $last_order_id);
                         $order = $this->db->update('tbl_order1', $data_update_ordr);
                         $address_data = $this->db->get_where('tbl_user_address', array('id' => $address_id))->result();
                         $user_data = $this->db->get_where('tbl_users', array('id' => $user_id))->result();
-
                         $amu = base64_encode($totalAmount);
                         $idd = base64_encode($last_order_id);
                         $addr_id = base64_encode($address_id);
                         $id = base64_decode($idd);
                         $amu = base64_decode($amu);
-
                         $this->session->unset_userdata("data");
                         $this->session->unset_userdata("order_id");
                         $this->session->unset_userdata("amn");
@@ -5841,8 +4841,6 @@ class Home extends CI_Controller
                         $this->session->unset_userdata("currency_code");
                         $this->session->unset_userdata("address_data");
                         $this->session->unset_userdata("user_data");
-
-
                         $this->session->set_flashdata('data', 1);
                         $this->session->set_flashdata('order_id', $id);
                         $this->session->set_flashdata('amn', $amu);
@@ -5852,27 +4850,22 @@ class Home extends CI_Controller
                         $this->session->set_flashdata('currency_code', 'USD');
                         $this->session->set_flashdata('address_data', $address_data);
                         $this->session->set_flashdata('user_data', $user_data);
-
                         // redirect("Home/checkout_af?addr=" . $addr_id, "refresh");
                         $this->load->view('gpay_confirm');
                     } else {
-
                         $this->session->set_flashdata('emessage', 'Sorry error occured');
                         redirect($_SERVER['HTTP_REFERER']);
                     }
                 }
             } else {
-
                 $this->session->set_flashdata('emessage', validation_errors());
                 redirect($_SERVER['HTTP_REFERER']);
             }
         } else {
-
             $this->session->set_flashdata('emessage', 'Please insert some data, No data available');
             redirect($_SERVER['HTTP_REFERER']);
         }
     }
-
     public function place_order()
     {
         $this->load->helper(array('form', 'url'));
@@ -5882,25 +4875,18 @@ class Home extends CI_Controller
             $this->form_validation->set_rules('addresss_id', 'addresss_id', 'xss_clean|trim');
             // $this->form_validation->set_rules('payment_type', 'payment_type', 'xss_clean|trim');
             $this->form_validation->set_rules('applied_promocode', 'applied_promocode', 'xss_clean|trim');
-
-
             if ($this->form_validation->run() == TRUE) {
-
                 $payment_type = 2;
                 // echo 	$address_id=$this->input->post('addresss_id'); die();
                 $address_id = $this->input->post('addresss_id');
-
                 $applied_promocode = $this->input->post('applied_promocode');
                 // $page=$this->input->post('page');
-
                 $user_id = $this->session->userdata('user_id');
                 $ip = $this->input->ip_address();
                 date_default_timezone_set("Asia/Calcutta");
                 $cur_date = date("Y-m-d H:i:s");
-
                 $totalAmount = 0;
                 $txnid =  substr(hash('sha256', mt_rand() . microtime()), 0, 20);
-
                 $promocode_id = "";
                 if (!empty($applied_promocode)) {
                     $this->db->select('*');
@@ -5908,7 +4894,6 @@ class Home extends CI_Controller
                     $this->db->where('promo_code', $applied_promocode);
                     $this->db->where('is_active', 1);
                     $promocode_da = $this->db->get()->row();
-
                     if (!empty($promocode_da)) {
                         $promocode_id = $promocode_da->id;
                     } else {
@@ -5917,12 +4902,7 @@ class Home extends CI_Controller
                 } else {
                     $promocode_id = "";
                 }
-
-
-
                 if ($payment_type == 2) {
-
-
                     // if($page != 0){
                     // 			$this->db->select('*');
                     // 			$this->db->from('tbl_cart');
@@ -5935,25 +4915,16 @@ class Home extends CI_Controller
                     $this->db->where('user_id', $user_id);
                     $cart_da = $this->db->get();
                     // }
-
-
-
                     if (!empty($cart_da)) {
                         // echo "f"; echo '<pre>'; print_r($cart_da->result()); die();
                         $i = 1;
                         foreach ($cart_da->result() as $data) {
-
                             $product_id = $data->product_id;
                             $quantity = $data->quantity;
-
                             $inventory = 0;
                             $status = "";
-
                             //get product sku start
-
-
                             if (empty($data->stuller_pro_id)) {
-
                                 $this->db->select('*');
                                 $this->db->from('tbl_products');
                                 $this->db->where('id', $product_id);
@@ -5966,8 +4937,6 @@ class Home extends CI_Controller
                                 $this->db->where('is_active', 1);
                                 $pro_da = $this->db->get()->row();
                             }
-
-
                             if (!empty($pro_da)) {
                                 $sku = $pro_da->sku;
                             } else {
@@ -5976,12 +4945,8 @@ class Home extends CI_Controller
                                 redirect($_SERVER['HTTP_REFERER']);
                             }
                             //get product sku end
-
-
                             //Inventory Check api start
-
                             $curl = curl_init();
-
                             curl_setopt_array($curl, array(
                                 CURLOPT_URL => 'https://api.stuller.com/v2/products?SKU=' . $sku,
                                 CURLOPT_RETURNTRANSFER => true,
@@ -5997,40 +4962,26 @@ class Home extends CI_Controller
                                     'Cookie: AWSALB=1Sg7jQ5WrUEnBoDmGaVnJorbqXXyK+dQqUw2GqaBRbmyB6wS6B3VR4K87ey+TZIJ5mvDqbTHnp6sD/1ka744OTa6umVGWUfMgFASSRnN0Qg1xRkh7tPLbCA3hfBh; AWSALBCORS=1Sg7jQ5WrUEnBoDmGaVnJorbqXXyK+dQqUw2GqaBRbmyB6wS6B3VR4K87ey+TZIJ5mvDqbTHnp6sD/1ka744OTa6umVGWUfMgFASSRnN0Qg1xRkh7tPLbCA3hfBh'
                                 ),
                             ));
-
                             $response = curl_exec($curl);
-
                             curl_close($curl);
                             // echo $response;
                             $response_dec = json_decode($response);
                             // print_r( $response_dec->Products);die();
-
                             if (!empty($response_dec->Products)) {
                                 foreach ($response_dec->Products as $res) {
                                     $inventory = $res->OnHand;
                                     $status = $res->Status;
                                 }
                             }
-
                             // echo $status;
                             // echo $inventory;
-
                             // die();
-
                             //Inventory Check api end
-
-
-
                             if (!empty($status) && $status != 'Out Of Stock') {
                                 // $db_quantity=$pro_inv_da->inventory;
                                 $db_quantity = $inventory;
-
                                 if ($status == 'Made To Order') {
-
-
-
                                     if ($i == 1) {
-
                                         //tbl order1 entry
                                         $data_insert_order1 = array(
                                             'user_id' => $user_id,
@@ -6043,15 +4994,10 @@ class Home extends CI_Controller
                                             'txnid' => $txnid,
                                             'ip' => $ip,
                                             'date' => $cur_date
-
                                         );
-
                                         $last_order_id = $this->base_model->insert_table("tbl_order1", $data_insert_order1, 1);
                                     }
-
-
                                     if (empty($data->stuller_pro_id)) {
-
                                         $this->db->select('*');
                                         $this->db->from('tbl_products');
                                         $this->db->where('id', $data->product_id);
@@ -6064,8 +5010,6 @@ class Home extends CI_Controller
                                         $this->db->where('is_active', 1);
                                         $prod_data = $this->db->get()->row();
                                     }
-
-
                                     if (!empty($prod_data)) {
                                         $selling_price = $prod_data->price;
                                         $product_qty_price = $selling_price * $data->quantity;
@@ -6073,8 +5017,6 @@ class Home extends CI_Controller
                                         $selling_price = 0;
                                         $product_qty_price = 0;
                                     }
-
-
                                     //tbl order2 entry
                                     $data_insert = array(
                                         'product_id' => $data->product_id,
@@ -6089,29 +5031,15 @@ class Home extends CI_Controller
                                         'quantity' => $data->quantity,
                                         'amount' => $product_qty_price,
                                         'main_id' => $last_order_id,
-
                                         'date' => $cur_date
-
                                     );
-
-
                                     $last_id = $this->base_model->insert_table("tbl_order2", $data_insert, 1);
-
-
                                     //calculate total cart amount
                                     $totalAmount = $totalAmount + $product_qty_price;
-
-
                                     $i++;
                                 } else {
-
                                     if ($db_quantity >= $quantity) {
-
-
-
-
                                         if ($i == 1) {
-
                                             //tbl order1 entry
                                             $data_insert_order1 = array(
                                                 'user_id' => $user_id,
@@ -6124,29 +5052,22 @@ class Home extends CI_Controller
                                                 'txnid' => $txnid,
                                                 'ip' => $ip,
                                                 'date' => $cur_date
-
                                             );
-
                                             $last_order_id = $this->base_model->insert_table("tbl_order1", $data_insert_order1, 1);
                                         }
-
-
                                         if (empty($data->stuller_pro_id)) {
-
                                             $this->db->select('*');
                                             $this->db->from('tbl_products');
                                             $this->db->where('id', $data->product_id);
                                             $this->db->where('is_active', 1);
                                             $prod_data = $this->db->get()->row();
                                         } else {
-
                                             $this->db->select('*');
                                             $this->db->from('tbl_quickshop_products');
                                             $this->db->where('product_id', $data->stuller_pro_id);
                                             $this->db->where('is_active', 1);
                                             $prod_data = $this->db->get()->row();
                                         }
-
                                         if (!empty($prod_data)) {
                                             $selling_price = $prod_data->price;
                                             $product_qty_price = $selling_price * $data->quantity;
@@ -6154,8 +5075,6 @@ class Home extends CI_Controller
                                             $selling_price = 0;
                                             $product_qty_price = 0;
                                         }
-
-
                                         //tbl order2 entry
                                         $data_insert = array(
                                             'product_id' => $data->product_id,
@@ -6172,24 +5091,14 @@ class Home extends CI_Controller
                                             'quantity' => $data->quantity,
                                             'amount' => $product_qty_price,
                                             'main_id' => $last_order_id,
-
                                             'date' => $cur_date
-
                                         );
-
-
                                         $last_id = $this->base_model->insert_table("tbl_order2", $data_insert, 1);
-
-
                                         //calculate total cart amount
                                         $totalAmount = $totalAmount + $product_qty_price;
-
-
                                         $i++;
                                     } else {
-
                                         if (empty($data->stuller_pro_id)) {
-
                                             $this->db->select('*');
                                             $this->db->from('tbl_products');
                                             $this->db->where('id', $data->product_id);
@@ -6202,23 +5111,17 @@ class Home extends CI_Controller
                                             $this->db->where('is_active', 1);
                                             $prodata = $this->db->get()->row();
                                         }
-
                                         if (!empty($prodata)) {
                                             $product_name = $prodata->description;
                                         } else {
                                             $product_name = "";
                                         }
-
-
                                         $this->session->set_flashdata('emessage', 'This product ' . $product_name . ' is out of stock.Please remove this product before order place.');
                                         redirect($_SERVER['HTTP_REFERER']);
                                     }
                                 }
                             } else {
-
-
                                 if (empty($data->stuller_pro_id)) {
-
                                     $this->db->select('*');
                                     $this->db->from('tbl_products');
                                     $this->db->where('id', $data->product_id);
@@ -6231,54 +5134,30 @@ class Home extends CI_Controller
                                     $this->db->where('is_active', 1);
                                     $prodata = $this->db->get()->row();
                                 }
-
                                 if (!empty($prodata)) {
                                     $product_name = $prodata->description;
                                 } else {
                                     $product_name = "";
                                 }
-
-
                                 $this->session->set_flashdata('emessage', 'This product ' . $product_name . ' is out of stock.Please remove this product before order place.');
                                 redirect($_SERVER['HTTP_REFERER']);
                             }
                         }
                     }
-
-
-
-
-
-
                     if ($last_order_id != 0) {
-
-
                         if (!empty($applied_promocode)) {
-
-
                             $totalAmount = $this->isValidPromocode($last_order_id, $totalAmount, $applied_promocode);
                         }
-
-
-
                         //update order details full information of order
                         $data_update_ordr = array(
                             'total_amount' => $totalAmount,
                             'payment_status' => 0,
                             'order_status' => 0,
                             'promocode' => $promocode_id,
-
                         );
-
                         $this->db->where('id', $last_order_id);
                         $order = $this->db->update('tbl_order1', $data_update_ordr);
-
-
-
-
-
                         //delete Tbl Cart data of user
-
                         // if($page != 0){
                         // 			$this->db->select('*');
                         // 			$this->db->from('tbl_cart');
@@ -6286,7 +5165,6 @@ class Home extends CI_Controller
                         // 			$this->db->where('product_id',$page);
                         // 			$cart_dat= $this->db->get();
                         // }else {
-
                         // $this->db->select('*');
                         // 			$this->db->from('tbl_cart');
                         // 			$this->db->where('user_id',$user_id);
@@ -6301,9 +5179,6 @@ class Home extends CI_Controller
                         //
                         // }
                         // }
-
-
-
                         //send email to user's email start
                         //
                         // $config = Array(
@@ -6348,21 +5223,13 @@ class Home extends CI_Controller
                         // 							}else{
                         // 							// show_error($this->email->print_debugger());
                         // 							}
-
                         //send email to user's email end
-
-
-
-
-
                         // $this->session->set_flashdata('smessage','Register successfully');
                         // redirect("Home/order_success","refresh");
                         $amu = base64_encode($totalAmount);
                         $idd = base64_encode($last_order_id);
                         $addr_id = base64_encode($address_id);
-
                         // redirect("Home/charge/".$amu."/".$idd,"refresh");
-
                         $id = base64_decode($idd);
                         $amu = base64_decode($amu);
                         // $data['title'] = 'Checkout payment | TechArise';
@@ -6374,11 +5241,9 @@ class Home extends CI_Controller
                         // $data['furl'] = site_url().'Home/order_failed';
                         // $data['currency_code'] = 'USD';
                         // $this->load->view('paypal/checkout', $data);
-
                         // 	 $this->load->view('common/header',$data);
                         // 	 $this->load->view('confirmation');
                         // 	 $this->load->view('common/footer');
-
                         $this->session->unset_userdata("data");
                         $this->session->unset_userdata("order_id");
                         $this->session->unset_userdata("amn");
@@ -6386,8 +5251,6 @@ class Home extends CI_Controller
                         $this->session->unset_userdata("surl");
                         $this->session->unset_userdata("furl");
                         $this->session->unset_userdata("currency_code");
-
-
                         $this->session->set_flashdata('data', 1);
                         $this->session->set_flashdata('order_id', $id);
                         $this->session->set_flashdata('amn', $amu);
@@ -6395,7 +5258,6 @@ class Home extends CI_Controller
                         $this->session->set_flashdata('surl', site_url() . 'Home/order_success');
                         $this->session->set_flashdata('furl', site_url() . 'Home/order_failed');
                         $this->session->set_flashdata('currency_code', 'USD');
-
                         // $this->session->flashdata('data');
                         // $this->session->flashdata('order_id');
                         // $this->session->flashdata('amn');
@@ -6403,66 +5265,46 @@ class Home extends CI_Controller
                         // $this->session->flashdata('surl');
                         // $this->session->flashdata('furl');
                         // $this->session->flashdata('currency_code');
-
                         redirect("Home/checkout_af?addr=" . $addr_id, "refresh");
                     } else {
-
                         $this->session->set_flashdata('emessage', 'Sorry error occured');
                         redirect($_SERVER['HTTP_REFERER']);
                     }
                 }
             } else {
-
                 $this->session->set_flashdata('emessage', validation_errors());
                 redirect($_SERVER['HTTP_REFERER']);
             }
         } else {
-
             $this->session->set_flashdata('emessage', 'Please insert some data, No data available');
             redirect($_SERVER['HTTP_REFERER']);
         }
     }
-
-
     //order place end
-
-
     public function order_success()
     {
-
-
         $data['data'] = "";
         $this->load->view('common/header', $data);
         $this->load->view('order_success');
         $this->load->view('common/footer');
     }
-
-
     public function order_failed()
     {
-
         $data['data'] = "";
         $this->load->view('common/header', $data);
         $this->load->view('order_failed');
         $this->load->view('common/footer');
     }
-
-
-
     public function myorder()
     {
-
         if (!empty($this->session->userdata('user_id'))) {
-
             $user_id = $this->session->userdata('user_id');
-
             $this->db->select('*');
             $this->db->from('tbl_order1');
             $this->db->where('user_id', $user_id);
             // $this->db->where('order_status', '!=',  0);
             $this->db->order_by('id', "desc");
             $data['orders_data'] = $this->db->get();
-
             $this->load->view('common/header', $data);
             $this->load->view('myorder');
             $this->load->view('common/footer');
@@ -6470,35 +5312,23 @@ class Home extends CI_Controller
             redirect("Home/register", "refresh");
         }
     }
-
-
-
-
     //cancel order by user
-
-
     public function cancel_order($idd)
     {
-
         if (!empty($this->session->userdata('user_id'))) {
-
-
             $id = base64_decode($idd);
             $typ = 5;
             date_default_timezone_set("Asia/Calcutta");
             $cur_date = date("Y-m-d H:i:s");
             $user_id = $this->session->userdata('user_id');
-
             $data_update = array(
                 'rejected_by' => 1,
                 'rejected_by_id' => $user_id,
                 'order_status' => $typ,
                 'last_update_date' => $cur_date,
             );
-
             $this->db->where('id', $id);
             $zapak = $this->db->update('tbl_order1', $data_update);
-
             if ($zapak != 0) {
                 $this->session->set_flashdata('smessage', 'Order #' . $id . ' cancelled successfully.');
                 redirect("Home/myorder", "refresh");
@@ -6510,21 +5340,13 @@ class Home extends CI_Controller
             redirect("Home/register", "refresh");
         }
     }
-
-
-
-
-
-
     public function profile()
     {
         if (!empty($this->session->userdata('user_id'))) {
-
             $this->db->select('*');
             $this->db->from('tbl_users');
             $this->db->where('id', $this->session->userdata('user_id'));
             $data['users'] = $this->db->get()->row();
-
             $this->load->view('common/header', $data);
             $this->load->view('profile');
             $this->load->view('common/footer');
@@ -6538,12 +5360,8 @@ class Home extends CI_Controller
         $this->load->view('edit_profile');
         $this->load->view('common/footer');
     }
-
-
     public function add_register_data()
-
     {
-
         $this->load->helper(array('form', 'url'));
         $this->load->library('form_validation');
         $this->load->helper('security');
@@ -6553,57 +5371,41 @@ class Home extends CI_Controller
             $this->form_validation->set_rules('psw', 'psw', 'required|xss_clean|trim');
             $this->form_validation->set_rules('name', 'name', 'required|xss_clean|trim');
             $this->form_validation->set_rules('email', 'email', 'required|xss_clean|valid_email|trim|is_unique[tbl_users.email]');
-
             if ($this->form_validation->run() == TRUE) {
                 $email = $this->input->post('email');
                 $passw = $this->input->post('psw');
                 $name = $this->input->post('name');
-
                 $pass = md5($passw);
-
                 $data_insert = array(
                     'email' => $email,
                     'psw' => $pass,
                     'name' => $name
-
                 );
-
                 $last_id = $this->base_model->insert_table("tbl_users", $data_insert, 1);
                 $this->session->set_userdata('id', $last_id);
                 $this->session->set_userdata('name', $name);
             }
-
-
             if ($last_id != 0) {
-
                 $this->session->set_flashdata('smessage', 'Sign Up Success');
-
                 redirect($_SERVER['HTTP_REFERER']);
             } else {
-
                 $this->session->set_flashdata('emessage', 'Sorry error occured');
                 redirect($_SERVER['HTTP_REFERER']);
             }
         } else {
-
             $this->session->set_flashdata('emessage', validation_errors());
             redirect($_SERVER['HTTP_REFERER']);
         }
     }
-
-
     public function login()
     {
-
         $this->load->helper(array('form', 'url'));
         $this->load->library('form_validation');
         $this->load->helper('security');
         if ($this->input->post()) {
-
             $this->form_validation->set_rules('email', 'email', 'required|valid_email|xss_clean|trim');
             $this->form_validation->set_rules('psw', 'psw', 'required|xss_clean|trim');
             if ($this->form_validation->run() == TRUE) {
-
                 $email = $this->input->post('email');
                 $passw = $this->input->post('psw');
                 $pass = md5($passw);
@@ -6614,102 +5416,69 @@ class Home extends CI_Controller
                 $da_teacher = $this->db->get();
                 $da = $da_teacher->row();
                 if (!empty($da)) {
-
                     $nnn1 = $da->email;
                     $nnn2 = $da->psw;
                     $nnn3 = $da->name;
                     $nnn4 = $da->id;
-
                     $this->session->set_userdata('user_name', $nnn3);
                     $this->session->set_userdata('user_id', $nnn4);
                     //$this->session->set_userdata('name',$name);
-
                     redirect("Home/index", "refresh");
                 } else {
-
-
                     $this->session->set_flashdata('emessage', 'wrong password');
                     // redirect("auth/login","refresh");
                     redirect($_SERVER['HTTP_REFERER']);
                 }
             } else {
-
                 //echo $pass;
                 $this->session->set_flashdata('emessage', 'Wrong Details Entered');
                 redirect($_SERVER['HTTP_REFERER']);
             }
         } else {
-
             $this->session->set_flashdata('emessage', validation_errors());
             // redirect("auth/login","refresh");
             redirect($_SERVER['HTTP_REFERER']);
         }
     }
-
     public function logout()
     {
-
         if (!empty($this->session->userdata('user_name'))) {
-
             $this->session->unset_userdata('user_id');
             $this->session->unset_userdata('user_name');
-
             redirect("Home/index", "refresh");
         } else {
             echo "Error Loging out";
         }
     }
-
-
     public function getSub_category()
     {
-
         if (!empty($this->session->userdata('admin_data'))) {
-
             // $data['user_name']=$this->load->get_var('user_name');
-
             $isl = $_GET['isl'];
-
             $this->db->select('*');
             $this->db->from('tbl_sub_category');
             $this->db->where('category', $isl);
             $this->db->where('is_active', 1);
             $data = $this->db->get();
-
             $i = 1;
             foreach ($data->result() as $row) {
-
                 $sub_category[] = array('id' => $row->id, 'name' => $row->name);
-
-
                 $i++;
             }
             if (!empty($sub_category)) {
                 // code...
-
                 echo json_encode($sub_category);
             } else {
                 echo 'NA';
             }
         } else {
-
             redirect("login/admin_login", "refresh");
         }
     }
-
-
     public function delete_cart($idd)
     {
-
         if (!empty($this->session->userdata('user_name'))) {
-
-
-
             $id = base64_decode($idd);
-
-
-
-
             $zapak = $this->db->delete('tbl_cart', array('id' => $id));
             if ($zapak != 0) {
                 $this->session->set_flashdata('smessage', 'Item removed successfully');
@@ -6719,19 +5488,14 @@ class Home extends CI_Controller
                 redirect($_SERVER['HTTP_REFERER']);
             }
         } else {
-
             redirect("login/admin_login", "refresh");
         }
     }
-
     public function delete_all_cart()
     {
-
         if (!empty($this->session->userdata('user_id'))) {
-
             $cid = $this->session->userdata('user_id');
             // echo $cid;exit;
-
             $zapak = $this->db->delete('tbl_cart', array('user_id' => $cid));
             if ($zapak != 0) {
                 redirect("Home/cart", "refresh");
@@ -6740,11 +5504,9 @@ class Home extends CI_Controller
                 redirect($_SERVER['HTTP_REFERER']);
             }
         } else {
-
             redirect("login/admin_login", "refresh");
         }
     }
-
     // public function update_quantity($idd){
     //
     // 													if(!empty($this->session->userdata('user_name'))){
@@ -6798,229 +5560,144 @@ class Home extends CI_Controller
     //
     // 												}
     //
-
-
-
-
     //footer pages start
-
     public function about_us()
     {
-
         $this->db->select('*');
         $this->db->from('tbl_about_us');
         $this->db->where('is_active', 1);
         $data['about_us'] = $this->db->get()->row();
-
         $this->load->view('common/header', $data);
         $this->load->view('about_us');
         $this->load->view('common/footer');
     }
     public function email_view()
     {
-
         $this->load->view('email');
     }
-
-
     public function terms_and_conditions()
     {
-
         $this->db->select('*');
         $this->db->from('tbl_terms_and_conditions');
         $this->db->where('is_active', 1);
         $data['terms_and_conditions'] = $this->db->get()->row();
-
         $this->load->view('common/header', $data);
         $this->load->view('terms_and_conditions');
         $this->load->view('common/footer');
     }
-
-
     public function return_policy()
     {
-
         $this->db->select('*');
         $this->db->from('tbl_return_policy');
         $this->db->where('is_active', 1);
         $data['return_policy'] = $this->db->get()->row();
-
         $this->load->view('common/header', $data);
         $this->load->view('return_policy');
         $this->load->view('common/footer');
     }
-
-
     public function privacy_policy()
     {
-
         $this->db->select('*');
         $this->db->from('tbl_privacy_policy');
         $this->db->where('is_active', 1);
         $data['privacy_policy'] = $this->db->get()->row();
-
         $this->load->view('common/header', $data);
         $this->load->view('privacy_policy');
         $this->load->view('common/footer');
     }
-
-
     public function why_us()
     {
-
         $this->db->select('*');
         $this->db->from('tbl_why_us');
         $this->db->where('is_active', 1);
         $data['why_us_data'] = $this->db->get()->row();
-
         $this->load->view('common/header', $data);
         $this->load->view('why_us');
         $this->load->view('common/footer');
     }
-
-
-
-
-
-
     public function flexiblefinancing()
     {
-
         $this->db->select('*');
         $this->db->from('tbl_flexiblefinancing');
         $this->db->where('is_active', 1);
         $data['flexiblefinancing_data'] = $this->db->get()->row();
-
         $this->load->view('common/header', $data);
         $this->load->view('flexiblefinancing');
         $this->load->view('common/footer');
     }
-
-
-
-
-
     public function free_shipping()
     {
-
         $this->db->select('*');
         $this->db->from('tbl_free_shipping');
         $this->db->where('is_active', 1);
         $data['free_shipping_data'] = $this->db->get()->row();
-
         $this->load->view('common/header', $data);
         $this->load->view('free_shipping');
         $this->load->view('common/footer');
     }
-
-
-
-
     public function lifetime_upgrades()
     {
-
         $this->db->select('*');
         $this->db->from('tbl_lifetime_upgrades');
         $this->db->where('is_active', 1);
         $data['lifetime_upgrades_data'] = $this->db->get()->row();
-
         $this->load->view('common/header', $data);
         $this->load->view('lifetime_upgrades');
         $this->load->view('common/footer');
     }
-
-
-
-
     public function lifetime_warranty()
     {
-
         $this->db->select('*');
         $this->db->from('tbl_lifetime_warranty');
         $this->db->where('is_active', 1);
         $data['lifetime_warranty_data'] = $this->db->get()->row();
-
         $this->load->view('common/header', $data);
         $this->load->view('lifetime_warranty');
         $this->load->view('common/footer');
     }
-
-
-
-
     public function visit_our_showroom()
     {
-
         $this->db->select('*');
         $this->db->from('tbl_visit_our_showroom');
         $this->db->where('is_active', 1);
         $data['visit_us'] = $this->db->get()->row();
-
         $this->load->view('common/header', $data);
         $this->load->view('visit_our_showroom');
         $this->load->view('common/footer');
     }
     public function visit_showroom()
     {
-
-
         $this->load->view('visit_showroom');
     }
-
-
-
-
     public function services()
     {
-
         $this->db->select('*');
         $this->db->from('tbl_services');
         $this->db->where('is_active', 1);
         $data['services_data'] = $this->db->get()->row();
-
         $this->load->view('common/header', $data);
         $this->load->view('services');
         $this->load->view('common/footer');
     }
-
-
-
-
     //open iframes start
-
     public function subcategories($t)
     {
-
         $t_decode = base64_decode($t);
         $data['t_dec'] = $t_decode;
-
         $this->load->view('common/header', $data);
         $this->load->view('iframe_subcategory');
         $this->load->view('common/footer');
     }
-
-
     //open iframes end
-
-
-
     //open show header signup page start
-
     public function signup_special_offers()
     {
-
-
         $this->load->view('common/header');
         $this->load->view('signup_offer');
         $this->load->view('common/footer');
     }
-
     //open show header signup page end
-
-
     //footer pages end
-
-
     //
     //
     //
@@ -7078,21 +5755,15 @@ class Home extends CI_Controller
             $this->form_validation->set_rules('pid', 'pid', 'xss_clean|trim');
             $this->form_validation->set_rules('qty', 'qty', 'xss_clean|trim');
             $this->form_validation->set_rules('ringsizeprice', 'ringsizeprice', 'xss_clean|trim');
-
-
             if ($this->form_validation->run() == TRUE) {
-
                 $qty = $this->input->post('qty');
                 $pid = $this->input->post('pid');
                 $ringsizeprice = $this->input->post('ringsizeprice');
-
-
                 $this->db->select('*');
                 $this->db->from('tbl_products');
                 $this->db->where('id', $pid);
                 $pro_data = $this->db->get()->row();
                 if (!empty($pro_data)) {
-
                     $this->db->select('*');
                     $this->db->from('tbl_price_rule');
                     $pr_data = $this->db->get()->row();
@@ -7144,7 +5815,6 @@ class Home extends CI_Controller
                     echo json_encode($respone);
                 }
             } else {
-
                 $respone['data'] = false;
                 $respone['data_message'] = validation_errors();
                 echo json_encode($respone);
@@ -7155,10 +5825,8 @@ class Home extends CI_Controller
             echo json_encode($respone);
         }
     }
-
     public function load_modify_contact($id)
     {
-
         // echo $id; die();
         $data['id'] = $id;
         $this->db->select('*');
@@ -7174,7 +5842,6 @@ class Home extends CI_Controller
         $this->load->view('modify_contact');
         $this->load->view('common/footer');
     }
-
     public function modify_contact($id)
     {
         $this->load->helper(array('form', 'url'));
@@ -7186,8 +5853,6 @@ class Home extends CI_Controller
             $this->form_validation->set_rules('b_phone', 'b_phone', 'xss_clean|trim');
             $this->form_validation->set_rules('m_phone', 'm_phone', 'xss_clean|trim');
             $this->form_validation->set_rules('acc_no', 'acc_no', 'xss_clean|trim');
-
-
             if ($this->form_validation->run() == TRUE) {
                 $name = $this->input->post('name');
                 $email = $this->input->post('email');
@@ -7228,10 +5893,8 @@ class Home extends CI_Controller
             echo json_encode($respone);
         }
     }
-
     public function share_with()
     {
-
         $this->load->helper(array('form', 'url'));
         $this->load->library('form_validation');
         $this->load->helper('security');
@@ -7242,8 +5905,6 @@ class Home extends CI_Controller
             $this->form_validation->set_rules('name', 'name', 'required|xss_clean|trim');
             $this->form_validation->set_rules('shared_product', 'shared_product', 'required|xss_clean|trim');
             $this->form_validation->set_rules('message', 'message', 'required|xss_clean|trim');
-
-
             if ($this->form_validation->run() == TRUE) {
                 $link = $this->input->post('link');
                 $from_email = $this->input->post('from_email');
@@ -7254,7 +5915,6 @@ class Home extends CI_Controller
                 $ip = $this->input->ip_address();
                 date_default_timezone_set("Asia/Calcutta");
                 $cur_date = date("Y-m-d H:i:s");
-
                 $data_insert = array(
                     'name' => $name,
                     'from_email' => $from_email,

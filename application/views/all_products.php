@@ -1,6 +1,4 @@
-
 <!-- all products start-->
-
 <section>
   <div class="container-fluid pl-5 pr-5 pt-3 pb-5">
     <div class="row">
@@ -8,27 +6,20 @@
         <p><a href="<?=base_url()?>"><span>Home</span></a> >
           <?php if(!empty($subcategory_name)){ ?>
              <a href="<?=base_url();?>Home/sub_category/<?=$category_id?>"><span><?=$category_name;?></span></a>
-
              <?php if(!empty($minorsub_name)){?>
               > <span><?=$subcategory_name;?></span> > <span><?=$minorsub_name;?></span> </p>
             <?php }else{ ?>
               > <span><?=$subcategory_name;?></span> </p>
             <?php } ?>
-
           <?php }else{ ?>
              <span><?=$category_name;?></span>
           <?php }?>
-
-
-
       </div>
     </div>
     <div class="row ">
       <div class="col-md-3 all_pro_fil ">
         <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-
 <!-- <form action="<?=base_url();?>Home/all_products/<?=$sub_id?>" method="get" enctype="multipart/form-data"> -->
-
     <!-- <div class="panel panel-default">
         <div class="panel-heading" role="tab" id="heading2">
              <h4 class="panel-title">
@@ -36,7 +27,6 @@
          Primary store shape
         </a>
       </h4>
-
         </div>
         <div id="collapse2" class="panel-collapse in collapse fil_2" role="tabpanel" aria-labelledby="heading2">
             <div class="panel-body">
@@ -62,10 +52,6 @@
             </div>
         </div>
   </div> -->
-
-
-
-
       <div class="panel panel-default">
         <div class="panel-heading" role="tab" id="heading4">
              <h4 class="panel-title">
@@ -73,106 +59,76 @@
          Primary store Size
         </a>
       </h4>
-
         </div>
         <div id="collapse4" class="panel-collapse in collapse fil_2" role="tabpanel" aria-labelledby="heading4">
             <div class="panel-body">
               <ul>
-
 <?php
-
 // echo $sub_id; die();
-
 if(empty($minorsub_id)){
-
 if(!empty($sub_id)){
-
             $this->db->select('*');
 $this->db->from('tbl_products');
 $this->db->group_by('ringsize');
 $this->db->where('sub_category', $sub_id);
 $sd= $this->db->get();
-
 if(!empty($sd)){
 foreach ($sd->result() as $a){
-
 // if(!empty($a->ringsize)){
 ?>
-
 <a href="<?=base_url();?>Home/all_products/<?=$sub_id?>/<?=base64_encode(0);?>?ringsize=<?=$a->ringsize;?>">
                 <li>
                   <!-- <input type="checkbox" name="ringsize[]"  value="<?=$a->ringsize;?>" > -->
                   <?=$a->ringsize;?>
                 </li>
 </a>
-
 <?php
 // }
 } } ?>
-
-
 <?php }else{
-
             $this->db->select('*');
 $this->db->from('tbl_products');
 $this->db->group_by('ringsize');
 $this->db->where('category', $category_id);
 $sd= $this->db->get();
-
 if(!empty($sd)){
 foreach ($sd->result() as $a){
-
 // if(!empty($a->ringsize)){
 ?>
-
 <a href="<?=base_url();?>Home/all_products/<?=$category_id?>/<?=base64_encode(3);?>?ringsize=<?=$a->ringsize;?>">
                 <li>
                   <!-- <input type="checkbox" name="ringsize[]"  value="<?=$a->ringsize;?>" > -->
                   <?=$a->ringsize;?>
                 </li>
 </a>
-
 <?php
 // }
 } } ?>
-
 <?php } ?>
-
-
 <?php }else{
-
   $this->db->select('*');
 $this->db->from('tbl_products');
 $this->db->group_by('ringsize');
 $this->db->where('minisub_category', $minorsub_id);
 $sd= $this->db->get();
-
 if(!empty($sd)){
 foreach ($sd->result() as $a){
-
 // if(!empty($a->ringsize)){
 ?>
-
 <a href="<?=base_url();?>Home/all_products/<?=$minorsub_id?>/<?=base64_encode(1);?>?ringsize=<?=$a->ringsize;?>">
       <li>
         <!-- <input type="checkbox" name="ringsize[]"  value="<?=$a->ringsize;?>" > -->
         <?=$a->ringsize;?>
       </li>
 </a>
-
 <?php
 // }
 } }
-
 }?>
-
               </ul>
             </div>
         </div>
   </div>
-
-
-
           <div class="panel panel-default">
         <div class="panel-heading" role="tab" id="heading4">
              <h4 class="panel-title">
@@ -180,99 +136,70 @@ foreach ($sd->result() as $a){
          Primary store type
         </a>
       </h4>
-
         </div>
         <div id="collapse4" class="panel-collapse in collapse fil_2" role="tabpanel" aria-labelledby="heading4">
             <div class="panel-body">
               <ul>
-
   <?php
-
   // echo $sub_id; die();
-
 if(empty($minorsub_id)){
-
 if(!empty($sub_id)){
-
               $this->db->select('*');
   $this->db->from('tbl_products');
   $this->db->group_by('product_type');
   $this->db->where('sub_category', $sub_id);
   $sd= $this->db->get();
-
   if(!empty($sd)){
   foreach ($sd->result() as $a){
-
 if(!empty($a->product_type)){
   ?>
-
 <a href="<?=base_url();?>Home/all_products/<?=$sub_id?>/<?=base64_encode(0);?>?product_type=<?=$a->product_type;?>">
                 <li>
                   <!-- <input type="checkbox" name="product_type[]"  value="<?=$a->product_type;?>">  -->
                   <?=$a->product_type;?>
                 </li>
 </a>
-
 <?php } } } ?>
-
 <?php }else{
-
   $this->db->select('*');
 $this->db->from('tbl_products');
 $this->db->group_by('product_type');
 $this->db->where('category', $category_id);
 $sd= $this->db->get();
-
 if(!empty($sd)){
 foreach ($sd->result() as $a){
-
 if(!empty($a->product_type)){
 ?>
-
 <a href="<?=base_url();?>Home/all_products/<?=$category_id?>/<?=base64_encode(3);?>?product_type=<?=$a->product_type;?>">
     <li>
       <!-- <input type="checkbox" name="product_type[]"  value="<?=$a->product_type;?>">  -->
       <?=$a->product_type;?>
     </li>
 </a>
-
 <?php } } } ?>
-
 <?php } ?>
-
 <?php }else{
-
-
                 $this->db->select('*');
     $this->db->from('tbl_products');
     $this->db->group_by('product_type');
     $this->db->where('minisub_category', $minorsub_id);
     $sd= $this->db->get();
-
     if(!empty($sd)){
     foreach ($sd->result() as $a){
-
   if(!empty($a->product_type)){
     ?>
-
   <a href="<?=base_url();?>Home/all_products/<?=$minorsub_id?>/<?=base64_encode(1);?>?product_type=<?=$a->product_type;?>">
                   <li>
                     <!-- <input type="checkbox" name="product_type[]"  value="<?=$a->product_type;?>">  -->
                     <?=$a->product_type;?>
                   </li>
   </a>
-
   <?php } } }
-
 } ?>
-
               </ul>
             </div>
         </div>
   </div>
-
-
-
                     <div class="panel panel-default">
         <div class="panel-heading" role="tab" id="heading5">
              <h4 class="panel-title">
@@ -280,31 +207,22 @@ if(!empty($a->product_type)){
          total diamond type weight
         </a>
       </h4>
-
         </div>
         <div id="collapse5" class="panel-collapse in collapse fil_2" role="tabpanel" aria-labelledby="heading5">
             <div class="panel-body">
               <ul>
-
   <?php
-
   // echo $sub_id; die();
-
   if(empty($minorsub_id)){
-
 if(!empty($sub_id)){
-
               $this->db->select('*');
   $this->db->from('tbl_products');
   $this->db->group_by('totalweight');
   $this->db->where('sub_category', $sub_id);
   $sd= $this->db->get();
-
   if(!empty($sd)){
   foreach ($sd->result() as $a){
-
 if(!empty($a->totalweight)){
-
   ?>
 <a href="<?=base_url();?>Home/all_products/<?=$sub_id?>/<?=base64_encode(0);?>?dclarity=<?=$a->dclarity;?>">
                 <li>
@@ -312,23 +230,16 @@ if(!empty($a->totalweight)){
                    <?=$a->totalweight;?>
                  </li>
 </a>
-
 <?php } } } ?>
-
-
 <?php }else{
-
   $this->db->select('*');
 $this->db->from('tbl_products');
 $this->db->group_by('totalweight');
 $this->db->where('category', $category_id);
 $sd= $this->db->get();
-
 if(!empty($sd)){
 foreach ($sd->result() as $a){
-
 if(!empty($a->totalweight)){
-
 ?>
 <a href="<?=base_url();?>Home/all_products/<?=$category_id?>/<?=base64_encode(3);?>?dclarity=<?=$a->dclarity;?>">
     <li>
@@ -336,26 +247,17 @@ if(!empty($a->totalweight)){
        <?=$a->totalweight;?>
      </li>
 </a>
-
 <?php } } } ?>
-
 <?php } ?>
-
-
 <?php }else{
-
-
   $this->db->select('*');
 $this->db->from('tbl_products');
 $this->db->group_by('totalweight');
 $this->db->where('minisub_category', $minorsub_id);
 $sd= $this->db->get();
-
 if(!empty($sd)){
 foreach ($sd->result() as $a){
-
 if(!empty($a->totalweight)){
-
 ?>
 <a href="<?=base_url();?>Home/all_products/<?=$minorsub_id?>/<?=base64_encode(1);?>?dclarity=<?=$a->dclarity;?>">
     <li>
@@ -363,18 +265,12 @@ if(!empty($a->totalweight)){
        <?=$a->totalweight;?>
      </li>
 </a>
-
 <?php } } }
-
 } ?>
-
               </ul>
             </div>
         </div>
   </div>
-
-
-
                     <div class="panel panel-default">
         <div class="panel-heading" role="tab" id="heading6">
              <h4 class="panel-title">
@@ -382,96 +278,70 @@ if(!empty($a->totalweight)){
          diamond clarity
         </a>
       </h4>
-
         </div>
         <div id="collapse6" class="panel-collapse in collapse fil_2" role="tabpanel" aria-labelledby="heading6">
             <div class="panel-body">
               <ul>
-
     <?php
-
     // echo $sub_id; die();
-
   if(empty($minorsub_id)){
-
 if(!empty($sub_id)){
-
                 $this->db->select('*');
     $this->db->from('tbl_products');
     $this->db->group_by('dclarity');
     $this->db->where('sub_category', $sub_id);
     $sd= $this->db->get();
-
     if(!empty($sd)){
     foreach ($sd->result() as $a){
 if(!empty($a->dclarity)){
     ?>
-
 <a href="<?=base_url();?>Home/all_products/<?=$sub_id?>/<?=base64_encode(0);?>?dclarity=<?=$a->dclarity;?>">
                 <li>
                   <!-- <input type="checkbox" name="dclarity[]" value="<?=$a->dclarity;?>"> -->
                    <?=$a->dclarity;?>
                  </li>
 </a>
-
 <?php } } } ?>
-
 <?php }else{
-
         $this->db->select('*');
     $this->db->from('tbl_products');
     $this->db->group_by('dclarity');
     $this->db->where('category', $category_id);
     $sd= $this->db->get();
-
     if(!empty($sd)){
     foreach ($sd->result() as $a){
 if(!empty($a->dclarity)){
     ?>
-
 <a href="<?=base_url();?>Home/all_products/<?=$category_id?>/<?=base64_encode(3);?>?dclarity=<?=$a->dclarity;?>">
                 <li>
                   <!-- <input type="checkbox" name="dclarity[]" value="<?=$a->dclarity;?>"> -->
                    <?=$a->dclarity;?>
                  </li>
 </a>
-
 <?php } } } ?>
-
 <?php } ?>
-
-
 <?php }else{
-
-
   $this->db->select('*');
 $this->db->from('tbl_products');
 $this->db->group_by('dclarity');
 $this->db->where('minisub_category', $minorsub_id);
 $sd= $this->db->get();
-
 if(!empty($sd)){
 foreach ($sd->result() as $a){
 if(!empty($a->dclarity)){
 ?>
-
 <a href="<?=base_url();?>Home/all_products/<?=$minorsub_id?>/<?=base64_encode(1);?>?dclarity=<?=$a->dclarity;?>">
   <li>
     <!-- <input type="checkbox" name="dclarity[]" value="<?=$a->dclarity;?>"> -->
      <?=$a->dclarity;?>
    </li>
 </a>
-
 <?php } } }
-
 } ?>
-
               </ul>
             </div>
         </div>
   </div>
-
-
                       <div class="panel panel-default">
         <div class="panel-heading" role="tab" id="heading6">
              <h4 class="panel-title">
@@ -479,93 +349,70 @@ if(!empty($a->dclarity)){
          diamond color
         </a>
       </h4>
-
         </div>
         <div id="collapse6" class="panel-collapse in collapse fil_2" role="tabpanel" aria-labelledby="heading6">
             <div class="panel-body">
               <ul>
-
     <?php
-
     // echo $sub_id; die();
-
   if(empty($minorsub_id)){
-
   if(!empty($sub_id)){
-
                 $this->db->select('*');
     $this->db->from('tbl_products');
     $this->db->group_by('dcolor');
     $this->db->where('sub_category', $sub_id);
     $sd= $this->db->get();
-
     if(!empty($sd)){
     foreach ($sd->result() as $a){
 if(!empty($a->dcolor)){
     ?>
-
 <a href="<?=base_url();?>Home/all_products/<?=$sub_id?>/<?=base64_encode(0);?>?dcolor=<?=$a->dcolor;?>">
                 <li>
                   <!-- <input type="checkbox" name="dcolor[]" value="<?=$a->dcolor;?>"> -->
                    <?=$a->dcolor;?>
                  </li>
 </a>
-
 <?php } } } ?>
-
 <?php }else{
-
   $this->db->select('*');
 $this->db->from('tbl_products');
 $this->db->group_by('dcolor');
 $this->db->where('category', $category_id);
 $sd= $this->db->get();
-
 if(!empty($sd)){
 foreach ($sd->result() as $a){
 if(!empty($a->dcolor)){
 ?>
-
 <a href="<?=base_url();?>Home/all_products/<?=$category_id?>/<?=base64_encode(3);?>?dcolor=<?=$a->dcolor;?>">
   <li>
     <!-- <input type="checkbox" name="dcolor[]" value="<?=$a->dcolor;?>"> -->
      <?=$a->dcolor;?>
    </li>
 </a>
-
 <?php } } } ?>
-
 <?php } ?>
-
 <?php }else{
-
-
   $this->db->select('*');
 $this->db->from('tbl_products');
 $this->db->group_by('dcolor');
 $this->db->where('minisub_category', $minorsub_id);
 $sd= $this->db->get();
-
 if(!empty($sd)){
 foreach ($sd->result() as $a){
 if(!empty($a->dcolor)){
 ?>
-
 <a href="<?=base_url();?>Home/all_products/<?=$minorsub_id?>/<?=base64_encode(1);?>?dcolor=<?=$a->dcolor;?>">
   <li>
     <!-- <input type="checkbox" name="dcolor[]" value="<?=$a->dcolor;?>"> -->
      <?=$a->dcolor;?>
    </li>
 </a>
-
 <?php } } }
-
 }  ?>
               </ul>
             </div>
         </div>
   </div>
-
   <!-- <div class="panel panel-default">
         <div class="panel-heading" role="tab" id="heading7">
              <h4 class="panel-title">
@@ -573,7 +420,6 @@ if(!empty($a->dcolor)){
          metal karat
         </a>
       </h4>
-
         </div>
         <div id="collapse7" class="panel-collapse in collapse fil_2" role="tabpanel" aria-labelledby="heading7">
             <div class="panel-body">
@@ -599,7 +445,6 @@ if(!empty($a->dcolor)){
             </div>
         </div>
   </div>
-
     <div class="panel panel-default">
         <div class="panel-heading" role="tab" id="heading8">
              <h4 class="panel-title">
@@ -607,7 +452,6 @@ if(!empty($a->dcolor)){
          metal color
         </a>
       </h4>
-
         </div>
         <div id="collapse8" class="panel-collapse in collapse fil_2" role="tabpanel" aria-labelledby="heading8">
             <div class="panel-body">
@@ -633,9 +477,6 @@ if(!empty($a->dcolor)){
             </div>
         </div>
   </div>
-
-
-
       <div class="panel panel-default">
         <div class="panel-heading" role="tab" id="heading9">
              <h4 class="panel-title">
@@ -643,7 +484,6 @@ if(!empty($a->dcolor)){
          metal type
         </a>
       </h4>
-
         </div>
         <div id="collapse9" class="panel-collapse in collapse fil_2" role="tabpanel" aria-labelledby="heading9">
             <div class="panel-body">
@@ -669,9 +509,6 @@ if(!empty($a->dcolor)){
             </div>
         </div>
   </div>
-
-
-
       <div class="panel panel-default">
         <div class="panel-heading" role="tab" id="heading10">
              <h4 class="panel-title">
@@ -679,7 +516,6 @@ if(!empty($a->dcolor)){
          ENGRAVABLE
         </a>
       </h4>
-
         </div>
         <div id="collapse10" class="panel-collapse in collapse fil_2" role="tabpanel" aria-labelledby="heading10">
             <div class="panel-body">
@@ -705,10 +541,6 @@ if(!empty($a->dcolor)){
             </div>
         </div>
   </div>
-
-
-
-
        <div class="panel panel-default">
         <div class="panel-heading" role="tab" id="heading11">
              <h4 class="panel-title">
@@ -716,7 +548,6 @@ if(!empty($a->dcolor)){
         FLEXIBLE DESIGNS
         </a>
       </h4>
-
         </div>
         <div id="collapse11" class="panel-collapse in collapse fil_2" role="tabpanel" aria-labelledby="heading11">
             <div class="panel-body">
@@ -742,9 +573,6 @@ if(!empty($a->dcolor)){
             </div>
         </div>
   </div>
-
-
-
          <div class="panel panel-default">
         <div class="panel-heading" role="tab" id="heading12">
              <h4 class="panel-title">
@@ -752,7 +580,6 @@ if(!empty($a->dcolor)){
         GENDER
         </a>
       </h4>
-
         </div>
         <div id="collapse12" class="panel-collapse in collapse fil_2" role="tabpanel" aria-labelledby="heading12">
             <div class="panel-body">
@@ -760,39 +587,27 @@ if(!empty($a->dcolor)){
                 <li><input type="checkbox" name=""> Baby/Youth</li>
                 <li><input type="checkbox" name=""> Ladies</li>
                 <li> <input type="checkbox" name=""> Mens</li>
-
               </ul>
             </div>
         </div>
   </div> -->
-
   <!-- <input type="submit" class="mt-3 add-btn" value=" Apply "  > -->
-
 <?php  if(empty($minorsub_id)){ ?>
-
 <?php if(!empty($sub_id)){?>
-
 <a href="<?=base_url();?>Home/all_products/<?=$sub_id?>/<?=base64_encode(0);?>">
   <input type="submit" class="mt-3 add-btn" value="Remove Filter"  >
 </a>
 <?php }else{ ?>
-
   <a href="<?=base_url();?>Home/all_products/<?=$category_id?>/<?=base64_encode(3);?>">
     <input type="submit" class="mt-3 add-btn" value="Remove Filter"  >
   </a>
-
 <?php } ?>
-
-
 <?php }else { ?>
-
   <a href="<?=base_url();?>Home/all_products/<?=$minorsub_id?>/<?=base64_encode(1);?>">
     <input type="submit" class="mt-3 add-btn" value="Remove Filter"  >
   </a>
-
 <?php }?>
 <!-- </form> -->
-
       </div>
     </div>
       <div class="col-md-9">
@@ -801,41 +616,37 @@ if(!empty($a->dcolor)){
                         <div class="row ">
                             <div class="col-md-8 mb-4 hrds">
                                 <h1 class="r-title">
-
 <?php
 if(!empty($subcategory_name)){
-
 if(!empty($minorsub_name)){
   echo $minorsub_name." ( ".$productCount." )";
 }else{
   echo $subcategory_name." ( ".$productCount." )";
 }
-
 }else{
   echo $category_name." ( ".$productCount." )";
 }
-
 $this->db->select('*');
             $this->db->from('tbl_sub_category');
             $this->db->where('id',$level_id);
           //  $this->db->where('id',44);
             $dsa= $this->db->get();
             $dai=$dsa->row();
+            // print_r($dai);die();
 ?>
                                 </h1>
                             </div>
                             <!-- <img src="https://meteor.stullercloud.com/das/68074515?scl=1&$sharpen$" alt="img"> -->
                             <?
-                            if(!empty($dai)){
+                            if(!empty($dai->banner)){
                               $imgd=$dai->banner;
                             ?>
-                              <img src="<?php echo base_url().$imgd ?>" alt="img" height="500">
+                              <img src="<?php echo base_url().$imgd ?>" alt="img">
                               <?
                             }else{
-                              echo "No Image Found";
+                              // echo "No Image Found";
                             }
                               ?>
-
                             <!-- <div class="col-md-12">
                                 <div class="pd-toggle">
                                     <div class="toggle-text">
@@ -898,8 +709,6 @@ $this->db->select('*');
                                            font-size: 14px !important;
                                            font-weight: 400;
                                          }
-
-
                                     </style>
                                     <!-- <div class="opt">
                                         <pre class="tgline tgl">Showing 1 - 36 of 641   | </pre>
@@ -936,9 +745,7 @@ $this->db->select('*');
                                         </select>
                                     </div>
                                 </div>
-
                                 <hr>
-
                             </div>
                         </div>
                     </div>
@@ -980,27 +787,21 @@ $this->db->select('*');
                         'price'=>$data->price,
                         'currency'=>$data->currency,
                       );
-
                       }
                       $i++;
                     }
                     // echo $i;die();
                     // print_r($product1);
                     // exit;
-
                     foreach($product1 as $data){
-
                       ?>
-
-
-
                         <div class="col-md-3 col-4 searchColumn">
                             <p class="text-center"><i><?=$data['sku_series']?></i></p>
                         <a href="<?=base_url(); ?>Home/product_detail/<?=$data['sku']?>">
                             <?if(!empty($data['image1'])){?>
                             <img src="<?=$data['image1']?>?$list$" alt=""
                                 class="img-fluid first_img">
-                          <img src="<?=$data['image2']?>?$list$" alt=""
+                          <img src="<?=$data['image2']?$data['image2']:$data['image1']?>?$list$" alt=""
                                 class="img-fluid second_img" style="margin-left: 28px;">
                                 <?}else{?>
                                   <img src="<?=base_url()?>assets/uploads/no-image-found.jpg" alt=""
@@ -1008,9 +809,7 @@ $this->db->select('*');
                                       <img src="<?=base_url()?>assets/uploads/no-image-found.jpg" alt=""
                                             class="img-fluid second_img" style="margin-left: 28px;">
                                   <?}?>
-                            <a href="#">
                                 <p><b><?=$data['description']?></b></p>
-                            </a>
                             <?if(!empty($data['price'])){
                               $this->db->select('*');
                   $this->db->from('tbl_price_rule');
@@ -1051,48 +850,32 @@ $this->db->select('*');
                             <p class="price">$<?=number_format($now_price,2);?></p>
                             <?}else{?>
                               <p class="price"><a  href="<?=base_url(); ?>Home/contact_us">contact</a></p>
-
                               <? } ?>
                           </a>
                           </a>
                         </div>
                         <?php $i++; } ?>
                       </div>
-
-
-
                 </div>
-
 <!-- <div class="text-center"><?php echo $links; ?></div> -->
-
             </div>
       </div>
     </div>
-
   </div>
   <input type="hidden" value="<?=$page;?>" id="page">
   <input type="hidden" value="<?=$level_id;?>" id="level_id">
 </section>
-
-
 <script>
-
 function sort(){
-
   var sort_type =  $('#sort').val();
   var page =  $('#page').val();
   var level_id =  $('#level_id').val();
-
   var year =  $("#selectyear").val();
   if(sort_type!= '' ){
     window.location.href="<?= base_url()?>Home/all_products/"+level_id+"/"+page+"?sort_type="+sort_type;
   }else{
     alert("Please Select Sort Type.");
   }
-
-
 }
-
 </script>
-
 <!-- all products end-->

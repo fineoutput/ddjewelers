@@ -6286,7 +6286,8 @@ class Products extends CI_finecontrol
                             $result = curl_exec($ch);
                             curl_close($ch);
                             $result_da = json_decode($result);
-                            if (!empty($result_da)) {
+                            // print_r($result_da);die();
+                            if (!empty($result_da->Products)) {
                                 foreach ($result_da->Products as $prod) {
                                     $specifications = [];
                                     $ringsize = 0;

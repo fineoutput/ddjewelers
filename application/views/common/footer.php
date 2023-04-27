@@ -125,12 +125,12 @@
             <a aria-label="Call (925) 274-1444" href="tel:9252741444" onclick="gtag('event', 'click_to_call' , { 'event_category': 'Calls', 'event_label': 'Walnut Creek'});">(925) 274-1444</a></p>
       	</div>
 			</div>
-      <div class="row mt-5 pb-3 foot_ro">
+      <div class="row mt-5 pb-3 foot_ro align-items-center">
         <div class="col-md-4">
             <?$newdate = new DateTime()?>
-          <p>@copyright <?=$date=$newdate->format('Y');?> <strong>D&amp;D Jewelry</strong> all right reserved</p>
+          <p class=" mt-3 mb-0">@copyright <?=$date=$newdate->format('Y');?> <strong>D&amp;D Jewelry</strong> all right reserved</p>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-8">
           <div class="d-flex pay_ic
            ">
           <img class="payicon" style="" src="<?=base_url()?>assets\jewel\img\payment.png"/>
@@ -146,7 +146,7 @@
             <!-- <i class="fab fa-cc-amex"></i> -->
           </div>
         </div>
-        <div class="col-md-4">
+        <!-- <div class="col-md-4"> -->
           <p></p>
         </div>
       </div>
