@@ -525,7 +525,7 @@ class QuickshopProducts extends CI_finecontrol
             //   $minisub= base64_encode($minisubcategory);
             //   $page= base64_encode(1);
             //   $this->session->set_flashdata('smessage','Data inserted successfully');
-              // redirect("dcadmin/QuickshopProducts/view_products/".$minisub."/".$page,"refresh");
+            // redirect("dcadmin/QuickshopProducts/view_products/".$minisub."/".$page,"refresh");
             // }else{
             $minisub2 = base64_encode($minisubcategory2);
             $page = base64_encode(0);
@@ -696,10 +696,6 @@ class QuickshopProducts extends CI_finecontrol
     }
   }
   //test function for  add data from stuller api
-  public function call()
-  {
-    return $this->stuller_data(27268, 1, 2);
-  }
   //main function for  add data from stuller api
   // public function stuller_data($api_id, $category_id, $subcategory, $minorsub=null ){
   public function stuller_data($sku_ids, $category_id, $subcategory, $minisubcategory, $minisubcategory2)
@@ -721,14 +717,15 @@ class QuickshopProducts extends CI_finecontrol
       $this->db->where('minisub_category', $minisubcategory);
       $this->db->where('minisub_category2', $minisubcategory2);
       $product_data = $this->db->get();
-      if (!empty($product_data)) {
-        foreach ($product_data->result() as $pro) {
-          $this->db->delete('tbl_quickshop_products', array('id' => $pro->id));
-        }
-      }
+      // if (!empty($product_data)) {
+      //   foreach ($product_data->result() as $pro) {
+      //     $this->db->delete('tbl_quickshop_products', array('id' => $pro->id));
+      //   }
+      // }
       // echo $total_pages; die();
       //delete previous data from the table end
       foreach ($sku_ids_array as $sku_id) {
+        $this->db->delete('tbl_quickshop_products', array('category' => $category_id, 'sub_category' => $subcategory, 'minisub_category' => $minisubcategory, 'minisub_category2' => $minisubcategory2, 'sku' => $sku_id,));
         // echo $sku_id;
         $total_pages = 0;
         //get count of total number of products start
