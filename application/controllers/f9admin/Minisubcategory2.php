@@ -149,6 +149,7 @@
   $this->form_validation->set_rules('exlude_sku', 'exlude_sku', 'xss_clean|trim');
   $this->form_validation->set_rules('include_series', 'include_series', 'xss_clean|trim');
   $this->form_validation->set_rules('include_sku', 'include_sku', 'xss_clean|trim');
+  $this->form_validation->set_rules('description', 'description', 'xss_clean|trim');
 
 
 
@@ -171,6 +172,7 @@
   $exlude_sku=$this->input->post('exlude_sku');
   $include_series=$this->input->post('include_series');
   $include_sku=$this->input->post('include_sku');
+  $description=$this->input->post('description');
 
 $api_id=explode(",",$api_id1);
 
@@ -253,6 +255,7 @@ if($file_check!=4){
   'exlude_sku'=>$exlude_sku,
   'include_series'=>$include_series,
   'include_sku'=>$include_sku,
+  'description'=>$description,
 
 
                      'ip' =>$ip,
@@ -338,7 +341,8 @@ $data_insert = array(
 'exlude_series'=>$exlude_series,
 'exlude_sku'=>$exlude_sku,
 'include_series'=>$include_series,
-'include_sku'=>$include_sku
+'include_sku'=>$include_sku,
+'description'=>$description
 
 
                      );
