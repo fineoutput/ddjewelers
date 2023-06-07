@@ -440,7 +440,7 @@
 
 
                                     <h2 style="text-align: center;">
-                                        <a href="/company/locations/walnut-creek/" title="Walnut Creek" aria-label="Walnut Creek"><?=$contact_data[0]->address_heading?></a>
+                                        <a href="/company/locations/walnut-creek/" title="Walnut Creek" aria-label="Walnut Creek"><? if(!empty($contact_data[0]->address_heading)) { echo $contact_data[0]->address_heading ; }?></a>
                                     </h2>
 
 
@@ -454,9 +454,9 @@
 
                                     <div class="card card-body card-phone">
 
-                                        <a href="tel:<?=$contact_data[0]->number?>" class="phone-number" aria-label="Call (925) 274-1444" onclick="gtag('event', 'click_to_call' , { 'event_category': 'Calls', 'event_label': 'Walnut Creek'});">
+                                        <a href="tel:<? if(!empty($contact_data[0]->number)) { echo $contact_data[0]->number; } ?>" class="phone-number" aria-label="Call (925) 274-1444" onclick="gtag('event', 'click_to_call' , { 'event_category': 'Calls', 'event_label': 'Walnut Creek'});">
 
-                                        <?=$contact_data[0]->number?>
+                                        <? if(!empty($contact_data[0]->number)) { echo $contact_data[0]->number ;} ?>
                                         </a>
 
 
@@ -476,14 +476,14 @@
 
 
 
-                                        <div class="address-wrapper"><span class="address"><?=$contact_data[0]->address?></span></div>
+                                        <div class="address-wrapper"><span class="address"><? if(!empty($contact_data[0]->address)) { echo $contact_data[0]->address;} ?></span></div>
 
 
 
                                         <div class="actions">
 
 
-                                            <a href="<?=$contact_data[0]->map_address?>" title="Walnut Creek Location Map" target="_blank" aria-label="View Map" onclick="gtag('event', 'click_to_maps' , { 'event_category': 'Maps', 'event_label': 'Walnut Creek'});">View
+                                            <a href="<? if(!empty($contact_data[0]->map_address)) { echo $contact_data[0]->map_address ;}?>" title="Walnut Creek Location Map" target="_blank" aria-label="View Map" onclick="gtag('event', 'click_to_maps' , { 'event_category': 'Maps', 'event_label': 'Walnut Creek'});">View
                                                 Map</a>
 
 
@@ -505,7 +505,7 @@
 
                                         <div class="hours-inner">
                                             <div class="dropdown">
-                                                <p><?=$contact_data[0]->hours_list?></p>
+                                                <p><? if(!empty($contact_data[0]->hours_list)) { echo $contact_data[0]->hours_list;}?></p>
                                                 <!-- <p data-toggle="collapse" href="#collapse1" role="button" aria-expanded="false" aria-controls="collapse1">
                                                     Today:
                                                     <span class="id-current-day" data-ordering="today" data-day="Tue">
