@@ -13,19 +13,19 @@ define('ADMIN_URL','dcadmin');
 // TEST Paypal Express credential
 
 //live
-     define('PRO_PAYPAL', 1);
-     define("PAYPAL_CLIENTID", "ATuNwrbV--RFQAPxKKbtC2_2-6wnphpS5aD-FTXHxJ6zY0uOfZd0FQFzV8goAxiQ3Pgqxlcnkmm1UQX3");
-     define("PAYPAL_SECRET", "ECwjgvX-BYfDa2rw9_FKxU8gim3mFf3t93BgxuRMhUwOQCHlSOJBuBnFOKvFKIZpede1NpzDtABn4oZy");
-     define("PAYPAL_BASE_URL", "https://api.sandbox.paypal.com/v1/");
-     define("PAYPAL_ENV", "production");
-     define('CURRENCY', 'USD');
-//sandbox
-     // define('PRO_PAYPAL', 0);
-     // define("PAYPAL_CLIENTID", "ATIybVoqwOLplBLOlzAraJdgn1blN63g_8TTuBHlhpzIrA7XwHGrvMrl1jrzSkZU3uQf_4k6xxv1em50");
-     // define("PAYPAL_SECRET", "ECqGKZUvU7i1Mjf8_qH7aKM4CYu9ToPJMIFhEX8n0qFa-lqxFlL4sBgvi6z-xlWcZyqc9hiDhu0BmYqt");
-     // define("PAYPAL_BASE_URL", "https://api-m.sandbox.paypal.com/v1/");
-     // define("PAYPAL_ENV", "sandbox");
+     // define('PRO_PAYPAL', 1);
+     // define("PAYPAL_CLIENTID", "ATuNwrbV--RFQAPxKKbtC2_2-6wnphpS5aD-FTXHxJ6zY0uOfZd0FQFzV8goAxiQ3Pgqxlcnkmm1UQX3");
+     // define("PAYPAL_SECRET", "ECwjgvX-BYfDa2rw9_FKxU8gim3mFf3t93BgxuRMhUwOQCHlSOJBuBnFOKvFKIZpede1NpzDtABn4oZy");
+     // define("PAYPAL_BASE_URL", "https://api.sandbox.paypal.com/v1/");
+     // define("PAYPAL_ENV", "production");
      // define('CURRENCY', 'USD');
+//sandbox
+     define('PRO_PAYPAL', 0);
+     define("PAYPAL_CLIENTID", "ATIybVoqwOLplBLOlzAraJdgn1blN63g_8TTuBHlhpzIrA7XwHGrvMrl1jrzSkZU3uQf_4k6xxv1em50");
+     define("PAYPAL_SECRET", "ECqGKZUvU7i1Mjf8_qH7aKM4CYu9ToPJMIFhEX8n0qFa-lqxFlL4sBgvi6z-xlWcZyqc9hiDhu0BmYqt");
+     define("PAYPAL_BASE_URL", "https://api-m.sandbox.paypal.com/v1/");
+     define("PAYPAL_ENV", "sandbox");
+     define('CURRENCY', 'USD');
 
 /*
 |--------------------------------------------------------------------------

@@ -614,7 +614,7 @@ $return_url = site_url() . 'Home/callback/' . $ordr_id_enc;
                             googlePaymentInstance.parseResponse(paymentData, function(err, result) {
                                 if (err) {
                                     // Handle parsing error
-                                    alert("hello")
+                                    // alert("hello")
                                 }
                                 var nonce = paymentData.paymentMethodData.tokenizationData.token;
                                 // console.log(JSON.stringify(paymentDataRequest))
@@ -645,13 +645,13 @@ $return_url = site_url() . 'Home/callback/' . $ordr_id_enc;
                             });
                         }).catch(function(err) {
                             // Handle errors
-                            alert("bye")
+                            // alert("bye")
                         });
                     });
                 }
             }).catch(function(err) {
                 // Handle errors
-                alert("tata")
+                // alert("tata")
             });
         });
         // Set up other Braintree components
