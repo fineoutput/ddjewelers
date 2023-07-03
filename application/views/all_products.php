@@ -620,6 +620,7 @@ if(!empty($a->dcolor)){
 if(!empty($subcategory_name)){
 if(!empty($minorsub_name)){
   echo $minorsub_name." ( ".$productCount." )";
+  
 }else{
   echo $subcategory_name." ( ".$productCount." )";
 }
@@ -635,6 +636,13 @@ $this->db->select('*');
             // print_r($dai);die();
 ?>
                                 </h1>
+                                <?
+                                if(!empty($description)){
+                                  ?>
+                                    <h6 class="mt-3 mb-4"><i><?=$description;?></i></h6>
+                                  <?
+                                }
+                                ?>
                             </div>
                             <!-- <img src="https://meteor.stullercloud.com/das/68074515?scl=1&$sharpen$" alt="img"> -->
                             <?

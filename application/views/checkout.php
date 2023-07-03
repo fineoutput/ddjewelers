@@ -39,25 +39,52 @@
             } else {
                 $country = '';
             }
-            $state = $addr_da->state;
-            $city = $addr_da->town_city;
-            $zip = $addr_da->postal_code;
-            $phone = $addr_da->customer_phone;
+
+             if (!empty($addr_da->state_id)) {
+
+                    $state_data = $this->db->get_where('tbl_state_detail', array('id' => $addr_da->state_id))->result();
+                    $state_name = $state_data[0]->country;
+                  } else {
+                    $state_name = '';
+                  }
+            $name=$addr_da->first_name.' '.$addr_da->last_name;
+            $state = $state_name;
+            $city = $addr_da->city;
+            $zip = $addr_da->zipcode;
+            $notes=$addr_da->notes;
+           
         } else {
+            $name;
             $address = "";
             $state = "";
             $city = "";
             $zip = "";
             $country = "";
-            $phone = "";
+            $notes='';
+           
         }
         ?>
         <section class="Address">
             <div class="  container-fluid " style="margin-bottom: 50px;">
                 <div class="row ">
                     <div class="col-sm-6 col-md-8 add1">
-                        <h5 class="font-we"><b>Address</b></h5>
-                        <p class="border" style="padding: 10px;"> <?= $address . ", " . $city . ", " . $state . ", " . $country . "," . $zip; ?></p>
+                    <h5 class="font-we"><b>Address</b></h5>
+                        <p class="border" style="padding: 10px;"><b>Name : </b><?=$name;?>
+                        <br>
+                        <b>Address : </b><?=$address;?>
+                        <br>
+                        <b>City : </b><?=$city;?>
+                        <br>
+                        <b>State : </b><?=$state_name;?>
+                        <br>
+                        <b>Zipcode : </b><?=$zip;?>
+                        <br>
+                        <b>Country : </b><?=$country;?>
+                        <br>
+                        <b>Notes : </b><?=$notes;?>
+                    </p>
+                       
+                       
                         <h5 class="font-we Address "><b>Cart Details</b></h5>
                         <div class="  border">
                             <div class="col">

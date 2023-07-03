@@ -1,5 +1,3 @@
-
-
 <!-- register start -->
 
 <section>
@@ -14,57 +12,72 @@
     <div class="row register_row">
 
       <div class="col-md-6">
-        <form action="<?=base_url(); ?>Order/checkout" method="post" enctype="multipart/form-data">
-        <div class="row">
+        <form action="<?= base_url(); ?>Order/checkout" method="post" enctype="multipart/form-data">
+          <div class="row">
 
-          <div class="col-md-12 text-center">
-            <h2>Select Address</h2>
-          </div>
-
-          <div class="col-md-12">
-<?php
-$i=0;
-if(!empty($user_addr_data)){
-  foreach ($user_addr_data->result() as $address) {
-    if(!empty($address->country_id)){
-
-        $country_data1 = $this->db->get_where('tbl_country', array('id'=> $address->country_id))->result();
-        $country_name=$country_data1[0]->name;
-    }else{
-        $country_name='';
-    }
-
-?>
-
-            <div class=" row add_sel">
-              <div class="col-2 col-md-1">
-                <input type="radio" name="selected_address" value="<?=$address->id;?>" <?php if($i== 0){ echo 'checked'; } ?> required >
-              </div>
-              <div class="col-10 col-md-11">
-              <p><b>Phone Number:</b> <a><?=$address->customer_phone;?></a></p>
-              <p><b>Address:</b> <a><?=$address->address;?></a></p>
-              <p><b>State:</b><a><?=$address->state;?></a></p>
-          
-              <p><b>Country:</b><a><?=$country_name;?></a></p>
-            
-              <p><b>city:</b><a><?=$address->town_city;?></a></p>
-              <p><b>Zipcode:</b><a><?=$address->postal_code;?></a></p>
-              </div>
+            <div class="col-md-12 text-center">
+              <h2>Select Address</h2>
             </div>
 
-<?php $i++;} } ?>
-            <div class="row bg-white">
-              <div class="col-md-12">
-                <!-- <button class="more_btn mb-3">More</button> -->
+            <div class="col-md-12">
+              <?php
+              $i = 0;
+              if (!empty($user_addr_data)) {
+                foreach ($user_addr_data->result() as $address) {
+                  if (!empty($address->country_id)) {
+
+                    $country_data1 = $this->db->get_where('tbl_country', array('id' => $address->country_id))->result();
+                    $country_name = $country_data1[0]->name;
+                  } else {
+                    $country_name = '';
+                  }
+                  if (!empty($address->state_id)) {
+
+                    $state_data = $this->db->get_where('tbl_state_detail', array('id' => $address->state_id))->result();
+                    $state_name = $state_data[0]->country;
+                  } else {
+                    $state_name = '';
+                  }
+
+              ?>
+
+                  <div class=" row add_sel">
+                    <div class="col-2 col-md-1">
+                      <input type="radio" name="selected_address" value="<?= $address->id; ?>" <?php if ($i == 0) {
+                                                                                                  echo 'checked';
+                                                                                                } ?> required>
+                    </div>
+                    <div class="col-10 col-md-11">
+                    
+                      <p><b>Name:</b> <a><?= $address->first_name.' '.$address->last_name; ?></a></p>
+                      <p><b>Address:</b> <a><?= $address->address; ?></a></p>
+                    
+
+                    
+
+                      <p><b>city:</b><a><?= $address->city; ?></a></p>
+                      <p><b>Zipcode:</b><a><?= $address->zipcode; ?></a></p>
+                     
+                      <p><b>State:</b><a><?= $state_name;?></a></p>
+                      <p><b>Country:</b><a><?= $country_name; ?></a></p>
+                    </div>
+                  </div>
+
+              <?php $i++;
+                }
+              } ?>
+              <div class="row bg-white">
+                <div class="col-md-12">
+                  <!-- <button class="more_btn mb-3">More</button> -->
+                </div>
               </div>
             </div>
+            <div class="col-md-12  mt-3">
+              <!-- <a href="<?= base_url(); ?>Home/checkout"> -->
+              <button class="sub_btn" type="submit">Continue</button>
+              <!-- </a> -->
+            </div>
           </div>
-          <div class="col-md-12  mt-3">
-            <!-- <a href="<?=base_url(); ?>Home/checkout"> -->
-            <button class="sub_btn" type="submit">Continue</button>
-          <!-- </a> -->
-          </div>
-        </div>
         </form>
       </div>
 
@@ -76,53 +89,80 @@ if(!empty($user_addr_data)){
         </div>
         <div class="row">
           <div class="col-md-12">
-            <form action="<?=base_url();?>Home/add_new_address" method="post" enctype="multipart/form-data">
-              <label>Phone Number: *</label>
-              <input type="text" value="" maxlength="10" onkeydown="if(event.key==='.'){event.preventDefault();}"  oninput="event.target.value = event.target.value.replace(/[^0-9]*/g,'');" name="customer_phone" required>
-              <label>Full Address: *</label>
-              <textarea type="text" name="address" required></textarea>
-              <label>Country : *</label>
-             <select name="country_id" class="form-control" required>
-                          <option value="">-----select Country-----</option>
-                          <?php $i=1; foreach ($country_data->result() as $country) { ?>
-                          <option value="<?=$country->id?>"><?=$country->name?></option>
-                          <?php } ?>
-                        </select>
-           
-              <label>Select State: *</label>
-              <!-- <select>
-                <option>Alabama</option>
-                <option>Alaska</option>
-                <option>Arizona</option>
-                <option>Arkansas</option>
-                <option>California</option>
-                <option>Colorado</option>
-                <option>Connecticut</option>
-                <option>Delaware</option>
-                <option>Delaware</option>
-              </select> -->
+            <form action="<?= base_url(); ?>Home/add_new_address" method="post" enctype="multipart/form-data">
+              <div class="form-group">
+                <label>Country *</label>
+                <select name="country_id" class="form-control" required>
+                  <option value="">-----select Country-----</option>
+                  <?php $i = 1;
+                  foreach ($country_data->result() as $country) { ?>
+                    <option value="<?= $country->id ?>"><?= $country->name ?></option>
+                  <?php } ?>
+                </select>
+              </div>
+              <div style="display:flex;">
+                <div class="form-group col-md-6">
+                  <label for="first_name">First Name *</label>
+                  <input type="text" class="form-control" name="first_name" id="first_name" required>
+                </div>
+                <div class="form-group col-md-6">
+                  <label for="last_name">Last Name *</label>
+                  <input type="text" class="form-control" name="last_name" id="last_name" required>
+                </div>
 
-<input type="text" value="" name="state" required>
+              </div>
+              <div class="form-group">
+                <label for="address">Address *</label>
+                <textarea  name="address" id="address" required></textarea>
+              </div>
+              <div class="form-group">
+                <label for="address2">Address 2</label>
+                <textarea  name="address2" id="address2" required></textarea>
+              </div>
+              <div class="form-group">
+                <label for="city">City *</label>
+                <input type="text" name="city" id="city" required></textarea>
+              </div>
+              <div style="display:flex;">
+                <div class="form-group col-md-6">
+                  <label for="state">States *</label>
+                <select name="state_id" class="form-control" required>
+                  <option value="">----Select State---</option>
+                    <?php
+                    foreach($states->result() as $st){
 
-              <label>Select city: *</label>
-              <!-- <select>
-                <option>Alabama</option>
-                <option>Alaska</option>
-                <option>Arizona</option>
-                <option>Arkansas</option>
-                <option>California</option>
-                <option>Colorado</option>
-                <option>Connecticut</option>
-                <option>Delaware</option>
-                <option>Delaware</option>
-              </select> -->
+                      $this->db->select('*');
+                                  $this->db->from('tbl_state_detail');
+                                  $this->db->where('country',$st->country);
+                                  $dsa_id= $this->db->get()->row();
+                                 
+                 
+                      ?>
+                      <option value="<?=$dsa_id->id ?>"><?=$st->country ?></option>
+                      <?php
 
-<input type="text" value="" name="city" required>
+                    }
+                    ?>
+                </select>
+                </div>
+                <div class="form-group col-md-6" style="display:flex;">
+                  <label for="zipcode">Zip/Postal Code *</label>
+                  <input type="text" class="form-control" name="zipcode" id="zipcode" required>
+                </div>
 
-              <label>Zipcode: *</label>
-              <input type="number" name="zipcode" required>
-              <!-- <label>Landmark: *</label>
-              <input type="text" name="text"> -->
+              </div>
+              <div class="form-group col-md-6">
+                 
+                  <input type="checkbox" class="form-check-input"  style="width:5%;" name="is_gift" id="is_gift" value="1">
+                  <span>This Order Contains a Gift</span>
+                </div>
+                <div class="form-group">
+                <label for="notes">Special Instruction or Notes</label>
+                <textarea  name="notes" id="notes"></textarea>
+              </div>
+
+
+              
               <button class="sub_btn">SUBMIT</button>
             </form>
           </div>
