@@ -242,7 +242,7 @@ class QuickshopProducts extends CI_finecontrol
         $this->form_validation->set_rules('sub_category', 'sub_category', 'required|xss_clean|trim');
         $this->form_validation->set_rules('minisubcategory', 'minisubcategory', 'required|xss_clean|trim');
         $this->form_validation->set_rules('minisubcategory2', 'minisubcategory2', 'required|xss_clean|trim');
-        $this->form_validation->set_rules('sku_ids', 'sku_ids', 'required|xss_clean|trim');
+        $this->form_validation->set_rules('series_no', 'series_no', 'required|xss_clean|trim');
         // $this->form_validation->set_rules('minisubcategory', 'minisubcategory', 'xss_clean|trim');
         // $this->form_validation->set_rules('vendor', 'vendor', 'required|xss_clean|trim');
         if ($this->form_validation->run() == TRUE) {
@@ -251,7 +251,7 @@ class QuickshopProducts extends CI_finecontrol
           $sub_category = $this->input->post('sub_category');
           $minisubcategory = $this->input->post('minisubcategory');
           $minisubcategory2 = $this->input->post('minisubcategory2');
-          $sku_ids = $this->input->post('sku_ids');
+          $series_no = $this->input->post('series_no');
           // $minisubcategory=$this->input->post('minisubcategory');
           // $vendor=$this->input->post('vendor');
           $ip = $this->input->ip_address();
@@ -281,7 +281,7 @@ class QuickshopProducts extends CI_finecontrol
             // die();
             //stuller api fuction call
             // $last_id= $this->stuller_data($api_id, $category, $sub_category, $minisubcategory);
-            $last_id = $this->stuller_data($sku_ids, $category, $sub_category, $minisubcategory, $minisubcategory2);
+            $last_id = $this->stuller_data($series_no, $category, $sub_category, $minisubcategory, $minisubcategory2);
           }
           if ($typ == 2) {
             $idw = base64_decode($iw);
@@ -698,13 +698,13 @@ class QuickshopProducts extends CI_finecontrol
   //test function for  add data from stuller api
   //main function for  add data from stuller api
   // public function stuller_data($api_id, $category_id, $subcategory, $minorsub=null ){
-  public function stuller_data($sku_ids, $category_id, $subcategory, $minisubcategory, $minisubcategory2)
+  public function stuller_data($series_no, $category_id, $subcategory, $minisubcategory, $minisubcategory2)
   {
     $ip = $this->input->ip_address();
     date_default_timezone_set("Asia/Calcutta");
     $cur_date = date("Y-m-d H:i:s");
     $addedby = $this->session->userdata('admin_id');
-    $sku_ids_array = explode(",", $sku_ids);
+    $sku_ids_array = explode(",", $series_no);
     // $sku_id= $sku_ids;
     // print_r($sku_ids_array); die();
     $n = 0;
@@ -725,7 +725,7 @@ class QuickshopProducts extends CI_finecontrol
       // echo $total_pages; die();
       //delete previous data from the table end
       foreach ($sku_ids_array as $sku_id) {
-        $this->db->delete('tbl_quickshop_products', array('category' => $category_id, 'sub_category' => $subcategory, 'minisub_category' => $minisubcategory, 'minisub_category2' => $minisubcategory2, 'sku' => $sku_id,));
+        $this->db->delete('tbl_quickshop_products', array('category' => $category_id, 'sub_category' => $subcategory, 'minisub_category' => $minisubcategory, 'minisub_category2' => $minisubcategory2, 'series_no' => $sku_id,));
         // echo $sku_id;
         $total_pages = 0;
         //get count of total number of products start
@@ -794,8 +794,8 @@ class QuickshopProducts extends CI_finecontrol
         // for ($i=0; $i < $total_pages; $i++) {
         // code...
         // echo $i;
-        $url = 'https://api.stuller.com/v2/products?SKU=' . $sku_id;
-        // $url = 'https://api.stuller.com/v2/products';
+        // $url = 'https://api.stuller.com/v2/products?SKU=' . $sku_id;
+        $url = 'https://api.stuller.com/v2/products';
         // if($i == 0){
         //   // $data = '{"Filter":["Orderable","OnPriceList","Finished"],"CategoryIds":["'.$api_id.'"]}';
         //   $data = '{"Filter":["OnPriceList","Orderable"], "Series":["'.$sku_id.'"]}';
@@ -1084,7 +1084,7 @@ class QuickshopProducts extends CI_finecontrol
               $gvedio = $prod->GroupVideos[0]->Url;
             }
             //explode sku for get and save sku series and sku series type start
-            $sku_no = $prod->SKU;
+            $sku_no = $prod->series_no;
             $sku_ar = explode(":", $sku_no);
             // print_r($sku_ar);
             $cate_param_count = count($sku_ar);
@@ -1112,7 +1112,7 @@ class QuickshopProducts extends CI_finecontrol
               'minisub_category' => $minisubcategory,
               'minisub_category2' => $minisubcategory2,
               // 'vendor'=>1,
-              'sku' => $prod->SKU,
+              'series_no' => $prod->SKU,
               'sku_series' => $sku_series,
               'sku_series_type1' => $sku_series_type1,
               'sku_series_type2' => $sku_series_type2,
