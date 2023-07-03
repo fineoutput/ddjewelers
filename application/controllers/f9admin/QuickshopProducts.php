@@ -281,7 +281,7 @@ class QuickshopProducts extends CI_finecontrol
             // die();
             //stuller api fuction call
             // $last_id= $this->stuller_data($api_id, $category, $sub_category, $minisubcategory);
-            $last_id = $this->stuller_data($series_no, $category, $sub_category, $minisubcategory, $minisubcategory2);
+            $last_id = $this->stuller_data_Series($series_no, $category, $sub_category, $minisubcategory, $minisubcategory2);
           }
           if ($typ == 2) {
             $idw = base64_decode($iw);
@@ -698,7 +698,497 @@ class QuickshopProducts extends CI_finecontrol
   //test function for  add data from stuller api
   //main function for  add data from stuller api
   // public function stuller_data($api_id, $category_id, $subcategory, $minorsub=null ){
-  public function stuller_data($series_no, $category_id, $subcategory, $minisubcategory, $minisubcategory2)
+  public function stuller_data_Series($series_no, $category_id, $subcategory, $minisubcategory, $minisubcategory2) //----- by series
+  {
+    $ip = $this->input->ip_address();
+    date_default_timezone_set("Asia/Calcutta");
+    $cur_date = date("Y-m-d H:i:s");
+    $addedby = $this->session->userdata('admin_id');
+    $sku_ids_array = explode(",", $series_no);
+    // $sku_id= $sku_ids;
+    // print_r($sku_ids_array); die();
+    $n = 0;
+    if (!empty($sku_ids_array)) {
+      //delete previous data from the table start
+      $this->db->select('*');
+      $this->db->from('tbl_quickshop_products');
+      $this->db->where('category', $category_id);
+      $this->db->where('sub_category', $subcategory);
+      $this->db->where('minisub_category', $minisubcategory);
+      $this->db->where('minisub_category2', $minisubcategory2);
+      $product_data = $this->db->get();
+      // if (!empty($product_data)) {
+      //   foreach ($product_data->result() as $pro) {
+      //     $this->db->delete('tbl_quickshop_products', array('id' => $pro->id));
+      //   }
+      // }
+      // echo $total_pages; die();
+      //delete previous data from the table end
+      foreach ($sku_ids_array as $series) {
+        $this->db->delete('tbl_quickshop_products', array('category' => $category_id, 'sub_category' => $subcategory, 'minisub_category' => $minisubcategory, 'minisub_category2' => $minisubcategory2, 'sku' => $sku_id,));
+        // echo $sku_id;
+        $total_pages = 0;
+        if ($finshed == 1) {
+          // $data = '{"Filter":["Orderable","OnPriceList","Finished"],"CategoryIds":["'.$api_id.'"]}';
+          $data = '{"Include":["All", "Media", "DescriptiveElements"],"Filter":["Orderable","OnPriceList","Finished"],"Series":["' . $series . '"]}';
+          // $data = '{"Filter":[],"CategoryIds":["'.$api_id.'"]}';
+        } else {
+          $data = '{"Include":["All", "Media", "DescriptiveElements"],"Filter":["Orderable","OnPriceList"],"Series":["' . $series . '"]}';
+        }
+        $postdata = $data;
+        //get count of total number of products start
+        $header = array();
+        $header[] = 'Host:api.stuller.com';
+        $header[] = 'Content-Type:application/json';
+        $header[] = 'Authorization:Basic ZGV2amV3ZWw6Q29kaW5nMjA9';
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $postdata);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
+        $result = curl_exec($ch);
+        curl_close($ch);
+        // print_r ($result);
+        $result_da = json_decode($result);
+        // echo $result[0];
+        if (!empty($result_da)) {
+          $TotalNumberOfProducts = $result_da->TotalNumberOfProducts;
+          $total_pages = round($TotalNumberOfProducts / 500) + 1;
+        }
+        $NextPage = "";
+        for ($i = 0; $i < $total_pages; $i++) {
+          // code...
+          // echo $i;
+          $url = 'https://api.stuller.com/v2/products';
+          $result_da = json_decode($result);
+          if ($finshed == 1) {
+            if ($i == 0) {
+              $data = '{"Include":["All", "Media", "DescriptiveElements"],"Filter":["Orderable","OnPriceList","Finished"],"Series":["' . $series . '"]}';
+              // $data = '{"Filter":[],"CategoryIds":["'.$api_id.'"]}';
+            } else {
+              $data = '{"Include":["All", "Media", "DescriptiveElements"],"Filter":["Orderable","OnPriceList","Finished"],"Series":["' . $series . '"],"NextPage":"' . $NextPage . '" }';
+              // $data = '{"Filter":[],"CategoryIds":["'.$api_id.'"],"NextPage":"'.$NextPage.'" }';
+            }
+          } else {
+            if ($i == 0) {
+              $data = '{"Include":["All", "Media", "DescriptiveElements"],"Filter":["Orderable","OnPriceList"],"Series":["' . $series . '"]}';
+              // $data = '{"Filter":[],"CategoryIds":["'.$api_id.'"]}';
+            } else {
+              $data = '{"Include":["All", "Media", "DescriptiveElements"],"Filter":["Orderable","OnPriceList"],"Series":["' . $series . '"],"NextPage":"' . $NextPage . '" }';
+              // $data = '{"Filter":[],"CategoryIds":["'.$api_id.'"],"NextPage":"'.$NextPage.'" }';
+            }
+          }
+          $postdata = $data;
+          // echo $postdata;
+          // exit;
+          $header = array();
+          $header[] = 'Host:api.stuller.com';
+          $header[] = 'Content-Type:application/json';
+          $header[] = 'Authorization:Basic ZGV2amV3ZWw6Q29kaW5nMjA9';
+          // echo $url;
+          // exit;
+          $ch = curl_init($url);
+          curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+          curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+          curl_setopt($ch, CURLOPT_POST, 1);
+          curl_setopt($ch, CURLOPT_POSTFIELDS, $postdata);
+          curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+          curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+          curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
+          $result = curl_exec($ch);
+          curl_close($ch);
+          $result_da = json_decode($result);
+          if (!empty($result_da->Products)) {
+            foreach ($result_da->Products as $prod) {
+              $ringsize = 0;
+              $ringsizetype = "";
+              $RingSizable = "";
+              if (!empty($prod->RingSizable)) {
+                $RingSizable = $prod->RingSizable;
+                if ($RingSizable == false) {
+                  $ringsize = 0;
+                  $ringsizetype = "";
+                } else {
+                  if (!empty($prod->ringsize)) {
+                    $ringsize = $prod->ringsize;
+                  }
+                  if (!empty($prod->ringsizetype)) {
+                    $ringsizetype = $prod->ringsizetype;
+                  }
+                }
+              }
+              //group eliments
+              $DescriptiveElements = $prod->DescriptiveElementGroup->DescriptiveElements;
+              $cate_array_count = 0;
+              if (!empty($DescriptiveElements)) {
+                $cate_array_count = count($DescriptiveElements);
+              }
+              $desc_e_name1 = "";
+              $desc_e_value1 = "";
+              $desc_e_name2 = "";
+              $desc_e_value2 = "";
+              $desc_e_name3 = "";
+              $desc_e_value3 = "";
+              $desc_e_name4 = "";
+              $desc_e_value4 = "";
+              $desc_e_name5 = "";
+              $desc_e_value5 = "";
+              $desc_e_name6 = "";
+              $desc_e_value6 = "";
+              $desc_e_name7 = "";
+              $desc_e_value7 = "";
+              $desc_e_name8 = "";
+              $desc_e_value8 = "";
+              $desc_e_name9 = "";
+              $desc_e_value9 = "";
+              $desc_e_name10 = "";
+              $desc_e_value10 = "";
+              $desc_e_name11 = "";
+              $desc_e_value11 = "";
+              $desc_e_name12 = "";
+              $desc_e_value12 = "";
+              $desc_e_name13 = "";
+              $desc_e_value13 = "";
+              $desc_e_name14 = "";
+              $desc_e_value14 = "";
+              $desc_e_name15 = "";
+              $desc_e_value15 = "";
+              if ($cate_array_count >= 1) {
+                $desc_e_name1 = $DescriptiveElements[0]->Name;
+                $desc_e_value1 = $DescriptiveElements[0]->Value;
+              }
+              if ($cate_array_count >= 2) {
+                $desc_e_name2 = $DescriptiveElements[1]->Name;
+                $desc_e_value2 = $DescriptiveElements[1]->Value;
+              }
+              if ($cate_array_count >= 3) {
+                $desc_e_name3 = $DescriptiveElements[2]->Name;
+                $desc_e_value3 = $DescriptiveElements[2]->Value;
+              }
+              if ($cate_array_count >= 4) {
+                $desc_e_name4 = $DescriptiveElements[3]->Name;
+                $desc_e_value4 = $DescriptiveElements[3]->Value;
+              }
+              if ($cate_array_count >= 5) {
+                $desc_e_name5 = $DescriptiveElements[4]->Name;
+                $desc_e_value5 = $DescriptiveElements[4]->Value;
+              }
+              if ($cate_array_count >= 6) {
+                $desc_e_name6 = $DescriptiveElements[5]->Name;
+                $desc_e_value6 = $DescriptiveElements[5]->Value;
+              }
+              if ($cate_array_count >= 7) {
+                $desc_e_name7 = $DescriptiveElements[6]->Name;
+                $desc_e_value7 = $DescriptiveElements[6]->Value;
+              }
+              if ($cate_array_count >= 8) {
+                $desc_e_name8 = $DescriptiveElements[7]->Name;
+                $desc_e_value8 = $DescriptiveElements[7]->Value;
+              }
+              if ($cate_array_count >= 9) {
+                $desc_e_name9 = $DescriptiveElements[8]->Name;
+                $desc_e_value9 = $DescriptiveElements[8]->Value;
+              }
+              if ($cate_array_count >= 10) {
+                $desc_e_name10 = $DescriptiveElements[9]->Name;
+                $desc_e_value10 = $DescriptiveElements[9]->Value;
+              }
+              if ($cate_array_count >= 11) {
+                $desc_e_name11 = $DescriptiveElements[10]->Name;
+                $desc_e_value11 = $DescriptiveElements[10]->Value;
+              }
+              if ($cate_array_count >= 12) {
+                $desc_e_name12 = $DescriptiveElements[11]->Name;
+                $desc_e_value12 = $DescriptiveElements[11]->Value;
+              }
+              if ($cate_array_count >= 13) {
+                $desc_e_name13 = $DescriptiveElements[12]->Name;
+                $desc_e_value13 = $DescriptiveElements[12]->Value;
+              }
+              if ($cate_array_count >= 14) {
+                $desc_e_name14 = $DescriptiveElements[13]->Name;
+                $desc_e_value14 = $DescriptiveElements[13]->Value;
+              }
+              if ($cate_array_count >= 15) {
+                $desc_e_name15 = $DescriptiveElements[14]->Name;
+                $desc_e_value15 = $DescriptiveElements[14]->Value;
+              }
+              $image1 = "";
+              $image2 = "";
+              $image3 = "";
+              $image4 = "";
+              $image5 = "";
+              $image6 = "";
+              $gimage1 = "";
+              $gimage2 = "";
+              $gimage3 = "";
+              $fullysetimage1 = "";
+              $fullysetimage2 = "";
+              $fullysetimage3 = "";
+              $fullysetimage4 = "";
+              $fullysetimage5 = "";
+              $fullysetimage6 = "";
+              //get images
+              if (!empty($prod->Images)) {
+                $image_peram_count = count($prod->Images);
+                if ($image_peram_count >= 1) {
+                  $image1 = $prod->Images[0]->FullUrl;
+                }
+                if ($image_peram_count >= 2) {
+                  $image2 = $prod->Images[1]->FullUrl;
+                }
+                if ($image_peram_count >= 3) {
+                  $image3 = $prod->Images[2]->FullUrl;
+                }
+                if ($image_peram_count >= 4) {
+                  $image4 = $prod->Images[3]->FullUrl;
+                }
+                if ($image_peram_count >= 5) {
+                  $image5 = $prod->Images[4]->FullUrl;
+                }
+                if ($image_peram_count >= 6) {
+                  $image5 = $prod->Images[5]->FullUrl;
+                }
+                // $image1= $prod->Images[0]->FullUrl;
+                // $image2= $prod->Images[0]->ThumbnailUrl;
+                // $image3= $prod->Images[0]->ZoomUrl;
+              }
+              //get group images
+              if (!empty($prod->GroupImages)) {
+                $Groupimage_peram_count = count($prod->GroupImages);
+                if ($Groupimage_peram_count >= 1) {
+                  $gimage1 = $prod->GroupImages[0]->FullUrl;
+                }
+                if ($Groupimage_peram_count >= 2) {
+                  $gimage2 = $prod->GroupImages[1]->FullUrl;
+                }
+                if ($Groupimage_peram_count >= 3) {
+                  $gimage3 = $prod->GroupImages[2]->FullUrl;
+                }
+                // $gimage1= $prod->GroupImages[0]->ZoomUrl;
+                // $gimage2= $prod->GroupImages[0]->ZoomUrl;
+                // $gimage3= $prod->GroupImages[0]->ZoomUrl;
+              }
+              //get Fully Set Images images
+              if (!empty($prod->FullySetImages)) {
+                $FullySetimage_peram_count = count($prod->FullySetImages);
+                if ($FullySetimage_peram_count >= 1) {
+                  $fullysetimage1 = $prod->FullySetImages[0]->FullUrl;
+                }
+                if ($FullySetimage_peram_count >= 2) {
+                  $fullysetimage2 = $prod->FullySetImages[1]->FullUrl;
+                }
+                if ($FullySetimage_peram_count >= 3) {
+                  $fullysetimage3 = $prod->FullySetImages[2]->FullUrl;
+                }
+                if ($FullySetimage_peram_count >= 4) {
+                  $fullysetimage4 = $prod->FullySetImages[3]->FullUrl;
+                }
+                if ($FullySetimage_peram_count >= 5) {
+                  $fullysetimage5 = $prod->FullySetImages[4]->FullUrl;
+                }
+                if ($FullySetimage_peram_count >= 6) {
+                  $fullysetimage6 = $prod->FullySetImages[5]->FullUrl;
+                }
+                // $image1= $prod->Images[0]->FullUrl;
+                // $image2= $prod->Images[0]->ThumbnailUrl;
+                // $image3= $prod->Images[0]->ZoomUrl;
+              }
+              //get AGTA
+              if (!empty($prod->AGTA)) {
+                $agta = $prod->AGTA;
+              } else {
+                $agta = "";
+              }
+              //get MerchandisingCategory
+              $mcat1 = "";
+              $mcat2 = "";
+              $mcat3 = "";
+              $mcat4 = "";
+              $mcat5 = "";
+              if (!empty($prod->MerchandisingCategory1)) {
+                $mcat1 = $prod->MerchandisingCategory1;
+              }
+              if (!empty($prod->MerchandisingCategory2)) {
+                $mcat2 = $prod->MerchandisingCategory2;
+              }
+              if (!empty($prod->MerchandisingCategory3)) {
+                $mcat3 = $prod->MerchandisingCategory3;
+              }
+              if (!empty($prod->MerchandisingCategory4)) {
+                $mcat4 = $prod->MerchandisingCategory4;
+              }
+              if (!empty($prod->MerchandisingCategory5)) {
+                $mcat5 = $prod->MerchandisingCategory5;
+              }
+              $Description = "";
+              if (!empty($prod->Description)) {
+                $Description = $prod->Description;
+              }
+              $ShortDescription = "";
+              if (!empty($prod->ShortDescription)) {
+                $ShortDescription = $prod->ShortDescription;
+              }
+              $GroupDescription = "";
+              if (!empty($prod->GroupDescription)) {
+                $GroupDescription = $prod->GroupDescription;
+              }
+              $LeadTime = "";
+              if (!empty($prod->LeadTime)) {
+                $LeadTime = $prod->LeadTime;
+              }
+              $GramWeight = "";
+              if (!empty($prod->GramWeight)) {
+                $GramWeight = $prod->GramWeight;
+              }
+              //get vedio and Group vedios
+              $vedio = "";
+              $gvedio = "";
+              if (!empty($prod->Videos)) {
+                $vedio = $prod->Videos[0]->Url;
+              }
+              if (!empty($prod->GroupVideos)) {
+                $gvedio = $prod->GroupVideos[0]->Url;
+              }
+              //explode sku for get and save sku series and sku series type start
+              $sku_no = $prod->series_no;
+              $sku_ar = explode(":", $sku_no);
+              // print_r($sku_ar);
+              $cate_param_count = count($sku_ar);
+              $sku_series = "";
+              $sku_series_type1 = "";
+              $sku_series_type2 = "";
+              $sku_series_type3 = "";
+              if ($cate_param_count >= 1) {
+                $sku_series = $sku_ar[0];
+              }
+              if ($cate_param_count >= 2) {
+                $sku_series_type1 = $sku_ar[1];
+              }
+              if ($cate_param_count >= 3) {
+                $sku_series_type2 = $sku_ar[2];
+              }
+              if ($cate_param_count >= 4) {
+                $sku_series_type3 = $sku_ar[3];
+              }
+              //explode sku for get and save sku series and sku series type end
+              $data_insert = array(
+                'product_id' => $prod->Id,
+                'category' => $category_id,
+                'sub_category' => $subcategory,
+                'minisub_category' => $minisubcategory,
+                'minisub_category2' => $minisubcategory2,
+                // 'vendor'=>1,
+                'series_no' => $prod->SKU,
+                'sku_series' => $sku_series,
+                'sku_series_type1' => $sku_series_type1,
+                'sku_series_type2' => $sku_series_type2,
+                'sku_series_type3' => $sku_series_type3,
+                'description' => $Description,
+                'sdesc' => $ShortDescription,
+                'gdesc' => $GroupDescription,
+                'mcat1' => $mcat1,
+                'mcat2' => $mcat2,
+                'mcat3' => $mcat3,
+                'mcat4' => $mcat4,
+                'mcat5' => $mcat5,
+                'product_type' => $prod->ProductType,
+                'collection' => "",
+                'onhand' => $prod->OnHand,
+                'status' => $prod->Status,
+                'price' => $prod->Price->Value,
+                'currency' => $prod->Price->CurrencyCode,
+                'unitofsale' => $prod->UnitOfSale,
+                'weight' => $prod->Weight,
+                'weightunit' => $prod->WeightUnitOfMeasure,
+                'gramweight' => $GramWeight,
+                'ringsizable' => $RingSizable,
+                'ringsize' => $ringsize,
+                'ringsizetype' => $ringsizetype,
+                'leadtime' => $LeadTime,
+                'agta' => $agta,
+                'desc_e_grp' => $prod->DescriptiveElementGroup->GroupName,
+                'desc_e_name1' => $desc_e_name1,
+                'desc_e_value1' => $desc_e_value1,
+                'desc_e_name2' => $desc_e_name2,
+                'desc_e_value2' => $desc_e_value2,
+                'desc_e_name3' => $desc_e_name3,
+                'desc_e_value3' => $desc_e_value3,
+                'desc_e_name4' => $desc_e_name4,
+                'desc_e_value4' => $desc_e_value4,
+                'desc_e_name5' => $desc_e_name5,
+                'desc_e_value5' => $desc_e_value5,
+                'desc_e_name6' => $desc_e_name6,
+                'desc_e_value6' => $desc_e_value6,
+                'desc_e_name7' => $desc_e_name7,
+                'desc_e_value7' => $desc_e_value7,
+                'desc_e_name8' => $desc_e_name8,
+                'desc_e_value8' => $desc_e_value8,
+                'desc_e_name9' => $desc_e_name9,
+                'desc_e_value9' => $desc_e_value9,
+                'desc_e_name10' => $desc_e_name10,
+                'desc_e_value10' => $desc_e_value10,
+                'desc_e_name11' => $desc_e_name11,
+                'desc_e_value11' => $desc_e_value11,
+                'desc_e_name12' => $desc_e_name12,
+                'desc_e_value12' => $desc_e_value12,
+                'desc_e_name13' => $desc_e_name13,
+                'desc_e_value13' => $desc_e_value13,
+                'desc_e_name14' => $desc_e_name14,
+                'desc_e_value14' => $desc_e_value14,
+                'desc_e_name15' => $desc_e_name15,
+                'desc_e_value15' => $desc_e_value15,
+                'readytowear' => $prod->ReadyToWear,
+                'smi' => "",
+                'image1' => $image1,
+                'image2' => $image2,
+                'image3' => $image3,
+                'image4' => $image4,
+                'image5' => $image5,
+                'image6' => $image6,
+                'FullySetImage1' => $fullysetimage1,
+                'FullySetImage2' => $fullysetimage2,
+                'FullySetImage3' => $fullysetimage3,
+                'FullySetImage4' => $fullysetimage4,
+                'FullySetImage5' => $fullysetimage5,
+                'FullySetImage6' => $fullysetimage6,
+                'video' => $vedio,
+                'gimage1' => $gimage1,
+                'gimage2' => $gimage2,
+                'gimage3' => $gimage3,
+                'gvideo' => $gvedio,
+                'creationdate' => $prod->CreationDate,
+                'currencycode' => "USD",
+                'country' => $prod->CountryOfOrigin,
+                'dclarity' => "",
+                'dcolor' => "",
+                'totalweight' => "",
+                'ip' => $ip,
+                'added_by' => $addedby,
+                'is_active' => 1,
+                'date' => $cur_date
+              );
+              $last_id = $this->base_model->insert_table("tbl_quickshop_products", $data_insert, 1);
+            }
+            $NextPage = "";
+            if (!empty($result_da->NextPage)) {
+                $NextPage = $result_da->NextPage;
+            }
+          }
+          // $NextPage= "";
+          // if(!empty($result_da->NextPage)){
+          //   $NextPage= $result_da->NextPage;
+          // }
+        }
+        $n++;
+      }
+    }
+    return 1;
+  }
+  public function stuller_data($series_no, $category_id, $subcategory, $minisubcategory, $minisubcategory2) //----- by sku
   {
     $ip = $this->input->ip_address();
     date_default_timezone_set("Asia/Calcutta");
@@ -725,11 +1215,8 @@ class QuickshopProducts extends CI_finecontrol
       // echo $total_pages; die();
       //delete previous data from the table end
       foreach ($sku_ids_array as $sku_id) {
-<<<<<<< HEAD
         $this->db->delete('tbl_quickshop_products', array('category' => $category_id, 'sub_category' => $subcategory, 'minisub_category' => $minisubcategory, 'minisub_category2' => $minisubcategory2, 'sku' => $sku_id,));
-=======
         $this->db->delete('tbl_quickshop_products', array('category' => $category_id, 'sub_category' => $subcategory, 'minisub_category' => $minisubcategory, 'minisub_category2' => $minisubcategory2, 'series_no' => $sku_id,));
->>>>>>> 952bc775b22ac76aea706fba247e2861d9d2d866
         // echo $sku_id;
         $total_pages = 0;
         //get count of total number of products start
@@ -798,8 +1285,8 @@ class QuickshopProducts extends CI_finecontrol
         // for ($i=0; $i < $total_pages; $i++) {
         // code...
         // echo $i;
-        // $url = 'https://api.stuller.com/v2/products?SKU=' . $sku_id;
-        $url = 'https://api.stuller.com/v2/products';
+        $url = 'https://api.stuller.com/v2/products?SKU=' . $sku_id;
+        // $url = 'https://api.stuller.com/v2/products';
         // if($i == 0){
         //   // $data = '{"Filter":["Orderable","OnPriceList","Finished"],"CategoryIds":["'.$api_id.'"]}';
         //   $data = '{"Filter":["OnPriceList","Orderable"], "Series":["'.$sku_id.'"]}';
