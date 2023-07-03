@@ -49,6 +49,7 @@
    <th>Excluded Sku</th>
    <th>Include Series</th>
    <th>Include Sku</th>
+   <th>Description</th>
 
 
 
@@ -110,6 +111,7 @@ if(!empty($subcategory)){
 <td><?php echo $data->exlude_sku ?></td>
 <td><?php echo $data->include_series ?></td>
 <td><?php echo $data->include_sku ?></td>
+<td><?php echo $data->description ?></td>
 
 
 

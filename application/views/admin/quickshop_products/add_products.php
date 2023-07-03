@@ -85,8 +85,8 @@
 </tr> -->
 
   <tr>
-<td> <strong>SKU </strong>  <span style="color:red;">*</span></strong> </td>
-<td> <input type="text" name="sku_ids"  class="form-control" placeholder="Write SKU..."  value="" required />  </td>
+<td> <strong>Series Number</strong>  <span style="color:red;">*</span></strong> </td>
+<td> <input type="text" name="series_no"  class="form-control" placeholder="Write Series Number..."  value="" required />  </td>
 </tr>
   <tr>
 
