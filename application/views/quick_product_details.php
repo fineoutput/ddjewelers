@@ -2656,7 +2656,7 @@ alert(page);
     // alert(sku_series);
     var base_path = "<?=base_url();?>";
     $.ajax({
-      url: '<?=base_url();?>Home/pro_change',
+      url: '<?=base_url();?>Home/quick_pro_change',
       method: 'post',
       data: {
         col: col,

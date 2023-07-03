@@ -567,7 +567,7 @@ class QuickShops extends CI_Controller
 		}
 		$data['random'] = $p_random;
 		$this->load->view('common/header', $data);
-		$this->load->view('product_detail');
+		$this->load->view('quick_product_details');
 		$this->load->view('common/footer');
 	}
 }

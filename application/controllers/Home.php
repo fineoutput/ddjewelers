@@ -3675,6 +3675,1186 @@ class Home extends CI_Controller
             echo json_encode($respone);
         }
     }
+    public function quick_pro_change()
+    {
+        $this->load->helper(array('form', 'url'));
+        $this->load->library('form_validation');
+        $this->load->helper('security');
+        if ($this->input->post()) {
+            $this->form_validation->set_rules('col', 'col', 'required|xss_clean|trim');
+            $this->form_validation->set_rules('value', 'value', 'required|xss_clean|trim');
+            $this->form_validation->set_rules('sku_series', 'sku_series', 'required|xss_clean|trim');
+            $this->form_validation->set_rules('gdesc', 'gdesc', 'xss_clean|trim');
+            $this->form_validation->set_rules('desc_e_value2', 'desc_e_value2', 'required|xss_clean|trim');
+            $this->form_validation->set_rules('desc_e_value3', 'desc_e_value3', 'required|xss_clean|trim');
+            $this->form_validation->set_rules('desc_e_value4', 'desc_e_value4', 'required|xss_clean|trim');
+            $this->form_validation->set_rules('desc_e_value5', 'desc_e_value5', 'xss_clean|trim');
+            $this->form_validation->set_rules('desc_e_value6', 'desc_e_value6', 'xss_clean|trim');
+            $this->form_validation->set_rules('desc_e_value7', 'desc_e_value7', 'xss_clean|trim');
+            $this->form_validation->set_rules('desc_e_value8', 'desc_e_value8', 'xss_clean|trim');
+            $this->form_validation->set_rules('desc_e_value9', 'desc_e_value9', 'xss_clean|trim');
+            $this->form_validation->set_rules('desc_e_value10', 'desc_e_value10', 'xss_clean|trim');
+            $this->form_validation->set_rules('desc_e_value11', 'desc_e_value11', 'xss_clean|trim');
+            $this->form_validation->set_rules('dropdownName', 'dropdownName', 'xss_clean|trim'); //--------Quality Name
+            $this->form_validation->set_rules('qty', 'qty', 'xss_clean|trim');
+            $this->form_validation->set_rules('pid', 'pid', 'xss_clean|trim');
+            $this->form_validation->set_rules('para', 'para', 'xss_clean|trim'); //------- 1 for image, 0 for dropdown, 2 for jewelry State
+            $this->form_validation->set_rules('active', 'active', 'xss_clean|trim'); //-------------Shape of stone
+            if ($this->form_validation->run() == TRUE) {
+                $pid = $this->input->post('pid');
+                $qty = $this->input->post('qty');
+                $col = $this->input->post('col');
+                $para = $this->input->post('para');
+                $value = $this->input->post('value');
+                $gdesc = $this->input->post('gdesc');
+                $active = $this->input->post('active');
+                $sku_series = $this->input->post('sku_series');
+                $desc_e_value2 = $this->input->post('desc_e_value2');
+                $desc_e_value3 = $this->input->post('desc_e_value3');
+                $desc_e_value4 = $this->input->post('desc_e_value4');
+                $desc_e_value5 = $this->input->post('desc_e_value5');
+                $desc_e_value6 = $this->input->post('desc_e_value6');
+                $desc_e_value7 = $this->input->post('desc_e_value7');
+                $desc_e_value8 = $this->input->post('desc_e_value8');
+                $desc_e_value9 = $this->input->post('desc_e_value9');
+                $desc_e_value10 = $this->input->post('desc_e_value10');
+                $desc_e_value11 = $this->input->post('desc_e_value11');
+                $dropdownName = $this->input->post('dropdownName');
+                //----------1 for image, 0 for dropdown, 2 for jewelry state--------------
+                if ($para == 0) {
+                    $this->db->select('*');
+                    $this->db->from('tbl_quickshop_products');
+                    $this->db->where('sku_series', $sku_series);
+                    $this->db->where('desc_e_value2', $desc_e_value2);
+                    $this->db->where('desc_e_value3', $desc_e_value3);
+                    $this->db->where('desc_e_value4', $desc_e_value4);
+                    $this->db->where('desc_e_value5', $desc_e_value5);
+                    $this->db->where('desc_e_value6', $desc_e_value6);
+                    $this->db->where('desc_e_value7', $desc_e_value7);
+                    $this->db->where('desc_e_value8', $desc_e_value8);
+                    $this->db->where('desc_e_value9', $desc_e_value9);
+                    $this->db->where('desc_e_value10', $desc_e_value10);
+                    $this->db->where('desc_e_value11', $desc_e_value11);
+                    $pro_data = $this->db->get()->row();
+                    if (empty($pro_data)) {
+                        $this->db->select('*');
+                        $this->db->from('tbl_quickshop_products');
+                        $this->db->where('sku_series', $sku_series);
+                        $this->db->where('desc_e_value2', $desc_e_value2);
+                        $this->db->where('desc_e_value3', $desc_e_value3);
+                        $this->db->where('desc_e_value4', $desc_e_value4);
+                        $this->db->where('desc_e_value5', $desc_e_value5);
+                        if ($col !== 'desc_e_value2' && $col !== 'desc_e_value3' && $col !== 'desc_e_value4' && $col !== 'desc_e_value5') {
+                            $this->db->where($col, $value);
+                        }
+                        $pro_data = $this->db->get()->row();
+                    }
+                    $this->db->select('*');
+                    $this->db->from('tbl_quickshop_products');
+                    $this->db->where('sku_series', $sku_series);
+                    $this->db->where('gdesc', $gdesc);
+                    $this->db->where($col, $value);
+                    $quality_data = $this->db->get()->row();
+                    // print_r($pro_data);die();
+                    $column_shape = "";
+                    $column_quality = "";
+                    $column_jstate = "";
+                    $column_product = "";
+                    //-----shape of stone------
+                    if ($desc_e_value2 == $active && !empty($desc_e_value2) && $col !== 'desc_e_value2') {
+                        $column_shape = 'desc_e_value2';
+                    }
+                    if ($desc_e_value3 == $active && !empty($desc_e_value3) && $col !== 'desc_e_value3') {
+                        $column_shape = 'desc_e_value3';
+                    }
+                    if ($desc_e_value4 == $active && !empty($desc_e_value4) && $col !== 'desc_e_value4') {
+                        $column_shape = 'desc_e_value4';
+                    }
+                    if ($desc_e_value5 == $active && !empty($desc_e_value5) && $col !== 'desc_e_value5') {
+                        $column_shape = 'desc_e_value5';
+                    }
+                    if ($desc_e_value6 == $active && !empty($desc_e_value6) && $col !== 'desc_e_value6') {
+                        $column_shape = 'desc_e_value6';
+                    }
+                    if ($desc_e_value7 == $active && !empty($desc_e_value7) && $col !== 'desc_e_value7') {
+                        $column_shape = 'desc_e_value7';
+                    }
+                    if ($desc_e_value8 == $active && !empty($desc_e_value8) && $col !== 'desc_e_value8') {
+                        $column_shape = 'desc_e_value8';
+                    }
+                    if ($desc_e_value9 == $active && !empty($desc_e_value9) && $col !== 'desc_e_value9') {
+                        $column_shape = 'desc_e_value9';
+                    }
+                    if ($desc_e_value10 == $active && !empty($desc_e_value10)  && $col !== 'desc_e_value10') {
+                        $column_shape = 'desc_e_value10';
+                    }
+                    //-----quality----------
+                    if ($quality_data->desc_e_name2 == 'Quality' && $col !== 'desc_e_value2') {
+                        $column_quality = 'desc_e_value2';
+                    }
+                    if ($quality_data->desc_e_name3 == 'Quality' && $col !== 'desc_e_value3') {
+                        $column_quality = 'desc_e_value3';
+                    }
+                    if ($quality_data->desc_e_name4 == 'Quality' && $col !== 'desc_e_value4') {
+                        $column_quality = 'desc_e_value4';
+                    }
+                    if ($quality_data->desc_e_name5 == 'Quality' && $col !== 'desc_e_value5') {
+                        $column_quality = 'desc_e_value5';
+                    }
+                    if ($quality_data->desc_e_name6 == 'Quality' && $col !== 'desc_e_value6') {
+                        $column_quality = 'desc_e_value6';
+                    }
+                    if ($quality_data->desc_e_name7 == 'Quality' && $col !== 'desc_e_value7') {
+                        $column_quality = 'desc_e_value7';
+                    }
+                    if ($quality_data->desc_e_name8 == 'Quality' && $col !== 'desc_e_value8') {
+                        $column_quality = 'desc_e_value8';
+                    }
+                    if ($quality_data->desc_e_name9 == 'Quality' && $col !== 'desc_e_value9') {
+                        $column_quality = 'desc_e_value9';
+                    }
+                    //------ jewelry state---------
+                    if ($quality_data->desc_e_name2 == 'Jewelry State' && $col !== 'desc_e_value2') {
+                        $column_jstate = 'desc_e_value2';
+                        $value_jstate = $desc_e_value2;
+                    }
+                    if ($quality_data->desc_e_name3 == 'Jewelry State' && $col !== 'desc_e_value3') {
+                        $column_jstate = 'desc_e_value3';
+                        $value_jstate = $desc_e_value3;
+                    }
+                    if ($quality_data->desc_e_name4 == 'Jewelry State' && $col !== 'desc_e_value4') {
+                        $column_jstate = 'desc_e_value4';
+                        $value_jstate = $desc_e_value4;
+                    }
+                    if ($quality_data->desc_e_name5 == 'Jewelry State' && $col !== 'desc_e_value5') {
+                        $column_jstate = 'desc_e_value5';
+                        $value_jstate = $desc_e_value5;
+                    }
+                    if ($quality_data->desc_e_name6 == 'Jewelry State' && $col !== 'desc_e_value6') {
+                        $column_jstate = 'desc_e_value6';
+                        $value_jstate = $desc_e_value6;
+                    }
+                    if ($quality_data->desc_e_name7 == 'Jewelry State' && $col !== 'desc_e_value7') {
+                        $column_jstate = 'desc_e_value7';
+                        $value_jstate = $desc_e_value7;
+                    }
+                    if ($quality_data->desc_e_name8 == 'Jewelry State' && $col !== 'desc_e_value8') {
+                        $column_jstate = 'desc_e_value8';
+                        $value_jstate = $desc_e_value8;
+                    }
+                    if ($quality_data->desc_e_name9 == 'Jewelry State' && $col !== 'desc_e_value9') {
+                        $column_jstate = 'desc_e_value9';
+                        $value_jstate = $desc_e_value9;
+                    }
+                    //------ Product - Engagement ring/Band/Shank---------
+                    if ($quality_data->desc_e_name2 == 'Product' && $col !== 'desc_e_value2') {
+                        $column_product = 'desc_e_value2';
+                        $value_product = $desc_e_value2;
+                    }
+                    if ($quality_data->desc_e_name3 == 'Product' && $col !== 'desc_e_value3') {
+                        $column_product = 'desc_e_value3';
+                        $value_product = $desc_e_value3;
+                    }
+                    if ($quality_data->desc_e_name4 == 'Product' && $col !== 'desc_e_value4') {
+                        $column_product = 'desc_e_value4';
+                        $value_product = $desc_e_value4;
+                    }
+                    if ($quality_data->desc_e_name5 == 'Product' && $col !== 'desc_e_value5') {
+                        $column_product = 'desc_e_value5';
+                        $value_product = $desc_e_value5;
+                    }
+                    if ($quality_data->desc_e_name6 == 'Product' && $col !== 'desc_e_value6') {
+                        $column_product = 'desc_e_value6';
+                        $value_product = $desc_e_value6;
+                    }
+                    if ($quality_data->desc_e_name7 == 'Product' && $col !== 'desc_e_value7') {
+                        $column_product = 'desc_e_value7';
+                        $value_product = $desc_e_value7;
+                    }
+                    if ($quality_data->desc_e_name8 == 'Product' && $col !== 'desc_e_value8') {
+                        $column_product = 'desc_e_value8';
+                        $value_product = $desc_e_value8;
+                    }
+                    if ($quality_data->desc_e_name9 == 'Product' && $col !== 'desc_e_value9') {
+                        $column_product = 'desc_e_value9';
+                        $value_product = $desc_e_value9;
+                    }
+                    if (empty($pro_data)) {
+                        $this->db->select('*');
+                        $this->db->from('tbl_quickshop_products');
+                        $this->db->where('sku_series', $sku_series);
+                        $this->db->where($col, $value);
+                        $this->db->where('gdesc', $gdesc);
+                        if (!empty($column_shape) && !empty($active)) {
+                            $this->db->where($column_shape, $active);
+                        }
+                        if (!empty($column_quality)) {
+                            $this->db->where($column_quality, $dropdownName);
+                        }
+                        if (!empty($column_jstate)) {
+                            $this->db->where($column_jstate, $value_jstate);
+                        }
+                        if (!empty($column_product)) {
+                            $this->db->where($column_product, $value_product);
+                        }
+                        $pro_data = $this->db->get()->row();
+                        if (empty($pro_data)) {
+                            $this->db->select('*');
+                            $this->db->from('tbl_quickshop_products');
+                            $this->db->where('sku_series', $sku_series);
+                            $this->db->where('gdesc', $gdesc);
+                            $this->db->where($col, $value);
+                            if (!empty($column_jstate)) {
+                                $this->db->where($column_jstate, $value_jstate);
+                            }
+                            if (!empty($column_product)) {
+                                $this->db->where($column_product, $value_product);
+                            }
+                            $pro_data = $this->db->get()->row();
+                        }
+                    }
+                    $this->db->select('*');
+                    $this->db->from('tbl_quickshop_products');
+                    $this->db->where('sku_series', $pro_data->sku_series);
+                    $this->db->where('gdesc', $pro_data->gdesc);
+                    if (!empty($column_shape) && !empty($active)) {
+                        $this->db->where($column_shape, $active);
+                    }
+                    if (!empty($column_quality)) {
+                        $this->db->where($column_quality, $dropdownName);
+                    }
+                    if (!empty($column_jstate)) {
+                        $this->db->where($column_jstate, $value_jstate);
+                    }
+                    if (!empty($column_product)) {
+                        $this->db->where($column_product, $value_product);
+                    }
+                    $d2 = $this->db->get();
+                    // echo $column_jstate;die();
+                    $b = 0;
+                    $Quality = [];
+                    foreach ($d2->result() as $quality) {
+                        if (!empty($s)) {
+                            $Quality = array_merge(array('quality' . $b => $quality->$s), $Quality);
+                            // print_r($B1);
+                        }
+                        $b++;
+                    }
+                    $Quality =  json_encode(array_unique($Quality));
+                    // echo $Quality;die();
+                    $b = 0;
+                    $B1 = [];
+                    if ($column_jstate != 'desc_e_value2' && $column_product != 'desc_e_value2') {
+                        foreach ($d2->result() as $b111) {
+                            if (!empty($desc_e_value2)) {
+                                if ($pro_data->desc_e_value1 == $b111->desc_e_value1) {
+                                    $B1 = array_merge(array('desc_e_value2' . $b => $b111->desc_e_value2), $B1);
+                                }
+                                // print_r($B1);
+                            }
+                            $b++;
+                        }
+                        $B1 =  json_encode(array_unique($B1));
+                    } else {
+                        $B1 = "";
+                    }
+                    $b = 0;
+                    $B2 = [];
+                    if ($column_jstate != 'desc_e_value3' && $column_product != 'desc_e_value3') {
+                        foreach ($d2->result() as $b222) {
+                            if (!empty($desc_e_value3)) {
+                                if ($pro_data->desc_e_value1 == $b222->desc_e_value1 && $pro_data->desc_e_value2 == $b222->desc_e_value2) {
+                                    $B2 = array_merge(array('desc_e_value3' . $b => $b222->desc_e_value3), $B2);
+                                }
+                            }
+                            $b++;
+                        }
+                        $B2 =  json_encode(array_unique($B2));
+                    } else {
+                        $B2 = "";
+                    }
+                    $b = 0;
+                    $B3 = [];
+                    if ($column_jstate != 'desc_e_value4' && $column_product != 'desc_e_value4') {
+                        foreach ($d2->result() as $b333) {
+                            if (!empty($desc_e_value4)) {
+                                if ($pro_data->desc_e_value1 == $b333->desc_e_value1 && $pro_data->desc_e_value2 == $b333->desc_e_value2 && $pro_data->desc_e_value3 == $b333->desc_e_value3) {
+                                    $B3 = array_merge(array('desc_e_value4' . $b => $b333->desc_e_value4), $B3);
+                                }
+                            }
+                            $b++;
+                        }
+                        $B3 =  json_encode(array_unique($B3));
+                    } else {
+                        $B3 = "";
+                    }
+                    $b = 0;
+                    $B4 = [];
+                    if ($column_jstate != 'desc_e_value5' && $column_product != 'desc_e_value5') {
+                        foreach ($d2->result() as $b444) {
+                            if (!empty($desc_e_value5)) {
+                                if ($pro_data->desc_e_value1 == $b444->desc_e_value1 && $pro_data->desc_e_value2 == $b444->desc_e_value2 && $pro_data->desc_e_value3 == $b444->desc_e_value3 && $pro_data->desc_e_value4 == $b444->desc_e_value4) {
+                                    $B4 = array_merge(array('desc_e_value5' . $b => $b444->desc_e_value5), $B4);
+                                }
+                            }
+                            $b++;
+                        }
+                        $B4 =  json_encode(array_unique($B4));
+                    } else {
+                        $B4 = "";
+                    }
+                    $b = 0;
+                    $B5 = [];
+                    if ($column_jstate != 'desc_e_value6' && $column_product != 'desc_e_value6') {
+                        foreach ($d2->result() as $b555) {
+                            if (!empty($desc_e_value6)) {
+                                if ($pro_data->desc_e_value1 == $b555->desc_e_value1 && $pro_data->desc_e_value2 == $b555->desc_e_value2 && $pro_data->desc_e_value3 == $b555->desc_e_value3 && $pro_data->desc_e_value4 == $b555->desc_e_value4 && $pro_data->desc_e_value5 == $b555->desc_e_value5) {
+                                    $B5 = array_merge(array('desc_e_value6' . $b => $b555->desc_e_value6), $B5);
+                                }
+                            }
+                            $b++;
+                        }
+                        $B5 =  json_encode(array_unique($B5));
+                    } else {
+                        $B5 = "";
+                    }
+                    $b = 0;
+                    $B6 = [];
+                    if ($column_jstate != 'desc_e_value7' && $column_product != 'desc_e_value7') {
+                        foreach ($d2->result() as $b666) {
+                            if (!empty($desc_e_value7)) {
+                                if ($pro_data->desc_e_value1 == $b666->desc_e_value1 && $pro_data->desc_e_value2 == $b666->desc_e_value2 && $pro_data->desc_e_value3 == $b666->desc_e_value3 && $pro_data->desc_e_value4 == $b666->desc_e_value4 && $pro_data->desc_e_value5 == $b666->desc_e_value5 && $pro_data->desc_e_value6 == $b666->desc_e_value6) {
+                                    $B6 = array_merge(array('desc_e_value7' . $b => $b666->desc_e_value7), $B6);
+                                }
+                            }
+                            $b++;
+                        }
+                        $B6 =  json_encode(array_unique($B6));
+                    } else {
+                        $B6 = "";
+                    }
+                    $b = 0;
+                    $B7 = [];
+                    foreach ($d2->result() as $b777) {
+                        if (!empty($desc_e_value8)) {
+                            if ($pro_data->desc_e_value1 == $b777->desc_e_value1 && $pro_data->desc_e_value2 == $b777->desc_e_value2 && $pro_data->desc_e_value3 == $b777->desc_e_value3 && $pro_data->desc_e_value4 == $b777->desc_e_value4 && $pro_data->desc_e_value5 == $b777->desc_e_value5 && $pro_data->desc_e_value6 == $b777->desc_e_value6 && $pro_data->desc_e_value7 == $b777->desc_e_value7) {
+                                $B7 = array_merge(array('desc_e_value8' . $b => $b777->desc_e_value8), $B7);
+                            }
+                        }
+                        $b++;
+                    }
+                    $B7 =  json_encode(array_unique($B7));
+                    $b = 0;
+                    $B8 = [];
+                    foreach ($d2->result() as $b888) {
+                        if (!empty($desc_e_value9)) {
+                            if ($pro_data->desc_e_value1 == $b888->desc_e_value1 && $pro_data->desc_e_value2 == $b888->desc_e_value2 && $pro_data->desc_e_value3 == $b888->desc_e_value3 && $pro_data->desc_e_value4 == $b888->desc_e_value4 && $pro_data->desc_e_value5 == $b888->desc_e_value5 && $pro_data->desc_e_value6 == $b888->desc_e_value6 && $pro_data->desc_e_value7 == $b888->desc_e_value7 && $pro_data->desc_e_value8 == $b888->desc_e_value8) {
+                                $B8 = array_merge(array('desc_e_value9' . $b => $b888->desc_e_value9), $B8);
+                            }
+                        }
+                        $b++;
+                    }
+                    $B8 =  json_encode(array_unique($B8));
+                    $b = 0;
+                    $B9 = [];
+                    foreach ($d2->result() as $b999) {
+                        if (!empty($desc_e_value10)) {
+                            if ($pro_data->desc_e_value1 == $b999->desc_e_value1 && $pro_data->desc_e_value2 == $b999->desc_e_value2 && $pro_data->desc_e_value3 == $b999->desc_e_value3 && $pro_data->desc_e_value4 == $b999->desc_e_value4 && $pro_data->desc_e_value5 == $b999->desc_e_value5 && $pro_data->desc_e_value6 == $b999->desc_e_value6 && $pro_data->desc_e_value7 == $b999->desc_e_value7 && $pro_data->desc_e_value8 == $b999->desc_e_value8 && $pro_data->desc_e_value9 == $b999->desc_e_value9) {
+                                $B9 = array_merge(array('desc_e_value10' . $b => $b999->desc_e_value10), $B9);
+                            }
+                        }
+                        $b++;
+                    }
+                    $B9 = json_encode(array_unique($B9));
+                    $b = 0;
+                    $B10 = [];
+                    foreach ($d2->result() as $b1010) {
+                        if (!empty($desc_e_value11)) {
+                            if ($pro_data->desc_e_value1 == $b1010->desc_e_value1 && $pro_data->desc_e_value2 == $b1010->desc_e_value2 && $pro_data->desc_e_value3 == $b1010->desc_e_value3 && $pro_data->desc_e_value4 == $b1010->desc_e_value4 && $pro_data->desc_e_value5 == $b1010->desc_e_value5 && $pro_data->desc_e_value6 == $b1010->desc_e_value6 && $pro_data->desc_e_value7 == $b1010->desc_e_value7 && $pro_data->desc_e_value8 == $b1010->desc_e_value8 && $pro_data->desc_e_value9 == $b1010->desc_e_value9 && $pro_data->desc_e_value10 == $b1010->desc_e_value10) {
+                                $B10 = array_merge(array('desc_e_value11' . $b => $b1010->desc_e_value11), $B10);
+                            }
+                        }
+                        $b++;
+                    }
+                    $B10 = json_encode(array_unique($B10));
+                    $specs = [];
+                    $canbe = [];
+                    $RingSize = [];
+                    $ringsizePriceadd = 0;
+                    $this->db->select('*');
+                    $this->db->from('tbl_product_specifications');
+                    $this->db->where('product_id', $pro_data->id);
+                    $spec_dataa = $this->db->get()->row();
+                    if (!empty($spec_dataa)) {
+                        $specs = $spec_dataa->specifications;
+                        $canbe = $spec_dataa->canbesetwith;
+                        $RingSize = $spec_dataa->ringsize;
+                        $RingSizeDecode = json_decode($spec_dataa->ringsize);
+                        if (!empty($RingSizeDecode)) {
+                            foreach ($RingSizeDecode as $priceout) {
+                                if ($priceout->Size == 7) {
+                                    $ringsizePriceadd = $priceout->Price;
+                                }
+                            }
+                        }
+                    } else {
+                        $specs = [];
+                        $canbe = [];
+                        $RingSize = [];
+                        $ringsizePriceadd = 0;
+                    }
+                    $this->db->select('*');
+                    $this->db->from('tbl_price_rule');
+                    $pr_data = $this->db->get()->row();
+                    $multiplier = $pr_data->multiplier;
+                    $cost_price11 = $pr_data->cost_price1;
+                    $cost_price22 = $pr_data->cost_price2;
+                    $cost_price33 = $pr_data->cost_price3;
+                    $cost_price44 = $pr_data->cost_price4;
+                    $cost_price55 = $pr_data->cost_price5;
+                    // echo $pro_data->price;
+                    // die();
+                    if (!empty($pro_data->price)) {
+                        $cost_price = $pro_data->price + $ringsizePriceadd;
+                        // $cost_price = $cost_price;
+                        $retail = $cost_price * $multiplier;
+                        $now_price = $cost_price;
+                        if ($cost_price <= 500) {
+                            $cost_price2 = $cost_price * $cost_price;
+                            // $now_price= $cost_price*0.00000264018*($cost_price*2)+(-0.002220133*$cost_price)+1.950022201-1+0.95;
+                            $number = round($cost_price * ($cost_price11 * $cost_price2 + $cost_price22 * $cost_price + $cost_price33), 2);
+                            $unit = 5;
+                            $remainder = $number % $unit;
+                            $mround = ($remainder < $unit / 2) ? $number - $remainder : $number + ($unit - $remainder);
+                            $now_price = round($mround) - 1 + 0.95;
+                            // $now_price = round($mround);
+                            // echo $cost_price;
+                            // exit;
+                        }
+                        if ($cost_price > 500) {
+                            $number = round($cost_price * ($cost_price44 * $cost_price / $multiplier + $cost_price55));
+                            $unit = 5;
+                            $remainder = $number % $unit;
+                            $mround = ($remainder < $unit / 2) ? $number - $remainder : $number + ($unit - $remainder);
+                            $now_price = round($mround) - 1 + 0.95;
+                            // $now_price = round($mround);
+                            // echo $cost_price;
+                        }
+                        $retail = $retail * $qty;
+                        $now_price = $now_price * $qty;
+                        $saved = round($retail - $now_price);
+                        $dis_percent = round($saved / $retail * 100);
+                        // $respone['retail'] = round($retail, 2);
+                        $respone['retail'] = round($retail);
+                        $respone['saved'] = $saved;
+                        $respone['dis'] = $dis_percent;
+                        $respone['price'] = number_format($now_price, 2);
+                    }
+                    $val_e = array(
+                        'desc_e_name1' => $pro_data->desc_e_name1,
+                        'desc_e_name2' => $pro_data->desc_e_name2,
+                        'desc_e_name3' => $pro_data->desc_e_name3,
+                        'desc_e_name4' => $pro_data->desc_e_name4,
+                        'desc_e_name5' => $pro_data->desc_e_name5,
+                        'desc_e_name6' => $pro_data->desc_e_name6,
+                        'desc_e_name7' => $pro_data->desc_e_name7,
+                        'desc_e_name8' => $pro_data->desc_e_name8,
+                        'desc_e_name9' => $pro_data->desc_e_name9,
+                        'desc_e_name10' => $pro_data->desc_e_name10,
+                        'desc_e_name11' => $pro_data->desc_e_name11,
+                    );
+                    $deal = array_search('Quality', $val_e);
+                    if (!empty($deal)) {
+                        $col = $deal;
+                    } else {
+                        $col = '';
+                    }
+                    // echo $col;die();
+                    if (empty($col)) {
+                        $s = "";
+                    } else {
+                        $number = explode("desc_e_name", $col);
+                        $s = "desc_e_value" . $number[1];
+                    }
+                    $respone['data'] = true;
+                    $respone['update_pro'] = $pro_data;
+                    $respone['quality'] = $pro_data->$s;
+                    $respone['b1'] = $B1;
+                    $respone['b2'] = $B2;
+                    $respone['b3'] = $B3;
+                    $respone['b4'] = $B4;
+                    $respone['b5'] = $B5;
+                    $respone['b6'] = $B6;
+                    $respone['b7'] = $B7;
+                    $respone['b8'] = $B8;
+                    $respone['b9'] = $B9;
+                    $respone['b10'] = $B10;
+                    $respone['specs'] = $specs;
+                    $respone['canbe'] = $canbe;
+                    $respone['RingSize'] = $RingSize;
+                    if ($B1 == '[]' && $B2 == '[]' && $B3 == '[]' && $B4 == '[]' && $B5 == '[]' && $B6 == '[]' && $B7 == '[]' && $B8 == '[]' && $B9 == '[]' && $B10 == '[]') {
+                        $respone['changeThem'] = 0;
+                    } else {
+                        $respone['changeThem'] = 1;
+                    }
+                    echo json_encode($respone);
+                } elseif ($para == 1) { //
+                    // die();
+                    // echo $col." ".$value;exit;
+                    $this->db->select('*');
+                    $this->db->from('tbl_quickshop_products');
+                    $this->db->where('sku_series', $sku_series);
+                    $this->db->where('desc_e_value2', $desc_e_value2);
+                    $this->db->where('desc_e_value3', $desc_e_value3);
+                    $this->db->where('desc_e_value4', $desc_e_value4);
+                    $this->db->where('desc_e_value5', $desc_e_value5);
+                    $this->db->where('desc_e_value6', $desc_e_value6);
+                    $this->db->where('desc_e_value7', $desc_e_value7);
+                    $this->db->where('desc_e_value8', $desc_e_value8);
+                    $this->db->where('desc_e_value9', $desc_e_value9);
+                    $pro_dropdown = $this->db->get();
+                    $pro_data = $pro_dropdown->row();
+                    if (empty($pro_data)) {
+                        $this->db->select('*');
+                        $this->db->from('tbl_quickshop_products');
+                        $this->db->where('sku_series', $sku_series);
+                        $this->db->where('gdesc', $gdesc);
+                        $this->db->where($col, $value);
+                        $pro_dropdown = $this->db->get();
+                        $pro_data = $pro_dropdown->row();
+                    }
+                    // print_r($pro_data);exit;
+                    //-----------------------Replace all dropdowns-------------------------------------------------
+                    $val_e = array(
+                        'desc_e_name2' => $pro_data->desc_e_name2,
+                        'desc_e_name3' => $pro_data->desc_e_name3,
+                        'desc_e_name4' => $pro_data->desc_e_name4,
+                        'desc_e_name5' => $pro_data->desc_e_name5,
+                        'desc_e_name6' => $pro_data->desc_e_name6,
+                        'desc_e_name7' => $pro_data->desc_e_name7,
+                        'desc_e_name8' => $pro_data->desc_e_name8,
+                        'desc_e_name9' => $pro_data->desc_e_name9,
+                        'desc_e_name10' => $pro_data->desc_e_name10,
+                        'desc_e_name11' => $pro_data->desc_e_name11,
+                    );
+                    $deal = array_search('Quality', $val_e);
+                    if (!empty($deal)) {
+                        $colo = $deal;
+                    } else {
+                        $colo = $eng_center;
+                    }
+                    // echo $col;die();
+                    if (empty($col)) {
+                        $s = "";
+                    } else {
+                        $number = explode("desc_e_name", $colo);
+                        $s = "desc_e_value" . $number[1];
+                    }
+                    // // echo $dropdownName;die();
+                    $this->db->select('*');
+                    $this->db->from('tbl_quickshop_products');
+                    $this->db->where('sku_series', $sku_series);
+                    $this->db->where('gdesc', $gdesc);
+                    $this->db->where($col, $value);
+                    $this->db->where($s, $dropdownName);
+                    $pro_dropdown = $this->db->get();
+                    $pro_data = $pro_dropdown->row();
+                    // print_r($pro_data); echo "hi";
+                    // echo $col." ".$value;exit;
+                    //
+                    if (empty($pro_data)) {
+                        $this->db->select('*');
+                        $this->db->from('tbl_quickshop_products');
+                        $this->db->where('sku_series', $sku_series);
+                        $this->db->where('gdesc', $gdesc);
+                        $this->db->where($col, $value);
+                        $pro_dropdown = $this->db->get();
+                        $pro_data = $pro_dropdown->row();
+                    }
+                    $b = 0;
+                    $Quality = [];
+                    foreach ($pro_dropdown->result() as $quality) {
+                        if (!empty($s)) {
+                            $Quality = array_merge(array('quality' . $b => $quality->$s), $Quality);
+                            // print_r($B1);
+                        }
+                        $b++;
+                    }
+                    $Quality =  json_encode(array_unique($Quality));
+                    // echo $Quality;die();
+                    $b = 0;
+                    $B1 = [];
+                    foreach ($pro_dropdown->result() as $b111) {
+                        if (!empty($desc_e_value2)) {
+                            if ($pro_data->desc_e_value1 == $b111->desc_e_value1) {
+                                $B1 = array_merge(array('desc_e_value2' . $b => $b111->desc_e_value2), $B1);
+                            }
+                            // print_r($B1);
+                        }
+                        $b++;
+                    }
+                    $B1 =  json_encode(array_unique($B1));
+                    $b = 0;
+                    $B2 = [];
+                    foreach ($pro_dropdown->result() as $b222) {
+                        if (!empty($desc_e_value3)) {
+                            if ($pro_data->desc_e_value1 == $b222->desc_e_value1 && $pro_data->desc_e_value2 == $b222->desc_e_value2) {
+                                $B2 = array_merge(array('desc_e_value3' . $b => $b222->desc_e_value3), $B2);
+                            }
+                        }
+                        $b++;
+                    }
+                    $B2 =  json_encode(array_unique($B2));
+                    $b = 0;
+                    $B3 = [];
+                    foreach ($pro_dropdown->result() as $b333) {
+                        if (!empty($desc_e_value4)) {
+                            if ($pro_data->desc_e_value1 == $b333->desc_e_value1 && $pro_data->desc_e_value2 == $b333->desc_e_value2 && $pro_data->desc_e_value3 == $b333->desc_e_value3) {
+                                $B3 = array_merge(array('desc_e_value4' . $b => $b333->desc_e_value4), $B3);
+                            }
+                        }
+                        $b++;
+                    }
+                    $B3 =  json_encode(array_unique($B3));
+                    $b = 0;
+                    $B4 = [];
+                    foreach ($pro_dropdown->result() as $b444) {
+                        if (!empty($desc_e_value5)) {
+                            if ($pro_data->desc_e_value1 == $b444->desc_e_value1 && $pro_data->desc_e_value2 == $b444->desc_e_value2 && $pro_data->desc_e_value3 == $b444->desc_e_value3 && $pro_data->desc_e_value4 == $b444->desc_e_value4) {
+                                $B4 = array_merge(array('desc_e_value5' . $b => $b444->desc_e_value5), $B4);
+                            }
+                        }
+                        $b++;
+                    }
+                    $B4 =  json_encode(array_unique($B4));
+                    $b = 0;
+                    $B5 = [];
+                    foreach ($pro_dropdown->result() as $b555) {
+                        if (!empty($desc_e_value6)) {
+                            if ($pro_data->desc_e_value1 == $b555->desc_e_value1 && $pro_data->desc_e_value2 == $b555->desc_e_value2 && $pro_data->desc_e_value3 == $b555->desc_e_value3 && $pro_data->desc_e_value4 == $b555->desc_e_value4 && $pro_data->desc_e_value5 == $b555->desc_e_value5) {
+                                $B5 = array_merge(array('desc_e_value6' . $b => $b555->desc_e_value6), $B5);
+                            }
+                        }
+                        $b++;
+                    }
+                    $B5 =  json_encode(array_unique($B5));
+                    $b = 0;
+                    $B6 = [];
+                    foreach ($pro_dropdown->result() as $b666) {
+                        if (!empty($desc_e_value7)) {
+                            if ($pro_data->desc_e_value1 == $b666->desc_e_value1 && $pro_data->desc_e_value2 == $b666->desc_e_value2 && $pro_data->desc_e_value3 == $b666->desc_e_value3 && $pro_data->desc_e_value4 == $b666->desc_e_value4 && $pro_data->desc_e_value5 == $b666->desc_e_value5 && $pro_data->desc_e_value6 == $b666->desc_e_value6) {
+                                $B6 = array_merge(array('desc_e_value7' . $b => $b666->desc_e_value7), $B6);
+                            }
+                        }
+                        $b++;
+                    }
+                    $B6 =  json_encode(array_unique($B6));
+                    $b = 0;
+                    $B7 = [];
+                    foreach ($pro_dropdown->result() as $b777) {
+                        if (!empty($desc_e_value8)) {
+                            if ($pro_data->desc_e_value1 == $b777->desc_e_value1 && $pro_data->desc_e_value2 == $b777->desc_e_value2 && $pro_data->desc_e_value3 == $b777->desc_e_value3 && $pro_data->desc_e_value4 == $b777->desc_e_value4 && $pro_data->desc_e_value5 == $b777->desc_e_value5 && $pro_data->desc_e_value6 == $b777->desc_e_value6 && $pro_data->desc_e_value7 == $b777->desc_e_value7) {
+                                $B7 = array_merge(array('desc_e_value8' . $b => $b777->desc_e_value8), $B7);
+                            }
+                        }
+                        $b++;
+                    }
+                    $B7 =  json_encode(array_unique($B7));
+                    $b = 0;
+                    $B8 = [];
+                    foreach ($pro_dropdown->result() as $b888) {
+                        if (!empty($desc_e_value9)) {
+                            if ($pro_data->desc_e_value1 == $b888->desc_e_value1 && $pro_data->desc_e_value2 == $b888->desc_e_value2 && $pro_data->desc_e_value3 == $b888->desc_e_value3 && $pro_data->desc_e_value4 == $b888->desc_e_value4 && $pro_data->desc_e_value5 == $b888->desc_e_value5 && $pro_data->desc_e_value6 == $b888->desc_e_value6 && $pro_data->desc_e_value7 == $b888->desc_e_value7 && $pro_data->desc_e_value8 == $b888->desc_e_value8) {
+                                $B8 = array_merge(array('desc_e_value9' . $b => $b888->desc_e_value9), $B8);
+                            }
+                        }
+                        $b++;
+                    }
+                    $B8 =  json_encode(array_unique($B8));
+                    $b = 0;
+                    $B9 = [];
+                    foreach ($pro_dropdown->result() as $b999) {
+                        if (!empty($desc_e_value10)) {
+                            if ($pro_data->desc_e_value1 == $b999->desc_e_value1 && $pro_data->desc_e_value2 == $b999->desc_e_value2 && $pro_data->desc_e_value3 == $b999->desc_e_value3 && $pro_data->desc_e_value4 == $b999->desc_e_value4 && $pro_data->desc_e_value5 == $b999->desc_e_value5 && $pro_data->desc_e_value6 == $b999->desc_e_value6 && $pro_data->desc_e_value7 == $b999->desc_e_value7 && $pro_data->desc_e_value8 == $b999->desc_e_value8 && $pro_data->desc_e_value9 == $b999->desc_e_value9) {
+                                $B9 = array_merge(array('desc_e_value10' . $b => $b999->desc_e_value10), $B9);
+                            }
+                        }
+                        $b++;
+                    }
+                    $B9 = json_encode(array_unique($B9));
+                    $b = 0;
+                    $B10 = [];
+                    foreach ($pro_dropdown->result() as $b1010) {
+                        if (!empty($desc_e_value11)) {
+                            if ($pro_data->desc_e_value1 == $b1010->desc_e_value1 && $pro_data->desc_e_value2 == $b1010->desc_e_value2 && $pro_data->desc_e_value3 == $b1010->desc_e_value3 && $pro_data->desc_e_value4 == $b1010->desc_e_value4 && $pro_data->desc_e_value5 == $b1010->desc_e_value5 && $pro_data->desc_e_value6 == $b1010->desc_e_value6 && $pro_data->desc_e_value7 == $b1010->desc_e_value7 && $pro_data->desc_e_value8 == $b1010->desc_e_value8 && $pro_data->desc_e_value9 == $b1010->desc_e_value9 && $pro_data->desc_e_value10 == $b1010->desc_e_value10) {
+                                $B10 = array_merge(array('desc_e_value11' . $b => $b1010->desc_e_value11), $B10);
+                            }
+                        }
+                        $b++;
+                    }
+                    $B10 = json_encode(array_unique($B10));
+                    // print_r($B9);die();
+                    if (!empty($pro_data)) {
+                        $specs = [];
+                        $canbe = [];
+                        $RingSize = [];
+                        $ringsizePriceadd = 0;
+                        $this->db->select('*');
+                        $this->db->from('tbl_product_specifications');
+                        $this->db->where('product_id', $pro_data->id);
+                        $spec_dataa = $this->db->get()->row();
+                        if (!empty($spec_dataa)) {
+                            $specs = $spec_dataa->specifications;
+                            $canbe = $spec_dataa->canbesetwith;
+                            $RingSize = $spec_dataa->ringsize;
+                            $RingSizeDecode = json_decode($spec_dataa->ringsize);
+                            if (!empty($RingSizeDecode)) {
+                                foreach ($RingSizeDecode as $priceout) {
+                                    if ($priceout->Size == 7) {
+                                        $ringsizePriceadd = $priceout->Price;
+                                    }
+                                }
+                            }
+                        } else {
+                            $specs = [];
+                            $canbe = [];
+                            $RingSize = [];
+                            $ringsizePriceadd = 0;
+                        }
+                        $this->db->select('*');
+                        $this->db->from('tbl_price_rule');
+                        $pr_data = $this->db->get()->row();
+                        $multiplier = $pr_data->multiplier;
+                        $cost_price11 = $pr_data->cost_price1;
+                        $cost_price22 = $pr_data->cost_price2;
+                        $cost_price33 = $pr_data->cost_price3;
+                        $cost_price44 = $pr_data->cost_price4;
+                        $cost_price55 = $pr_data->cost_price5;
+                        // echo $pro_data->price;die();
+                        if (!empty($pro_data->price)) {
+                            $cost_price = $pro_data->price + $ringsizePriceadd;
+                            // $cost_price = $cost_price;
+                            $retail = $cost_price * $multiplier;
+                            $now_price = $cost_price;
+                            // echo $now_price;
+                            // exit;
+                            if ($cost_price <= 500) {
+                                $cost_price2 = $cost_price * $cost_price;
+                                // $now_price= $cost_price*0.00000264018*($cost_price*2)+(-0.002220133*$cost_price)+1.950022201-1+0.95;
+                                $number = round($cost_price * ($cost_price11 * $cost_price2 + $cost_price22 * $cost_price + $cost_price33), 2);
+                                $unit = 5;
+                                $remainder = $number % $unit;
+                                $mround = ($remainder < $unit / 2) ? $number - $remainder : $number + ($unit - $remainder);
+                                $now_price = round($mround) - 1 + 0.95;
+                                // $now_price = round($mround);
+                                // echo $cost_price;
+                                // exit;
+                            }
+                            if ($cost_price > 500) {
+                                $number = round($cost_price * ($cost_price44 * $cost_price / $multiplier + $cost_price55));
+                                $unit = 5;
+                                $remainder = $number % $unit;
+                                $mround = ($remainder < $unit / 2) ? $number - $remainder : $number + ($unit - $remainder);
+                                $now_price = round($mround) - 1 + 0.95;
+                                // $now_price = round($mround);
+                                // echo $cost_price;
+                            }
+                            $retail = $retail * $qty;
+                            $now_price = $now_price * $qty;
+                            $saved = round($retail - $now_price);
+                            $dis_percent = round($saved / $retail * 100);
+                            // $respone['retail'] = round($retail, 2);
+                            // echo $now_price;die();
+                            // $respone['retail'] = round($retail, 2);
+                            $respone['retail'] = round($retail);
+                            $respone['saved'] = $saved;
+                            $respone['dis'] = $dis_percent;
+                            $respone['price'] = number_format($now_price, 2);
+                        }
+                        $respone['data'] = true;
+                        $respone['update_pro'] = $pro_data;
+                        $respone['quality'] = $Quality;
+                        $respone['b1'] = $B1;
+                        $respone['b2'] = $B2;
+                        $respone['b3'] = $B3;
+                        $respone['b4'] = $B4;
+                        $respone['b5'] = $B5;
+                        $respone['b6'] = $B6;
+                        $respone['b7'] = $B7;
+                        $respone['b8'] = $B8;
+                        $respone['b9'] = $B9;
+                        $respone['b10'] = $B10;
+                        $respone['specs'] = $specs;
+                        $respone['canbe'] = $canbe;
+                        $respone['RingSize'] = $RingSize;
+                        $respone['changeThem'] = 1;
+                        echo json_encode($respone);
+                    } else {
+                        $respone['data'] = false;
+                        echo json_encode($respone);
+                    }
+                } elseif ($para == 2) {
+                    // die();
+                    // // echo $col." ".$value;exit;
+                    $this->db->select('*');
+                    $this->db->from('tbl_quickshop_products');
+                    $this->db->where('sku_series', $sku_series);
+                    $this->db->where('gdesc', $gdesc);
+                    $this->db->where('desc_e_value2', $desc_e_value2);
+                    $this->db->where('desc_e_value3', $desc_e_value3);
+                    $this->db->where('desc_e_value4', $desc_e_value4);
+                    $this->db->where('desc_e_value5', $desc_e_value5);
+                    // $this->db->where('desc_e_value6',$desc_e_value6);
+                    $pro_dropdown = $this->db->get();
+                    $pro_data = $pro_dropdown->row();
+                    // print_r($pro_data);die();
+                    // $pro_data = '';
+                    if (empty($pro_data)) {
+                        $this->db->select('*');
+                        $this->db->from('tbl_quickshop_products');
+                        $this->db->where('sku_series', $sku_series);
+                        $this->db->where('gdesc', $gdesc);
+                        $this->db->where($col, $value);
+                        $pro_dropdown = $this->db->get();
+                        $pro_data = $pro_dropdown->row();
+                    }
+                    // echo $value;
+                    // print_r($pro_data);die();
+                    // die();
+                    //-----------------------Replace all but Jewelry State dropdowns------------------------------------------
+                    $val_e = array(
+                        'desc_e_name2' => $pro_data->desc_e_name2,
+                        'desc_e_name3' => $pro_data->desc_e_name3,
+                        'desc_e_name4' => $pro_data->desc_e_name4,
+                        'desc_e_name5' => $pro_data->desc_e_name5,
+                        'desc_e_name6' => $pro_data->desc_e_name6,
+                        'desc_e_name7' => $pro_data->desc_e_name7,
+                        'desc_e_name8' => $pro_data->desc_e_name8,
+                        'desc_e_name9' => $pro_data->desc_e_name9,
+                        'desc_e_name10' => $pro_data->desc_e_name10,
+                        'desc_e_name11' => $pro_data->desc_e_name11,
+                    );
+                    $deal = array_search('Quality', $val_e);
+                    if (!empty($deal)) {
+                        $colo = $deal;
+                    } else {
+                        $colo = $eng_center;
+                    }
+                    $state = array_search('Jewelry State', $val_e);
+                    if (empty($state)) {
+                        $state_row = "";
+                        $state_value = "";
+                    } else {
+                        $state_no = explode("desc_e_name", $state);
+                        $state_row = "desc_e_value" . $state_no[1];
+                        $state_value = $pro_data->$state_row;
+                    }
+                    $eng_band_shank = array_search('Product', $val_e);
+                    if (empty($eng_band_shank)) {
+                        $eng_band_shank_row = "";
+                        $eng_band_shank_value = "";
+                    } else {
+                        $eng_band_shank_no = explode("desc_e_name", $eng_band_shank);
+                        $eng_band_shank_row = "desc_e_value" . $eng_band_shank_no[1];
+                        $eng_band_shank_value = $pro_data->$eng_band_shank_row;
+                    }
+                    // echo $state_row;die();
+                    if (empty($col)) {
+                        $s = "";
+                    } else {
+                        $number = explode("desc_e_name", $colo);
+                        $s = "desc_e_value" . $number[1];
+                    }
+                    // echo $dropdownName;die();
+                    $this->db->select('*');
+                    $this->db->from('tbl_quickshop_products');
+                    $this->db->where('sku_series', $sku_series);
+                    $this->db->where('gdesc', $gdesc);
+                    $this->db->where($col, $value);                        //-----Jewelry state
+                    $this->db->where($s, $dropdownName);            //-----Quality
+                    $pro_dropdown = $this->db->get();
+                    $pro_data = $pro_dropdown->row();
+                    // print_r($pro_data); echo "hi";
+                    // echo $col." ".$dropdownName;exit;
+                    //
+                    $this->db->select('*');
+                    $this->db->from('tbl_quickshop_products');
+                    $this->db->where('sku_series', $sku_series);
+                    $this->db->where('gdesc', $gdesc);
+                    $this->db->where($col, $value);
+                    $pro_dropdown = $this->db->get();
+                    if (empty($pro_data)) {
+                        $pro_data = $pro_dropdown->row();
+                    }
+                    $b = 0;
+                    $Quality = [];
+                    foreach ($pro_dropdown->result() as $quality) {
+                        if (!empty($s)) {
+                            $Quality = array_merge(array('quality' . $b => $quality->$s), $Quality);
+                            // print_r($B1);
+                        }
+                        $b++;
+                    }
+                    $Quality =  json_encode(array_unique($Quality));
+                    // echo $Quality;die();
+                    $b = 0;
+                    $B1 = [];
+                    foreach ($pro_dropdown->result() as $b111) {
+                        if (!empty($desc_e_value2) && $state_row != 'desc_e_value2'  && $eng_band_shank_row != 'desc_e_value2') {
+                            $B1 = array_merge(array('desc_e_value2' . $b => $b111->desc_e_value2), $B1);
+                            // print_r($B1);
+                        } else {
+                            $B1 = "";
+                        }
+                        $b++;
+                    }
+                    if (!empty($B1)) {
+                        sort($B1);
+                        $B1 =  json_encode(array_unique($B1));
+                    } else {
+                        $B1 = "";
+                    }
+                    $b = 0;
+                    $B2 = [];
+                    foreach ($pro_dropdown->result() as $b222) {
+                        if (!empty($desc_e_value3) && $state_row != 'desc_e_value3'  && $eng_band_shank_row != 'desc_e_value3') {
+                            $B2 = array_merge(array('desc_e_value3' . $b => $b222->desc_e_value3), $B2);
+                        } else {
+                            $B2 = "";
+                        }
+                        $b++;
+                    }
+                    if (!empty($B2)) {
+                        sort($B2);
+                        $B2 =  json_encode(array_unique($B2));
+                    } else {
+                        $B2 = "";
+                    }
+                    $b = 0;
+                    $B3 = [];
+                    // echo "hi";die();
+                    foreach ($pro_dropdown->result() as $b333) {
+                        if (!empty($desc_e_value4) && $state_row != 'desc_e_value4'  && $eng_band_shank_row != 'desc_e_value4') {
+                            if ($pro_data->desc_e_value1 == $b333->desc_e_value1 && $pro_data->desc_e_value2 == $b333->desc_e_value2 && $pro_data->desc_e_value3 == $b333->desc_e_value3) {
+                                $B3 = array_merge(array('desc_e_value4' . $b => $b333->desc_e_value4), $B3);
+                            }
+                        } else {
+                            $B3 = "";
+                        }
+                        $b++;
+                    }
+                    if (!empty($B3)) {
+                        sort($B3);
+                        $B3 =  json_encode(array_unique($B3));
+                    } else {
+                        $B3 = "";
+                    }
+                    $b = 0;
+                    $B4 = [];
+                    foreach ($pro_dropdown->result() as $b444) {
+                        if (!empty($desc_e_value5) && $state_row != 'desc_e_value5'  && $eng_band_shank_row != 'desc_e_value5') {
+                            $B4 = array_merge(array('desc_e_value5' . $b => $b444->desc_e_value5), $B4);
+                        } else {
+                            $B4 = "";
+                        }
+                        $b++;
+                    }
+                    if (!empty($B4)) {
+                        sort($B4);
+                        $B4 =  json_encode(array_unique($B4));
+                    } else {
+                        $B4 = "";
+                    }
+                    $b = 0;
+                    $B5 = [];
+                    foreach ($pro_dropdown->result() as $b555) {
+                        if (!empty($desc_e_value6) && $state_row != 'desc_e_value6'  && $eng_band_shank_row != 'desc_e_value6') {
+                            $B5 = array_merge(array('desc_e_value6' . $b => $b555->desc_e_value6), $B5);
+                        } else {
+                            $B5 = "";
+                        }
+                        $b++;
+                    }
+                    if (!empty($B5)) {
+                        sort($B5);
+                        $B5 =  json_encode(array_unique($B5));
+                    } else {
+                        $B5 = "";
+                    }
+                    $b = 0;
+                    $B6 = [];
+                    foreach ($pro_dropdown->result() as $b666) {
+                        if (!empty($desc_e_value7) && $state_row != 'desc_e_value7'  && $eng_band_shank_row != 'desc_e_value7') {
+                            $B6 = array_merge(array('desc_e_value7' . $b => $b666->desc_e_value7), $B6);
+                        } else {
+                            $B6 = "";
+                        }
+                        $b++;
+                    }
+                    if (!empty($B6)) {
+                        sort($B6);
+                        $B6 =  json_encode(array_unique($B6));
+                    } else {
+                        $B6 = "";
+                    }
+                    $b = 0;
+                    $B7 = [];
+                    foreach ($pro_dropdown->result() as $b777) {
+                        if (!empty($desc_e_value8) && $state_row != 'desc_e_value8'  && $eng_band_shank_row != 'desc_e_value8') {
+                            $B7 = array_merge(array('desc_e_value8' . $b => $b777->desc_e_value8), $B7);
+                        } else {
+                            $B7 = "";
+                        }
+                        $b++;
+                    }
+                    if (!empty($B7)) {
+                        sort($B7);
+                        $B7 =  json_encode(array_unique($B7));
+                    } else {
+                        $B7 = "";
+                    }
+                    $b = 0;
+                    $B8 = [];
+                    foreach ($pro_dropdown->result() as $b888) {
+                        if (!empty($desc_e_value9) && $state_row != 'desc_e_value9'  && $eng_band_shank_row != 'desc_e_value9') {
+                            $B8 = array_merge(array('desc_e_value9' . $b => $b888->desc_e_value9), $B8);
+                        } else {
+                            $B8 = "";
+                        }
+                        $b++;
+                    }
+                    if (!empty($B8)) {
+                        $B8 =  json_encode(array_unique($B8));
+                    } else {
+                        $B8 = "";
+                    }
+                    $b = 0;
+                    $B9 = [];
+                    foreach ($pro_dropdown->result() as $b999) {
+                        if (!empty($desc_e_value10) && $state_row != 'desc_e_value10'  && $eng_band_shank_row != 'desc_e_value10') {
+                            $B9 = array_merge(array('desc_e_value10' . $b => $b999->desc_e_value10), $B9);
+                        } else {
+                            $B9 = "";
+                        }
+                        $b++;
+                    }
+                    if (!empty($B9)) {
+                        $B9 =  json_encode(array_unique($B9));
+                    } else {
+                        $B9 = "";
+                    }
+                    // print_r($B9);die();
+                    //-----------------------------------------------------------------------------------------------
+                    if (!empty($pro_data)) {
+                        $specs = [];
+                        $canbe = [];
+                        $RingSize = [];
+                        $ringsizePriceadd = 0;
+                        $this->db->select('*');
+                        $this->db->from('tbl_product_specifications');
+                        $this->db->where('product_id', $pro_data->id);
+                        $spec_dataa = $this->db->get()->row();
+                        if (!empty($spec_dataa)) {
+                            $specs = $spec_dataa->specifications;
+                            $canbe = $spec_dataa->canbesetwith;
+                            $RingSize = $spec_dataa->ringsize;
+                            $RingSizeDecode = json_decode($spec_dataa->ringsize);
+                            if (!empty($RingSizeDecode)) {
+                                foreach ($RingSizeDecode as $priceout) {
+                                    if ($priceout->Size == 7) {
+                                        $ringsizePriceadd = $priceout->Price;
+                                    }
+                                }
+                            }
+                        } else {
+                            $specs = [];
+                            $canbe = [];
+                            $RingSize = [];
+                            $ringsizePriceadd = 0;
+                        }
+                        $this->db->select('*');
+                        $this->db->from('tbl_price_rule');
+                        $pr_data = $this->db->get()->row();
+                        $multiplier = $pr_data->multiplier;
+                        $cost_price11 = $pr_data->cost_price1;
+                        $cost_price22 = $pr_data->cost_price2;
+                        $cost_price33 = $pr_data->cost_price3;
+                        $cost_price44 = $pr_data->cost_price4;
+                        $cost_price55 = $pr_data->cost_price5;
+                        // echo $pro_data->price;die();
+                        if (!empty($pro_data->price)) {
+                            $cost_price = $pro_data->price + $ringsizePriceadd;
+                            // $cost_price = $cost_price;
+                            $retail = $cost_price * $multiplier;
+                            $now_price = $cost_price;
+                            // echo $now_price;
+                            // exit;
+                            if ($cost_price <= 500) {
+                                $cost_price2 = $cost_price * $cost_price;
+                                // $now_price= $cost_price*0.00000264018*($cost_price*2)+(-0.002220133*$cost_price)+1.950022201-1+0.95;
+                                $number = round($cost_price * ($cost_price11 * $cost_price2 + $cost_price22 * $cost_price + $cost_price33), 2);
+                                $unit = 5;
+                                $remainder = $number % $unit;
+                                $mround = ($remainder < $unit / 2) ? $number - $remainder : $number + ($unit - $remainder);
+                                $now_price = round($mround) - 1 + 0.95;
+                                // $now_price = round($mround);
+                                // echo $cost_price;
+                                // exit;
+                            }
+                            if ($cost_price > 500) {
+                                $number = round($cost_price * ($cost_price44 * $cost_price / $multiplier + $cost_price55));
+                                $unit = 5;
+                                $remainder = $number % $unit;
+                                $mround = ($remainder < $unit / 2) ? $number - $remainder : $number + ($unit - $remainder);
+                                $now_price = round($mround) - 1 + 0.95;
+                                // $now_price = round($mround);
+                                // echo $cost_price;
+                            }
+                            $retail = $retail * $qty;
+                            $now_price = $now_price * $qty;
+                            $saved = round($retail - $now_price);
+                            $dis_percent = round($saved / $retail * 100);
+                            // $respone['retail'] = round($retail, 2);
+                            // echo $now_price;die();
+                            // $respone['retail'] = round($retail, 2);
+                            $respone['retail'] = round($retail);
+                            $respone['saved'] = $saved;
+                            $respone['dis'] = $dis_percent;
+                            $respone['price'] = number_format($now_price, 2);
+                        }
+                        $respone['data'] = true;
+                        $respone['update_pro'] = $pro_data;
+                        $respone['quality'] = $Quality;
+                        $respone['b1'] = $B1;
+                        $respone['b2'] = $B2;
+                        $respone['b3'] = $B3;
+                        $respone['b4'] = $B4;
+                        $respone['b5'] = $B5;
+                        $respone['b6'] = $B6;
+                        $respone['b7'] = $B7;
+                        $respone['b8'] = $B8;
+                        $respone['b9'] = $B9;
+                        $respone['specs'] = $specs;
+                        $respone['canbe'] = $canbe;
+                        $respone['RingSize'] = $RingSize;
+                        $respone['changeThem'] = 1;
+                        echo json_encode($respone);
+                    } else {
+                        $respone['data'] = false;
+                        echo json_encode($respone);
+                    }
+                }
+            } else {
+                $respone['data'] = false;
+                $respone['data_message'] = validation_errors();
+                echo json_encode($respone);
+            }
+        } else {
+            $respone['data'] = false;
+            $respone['data_message'] = "Please insert some data, No data available";
+            echo json_encode($respone);
+        }
+    }
     public function sub_category($idd)
     {
         $id = $idd;
