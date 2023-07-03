@@ -1,191 +1,189 @@
-
-        <div class="content-wrapper">
-        <section class="content-header">
-        <h1>
-          View Category (Level 1)
-        </h1>
-        </section>
-        <section class="content">
-        <div class="row">
-        <div class="col-lg-12">
-        <a class="btn custom_btn" href="<?php echo base_url() ?>dcadmin/category/add_category"
-        role="button" style="margin-bottom:12px;"> Add category</a>
+<div class="content-wrapper">
+  <section class="content-header">
+    <h1>
+      View Category (Level 1)
+    </h1>
+  </section>
+  <section class="content">
+    <div class="row">
+      <div class="col-lg-12">
+        <a class="btn custom_btn" href="<?php echo base_url() ?>dcadmin/category/add_category" role="button" style="margin-bottom:12px;"> Add category</a>
         <div class="panel panel-default">
-        <div class="panel-heading">
-        <h3 class="panel-title"><i class="fa fa-money fa-fw"></i>View category (Level 1)</h3>
+          <div class="panel-heading">
+            <h3 class="panel-title"><i class="fa fa-money fa-fw"></i>View category (Level 1)</h3>
+          </div>
+          <div class="panel panel-default">
+
+            <? if (!empty($this->session->flashdata('smessage'))) { ?>
+              <div class="alert alert-success alert-dismissible">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                <h4><i class="icon fa fa-check"></i> Alert!</h4>
+                <? echo $this->session->flashdata('smessage');
+                $this->session->unset_userdata('smessage'); ?>
+              </div>
+            <? }
+            if (!empty($this->session->flashdata('emessage'))) { ?>
+              <div class="alert alert-danger alert-dismissible">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                <h4><i class="icon fa fa-ban"></i> Alert!</h4>
+                <? echo $this->session->flashdata('emessage');
+                $this->session->unset_userdata('emessage'); ?>
+              </div>
+            <? } ?>
+
+
+            <div class="panel-body">
+              <div class="box-body table-responsive no-padding">
+                <table class="table table-bordered table-hover table-striped" id="userTable">
+                  <thead>
+                    <tr>
+                      <th>#</th>
+
+                      <th>Category Leval1</th>
+                      <th>Image</th>
+                      <th>Description</th>
+                      <th>Api Id</th>
+                      <th>Sequence No.</th>
+                      <th>Excluded Series</th>
+                      <th>Excluded Sku</th>
+                      <th>Include Series</th>
+                      <th>Include Sku</th>
+
+
+
+                      <th>Status</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <?php $i = 1;
+                    foreach ($category_data->result() as $data) { ?>
+                      <tr>
+                        <td><?php echo $i ?> </td>
+
+                        <td><?php echo $data->name ?></td>
+
+                        <td>
+                          <?php if ($data->image != "") { ?>
+                            <img id="slide_img_path" height=50 width=100 src="<?php echo base_url() . $data->image
+                                                                              ?>">
+                          <?php } else { ?>
+                            Sorry No File Found
+                          <?php } ?>
+                        </td>
+                        <td><?php
+                            $string = strip_tags($data->description);
+                            if (strlen($string) > 150) {
+
+                              // truncate string
+                              $stringCut = substr($string, 0, 150);
+                              $endPoint = strrpos($stringCut, ' ');
+
+                              //if the string doesn't contain any space then it will cut without word basis.
+                              $string = $endPoint ? substr($stringCut, 0, $endPoint) : substr($stringCut, 0);
+                              $string .= '...';
+                            }
+                            echo $string; ?>
+                        </td>
+                        <td><?php echo $data->api_id; ?></td>
+                        <td><?php echo $data->seq; ?></td>
+                        <td><?php echo $data->exlude_series ?></td>
+                        <td><?php echo $data->exlude_sku ?></td>
+                        <td><?php echo $data->include_series ?></td>
+                        <td><?php echo $data->include_sku ?></td>
+
+
+
+
+
+
+
+                        <td><?php if ($data->is_active == 1) { ?>
+                            <p class="label bg-green">Active</p>
+
+                          <?php } else { ?>
+                            <p class="label bg-yellow">Inactive</p>
+
+
+                          <?php } ?>
+                        </td>
+                        <td>
+                          <div class="btn-group" id="btns<?php echo $i ?>">
+                            <div class="btn-group">
+                              <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                Action <span class="caret"></span></button>
+                              <ul class="dropdown-menu" role="menu">
+
+                                <?php if ($data->is_active == 1) { ?>
+                                  <li><a href="<?php echo base_url() ?>dcadmin/category/updatecategoryStatus/<?php echo
+                                                                                                              base64_encode($data->id) ?>/inactive">Inactive</a></li>
+                                <?php } else { ?>
+                                  <li><a href="<?php echo base_url() ?>dcadmin/category/updatecategoryStatus/<?php echo
+                                                                                                              base64_encode($data->id) ?>/active">Active</a></li>
+                                <?php } ?>
+                                <li><a href="<?php echo base_url() ?>dcadmin/category/update_category/<?php echo
+                                                                                                      base64_encode($data->id) ?>">Edit</a></li>
+                                <li><a href="javascript:;" class="dCnf" mydata="<?php echo $i ?>">Delete</a></li>
+
+
+                                <li><a href="<?php echo base_url() ?>dcadmin/category/delete_category_image/<?php echo
+                                                                                                            base64_encode($data->id) ?>">Delete Image</a></li>
+
+                              </ul>
+                            </div>
+                          </div>
+
+                          <div style="display:none" id="cnfbox<?php echo $i ?>">
+                            <p> Are you sure delete this </p>
+                            <a href="<?php echo base_url() ?>dcadmin/category/delete_category/<?php echo
+                                                                                              base64_encode($data->id); ?>" class="btn btn-danger">Yes</a>
+                            <a href="javasript:;" class="cans btn btn-default" mydatas="<?php echo $i ?>">No</a>
+                          </div>
+                        </td>
+                      </tr>
+                    <?php $i++;
+                    } ?>
+                  </tbody>
+                </table>
+
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="panel panel-default">
-
-        <? if(!empty($this->session->flashdata('smessage'))){ ?>
-        <div class="alert alert-success alert-dismissible">
-        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-        <h4><i class="icon fa fa-check"></i> Alert!</h4>
-        <? echo $this->session->flashdata('smessage');
-        $this->session->unset_userdata('smessage');?>
-        </div>
-        <? }
-        if(!empty($this->session->flashdata('emessage'))){ ?>
-        <div class="alert alert-danger alert-dismissible">
-        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-        <h4><i class="icon fa fa-ban"></i> Alert!</h4>
-        <? echo $this->session->flashdata('emessage');
-        $this->session->unset_userdata('emessage');?>
-        </div>
-        <? } ?>
+      </div>
+    </div>
+  </section>
+</div>
+<style>
+  label {
+    margin: 5px;
+  }
+</style>
+<script src="<?php echo base_url() ?>assets/admin/plugins/datatables/jquery.dataTables.js"></script>
+<script src="<?php echo base_url() ?>assets/admin/plugins/datatables/dataTables.bootstrap.js"></script>
+<script type="text/javascript">
+  $(document).ready(function() {
 
 
-        <div class="panel-body">
-        <div class="box-body table-responsive no-padding">
-        <table class="table table-bordered table-hover table-striped" id="userTable">
-        <thead>
-        <tr>
-        <th>#</th>
+    $(document.body).on('click', '.dCnf', function() {
+      var i = $(this).attr("mydata");
+      console.log(i);
 
- 	 <th>Category Leval1</th>
- 	 <th>Image</th>
- 	 <th>Description</th>
- 	 <th>Api Id</th>
- 	 <th>Sequence No.</th>
-   <th>Excluded Series</th>
-   <th>Excluded Sku</th>
-   <th>Include Series</th>
-   <th>Include Sku</th>
+      $("#btns" + i).hide();
+      $("#cnfbox" + i).show();
 
+    });
 
+    $(document.body).on('click', '.cans', function() {
+      var i = $(this).attr("mydatas");
+      console.log(i);
 
-        <th>Status</th>
-        <th>Action</th>
-        </tr>
-        </thead>
-        <tbody>
-        <?php $i=1; foreach($category_data->result() as $data) { ?>
-        <tr>
-        <td><?php echo $i ?> </td>
+      $("#btns" + i).show();
+      $("#cnfbox" + i).hide();
+    })
 
- 	 <td><?php echo $data->name ?></td>
-
-        <td>
-        <?php if($data->image!=""){ ?>
-        <img id="slide_img_path" height=50 width=100 src="<?php echo base_url().$data->image
-        ?>" >
-        <?php }else { ?>
-        Sorry No File Found
-        <?php } ?>
-        </td>
-        <td><?php
-          $string = strip_tags($data->description);
-          if (strlen($string) > 150) {
-
-              // truncate string
-              $stringCut = substr($string, 0, 150);
-              $endPoint = strrpos($stringCut, ' ');
-
-              //if the string doesn't contain any space then it will cut without word basis.
-              $string = $endPoint? substr($stringCut, 0, $endPoint) : substr($stringCut, 0);
-              $string .= '...';
-          }
-          echo $string;?>
-        </td>
-        <td><?php echo $data->api_id; ?></td>
-        <td><?php echo $data->seq; ?></td>
-         	 <td><?php echo $data->exlude_series ?></td>
-              <td><?php echo $data->exlude_sku ?></td>
-              <td><?php echo $data->include_series ?></td>
-              <td><?php echo $data->include_sku ?></td>
-
-
-
-
-
-
-
-        <td><?php if($data->is_active==1){ ?>
-        <p class="label bg-green" >Active</p>
-
-        <?php } else { ?>
-        <p class="label bg-yellow" >Inactive</p>
-
-
-        <?php } ?>
-        </td>
-        <td>
-        <div class="btn-group" id="btns<?php echo $i ?>">
-        <div class="btn-group">
-        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-        Action <span class="caret"></span></button>
-        <ul class="dropdown-menu" role="menu">
-
-        <?php if($data->is_active==1){ ?>
-        <li><a href="<?php echo base_url() ?>dcadmin/category/updatecategoryStatus/<?php echo
-        base64_encode($data->id) ?>/inactive">Inactive</a></li>
-        <?php } else { ?>
-        <li><a href="<?php echo base_url() ?>dcadmin/category/updatecategoryStatus/<?php echo
-        base64_encode($data->id) ?>/active">Active</a></li>
-        <?php } ?>
-        <li><a href="<?php echo base_url() ?>dcadmin/category/update_category/<?php echo
-        base64_encode($data->id) ?>">Edit</a></li>
-        <li><a href="javascript:;" class="dCnf" mydata="<?php echo $i ?>">Delete</a></li>
-
-
-        <li><a href="<?php echo base_url() ?>dcadmin/category/delete_category_image/<?php echo
-        base64_encode($data->id) ?>">Delete Image</a></li>
-
-        </ul>
-        </div>
-        </div>
-
-        <div style="display:none" id="cnfbox<?php echo $i ?>">
-        <p> Are you sure delete this </p>
-        <a href="<?php echo base_url() ?>dcadmin/category/delete_category/<?php echo
-        base64_encode($data->id); ?>" class="btn btn-danger" >Yes</a>
-        <a href="javasript:;" class="cans btn btn-default" mydatas="<?php echo $i ?>" >No</a>
-        </div>
-        </td>
-        </tr>
-        <?php $i++; } ?>
-        </tbody>
-        </table>
-
-        </div>
-        </div>
-        </div>
-        </div>
-        </div>
-        </div>
-        </section>
-        </div>
-        <style>
-        label{
-        margin:5px;
-        }
-        </style>
-        <script src="<?php echo base_url() ?>assets/admin/plugins/datatables/jquery.dataTables.js"></script>
-        <script src="<?php echo base_url() ?>assets/admin/plugins/datatables/dataTables.bootstrap.js"></script>
-        <script type="text/javascript">
-
-        $(document).ready(function(){
-
-
-        $(document.body).on('click', '.dCnf', function() {
-        var i=$(this).attr("mydata");
-        console.log(i);
-
-        $("#btns"+i).hide();
-        $("#cnfbox"+i).show();
-
-        });
-
-        $(document.body).on('click', '.cans', function() {
-        var i=$(this).attr("mydatas");
-        console.log(i);
-
-        $("#btns"+i).show();
-        $("#cnfbox"+i).hide();
-        })
-
-        });
-
-        </script>
-        <!-- <script type="text/javascript" src="<?php echo base_url()
-        ?>assets/slider/ajaxupload.3.5.js"></script>
+  });
+</script>
+<!-- <script type="text/javascript" src="<?php echo base_url()
+                                          ?>assets/slider/ajaxupload.3.5.js"></script>
         <script type="text/javascript" src="<?php echo base_url() ?>assets/slider/rs.js"></script> -->

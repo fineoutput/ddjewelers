@@ -88,6 +88,10 @@
 <td> <strong>Series Number</strong>  <span style="color:red;">*</span></strong> </td>
 <td> <input type="text" name="series_no"  class="form-control" placeholder="Write Series Number..."  value="" required />  </td>
 </tr>
+<tr>
+<td> <strong>Finshed</strong>  <span style="color:red;">*</span></strong> </td>
+<td> <input type="checkbox" name="finshed"  class="" placeholder=""  value="1" />&nbsp&nbsp<lable> Finshed </lable> </td>
+</tr>
   <tr>
 
 

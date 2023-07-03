@@ -243,6 +243,7 @@ class QuickshopProducts extends CI_finecontrol
         $this->form_validation->set_rules('minisubcategory', 'minisubcategory', 'required|xss_clean|trim');
         $this->form_validation->set_rules('minisubcategory2', 'minisubcategory2', 'required|xss_clean|trim');
         $this->form_validation->set_rules('series_no', 'series_no', 'required|xss_clean|trim');
+        $this->form_validation->set_rules('finshed', 'finshed', 'required|xss_clean|trim');
         // $this->form_validation->set_rules('minisubcategory', 'minisubcategory', 'xss_clean|trim');
         // $this->form_validation->set_rules('vendor', 'vendor', 'required|xss_clean|trim');
         if ($this->form_validation->run() == TRUE) {
@@ -252,6 +253,7 @@ class QuickshopProducts extends CI_finecontrol
           $minisubcategory = $this->input->post('minisubcategory');
           $minisubcategory2 = $this->input->post('minisubcategory2');
           $series_no = $this->input->post('series_no');
+          $finshed = $this->input->post('finshed');
           // $minisubcategory=$this->input->post('minisubcategory');
           // $vendor=$this->input->post('vendor');
           $ip = $this->input->ip_address();
@@ -281,7 +283,7 @@ class QuickshopProducts extends CI_finecontrol
             // die();
             //stuller api fuction call
             // $last_id= $this->stuller_data($api_id, $category, $sub_category, $minisubcategory);
-            $last_id = $this->stuller_data_Series($series_no, $category, $sub_category, $minisubcategory, $minisubcategory2);
+            $last_id = $this->stuller_data_Series($series_no,$finshed ,$category, $sub_category, $minisubcategory, $minisubcategory2);
           }
           if ($typ == 2) {
             $idw = base64_decode($iw);
@@ -698,7 +700,7 @@ class QuickshopProducts extends CI_finecontrol
   //test function for  add data from stuller api
   //main function for  add data from stuller api
   // public function stuller_data($api_id, $category_id, $subcategory, $minorsub=null ){
-  public function stuller_data_Series($series_no, $category_id, $subcategory, $minisubcategory, $minisubcategory2) //----- by series
+  public function stuller_data_Series($series_no,$finshed ,$category_id, $subcategory, $minisubcategory, $minisubcategory2) //----- by series
   {
     $ip = $this->input->ip_address();
     date_default_timezone_set("Asia/Calcutta");
