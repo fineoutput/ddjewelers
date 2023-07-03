@@ -117,7 +117,7 @@
               </div>
               <div class="form-group">
                 <label for="address2">Address 2</label>
-                <textarea  name="address2" id="address2" required></textarea>
+                <textarea  name="address2" id="address2"></textarea>
               </div>
               <div class="form-group">
                 <label for="city">City *</label>
