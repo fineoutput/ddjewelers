@@ -9374,4 +9374,158 @@ class Products extends CI_finecontrol
         // echo json_encode($response);
         // exit;
     }
+
+    //==============product_cron job start======//
+    public function products_cron_jobs()
+    {
+      
+           
+           
+            $category=0;
+            $sub_category=0;
+            $minisubcategory=0;
+            $minisubcategory2=0;
+                $this->db->select('*');
+                            $this->db->from('tbl_cron_jobs');
+                            $this->db->where('status',0);
+                            $this->db->order_by('id','ASC');
+                            $cron_jobs= $this->db->get()->row();
+
+                           
+                            
+                    if(!empty($cron_jobs)){
+                       
+
+                        $data_insert = array(
+                            'status' =>1,
+                           
+                        );
+                        $this->db->where('id',$cron_jobs->id);
+                        $last_id = $this->db->update('tbl_cron_jobs', $data_insert);
+
+                       
+
+
+
+                        $category = $cron_jobs->cat_id;
+                        $sub_category = $cron_jobs->subcat_id;
+                        $minisubcategory = $cron_jobs->mincat_id1;
+                        $minisubcategory2 = $cron_jobs->mincat_id2;
+                    }
+                   
+                  
+                        $api_id = 0;
+                        $last_id=0;
+                        if ($category != 0) {
+                            $this->db->select('*');
+                            $this->db->from('tbl_category');
+                            $this->db->where('id', $category);
+                            $catedata = $this->db->get()->row();
+                            if (!empty($catedata)) {
+                                $api_id = $catedata->api_id;
+                                $type = $catedata->type;
+                                $finshed = $catedata->finshed;
+                                $include_series = $catedata->include_series;
+                                $include_sku = $catedata->include_sku;
+                            }
+                        }
+                        if ($sub_category != 0) {
+                            $this->db->select('*');
+                            $this->db->from('tbl_sub_category');
+                            $this->db->where('id', $sub_category);
+                            $subdata = $this->db->get()->row();
+                            if (!empty($subdata)) {
+                                $api_id = $subdata->api_id;
+                                $type = $subdata->type;
+                                $finshed = $subdata->finshed;
+                                $include_series = $catedata->include_series;
+                                $include_sku = $catedata->include_sku;
+                            }
+                        }
+                        if ($minisubcategory != 0) {
+                            $this->db->select('*');
+                            $this->db->from('tbl_minisubcategory');
+                            $this->db->where('id', $minisubcategory);
+                            $minisubdata = $this->db->get()->row();
+                            if (!empty($minisubdata)) {
+                                $api_id = $minisubdata->api_id;
+                                $type = $minisubdata->type;
+                                $finshed = $minisubdata->finshed;
+                                $include_series = $catedata->include_series;
+                                $include_sku = $catedata->include_sku;
+                            }
+                        }
+                        if ($minisubcategory2 != 0) {
+                            $this->db->select('*');
+                            $this->db->from('tbl_minisubcategory2');
+                            $this->db->where('id', $minisubcategory2);
+                            $minisub2data = $this->db->get()->row();
+                            if (!empty($minisub2data)) {
+                                $api_id = $minisub2data->api_id;
+                                $type = $minisub2data->type;
+                                $finshed = $minisub2data->finshed;
+                                $include_series = $catedata->include_series;
+                                $include_sku = $catedata->include_sku;
+                            }
+                        }
+                       
+                        $api_id = json_decode($api_id);
+                        if ($api_id != 0) {
+                            //stuller api fuction call
+                            $last_id = $this->stuller_data($api_id, $category, $sub_category, $minisubcategory, $minisubcategory2, $type, $finshed);
+                            if (!empty($include_series)) {
+                                $includeSeries = explode(",", $include_series);
+                                if (count($includeSeries) > 0) {
+                                    $last_id = $this->stuller_data($includeSeries, $category, $sub_category, $minisubcategory, $minisubcategory2, 2, $finshed, 0);
+                                }
+                                //    $last_id2= $this->include_serieswise($apis2, $category, $sub_category, $minisubcategory, $minisubcategory2, $type, $finshed);
+                            }
+                            if (!empty($include_sku)) {
+                                $includeSKU = explode(",", $include_sku);
+                                if (count($includeSKU) > 0) {
+                                    $last_id = $this->stuller_data($includeSKU, $category, $sub_category, $minisubcategory, $minisubcategory2, 3, $finshed, 0);
+                                }
+                                //    $last_id2= $this->include_serieswise($apis2, $category, $sub_category, $minisubcategory, $minisubcategory2, $type, $finshed);
+                            }
+                        } else {
+                            $this->session->set_flashdata('emessage', 'Api Id not found.');
+                            redirect($_SERVER['HTTP_REFERER']);
+                        }
+                
+                    
+                    if ($last_id != 0) {
+                        if (!empty($minisubcategory)) {
+                            if (empty($minisubcategory2)) {
+                                $minisub = base64_encode($minisubcategory);
+                                $page = base64_encode(1);
+                                $this->session->set_flashdata('smessage', 'Data inserted successfully');
+                                redirect("dcadmin/products/view_products/" . $minisub . "/" . $page, "refresh");
+                            } else {
+                                $minisub2 = base64_encode($minisubcategory2);
+                                $page = base64_encode(2);
+                                $this->session->set_flashdata('smessage', 'Data inserted successfully');
+                                redirect("dcadmin/products/view_products/" . $minisub2 . "/" . $page, "refresh");
+                            }
+                        } else {
+                            if (!empty($sub_category)) {
+                                $sub = base64_encode($sub_category);
+                                $page = base64_encode(0);
+                                $this->session->set_flashdata('smessage', 'Data inserted successfully');
+                                redirect("dcadmin/products/view_products/" . $sub . "/" . $page, "refresh");
+                            } else {
+                                $cate = base64_encode($category);
+                                $page = base64_encode(3);
+                                $this->session->set_flashdata('smessage', 'Data inserted successfully');
+                                redirect("dcadmin/products/view_products/" . $cate . "/" . $page, "refresh");
+                            }
+                        }
+                    } else {
+                        $this->session->set_flashdata('emessage', 'Sorry error occured');
+                        redirect($_SERVER['HTTP_REFERER']);
+                    }
+               
+           
+        
+    }
+    //==============product_cron job End======//
 }
