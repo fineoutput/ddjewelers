@@ -1872,7 +1872,7 @@ input[type=number].mobilenumbers {
     </div> -->
 
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
-        <div class="g-recaptcha"  name="g-recaptcha-response" data-sitekey="6LeDYngaAAAAAOpwYNf4ei2CR3CVs6I-dSw1OAPL"></div>
+        <div class="g-recaptcha"  name="g-recaptcha-response" data-sitekey="6LcR8e4mAAAAAHyd5lF2fKn86TvJigAL89VadFcQ"></div>
 
     <button class="enq_btn" type="submit">
       <i class="fa fa-envelope"></i>

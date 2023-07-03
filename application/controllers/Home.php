@@ -5253,7 +5253,7 @@ class Home extends CI_Controller
                 $cur_date = date("Y-m-d H:i:s");
                 $recaptchaResponse = trim($this->input->post('g-recaptcha-response'));
                 $userIp =  $ip;
-                $secret = "6LeDYngaAAAAAB1AU0hanfWa6uoG9ABELXmZJzoa";
+                $secret = "6LcR8e4mAAAAAHyd5lF2fKn86TvJigAL89VadFcQ";
                 $url = "https://www.google.com/recaptcha/api/siteverify?secret=" . $secret . "&response=" . $recaptchaResponse . "&remoteip=" . $userIp;
                 $ch = curl_init();
                 curl_setopt($ch, CURLOPT_URL, $url);

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <title>D&D Jewelry</title>
   <meta charset="utf-8">
@@ -27,6 +28,7 @@
     background-color: #fff;
     z-index: 99;
   }
+
   .loader {
     border: 16px solid #f3f3f3;
     border-top: 16px solid #1A2F64;
@@ -36,15 +38,33 @@
     animation: spin 2s linear infinite;
     z-index: 100;
   }
+
   @keyframes spin {
     0% {
       transform: rotate(0deg);
     }
+
     100% {
       transform: rotate(360deg);
     }
   }
 </style>
+<!--Start of Tawk.to Script-->
+<script type="text/javascript">
+  var Tawk_API = Tawk_API || {},
+    Tawk_LoadStart = new Date();
+  (function() {
+    var s1 = document.createElement("script"),
+      s0 = document.getElementsByTagName("script")[0];
+    s1.async = true;
+    s1.src = 'https://embed.tawk.to/64a2c521cc26a871b0260d3e/1h4dt43ab';
+    s1.charset = 'UTF-8';
+    s1.setAttribute('crossorigin', '*');
+    s0.parentNode.insertBefore(s1, s0);
+  })();
+</script>
+<!--End of Tawk.to Script-->
+
 <body>
   <div class="center">
     <div class="loader"></div>
@@ -70,33 +90,41 @@
         align-items: center;
         justify-content: center;
       }
+
       #totalCartItems {
         left: 0px !important;
       }
+
       .mbs-sm-5 {
         margin-top: 1rem;
         margin-bottom: 1rem;
       }
+
       .mr-sm {
         margin-right: 20px;
       }
     }
+
     .signup {
       background: #333366;
       color: white !important;
     }
+
     .pro_ul::-webkit-scrollbar-thumb {
       background: #1a2f64 !important;
     }
+
     .pro_ul::-webkit-scrollbar {
       background: #fff !important;
       Width: 4px !important;
     }
+
     @media (min-width: 991px) and (max-width: 1038px) {
       .displaynone {
         display: none;
       }
     }
+
     .ulcontent {
       display: none;
       position: absolute;
@@ -109,30 +137,37 @@
       display: none;
       z-index: 50;
     }
+
     .ulcontent li a {
       padding: 3px 8px;
     }
+
     @media (max-width: 1950px) {
       .ulcontent {
         top: 45%;
       }
     }
+
     @media (max-width: 1500px) {
       .ulcontent {
         top: 42%;
       }
     }
+
     @media (max-width: 1350px) {
       .ulcontent {
         top: 40%;
       }
     }
+
     .showcontent:hover .ulcontent {
       display: block;
     }
+
     .showcontent {
       cursor: pointer;
     }
+
     @media (min-width: 1025px) and (max-width: 1350px) {}
   </style>
   <section class="top_her">
@@ -210,12 +245,12 @@
   <section class="header">
     <style>
       #menu {
-                /* width: 200px; */
-                height: 100%;
-                overflow-x: hidden;
-                overflow-y: auto;
-                text-align:justify;
-            }
+        /* width: 200px; */
+        height: 100%;
+        overflow-x: hidden;
+        overflow-y: auto;
+        text-align: justify;
+      }
     </style>
     <header>
       <div class="container-fluid Pad_new">
@@ -448,6 +483,7 @@
         .form-control:focus {
           box-shadow: none;
         }
+
         #mobSearch {
           display: none;
         }
@@ -601,74 +637,74 @@
           </span>
           <!-- </div> -->
         <? } else { ?>
-            <div class=" side_option menu_col">
-              <p class="text-center menu_p">
-                <a href="<?= base_url(); ?>Home/why_us">
-                 Why Buy From Us
-                </a>
-              </p>
-            </div>
-            <div class=" side_option menu_col">
-              <p class="text-center menu_p">
-                <a href="<?= base_url(); ?>Home/lifetime_upgrades">
-                Lifetime Upgrades
-                </a>
-              </p>
-            </div>
-            <div class=" side_option menu_col">
-              <p class="text-center menu_p">
-                <a href="<?= base_url(); ?>Home/services">
-                 Services
-                </a>
-              </p>
-            </div>
-            <div class=" side_option menu_col">
-              <p class="text-center menu_p">
-                <a href="<?= base_url(); ?>Home/free_shipping">
-                  Free Shipping
-                </a>
-              </p>
-            </div>
-            <div class=" side_option menu_col">
-              <p class="text-center menu_p">
-                <a href="<?= base_url(); ?>Home/flexiblefinancing">
-                 Flexible Financing
-                </a>
-              </p>
-            </div>
-            <div class=" side_option menu_col">
-              <p class="text-center menu_p">
-                <a href="<?= base_url(); ?>Home/visit_our_showroom">
-                 Visit Out Showroom
-                </a>
-              </p>
-            </div>
-            <div class=" side_option menu_col">
-              <p class="text-center menu_p">
-                <a href="<?= base_url(); ?>Home/contact_us">
-                  Contact Us
-                </a>
-              </p>
-            </div>
-            <div class=" side_option menu_col">
-              <p class="text-center menu_p">
-                <a href="<?= base_url(); ?>Home/myorder">
-                  My Order
-                </a>
-              </p>
-            </div>
-            <div class="side_option menu_col">
-              <p class="text-center menu_p">
-                <a href="<?= base_url(); ?>Home/profile">
-                  My Profile
-                </a>
-              </p>
-            </div>
-            <span class=" side_option w-100 text-center mt-2">
-              <a href="<?= base_url(); ?>Home/logout">
-                <b> Log out</b>
+          <div class=" side_option menu_col">
+            <p class="text-center menu_p">
+              <a href="<?= base_url(); ?>Home/why_us">
+                Why Buy From Us
               </a>
-            </span>
+            </p>
+          </div>
+          <div class=" side_option menu_col">
+            <p class="text-center menu_p">
+              <a href="<?= base_url(); ?>Home/lifetime_upgrades">
+                Lifetime Upgrades
+              </a>
+            </p>
+          </div>
+          <div class=" side_option menu_col">
+            <p class="text-center menu_p">
+              <a href="<?= base_url(); ?>Home/services">
+                Services
+              </a>
+            </p>
+          </div>
+          <div class=" side_option menu_col">
+            <p class="text-center menu_p">
+              <a href="<?= base_url(); ?>Home/free_shipping">
+                Free Shipping
+              </a>
+            </p>
+          </div>
+          <div class=" side_option menu_col">
+            <p class="text-center menu_p">
+              <a href="<?= base_url(); ?>Home/flexiblefinancing">
+                Flexible Financing
+              </a>
+            </p>
+          </div>
+          <div class=" side_option menu_col">
+            <p class="text-center menu_p">
+              <a href="<?= base_url(); ?>Home/visit_our_showroom">
+                Visit Out Showroom
+              </a>
+            </p>
+          </div>
+          <div class=" side_option menu_col">
+            <p class="text-center menu_p">
+              <a href="<?= base_url(); ?>Home/contact_us">
+                Contact Us
+              </a>
+            </p>
+          </div>
+          <div class=" side_option menu_col">
+            <p class="text-center menu_p">
+              <a href="<?= base_url(); ?>Home/myorder">
+                My Order
+              </a>
+            </p>
+          </div>
+          <div class="side_option menu_col">
+            <p class="text-center menu_p">
+              <a href="<?= base_url(); ?>Home/profile">
+                My Profile
+              </a>
+            </p>
+          </div>
+          <span class=" side_option w-100 text-center mt-2">
+            <a href="<?= base_url(); ?>Home/logout">
+              <b> Log out</b>
+            </a>
+          </span>
           <!-- </span> -->
         <? } ?>
         <div class="col-md-12 phonetab">
