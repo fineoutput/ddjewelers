@@ -51,6 +51,7 @@
       <th>Excluded Sku</th>
       <th>Include Series</th>
       <th>Include Sku</th>
+      <th>Description</th>
 
 
         <th>Status</th>
@@ -67,7 +68,13 @@ $this->db->select('*');
 $this->db->from('tbl_category');
 $this->db->where('id',$category);
 $da= $this->db->get()->row();
-$dc=$da->name;
+if(!empty($da)){
+
+        $dc=$da->name;
+}
+else{
+        $dc='';
+}
 ?>
 
  	 <td><?php echo $dc ?></td>
@@ -96,6 +103,7 @@ $dc=$da->name;
 <td><?php echo $data->exlude_sku ?></td>
 <td><?php echo $data->include_series ?></td>
 <td><?php echo $data->include_sku ?></td>
+<td><?php echo $data->description ?></td>
 
 
 

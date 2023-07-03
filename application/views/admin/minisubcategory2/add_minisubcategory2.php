@@ -126,6 +126,10 @@
 <td> <strong>Include Sku Ex(1235,ch12)</strong>  <span style="color:red;">*</span></strong> </td>
 <td> <input type="text" name="include_sku"  class="form-control" placeholder=""  value="" />  </td>
 </tr>
+<tr>
+<td> <strong>Description</strong>  <span style="color:red;">*</span></strong> </td>
+<td> <textarea name="description"  class="form-control" placeholder="" ></textarea>  </td>
+</tr>
                                  <tr>
                                    <td colspan="2" >
                                      <input type="submit" class="btn btn-success" value="save">

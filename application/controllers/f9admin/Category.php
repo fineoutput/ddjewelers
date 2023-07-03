@@ -435,8 +435,10 @@ $this->session->set_flashdata('emessage','Please insert some data, No data avail
 
 $zapak=$this->db->delete('tbl_category', array('id' => $id));
 if($zapak!=0){
+  if(!empty($img)){
     $path = FCPATH .$img;
       unlink($path);
+  }
     redirect("dcadmin/category/view_category","refresh");
             }
             else

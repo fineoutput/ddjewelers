@@ -137,6 +137,10 @@ $api=implode(',',$d_api)
                       <td> <strong>Include Sku Ex(1235,ch12)</strong> <span style="color:red;">*</span></strong> </td>
                       <td> <input type="text" name="include_sku" class="form-control" placeholder="" value="<?=$minisubcategory2_data->include_sku;?>" /> </td>
                     </tr>
+                    <tr>
+<td> <strong>Description</strong>  <span style="color:red;">*</span></strong> </td>
+<td> <textarea name="description"  class="form-control" placeholder="" ><?=$minisubcategory2_data->description;?></textarea>  </td>
+</tr>
 
                   <tr>
                     <td colspan="2" >

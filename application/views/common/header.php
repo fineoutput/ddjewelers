@@ -160,7 +160,7 @@
             </a>
             <i class="far fa-gem mr-2 ml-3" style="font-size: 22px;"></i>
             <a href="<?= base_url(); ?>Home/flexiblefinancing">
-              <p>FLEXIBLE FINANCEING </p>
+              <p>FLEXIBLE FINANCING </p>
             </a>
             <i class="fas fa-map-marker-alt mr-2 ml-3" style="font-size: 22px;"></i>
             <a href="<?= base_url(); ?>Home/visit_our_showroom">
@@ -208,6 +208,15 @@
     </div>
   </section>
   <section class="header">
+    <style>
+      #menu {
+                /* width: 200px; */
+                height: 100%;
+                overflow-x: hidden;
+                overflow-y: auto;
+                text-align:justify;
+            }
+    </style>
     <header>
       <div class="container-fluid Pad_new">
         <div class="row ">
@@ -592,6 +601,55 @@
           </span>
           <!-- </div> -->
         <? } else { ?>
+            <div class=" side_option menu_col">
+              <p class="text-center menu_p">
+                <a href="<?= base_url(); ?>Home/why_us">
+                 Why Buy From Us
+                </a>
+              </p>
+            </div>
+            <div class=" side_option menu_col">
+              <p class="text-center menu_p">
+                <a href="<?= base_url(); ?>Home/lifetime_upgrades">
+                Lifetime Upgrades
+                </a>
+              </p>
+            </div>
+            <div class=" side_option menu_col">
+              <p class="text-center menu_p">
+                <a href="<?= base_url(); ?>Home/services">
+                 Services
+                </a>
+              </p>
+            </div>
+            <div class=" side_option menu_col">
+              <p class="text-center menu_p">
+                <a href="<?= base_url(); ?>Home/free_shipping">
+                  Free Shipping
+                </a>
+              </p>
+            </div>
+            <div class=" side_option menu_col">
+              <p class="text-center menu_p">
+                <a href="<?= base_url(); ?>Home/flexiblefinancing">
+                 Flexible Financing
+                </a>
+              </p>
+            </div>
+            <div class=" side_option menu_col">
+              <p class="text-center menu_p">
+                <a href="<?= base_url(); ?>Home/visit_our_showroom">
+                 Visit Out Showroom
+                </a>
+              </p>
+            </div>
+            <div class=" side_option menu_col">
+              <p class="text-center menu_p">
+                <a href="<?= base_url(); ?>Home/contact_us">
+                  Contact Us
+                </a>
+              </p>
+            </div>
             <div class=" side_option menu_col">
               <p class="text-center menu_p">
                 <a href="<?= base_url(); ?>Home/myorder">
