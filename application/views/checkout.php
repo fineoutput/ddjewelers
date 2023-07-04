@@ -41,7 +41,12 @@
             }
             if (!empty($addr_da->state_id)) {
                 $state_data = $this->db->get_where('tbl_state', array('id' => $addr_da->state_id))->result();
-                $state_name = $state_data[0]->name;
+                if(!empty($state_data)){
+
+                    $state_name = $state_data[0]->name;
+                }else{
+                    $state_name='';
+                }
             } else {
                 $state_name = '';
             }
