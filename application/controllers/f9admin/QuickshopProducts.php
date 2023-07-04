@@ -140,8 +140,9 @@ class QuickshopProducts extends CI_finecontrol
       // if($page_dec == 0){
       $data['minsubcate2_id'] = $idd;
       $this->db->select('*');
-      $this->db->from('tbl_quickshop_products');
+      $this->db->from('tbl_products');
       $this->db->where('minisub_category2', $id);
+      $this->db->where('is_quick',1);
       $data['products_data'] = $this->db->get();
       // }else {
       //   $data['minorsubcate_id']= $idd;
@@ -153,8 +154,9 @@ class QuickshopProducts extends CI_finecontrol
       // }
       //get subcategory id
       $this->db->select('*');
-      $this->db->from('tbl_quickshop_products');
+      $this->db->from('tbl_products');
       $this->db->where('minisub_category2', $id);
+      $this->db->where('is_quick',1);
       $minisubcategory2_pro = $this->db->get()->row();
       $minsubcateg_id = "";
       if (!empty($minisubcategory2_pro)) {
@@ -197,7 +199,7 @@ class QuickshopProducts extends CI_finecontrol
       $id = base64_decode($idd);
       $data['id'] = $idd;
       $this->db->select('*');
-      $this->db->from('tbl_quickshop_products');
+      $this->db->from('tbl_products');
       $this->db->where('id', $id);
       $data['products_data'] = $this->db->get()->row();
       $this->load->view('admin/common/header_view', $data);
@@ -218,7 +220,7 @@ class QuickshopProducts extends CI_finecontrol
       $id = base64_decode($idd);
       $data['id'] = $idd;
       $this->db->select('*');
-      $this->db->from('tbl_quickshop_products');
+      $this->db->from('tbl_products');
       $this->db->where('id', $id);
       $data['products_data'] = $this->db->get()->row();
       $this->load->view('admin/common/header_view', $data);
@@ -605,7 +607,7 @@ class QuickshopProducts extends CI_finecontrol
         // $dsa = $this->db->get();
         // $da = $dsa->row();
         // $img = $da->image;
-        $zapak = $this->db->delete('tbl_quickshop_products', array('id' => $id));
+        $zapak = $this->db->delete('tbl_products', array('id' => $id));
         if ($zapak != 0) {
           // $path = FCPATH . $img;
           // unlink($path);
@@ -714,12 +716,17 @@ class QuickshopProducts extends CI_finecontrol
     if (!empty($sku_ids_array)) {
       //delete previous data from the table start
       $this->db->select('*');
-      $this->db->from('tbl_quickshop_products');
+      $this->db->from('tbl_products');
       $this->db->where('category', $category_id);
       $this->db->where('sub_category', $subcategory);
       $this->db->where('minisub_category', $minisubcategory);
       $this->db->where('minisub_category2', $minisubcategory2);
+		  $this->db->where('is_quick',1);
       $product_data = $this->db->get();
+      $this->db->select('*');
+      $this->db->from('tbl_minimum_cost');
+      $minimum_cost_data = $this->db->get()->row();
+      $MINIMUM_COST = $minimum_cost_data->cost;
       // if (!empty($product_data)) {
       //   foreach ($product_data->result() as $pro) {
       //     $this->db->delete('tbl_quickshop_products', array('id' => $pro->id));
@@ -808,32 +815,33 @@ class QuickshopProducts extends CI_finecontrol
           $result_da = json_decode($result);
           if (!empty($result_da->Products)) {
             foreach ($result_da->Products as $prod) {
+              $specifications = [];
               $ringsize = 0;
               $ringsizetype = "";
               $RingSizable = "";
               if (!empty($prod->RingSizable)) {
-                $RingSizable = $prod->RingSizable;
-                if ($RingSizable == false) {
-                  $ringsize = 0;
-                  $ringsizetype = "";
-                } else {
-                  if (!empty($prod->ringsize)) {
-                    $ringsize = $prod->ringsize;
+                  $RingSizable = $prod->RingSizable;
+                  if ($RingSizable == false) {
+                      $ringsize = 0;
+                      $ringsizetype = "";
+                  } else {
+                      if (!empty($prod->ringsize)) {
+                          $ringsize = $prod->ringsize;
+                      }
+                      if (!empty($prod->ringsizetype)) {
+                          $ringsizetype = $prod->ringsizetype;
+                      }
                   }
-                  if (!empty($prod->ringsizetype)) {
-                    $ringsizetype = $prod->ringsizetype;
-                  }
-                }
               }
               //group eliments
               if (empty($prod->DescriptiveElementGroup)) {
-                $DescriptiveElements = [];
+                  $DescriptiveElements = [];
               } else {
-                $DescriptiveElements = $prod->DescriptiveElementGroup->DescriptiveElements;
+                  $DescriptiveElements = $prod->DescriptiveElementGroup->DescriptiveElements;
               }
               $cate_array_count = 0;
               if (!empty($DescriptiveElements)) {
-                $cate_array_count = count($DescriptiveElements);
+                  $cate_array_count = count($DescriptiveElements);
               }
               $desc_e_name1 = "";
               $desc_e_value1 = "";
@@ -866,64 +874,64 @@ class QuickshopProducts extends CI_finecontrol
               $desc_e_name15 = "";
               $desc_e_value15 = "";
               if ($cate_array_count >= 1) {
-                $desc_e_name1 = $DescriptiveElements[0]->Name;
-                $desc_e_value1 = $DescriptiveElements[0]->Value;
+                  $desc_e_name1 = $DescriptiveElements[0]->Name;
+                  $desc_e_value1 = str_replace("K X1", "K Forever", $DescriptiveElements[0]->DisplayValue);
               }
               if ($cate_array_count >= 2) {
-                $desc_e_name2 = $DescriptiveElements[1]->Name;
-                $desc_e_value2 = $DescriptiveElements[1]->Value;
+                  $desc_e_name2 = $DescriptiveElements[1]->Name;
+                  $desc_e_value2 = str_replace("K X1", "K Forever", $DescriptiveElements[1]->DisplayValue);
               }
               if ($cate_array_count >= 3) {
-                $desc_e_name3 = $DescriptiveElements[2]->Name;
-                $desc_e_value3 = $DescriptiveElements[2]->Value;
+                  $desc_e_name3 = $DescriptiveElements[2]->Name;
+                  $desc_e_value3 = str_replace("K X1", "K Forever", $DescriptiveElements[2]->DisplayValue);
               }
               if ($cate_array_count >= 4) {
-                $desc_e_name4 = $DescriptiveElements[3]->Name;
-                $desc_e_value4 = $DescriptiveElements[3]->Value;
+                  $desc_e_name4 = $DescriptiveElements[3]->Name;
+                  $desc_e_value4 = str_replace("K X1", "K Forever", $DescriptiveElements[3]->DisplayValue);
               }
               if ($cate_array_count >= 5) {
-                $desc_e_name5 = $DescriptiveElements[4]->Name;
-                $desc_e_value5 = $DescriptiveElements[4]->Value;
+                  $desc_e_name5 = $DescriptiveElements[4]->Name;
+                  $desc_e_value5 = str_replace("K X1", "K Forever", $DescriptiveElements[4]->DisplayValue);
               }
               if ($cate_array_count >= 6) {
-                $desc_e_name6 = $DescriptiveElements[5]->Name;
-                $desc_e_value6 = $DescriptiveElements[5]->Value;
+                  $desc_e_name6 = $DescriptiveElements[5]->Name;
+                  $desc_e_value6 = str_replace("K X1", "K Forever", $DescriptiveElements[5]->DisplayValue);
               }
               if ($cate_array_count >= 7) {
-                $desc_e_name7 = $DescriptiveElements[6]->Name;
-                $desc_e_value7 = $DescriptiveElements[6]->Value;
+                  $desc_e_name7 = $DescriptiveElements[6]->Name;
+                  $desc_e_value7 = str_replace("K X1", "K Forever", $DescriptiveElements[6]->DisplayValue);
               }
               if ($cate_array_count >= 8) {
-                $desc_e_name8 = $DescriptiveElements[7]->Name;
-                $desc_e_value8 = $DescriptiveElements[7]->Value;
+                  $desc_e_name8 = $DescriptiveElements[7]->Name;
+                  $desc_e_value8 = str_replace("K X1", "K Forever", $DescriptiveElements[7]->DisplayValue);
               }
               if ($cate_array_count >= 9) {
-                $desc_e_name9 = $DescriptiveElements[8]->Name;
-                $desc_e_value9 = $DescriptiveElements[8]->Value;
+                  $desc_e_name9 = $DescriptiveElements[8]->Name;
+                  $desc_e_value9 = str_replace("K X1", "K Forever", $DescriptiveElements[8]->DisplayValue);
               }
               if ($cate_array_count >= 10) {
-                $desc_e_name10 = $DescriptiveElements[9]->Name;
-                $desc_e_value10 = $DescriptiveElements[9]->Value;
+                  $desc_e_name10 = $DescriptiveElements[9]->Name;
+                  $desc_e_value10 = str_replace("K X1", "K Forever", $DescriptiveElements[9]->DisplayValue);
               }
               if ($cate_array_count >= 11) {
-                $desc_e_name11 = $DescriptiveElements[10]->Name;
-                $desc_e_value11 = $DescriptiveElements[10]->Value;
+                  $desc_e_name11 = $DescriptiveElements[10]->Name;
+                  $desc_e_value11 = str_replace("K X1", "K Forever", $DescriptiveElements[10]->DisplayValue);
               }
               if ($cate_array_count >= 12) {
-                $desc_e_name12 = $DescriptiveElements[11]->Name;
-                $desc_e_value12 = $DescriptiveElements[11]->Value;
+                  $desc_e_name12 = $DescriptiveElements[11]->Name;
+                  $desc_e_value12 = str_replace("K X1", "K Forever", $DescriptiveElements[11]->DisplayValue);
               }
               if ($cate_array_count >= 13) {
-                $desc_e_name13 = $DescriptiveElements[12]->Name;
-                $desc_e_value13 = $DescriptiveElements[12]->Value;
+                  $desc_e_name13 = $DescriptiveElements[12]->Name;
+                  $desc_e_value13 = str_replace("K X1", "K Forever", $DescriptiveElements[12]->DisplayValue);
               }
               if ($cate_array_count >= 14) {
-                $desc_e_name14 = $DescriptiveElements[13]->Name;
-                $desc_e_value14 = $DescriptiveElements[13]->Value;
+                  $desc_e_name14 = $DescriptiveElements[13]->Name;
+                  $desc_e_value14 = str_replace("K X1", "K Forever", $DescriptiveElements[13]->DisplayValue);
               }
               if ($cate_array_count >= 15) {
-                $desc_e_name15 = $DescriptiveElements[14]->Name;
-                $desc_e_value15 = $DescriptiveElements[14]->Value;
+                  $desc_e_name15 = $DescriptiveElements[14]->Name;
+                  $desc_e_value15 = str_replace("K X1", "K Forever", $DescriptiveElements[14]->DisplayValue);
               }
               $image1 = "";
               $image2 = "";
@@ -941,76 +949,87 @@ class QuickshopProducts extends CI_finecontrol
               $fullysetimage5 = "";
               $fullysetimage6 = "";
               //get images
+              // if(!empty($prod->Images)){
+              //   $image1= $prod->Images[0]->FullUrl;
+              //   $image2= $prod->Images[0]->ThumbnailUrl;
+              //   $image3= $prod->Images[0]->ZoomUrl;
+              // }
+              // if(!empty($prod->GroupImages)){
+              //   $gimage1= $prod->GroupImages[0]->ZoomUrl;
+              //   $gimage2= $prod->GroupImages[0]->ZoomUrl;
+              //   $gimage3= $prod->GroupImages[0]->ZoomUrl;
+              // }
+              //get images
               if (!empty($prod->Images)) {
-                $image_peram_count = count($prod->Images);
-                if ($image_peram_count >= 1) {
-                  $image1 = $prod->Images[0]->FullUrl;
-                }
-                if ($image_peram_count >= 2) {
-                  $image2 = $prod->Images[1]->FullUrl;
-                }
-                if ($image_peram_count >= 3) {
-                  $image3 = $prod->Images[2]->FullUrl;
-                }
-                if ($image_peram_count >= 4) {
-                  $image4 = $prod->Images[3]->FullUrl;
-                }
-                if ($image_peram_count >= 5) {
-                  $image5 = $prod->Images[4]->FullUrl;
-                }
-                if ($image_peram_count >= 6) {
-                  $image5 = $prod->Images[5]->FullUrl;
-                }
-                // $image1= $prod->Images[0]->FullUrl;
-                // $image2= $prod->Images[0]->ThumbnailUrl;
-                // $image3= $prod->Images[0]->ZoomUrl;
+                  $image_peram_count = count($prod->Images);
+                  if ($image_peram_count >= 1) {
+                      $image1 = $prod->Images[0]->FullUrl;
+                  }
+                  if ($image_peram_count >= 2) {
+                      $image2 = $prod->Images[1]->FullUrl;
+                  }
+                  if ($image_peram_count >= 3) {
+                      $image3 = $prod->Images[2]->FullUrl;
+                  }
+                  if ($image_peram_count >= 4) {
+                      $image4 = $prod->Images[3]->FullUrl;
+                  }
+                  if ($image_peram_count >= 5) {
+                      $image5 = $prod->Images[4]->FullUrl;
+                  }
+                  if ($image_peram_count >= 6) {
+                      $image5 = $prod->Images[5]->FullUrl;
+                  }
+                  // $image1= $prod->Images[0]->FullUrl;
+                  // $image2= $prod->Images[0]->ThumbnailUrl;
+                  // $image3= $prod->Images[0]->ZoomUrl;
               }
               //get group images
               if (!empty($prod->GroupImages)) {
-                $Groupimage_peram_count = count($prod->GroupImages);
-                if ($Groupimage_peram_count >= 1) {
-                  $gimage1 = $prod->GroupImages[0]->FullUrl;
-                }
-                if ($Groupimage_peram_count >= 2) {
-                  $gimage2 = $prod->GroupImages[1]->FullUrl;
-                }
-                if ($Groupimage_peram_count >= 3) {
-                  $gimage3 = $prod->GroupImages[2]->FullUrl;
-                }
-                // $gimage1= $prod->GroupImages[0]->ZoomUrl;
-                // $gimage2= $prod->GroupImages[0]->ZoomUrl;
-                // $gimage3= $prod->GroupImages[0]->ZoomUrl;
+                  $Groupimage_peram_count = count($prod->GroupImages);
+                  if ($Groupimage_peram_count >= 1) {
+                      $gimage1 = $prod->GroupImages[0]->FullUrl;
+                  }
+                  if ($Groupimage_peram_count >= 2) {
+                      $gimage2 = $prod->GroupImages[1]->FullUrl;
+                  }
+                  if ($Groupimage_peram_count >= 3) {
+                      $gimage3 = $prod->GroupImages[2]->FullUrl;
+                  }
+                  // $gimage1= $prod->GroupImages[0]->ZoomUrl;
+                  // $gimage2= $prod->GroupImages[0]->ZoomUrl;
+                  // $gimage3= $prod->GroupImages[0]->ZoomUrl;
               }
               //get Fully Set Images images
               if (!empty($prod->FullySetImages)) {
-                $FullySetimage_peram_count = count($prod->FullySetImages);
-                if ($FullySetimage_peram_count >= 1) {
-                  $fullysetimage1 = $prod->FullySetImages[0]->FullUrl;
-                }
-                if ($FullySetimage_peram_count >= 2) {
-                  $fullysetimage2 = $prod->FullySetImages[1]->FullUrl;
-                }
-                if ($FullySetimage_peram_count >= 3) {
-                  $fullysetimage3 = $prod->FullySetImages[2]->FullUrl;
-                }
-                if ($FullySetimage_peram_count >= 4) {
-                  $fullysetimage4 = $prod->FullySetImages[3]->FullUrl;
-                }
-                if ($FullySetimage_peram_count >= 5) {
-                  $fullysetimage5 = $prod->FullySetImages[4]->FullUrl;
-                }
-                if ($FullySetimage_peram_count >= 6) {
-                  $fullysetimage6 = $prod->FullySetImages[5]->FullUrl;
-                }
-                // $image1= $prod->Images[0]->FullUrl;
-                // $image2= $prod->Images[0]->ThumbnailUrl;
-                // $image3= $prod->Images[0]->ZoomUrl;
+                  $FullySetimage_peram_count = count($prod->FullySetImages);
+                  if ($FullySetimage_peram_count >= 1) {
+                      $fullysetimage1 = $prod->FullySetImages[0]->FullUrl;
+                  }
+                  if ($FullySetimage_peram_count >= 2) {
+                      $fullysetimage2 = $prod->FullySetImages[1]->FullUrl;
+                  }
+                  if ($FullySetimage_peram_count >= 3) {
+                      $fullysetimage3 = $prod->FullySetImages[2]->FullUrl;
+                  }
+                  if ($FullySetimage_peram_count >= 4) {
+                      $fullysetimage4 = $prod->FullySetImages[3]->FullUrl;
+                  }
+                  if ($FullySetimage_peram_count >= 5) {
+                      $fullysetimage5 = $prod->FullySetImages[4]->FullUrl;
+                  }
+                  if ($FullySetimage_peram_count >= 6) {
+                      $fullysetimage6 = $prod->FullySetImages[5]->FullUrl;
+                  }
+                  // $image1= $prod->Images[0]->FullUrl;
+                  // $image2= $prod->Images[0]->ThumbnailUrl;
+                  // $image3= $prod->Images[0]->ZoomUrl;
               }
               //get AGTA
               if (!empty($prod->AGTA)) {
-                $agta = $prod->AGTA;
+                  $agta = $prod->AGTA;
               } else {
-                $agta = "";
+                  $agta = "";
               }
               //get MerchandisingCategory
               $mcat1 = "";
@@ -1019,183 +1038,289 @@ class QuickshopProducts extends CI_finecontrol
               $mcat4 = "";
               $mcat5 = "";
               if (!empty($prod->MerchandisingCategory1)) {
-                $mcat1 = $prod->MerchandisingCategory1;
+                  $mcat1 = $prod->MerchandisingCategory1;
               }
               if (!empty($prod->MerchandisingCategory2)) {
-                $mcat2 = $prod->MerchandisingCategory2;
+                  $mcat2 = $prod->MerchandisingCategory2;
               }
               if (!empty($prod->MerchandisingCategory3)) {
-                $mcat3 = $prod->MerchandisingCategory3;
+                  $mcat3 = $prod->MerchandisingCategory3;
               }
               if (!empty($prod->MerchandisingCategory4)) {
-                $mcat4 = $prod->MerchandisingCategory4;
+                  $mcat4 = $prod->MerchandisingCategory4;
               }
               if (!empty($prod->MerchandisingCategory5)) {
-                $mcat5 = $prod->MerchandisingCategory5;
+                  $mcat5 = $prod->MerchandisingCategory5;
               }
               $Description = "";
               if (!empty($prod->Description)) {
-                $Description = $prod->Description;
+                  $Description = str_replace("K X1", "K Forever", $prod->Description);
               }
               $ShortDescription = "";
               if (!empty($prod->ShortDescription)) {
-                $ShortDescription = $prod->ShortDescription;
+                  $ShortDescription = str_replace("K X1", "K Forever", $prod->ShortDescription);
               }
               $GroupDescription = "";
               if (!empty($prod->GroupDescription)) {
-                $GroupDescription = $prod->GroupDescription;
+                  $GroupDescription = str_replace("K X1", "K Forever", $prod->GroupDescription);
               }
               $LeadTime = "";
               if (!empty($prod->LeadTime)) {
-                $LeadTime = $prod->LeadTime;
-              }
-              $GramWeight = "";
-              if (!empty($prod->GramWeight)) {
-                $GramWeight = $prod->GramWeight;
+                  $LeadTime = $prod->LeadTime;
               }
               //get vedio and Group vedios
               $vedio = "";
               $gvedio = "";
               if (!empty($prod->Videos)) {
-                $vedio = $prod->Videos[0]->Url;
+                  $vedio = $prod->Videos[0]->DownloadUrl;
               }
               if (!empty($prod->GroupVideos)) {
-                $gvedio = $prod->GroupVideos[0]->Url;
+                  $gvedio = $prod->GroupVideos[0]->Url;
+              }
+              //get vedio and Group vedios
+              $vedio = "";
+              $gvedio = "";
+              if (!empty($prod->Videos)) {
+                  $vedio = $prod->Videos[0]->DownloadUrl;
+              }
+              if (!empty($prod->GroupVideos)) {
+                  $gvedio = $prod->GroupVideos[0]->Url;
               }
               //explode sku for get and save sku series and sku series type start
               $sku_no = $prod->SKU;
               if (is_numeric($sku_no[0])) {
-                $sku_ar = explode(":", $sku_no);
+                  $sku_ar = explode(":", $sku_no);
               } else {
-                $arr = (str_split($sku_no));
-                $l = count($arr);
-                for ($i = 0; $i <= $l; $i++) {
-                  if (is_numeric($arr[$i])) {
-                    array_splice($arr, $i, 0, ":");
-                    break;
+                  $arr = (str_split($sku_no));
+                  $l = count($arr);
+                  for ($i = 0; $i <= $l; $i++) {
+                      if (is_numeric($arr[$i])) {
+                          array_splice($arr, $i, 0, ":");
+                          break;
+                      }
                   }
-                }
-                $s = join($arr);
-                $sku_ar = explode(":", $s);
+                  $s = join($arr);
+                  $sku_ar = explode(":", $s);
               }
-              $sku_ar = explode(":", $sku_no);
-              // print_r($sku_ar);
               $cate_param_count = count($sku_ar);
               $sku_series = "";
               $sku_series_type1 = "";
               $sku_series_type2 = "";
               $sku_series_type3 = "";
               if ($cate_param_count >= 1) {
-                $sku_series = $sku_ar[0];
+                  $sku_series = $sku_ar[0];
               }
               if ($cate_param_count >= 2) {
-                $sku_series_type1 = $sku_ar[1];
+                  $sku_series_type1 = $sku_ar[1];
               }
               if ($cate_param_count >= 3) {
-                $sku_series_type2 = $sku_ar[2];
+                  $sku_series_type2 = $sku_ar[2];
               }
               if ($cate_param_count >= 4) {
-                $sku_series_type3 = $sku_ar[3];
+                  $sku_series_type3 = $sku_ar[3];
+              }
+              $ProductType = "";
+              if (!empty($prod->ProductType)) {
+                  $ProductType = $prod->ProductType;
+              }
+              $OnHand = "";
+              if (!empty($prod->OnHand)) {
+                  $OnHand = $prod->OnHand;
+              }
+              $Status = "";
+              if (!empty($prod->Status)) {
+                  $Status = $prod->Status;
+              }
+              $Value = "";
+              if (!empty($prod->Price->Value)) {
+                  $Value = $prod->Price->Value;
+              }
+              $CurrencyCode = "";
+              if (!empty($prod->Price->CurrencyCode)) {
+                  $CurrencyCode = $prod->Price->CurrencyCode;
+              }
+              $UnitOfSale = "";
+              if (!empty($prod->UnitOfSale)) {
+                  $UnitOfSale = $prod->UnitOfSale;
+              }
+              $Weight = "";
+              if (!empty($prod->Weight)) {
+                  $Weight = $prod->Weight;
+              }
+              $WeightUnitOfMeasure = "";
+              if (!empty($prod->WeightUnitOfMeasure)) {
+                  $WeightUnitOfMeasure = $prod->WeightUnitOfMeasure;
+              }
+              $GramWeight = "";
+              if (!empty($prod->GramWeight)) {
+                  $GramWeight = $prod->GramWeight;
+              }
+              $GroupName = "";
+              if (!empty($prod->DescriptiveElementGroup->GroupName)) {
+                  $GroupName = $prod->DescriptiveElementGroup->GroupName;
+              }
+              $CreationDate = "";
+              if (!empty($prod->CreationDate)) {
+                  $CreationDate = $prod->CreationDate;
+              }
+              $CountryOfOrigin = "";
+              if (!empty($prod->CountryOfOrigin)) {
+                  $CountryOfOrigin = $prod->CountryOfOrigin;
+              }
+              $RingSizable = "";
+              if (!empty($prod->RingSizable)) {
+                  $RingSizable = $prod->RingSizable;
+              }
+              $ReadyToWear = "";
+              if (!empty($prod->ReadyToWear)) {
+                  $ReadyToWear = $prod->ReadyToWear;
+              }
+              //specifications
+              if (empty($prod->Specifications)) {
+                  $specifications = "";
+              } else {
+                  $specifications = $prod->Specifications;
+              }
+              //comessetwith
+              if (empty($prod->CanBeSetWith)) {
+                  $canbesetwith = "";
+              } else {
+                  $canbesetwith = $prod->CanBeSetWith;
+              }
+              //SetWith
+              if (empty($prod->SetWith)) {
+                  $setwith = "";
+              } else {
+                  $setwith = $prod->SetWith;
+              }
+              //ringsize
+              $ringSizeArray = [];
+              // print_r($prod->ConfigurationModel->RingSizeOptions);die();
+              if (!empty($prod->ConfigurationModel)) {
+                  if (empty($prod->ConfigurationModel->RingSizeOptions)) {
+                      $ringSizeArray = "";
+                  } else {
+                      foreach ($prod->ConfigurationModel->RingSizeOptions as $configModel) {
+                          $ringSizeArray[] = array(
+                              "Size" => number_format((float)$configModel->Size, 2, '.', ''),
+                              "Price" => $configModel->Price->Value
+                          );
+                      }
+                  }
+              } else {
+                  $ringSizeArray = "";
               }
               //explode sku for get and save sku series and sku series type end
-              $data_insert = array(
-                'product_id' => $prod->Id,
-                'category' => $category_id,
-                'sub_category' => $subcategory,
-                'minisub_category' => $minisubcategory,
-                'minisub_category2' => $minisubcategory2,
-                // 'vendor'=>1,
-                'sku' => $prod->SKU,
-                'sku_series' => $sku_series,
-                'sku_series_type1' => $sku_series_type1,
-                'sku_series_type2' => $sku_series_type2,
-                'sku_series_type3' => $sku_series_type3,
-                'description' => $Description,
-                'sdesc' => $ShortDescription,
-                'gdesc' => $GroupDescription,
-                'mcat1' => $mcat1,
-                'mcat2' => $mcat2,
-                'mcat3' => $mcat3,
-                'mcat4' => $mcat4,
-                'mcat5' => $mcat5,
-                'product_type' => $prod->ProductType,
-                'collection' => "",
-                'onhand' => $prod->OnHand,
-                'status' => $prod->Status,
-                'price' => $prod->Price->Value,
-                'currency' => $prod->Price->CurrencyCode,
-                'unitofsale' => $prod->UnitOfSale,
-                'weight' => $prod->Weight,
-                'weightunit' => $prod->WeightUnitOfMeasure,
-                'gramweight' => $GramWeight,
-                'ringsizable' => $RingSizable,
-                'ringsize' => $ringsize,
-                'ringsizetype' => $ringsizetype,
-                'leadtime' => $LeadTime,
-                'agta' => $agta,
-                'desc_e_grp' => $prod->DescriptiveElementGroup->GroupName,
-                'desc_e_name1' => $desc_e_name1,
-                'desc_e_value1' => $desc_e_value1,
-                'desc_e_name2' => $desc_e_name2,
-                'desc_e_value2' => $desc_e_value2,
-                'desc_e_name3' => $desc_e_name3,
-                'desc_e_value3' => $desc_e_value3,
-                'desc_e_name4' => $desc_e_name4,
-                'desc_e_value4' => $desc_e_value4,
-                'desc_e_name5' => $desc_e_name5,
-                'desc_e_value5' => $desc_e_value5,
-                'desc_e_name6' => $desc_e_name6,
-                'desc_e_value6' => $desc_e_value6,
-                'desc_e_name7' => $desc_e_name7,
-                'desc_e_value7' => $desc_e_value7,
-                'desc_e_name8' => $desc_e_name8,
-                'desc_e_value8' => $desc_e_value8,
-                'desc_e_name9' => $desc_e_name9,
-                'desc_e_value9' => $desc_e_value9,
-                'desc_e_name10' => $desc_e_name10,
-                'desc_e_value10' => $desc_e_value10,
-                'desc_e_name11' => $desc_e_name11,
-                'desc_e_value11' => $desc_e_value11,
-                'desc_e_name12' => $desc_e_name12,
-                'desc_e_value12' => $desc_e_value12,
-                'desc_e_name13' => $desc_e_name13,
-                'desc_e_value13' => $desc_e_value13,
-                'desc_e_name14' => $desc_e_name14,
-                'desc_e_value14' => $desc_e_value14,
-                'desc_e_name15' => $desc_e_name15,
-                'desc_e_value15' => $desc_e_value15,
-                'readytowear' => $prod->ReadyToWear,
-                'smi' => "",
-                'image1' => $image1,
-                'image2' => $image2,
-                'image3' => $image3,
-                'image4' => $image4,
-                'image5' => $image5,
-                'image6' => $image6,
-                'FullySetImage1' => $fullysetimage1,
-                'FullySetImage2' => $fullysetimage2,
-                'FullySetImage3' => $fullysetimage3,
-                'FullySetImage4' => $fullysetimage4,
-                'FullySetImage5' => $fullysetimage5,
-                'FullySetImage6' => $fullysetimage6,
-                'video' => $vedio,
-                'gimage1' => $gimage1,
-                'gimage2' => $gimage2,
-                'gimage3' => $gimage3,
-                'gvideo' => $gvedio,
-                'creationdate' => $prod->CreationDate,
-                'currencycode' => "USD",
-                'country' => $prod->CountryOfOrigin,
-                'dclarity' => "",
-                'dcolor' => "",
-                'totalweight' => "",
-                'ip' => $ip,
-                'added_by' => $addedby,
-                'is_active' => 1,
-                'date' => $cur_date
-              );
-              $last_id = $this->base_model->insert_table("tbl_quickshop_products", $data_insert, 1);
-            }
+              if (!empty($prod->Price->Value)) {
+                  if ($prod->Price->Value > $MINIMUM_COST) {
+                      $data_insert = array(
+                          'product_id' => $prod->Id,
+                          'category' => $category_id,
+                          'sub_category' => $subcategory,
+                          'minisub_category' => $minisubcategory,
+                          'minisub_category2' => $minisubcategory2,
+                          'sku' => $prod->SKU,
+                          'sku_series' => $sku_series,
+                          'sku_series_type1' => $sku_series_type1,
+                          'sku_series_type2' => $sku_series_type2,
+                          'sku_series_type3' => $sku_series_type3,
+                          'description' => $Description,
+                          'sdesc' => $ShortDescription,
+                          'gdesc' => $GroupDescription,
+                          'mcat1' => $mcat1,
+                          'mcat2' => $mcat2,
+                          'mcat3' => $mcat3,
+                          'mcat4' => $mcat4,
+                          'mcat5' => $mcat5,
+                          'product_type' => $ProductType,
+                          'collection' => "",
+                          'onhand' => $OnHand,
+                          'status' => $Status,
+                          'price' => $Value,
+                          'currency' => $CurrencyCode,
+                          'unitofsale' => $UnitOfSale,
+                          'weight' => $Weight,
+                          'weightunit' => $WeightUnitOfMeasure,
+                          'gramweight' => $GramWeight,
+                          'ringsizable' => $RingSizable,
+                          'ringsize' => $ringsize,
+                          'ringsizetype' => $ringsizetype,
+                          'leadtime' => $LeadTime,
+                          'agta' => $agta,
+                          'desc_e_grp' => $GroupName,
+                          'desc_e_name1' => $desc_e_name1,
+                          'desc_e_value1' => ltrim($desc_e_value1),
+                          'desc_e_name2' => $desc_e_name2,
+                          'desc_e_value2' => ltrim($desc_e_value2),
+                          'desc_e_name3' => $desc_e_name3,
+                          'desc_e_value3' => ltrim($desc_e_value3),
+                          'desc_e_name4' => $desc_e_name4,
+                          'desc_e_value4' => ltrim($desc_e_value4),
+                          'desc_e_name5' => $desc_e_name5,
+                          'desc_e_value5' => ltrim($desc_e_value5),
+                          'desc_e_name6' => $desc_e_name6,
+                          'desc_e_value6' => ltrim($desc_e_value6),
+                          'desc_e_name7' => $desc_e_name7,
+                          'desc_e_value7' => ltrim($desc_e_value7),
+                          'desc_e_name8' => $desc_e_name8,
+                          'desc_e_value8' => ltrim($desc_e_value8),
+                          'desc_e_name9' => $desc_e_name9,
+                          'desc_e_value9' => ltrim($desc_e_value9),
+                          'desc_e_name10' => $desc_e_name10,
+                          'desc_e_value10' => ltrim($desc_e_value10),
+                          'desc_e_name11' => $desc_e_name11,
+                          'desc_e_value11' => ltrim($desc_e_value11),
+                          'desc_e_name12' => $desc_e_name12,
+                          'desc_e_value12' => ltrim($desc_e_value12),
+                          'desc_e_name13' => $desc_e_name13,
+                          'desc_e_value13' => ltrim($desc_e_value13),
+                          'desc_e_name14' => $desc_e_name14,
+                          'desc_e_value14' => ltrim($desc_e_value14),
+                          'desc_e_name15' => $desc_e_name15,
+                          'desc_e_value15' => ltrim($desc_e_value15),
+                          'readytowear' => $ReadyToWear,
+                          'smi' => "",
+                          'image1' => $image1,
+                          'image2' => $image2,
+                          'image3' => $image3,
+                          'image4' => $image4,
+                          'image5' => $image5,
+                          'image6' => $image6,
+                          'FullySetImage1' => $fullysetimage1,
+                          'FullySetImage2' => $fullysetimage2,
+                          'FullySetImage3' => $fullysetimage3,
+                          'FullySetImage4' => $fullysetimage4,
+                          'FullySetImage5' => $fullysetimage5,
+                          'FullySetImage6' => $fullysetimage6,
+                          'video' => $vedio,
+                          'gimage1' => $gimage1,
+                          'gimage2' => $gimage2,
+                          'gimage3' => $gimage3,
+                          'gvideo' => $gvedio,
+                          'creationdate' => $CreationDate,
+                          'currencycode' => "USD",
+                          'country' => $CountryOfOrigin,
+                          'dclarity' => "",
+                          'dcolor' => "",
+                          'totalweight' => "",
+                          'ip' => $ip,
+                          'added_by' => $addedby,
+                          'is_active' => 1,
+                          'is_quick' => 1,
+                          'date' => $cur_date
+                      );
+                      $last_id = $this->base_model->insert_table("tbl_products", $data_insert, 1);
+                      $beta_insert = array(
+                          'product_id' => $last_id,
+                          'specifications' => json_encode($specifications),
+                          'canbesetwith' => json_encode($canbesetwith),
+                          'setwith' => json_encode($setwith),
+                          'ringsize' => json_encode($ringSizeArray),
+                      );
+                      $spec_id = $this->base_model->insert_table("tbl_product_specifications", $beta_insert, 1);
+                  }
+              }
+          }
             $NextPage = "";
             if (!empty($result_da->NextPage)) {
               $NextPage = $result_da->NextPage;

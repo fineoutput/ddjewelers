@@ -84,9 +84,9 @@ class QuickShops extends CI_Controller
 		// echo $id;
 		// exit;
 		$this->db->select('*');
-		$this->db->from('tbl_quickshop_products');
+		$this->db->from('tbl_products');
 		$this->db->where('sku', $id);
-		// $this->db->where('is_active',1);
+		$this->db->where('is_quick',1);
 		$data['products'] = $this->db->get()->row();
 		if (empty($data['products'])) {
 			$this->session->set_flashdata('emessage', 'Product not found!');
@@ -108,7 +108,8 @@ class QuickShops extends CI_Controller
 		// print_r($data);
 		// exit;
 		$this->db->select('*');
-		$this->db->from('tbl_quickshop_products');
+		$this->db->from('tbl_products');
+		$this->db->where('is_quick',1);
 		$this->db->where('sku', $id);
 		// $this->db->where('is_active',1);
 		$d1 = $this->db->get()->row();
@@ -209,9 +210,11 @@ class QuickShops extends CI_Controller
 		// echo $state_value;
 		// die();
 		$this->db->select('*');
-		$this->db->from('tbl_quickshop_products');
+		$this->db->from('tbl_products');
 		$this->db->where('sku_series', $d1->sku_series);
 		$this->db->where('gdesc', $d1->gdesc);
+		$this->db->where('is_quick',1);
+
 		// $this->db->where('category',$d1->category);
 		if ($s !== "" || $value !== "") {
 			$this->db->where($s, $value);
@@ -226,11 +229,13 @@ class QuickShops extends CI_Controller
 		$d2 = $this->db->get();
 		// print_r($d2->row());die();
 		$this->db->select('*');
-		$this->db->from('tbl_quickshop_products');
+		$this->db->from('tbl_products');
 		if ($s !== "" || $value !== "") {
 			$this->db->where($s, $value);
 		}
 		$this->db->where($row2, $a1);
+		$this->db->where('is_quick',1);
+
 		// $this->db->where('is_active',1);
 		$state_dropdown = $this->db->get();
 		if (!empty($state_row)) {
@@ -319,13 +324,15 @@ class QuickShops extends CI_Controller
 		// print_r($c6);die();
 		//---------------------------------------------------------------------------------
 		$this->db->select('*');
-		$this->db->from('tbl_quickshop_products');
+		$this->db->from('tbl_products');
 		// $this->db->where($s,$value);
 		// if($s ==""){
 		// 	$this->db->where('sku_series_type1',$d1->sku_series_type1);
 		// }
 		$this->db->where($row2, $a1);
 		$this->db->where('is_active', 1);
+		$this->db->where('is_quick',1);
+
 		$e41 = $this->db->get();
 		// echo $row2.$a1;die();
 		foreach ($e41->result() as $d31) {
@@ -495,9 +502,10 @@ class QuickShops extends CI_Controller
 		// more items to Consider
 		$cat_id = $d1->category;
 		$this->db->select('*');
-		$this->db->from('tbl_quickshop_products');
+		$this->db->from('tbl_products');
 		$this->db->where('category', $cat_id);
 		$this->db->order_by('rand()');
+		$this->db->where('is_quick',1);
 		$more_to_cons = $this->db->limit(5000)->get();
 		$product1 = [];
 		if (!empty($more_to_cons)) {
@@ -531,9 +539,11 @@ class QuickShops extends CI_Controller
 		}
 		$data['more'] = $product1;
 		$this->db->select('*');
-		$this->db->from('tbl_quickshop_products');
+		$this->db->from('tbl_products');
 		// $this->db->where('category',$category);
 		$this->db->order_by('rand()');
+		$this->db->where('is_quick',1);
+
 		$random = $this->db->limit(5000)->get();
 		$p_random = [];
 		if (!empty($random)) {
@@ -567,7 +577,7 @@ class QuickShops extends CI_Controller
 		}
 		$data['random'] = $p_random;
 		$this->load->view('common/header', $data);
-		$this->load->view('quick_product_details');
+		$this->load->view('product_detail');
 		$this->load->view('common/footer');
 	}
 }

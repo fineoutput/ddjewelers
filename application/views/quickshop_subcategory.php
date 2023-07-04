@@ -154,13 +154,14 @@
                       <div class="row m-4">
                         <?php
                         $this->db->select('*');
-                        $this->db->from('tbl_quickshop_products');
+                        $this->db->from('tbl_products');
                         $this->db->group_by(array("sku_series", "sku_series_type1"));
                         $this->db->where('minisub_category2', $quick_mini_subcate2->id);
                         $this->db->where('is_active', 1);
+                        $this->db->where('is_quick',1);
                         $product_da = $this->db->get();
                         // echo $product_da= $this->db->count_all_results(); die();
-                        if (!empty($product_da)) {
+                        if (!empty($product_da->row())) {
                           foreach ($product_da->result() as $prod) {
                             if (!empty($prod->image1)) {
                               $image1 = $prod->image1;
@@ -176,6 +177,8 @@
                             </a>
                         <?php
                           }
+                        }else{
+                          echo "No products found!";
                         }
                         ?>
                       </div>
