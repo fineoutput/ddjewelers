@@ -247,8 +247,7 @@
       #menu {
         /* width: 200px; */
         height: 100%;
-        overflow-x: hidden;
-        overflow-y: auto;
+      
         text-align: justify;
       }
     </style>

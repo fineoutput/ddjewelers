@@ -1,5 +1,11 @@
 <!-- register start -->
-
+<style>
+  @media(max-width: 767px){
+    .resp{
+        flex-wrap: wrap !important;
+    }
+}
+</style>
 <section>
   <div class="container-fluid pl-5 pr-5 pt-3 pb-5">
 
@@ -72,7 +78,7 @@
                 </div>
               </div>
             </div>
-            <div class="col-md-12  mt-3">
+            <div class="col-md-12  mt-3 mb-2">
               <!-- <a href="<?= base_url(); ?>Home/checkout"> -->
               <button class="sub_btn" type="submit">Continue</button>
               <!-- </a> -->
@@ -100,12 +106,12 @@
                   <?php } ?>
                 </select>
               </div>
-              <div style="display:flex;">
-                <div class="form-group col-md-6">
+              <div style="display:flex; gap:6px; " class="resp" >
+                <div class="form-group col-md-6 p-0">
                   <label for="first_name">First Name *</label>
                   <input type="text" class="form-control" name="first_name" id="first_name" required>
                 </div>
-                <div class="form-group col-md-6">
+                <div class="form-group col-md-6 p-0">
                   <label for="last_name">Last Name *</label>
                   <input type="text" class="form-control" name="last_name" id="last_name" required>
                 </div>
@@ -123,8 +129,8 @@
                 <label for="city">City *</label>
                 <input type="text" name="city" id="city" required></textarea>
               </div>
-              <div style="display:flex;">
-                <div class="form-group col-md-6">
+              <div style="display:flex; " class="resp">
+                <div class="form-group col-md-6 p-0">
                   <label for="state">States *</label>
                 <select name="state_id" class="form-control" required>
                   <option value="">----Select State---</option>
@@ -145,16 +151,16 @@
                     ?>
                 </select>
                 </div>
-                <div class="form-group col-md-6" style="display:flex;">
+                <div class="form-group col-md-6 p-0" >
                   <label for="zipcode">Zip/Postal Code *</label>
                   <input type="text" class="form-control" name="zipcode" id="zipcode" required>
                 </div>
 
               </div>
-              <div class="form-group col-md-6">
+              <div class="form-group col-md-6 mb-2  ">
                  
-                  <input type="checkbox" class="form-check-input"  style="width:5%;" name="is_gift" id="is_gift" value="1">
-                  <span>This Order Contains a Gift</span>
+                  <input type="checkbox" class="form-check-input"  style="width:5%; height:auto;" name="is_gift" id="is_gift" value="1">
+                  <span style="margin-left:8px">This Order Contains a Gift</span>
                 </div>
                 <div class="form-group">
                 <label for="notes">Special Instruction or Notes</label>

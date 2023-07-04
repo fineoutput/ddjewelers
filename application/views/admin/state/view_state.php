@@ -108,12 +108,36 @@
     </section>
 </div>
 <style>
-    label {
-        margin: 5px;
-    }
-</style>
+        label{
+        margin:5px;
+        }
+        </style>
+        <script src="<?php echo base_url() ?>assets/admin/plugins/datatables/jquery.dataTables.js"></script>
+        <script src="<?php echo base_url() ?>assets/admin/plugins/datatables/dataTables.bootstrap.js"></script>
+        <script type="text/javascript">
 
+        $(document).ready(function(){
 
-<!-- <script type="text/javascript" src="<?php echo base_url()
-                                            ?>assets/slider/ajaxupload.3.5.js"></script>
+        $(document.body).on('click', '.dCnf', function() {
+        var i=$(this).attr("mydata");
+        console.log(i);
+
+        $("#btns"+i).hide();
+        $("#cnfbox"+i).show();
+
+        });
+
+        $(document.body).on('click', '.cans', function() {
+        var i=$(this).attr("mydatas");
+        console.log(i);
+
+        $("#btns"+i).show();
+        $("#cnfbox"+i).hide();
+        })
+
+        });
+
+        </script>
+        <!-- <script type="text/javascript" src="<?php echo base_url()
+        ?>assets/slider/ajaxupload.3.5.js"></script>
         <script type="text/javascript" src="<?php echo base_url() ?>assets/slider/rs.js"></script> -->
