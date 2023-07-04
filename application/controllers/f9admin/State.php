@@ -163,7 +163,7 @@
             }
                         if($last_id!=0){
                                 $this->session->set_flashdata('smessage','Data inserted successfully');
-                                redirect("dcadmin/state/view_state","refresh");
+                                redirect("dcadmin/State/view_state","refresh");
                                }
                                 else
                                     {
@@ -220,7 +220,7 @@
                         $zapak=$this->db->update('tbl_state', $data_update);
 
                              if($zapak!=0){
-                             redirect("dcadmin/state/view_state","refresh");
+                             redirect("dcadmin/State/view_state","refresh");
                                      }
                                      else
                                      {
@@ -238,7 +238,7 @@
                           $zapak=$this->db->update('tbl_state', $data_update);
 
                               if($zapak!=0){
-                              redirect("dcadmin/state/view_state","refresh");
+                              redirect("dcadmin/State/view_state","refresh");
                                       }
                                       else
                                       {
@@ -280,7 +280,7 @@
   $zapak=$this->db->delete('tbl_state', array('id' => $id));
   if($zapak!=0){
          
-         redirect("dcadmin/state/view_state","refresh");
+         redirect("dcadmin/State/view_state","refresh");
                  }
                  else
                  {

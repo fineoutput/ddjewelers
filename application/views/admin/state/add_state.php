@@ -5,11 +5,11 @@
                   </h1>
                   <ol class="breadcrumb">
                   <li><a href="<?php echo base_url() ?>dcadmin"><i class="fa fa-dashboard"></i> Home</a></li>
-                  <li><a href="<?php echo base_url() ?>dcadmin/state/view_state"><i class="fa fa-dashboard"></i> state </a></li>
+                  <li><a href="<?php echo base_url() ?>dcadmin/State/view_state"><i class="fa fa-dashboard"></i> state </a></li>
                     <li class="active">Add state</li>
                     </ol>
                   <br/>
-                  <a class="btn btn-info cticket" href="<?php echo base_url() ?>dcadmin/state/view_state"
+                  <a class="btn btn-info cticket" href="<?php echo base_url() ?>dcadmin/State/view_state"
           role="button" style="margin-bottom:12px;">Back</a>
                 </section>
                 
@@ -40,7 +40,7 @@
 
                                     <div class="panel-body">
                                         <div class="col-lg-10">
-                                           <form action=" <?php echo base_url()  ?>dcadmin/state/add_state_data/<? echo base64_encode(1);  ?>" method="POST" id="slide_frm" enctype="multipart/form-data">
+                                           <form action=" <?php echo base_url()  ?>dcadmin/State/add_state_data/<? echo base64_encode(1);  ?>" method="POST" id="slide_frm" enctype="multipart/form-data">
                                         <div class="table-responsive">
                                             <table class="table table-hover">
  	 <tr> 
