@@ -9,6 +9,8 @@
               $this->load->model("admin/base_model");
               $this->load->library('user_agent');
               $this->load->library('upload');
+
+             
             }
 
           public function view_state(){
