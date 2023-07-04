@@ -5190,7 +5190,7 @@ class Home extends CI_Controller
             $data['country_data'] = $this->db->get();
             // die();
             $this->db->distinct();
-            $this->db->select('country');
+            $this->db->select('name');
             $this->db->from('tbl_state');
             $this->db->where('is_active', 1);
             $this->db->limit(20);
