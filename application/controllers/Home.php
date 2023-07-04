@@ -41,12 +41,14 @@ class Home extends CI_Controller
     {
         $order_id = base64_decode($idd);
         $user_id = $this->session->userdata('user_id');
+        $para = $this->input->get();
         $datas['title'] = 'Paypal Success | TechArise';
-        $paymentID = $this->input->post('paymentID');
-        $payerID = $this->input->post('payerID');
-        $token = $this->input->post('token');
-        $pid = $this->input->post('pid');
-        if (!empty($paymentID) && !empty($payerID) && !empty($token) && !empty($pid)) {
+        $paymentID = $para['paymentID'];
+        $payerID = $para['payerID'];
+        $token = $para['token'];
+        $pid = $para['pid'];
+        // echo $pid;die();
+        if (!empty($paymentID) && !empty($payerID) && !empty($token)) {
             // $data['paymentID'] = $paymentID;
             // $data['payerID'] = $payerID;
             // $data['token'] = $token;
@@ -62,8 +64,10 @@ class Home extends CI_Controller
             $data['payment_status']    = 1;
             $data['order_status']    = 1;
             $data['payment_type']    = 'Paypal';
-            $order1_da = Order1::wherenull('deleted_at')->where('id', $order_id)->first();
-            $order1_da->update($data);
+            // $order1_da = Order1::wherenull('deleted_at')->where('id', $order_id)->first();
+            // $order1_da->update($data);
+            $this->db->where('id', $order_id);
+            $zapak=$this->db->update('tbl_order1', $data);
             //delete Tbl Cart data of user
             // if($page != 0){
             // 			$this->db->select('*');
@@ -129,7 +133,7 @@ class Home extends CI_Controller
             //send email to user's email end
             redirect("Home/order_success", "refresh");
         } else {
-            $this->load->view('Home/order_failed', $data);
+            redirect('Home/order_failed', "refresh");
         }
     }
     // function charge($am,$idd){
@@ -914,7 +918,7 @@ class Home extends CI_Controller
     }
     public function all_products($idd, $t)
     {
-// echo 4;die();
+        // echo 4;die();
         $id = $idd;
         $page = base64_decode($t);
         $sort_type = $this->input->get('sort_type');
@@ -1618,11 +1622,8 @@ class Home extends CI_Controller
                 $subcate_da = $this->db->get()->row();
                 if (!empty($subcate_da)) {
                     $subcate_name = $subcate_da->name;
-                   
-                    
                 } else {
                     $subcate_name = "";
-                    
                 }
             } else {
                 $category_id = "";
@@ -1631,7 +1632,6 @@ class Home extends CI_Controller
                 $cate_name = "N/A";
                 $minorsubcate_name = "N/A";
                 $description = "N/A";
-               
             }
             $data['category_id'] = $category_id;
             $data['subcategory_id'] = $subcategory_id;
@@ -1639,7 +1639,6 @@ class Home extends CI_Controller
             $data['category_name'] = $cate_name;
             $data['minorsub_name'] = $minorsubcate_name;
             $data['description'] = $description;
-           
             $ringsize = $this->input->get('ringsize');
             $product_type = $this->input->get('product_type');
             $totalweight = $this->input->get('totalweight');
@@ -4894,7 +4893,7 @@ class Home extends CI_Controller
     public function minor_sub_products($idd)
     {
         $id = base64_decode($idd);
-    $nurseng=1;
+        $nurseng = 1;
         $data['subcategory_id'] = $idd;
         $this->db->select('*');
         $this->db->from('tbl_minisubcategory');
@@ -4926,7 +4925,7 @@ class Home extends CI_Controller
             $category_id = "";
             $cate_name = "N/A";
             $subcategory_name = "N/A";
-            $description="N/A";
+            $description = "N/A";
         }
         $data['category_id'] = $category_id;
         $data['category_name'] = $cate_name;
@@ -5190,14 +5189,12 @@ class Home extends CI_Controller
             // $this->db->where('is_active', 1);
             $data['country_data'] = $this->db->get();
             // die();
-
             $this->db->distinct();
             $this->db->select('country');
             $this->db->from('tbl_state_detail');
-            $this->db->where('is_active',1);
+            $this->db->where('is_active', 1);
             $this->db->limit(20);
-            $data['states']= $this->db->get();
-
+            $data['states'] = $this->db->get();
             $this->load->view('common/header', $data);
             $this->load->view('add_address');
             $this->load->view('common/footer');
@@ -5295,12 +5292,10 @@ class Home extends CI_Controller
     }
     public function add_new_address()
     {
-       
         $this->load->helper(array('form', 'url'));
         $this->load->library('form_validation');
         $this->load->helper('security');
         if ($this->input->post()) {
-         
             $this->form_validation->set_rules('country_id', 'country id', 'required|xss_clean|trim');
             $this->form_validation->set_rules('first_name', 'first name', 'required|xss_clean|trim');
             $this->form_validation->set_rules('last_name', 'last name', 'required|xss_clean|trim');
@@ -5311,10 +5306,7 @@ class Home extends CI_Controller
             $this->form_validation->set_rules('zipcode', 'zipcode', 'required|xss_clean|trim');
             $this->form_validation->set_rules('is_gift', 'is gift', 'xss_clean|trim');
             $this->form_validation->set_rules('notes', 'notes', 'xss_clean|trim');
-
-           
             if ($this->form_validation->run() == TRUE) {
-              
                 $country_id = $this->input->post('country_id');
                 $first_name = $this->input->post('first_name');
                 $last_name = $this->input->post('last_name');
@@ -5325,10 +5317,9 @@ class Home extends CI_Controller
                 $zipcode = $this->input->post('zipcode');
                 $is_gift = $this->input->post('is_gift');
                 $notes = $this->input->post('notes');
-              
                 $user_id = $this->session->userdata('user_id');
                 $data_insert = array(
-                    'user_id'=>$user_id,
+                    'user_id' => $user_id,
                     'country_id' => $country_id,
                     'first_name' => $first_name,
                     'last_name' => $last_name,
@@ -5344,32 +5335,25 @@ class Home extends CI_Controller
                 // print_r($data_insert);
                 // echo "</pre>";
                 // exit;
-               
                 $last_id = $this->base_model->insert_table("tbl_user_address", $data_insert, 1);
-              
-               
-            
-           
-            if ($last_id != 0) {
-                $this->session->set_flashdata('smessage', 'Address added Successfully.');
-                // redirect($_SERVER['HTTP_REFERER']);
-                redirect('Home/add_address');
+                if ($last_id != 0) {
+                    $this->session->set_flashdata('smessage', 'Address added Successfully.');
+                    // redirect($_SERVER['HTTP_REFERER']);
+                    redirect('Home/add_address');
+                } else {
+                    $this->session->set_flashdata('emessage', 'Sorry error occured');
+                    redirect($_SERVER['HTTP_REFERER']);
+                }
             } else {
-                $this->session->set_flashdata('emessage', 'Sorry error occured');
+                print_r(validation_errors());
+                die();
+                $this->session->set_flashdata('emessage', validation_errors());
                 redirect($_SERVER['HTTP_REFERER']);
             }
-        
         } else {
-
-                print_r(validation_errors());die();
-
-            $this->session->set_flashdata('emessage', validation_errors());
+            $this->session->set_flashdata('emessage', 'Please insert some data, No data available');
             redirect($_SERVER['HTTP_REFERER']);
         }
-         } else {
-                $this->session->set_flashdata('emessage', 'Please insert some data, No data available');
-                redirect($_SERVER['HTTP_REFERER']);
-            }
     }
     public function ask_question()
     {

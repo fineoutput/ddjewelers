@@ -321,7 +321,8 @@
 $amount = $this->session->flashdata('amn');
 $amount = number_format((float)$order1_data[0]->final_amount, 2, '.', '');
 $merchant_order_id = $this->session->flashdata('order_id');
-$ordr_id_enc = base64_encode($merchant_order_id);
+// $ordr_id_enc = base64_encode($merchant_order_id);
+$ordr_id_enc = base64_encode($order1_data[0]->id);
 $return_url = site_url() . 'Home/callback/' . $ordr_id_enc;
 // } else {
 //     $amount = 0;
@@ -393,7 +394,7 @@ $return_url = site_url() . 'Home/callback/' . $ordr_id_enc;
         onAuthorize: function(data, actions) {
             return actions.payment.execute()
                 .then(function() {
-                    window.location = "<?php echo PAYPAL_BASE_URL . $return_url; ?>?paymentID=" + data.paymentID + "&payerID=" + data.payerID + "&token=" + data.paymentToken + "&pid=<?php echo $merchant_order_id; ?>";
+                    window.location = "<?php echo $return_url; ?>?paymentID=" + data.paymentID + "&payerID=" + data.payerID + "&token=" + data.paymentToken + "&pid=<?php echo $merchant_order_id; ?>";
                 });
         }
     }, '#paypal-button');
