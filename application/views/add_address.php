@@ -39,8 +39,8 @@
                   }
                   if (!empty($address->state_id)) {
 
-                    $state_data = $this->db->get_where('tbl_state_detail', array('id' => $address->state_id))->result();
-                    $state_name = $state_data[0]->country;
+                    $state_data = $this->db->get_where('tbl_state', array('id' => $address->state_id))->result();
+                    $state_name = $state_data[0]->name;
                   } else {
                     $state_name = '';
                   }
@@ -144,7 +144,7 @@
                                  
                  
                       ?>
-                      <option value="<?=$dsa_id->id ?>"><?=$st->country ?></option>
+                      <option value="<?=$dsa_id->id ?>"><?=$st->name ?></option>
                       <?php
 
                     }

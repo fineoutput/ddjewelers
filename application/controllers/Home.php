@@ -5191,7 +5191,7 @@ class Home extends CI_Controller
             // die();
             $this->db->distinct();
             $this->db->select('country');
-            $this->db->from('tbl_state_detail');
+            $this->db->from('tbl_state');
             $this->db->where('is_active', 1);
             $this->db->limit(20);
             $data['states'] = $this->db->get();
