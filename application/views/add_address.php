@@ -143,8 +143,8 @@
                     foreach($states->result() as $st){
 
                       $this->db->select('*');
-                                  $this->db->from('tbl_state_detail');
-                                  $this->db->where('country',$st->country);
+                                  $this->db->from('tbl_state');
+                                  $this->db->where('country',$st->name);
                                   $dsa_id= $this->db->get()->row();
                                  
                  
