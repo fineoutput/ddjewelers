@@ -144,7 +144,7 @@
 
                       $this->db->select('*');
                                   $this->db->from('tbl_state');
-                                  $this->db->where('country',$st->name);
+                                  $this->db->where('name',$st->name);
                                   $dsa_id= $this->db->get()->row();
                                  
                  
