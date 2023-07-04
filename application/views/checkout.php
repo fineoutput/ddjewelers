@@ -39,20 +39,17 @@
             } else {
                 $country = '';
             }
-
-             if (!empty($addr_da->state_id)) {
-
-                    $state_data = $this->db->get_where('tbl_state_detail', array('id' => $addr_da->state_id))->result();
-                    $state_name = $state_data[0]->country;
-                  } else {
-                    $state_name = '';
-                  }
-            $name=$addr_da->first_name.' '.$addr_da->last_name;
+            if (!empty($addr_da->state_id)) {
+                $state_data = $this->db->get_where('tbl_state_detail', array('id' => $addr_da->state_id))->result();
+                $state_name = $state_data[0]->country;
+            } else {
+                $state_name = '';
+            }
+            $name = $addr_da->first_name . ' ' . $addr_da->last_name;
             $state = $state_name;
             $city = $addr_da->city;
             $zip = $addr_da->zipcode;
-            $notes=$addr_da->notes;
-           
+            $notes = $addr_da->notes;
         } else {
             $name;
             $address = "";
@@ -60,31 +57,28 @@
             $city = "";
             $zip = "";
             $country = "";
-            $notes='';
-           
+            $notes = '';
         }
         ?>
         <section class="Address">
             <div class="  container-fluid " style="margin-bottom: 50px;">
                 <div class="row ">
                     <div class="col-sm-6 col-md-8 add1">
-                    <h5 class="font-we"><b>Address</b></h5>
-                        <p class="border" style="padding: 10px;"><b>Name : </b><?=$name;?>
-                        <br>
-                        <b>Address : </b><?=$address;?>
-                        <br>
-                        <b>City : </b><?=$city;?>
-                        <br>
-                        <b>State : </b><?=$state_name;?>
-                        <br>
-                        <b>Zipcode : </b><?=$zip;?>
-                        <br>
-                        <b>Country : </b><?=$country;?>
-                        <br>
-                        <b>Notes : </b><?=$notes;?>
-                    </p>
-                       
-                       
+                        <h5 class="font-we"><b>Address</b></h5>
+                        <p class="border" style="padding: 10px;"><b>Name : </b><?= $name; ?>
+                            <br>
+                            <b>Address : </b><?= $address; ?>
+                            <br>
+                            <b>City : </b><?= $city; ?>
+                            <br>
+                            <b>State : </b><?= $state_name; ?>
+                            <br>
+                            <b>Zipcode : </b><?= $zip; ?>
+                            <br>
+                            <b>Country : </b><?= $country; ?>
+                            <br>
+                            <b>Notes : </b><?= $notes; ?>
+                        </p>
                         <h5 class="font-we Address "><b>Cart Details</b></h5>
                         <div class="  border">
                             <div class="col">
@@ -460,11 +454,12 @@ $return_url = site_url() . 'Home/callback/' . $ordr_id_enc;
                     "line1": "<?= $address ?>",
                     "line2": "",
                     "city": "<?= $city ?>",
-                    "state": "<?= $state ?>",
+                    // "state": "<?= $state ?>",
+                    "state": "Alabama",
                     "zipcode": "<?= $zip ?>",
                     "country": "USA"
                 },
-                "phone_number": "<?= $phone ?>",
+                "phone_number": "",
                 "email": "joedoe@123fakestreet.com"
             },
             "billing": {
@@ -476,11 +471,12 @@ $return_url = site_url() . 'Home/callback/' . $ordr_id_enc;
                     "line1": "<?= $address ?>",
                     "line2": "",
                     "city": "<?= $city ?>",
-                    "state": "<?= $state ?>",
+                    // "state": "<?= $state ?>",
+                    "state": "Alabama",
                     "zipcode": "<?= $zip ?>",
                     "country": "USA"
                 },
-                "phone_number": "<?= $phone ?>",
+                "phone_number": "",
                 "email": "joedoe@123fakestreet.com"
             },
             "items": [{
@@ -584,11 +580,10 @@ $return_url = site_url() . 'Home/callback/' . $ordr_id_enc;
                         var paymentDataRequest = googlePaymentInstance.createPaymentDataRequest({
                             transactionInfo: {
                                 displayItems: [{
-                                        label: "Subtotal",
-                                        type: "SUBTOTAL",
-                                        price: "" + amount + "",
-                                    },
-                                ],
+                                    label: "Subtotal",
+                                    type: "SUBTOTAL",
+                                    price: "" + amount + "",
+                                }, ],
                                 countryCode: 'US',
                                 currencyCode: "USD",
                                 totalPriceStatus: "FINAL",
