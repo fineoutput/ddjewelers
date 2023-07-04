@@ -7,7 +7,7 @@
     <section class="content">
         <div class="row">
             <div class="col-lg-12">
-                <a class="btn btn-info cticket" href="<?php echo base_url() ?>dcadmin/State/add_state" role="button" style="margin-bottom:12px;"> Add state</a>
+                <a class="btn btn-info cticket" href="<?php echo base_url() ?>dcadmin/State/add_state" role="button" style="margin-bottom:12px;"> Add State</a>
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <h3 class="panel-title"><i class="fa fa-money fa-fw"></i>View state</h3>
