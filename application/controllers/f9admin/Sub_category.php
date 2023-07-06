@@ -388,6 +388,7 @@ class Sub_category extends CI_finecontrol
             );
             $this->db->where('id', $idw);
             $last_id = $this->db->update('tbl_sub_category', $data_insert);
+            
 
              //===============add data in tbl_cron_job start===================//
           
@@ -403,7 +404,7 @@ class Sub_category extends CI_finecontrol
                  "subcat_id" => $idw,
                  
                );
-               $last_id = $this->base_model->insert_table("tbl_cron_jobs", $data_insert_cr, 1);
+               $last_ids = $this->base_model->insert_table("tbl_cron_jobs", $data_insert_cr, 1);
              }
  
  
