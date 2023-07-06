@@ -1,3 +1,8 @@
+<style>
+  ul {
+    list-style: inside;
+  }
+</style>
 <h2 class="text-center mb-4 mt-4"><?if(!empty($free_shipping_data)){
     echo $free_shipping_data->title;}?></h2>
 

@@ -1,3 +1,8 @@
+<style>
+  ul {
+    list-style: inside;
+  }
+</style>
 <h4 class="text-center mb-4 mt-4">Privacy Policy</h4>
 
   <div class="container terms_h3">
