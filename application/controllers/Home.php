@@ -6601,22 +6601,25 @@ class Home extends CI_Controller
                     'name' => $name
                 );
                 $last_id = $this->base_model->insert_table("tbl_users", $data_insert, 1);
+
                 $this->session->set_userdata('id', $last_id);
                 $this->session->set_userdata('name', $name);
+
+                if ($last_id != 0) {
+                    $this->session->set_flashdata('smessage', 'Sign Up Success');
+                    redirect($_SERVER['HTTP_REFERER']);
+                } else {
+                    $this->session->set_flashdata('emessage', 'Sorry error occured');
+                    redirect($_SERVER['HTTP_REFERER']);
+                }
             }
             else{
                 $this->session->set_flashdata('emessage', validation_errors());
                 redirect($_SERVER['HTTP_REFERER']);
             }
-            if ($last_id != 0) {
-                $this->session->set_flashdata('smessage', 'Sign Up Success');
-                redirect($_SERVER['HTTP_REFERER']);
-            } else {
-                $this->session->set_flashdata('emessage', 'Sorry error occured');
-                redirect($_SERVER['HTTP_REFERER']);
-            }
+            
         } else {
-            $this->session->set_flashdata('emessage', validation_errors());
+            $this->session->set_flashdata('emessage', 'No post data');
             redirect($_SERVER['HTTP_REFERER']);
         }
     }
