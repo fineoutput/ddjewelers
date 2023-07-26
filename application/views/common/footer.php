@@ -101,19 +101,19 @@
         <br/>
           <a aria-label="Sign Special Offers m-auto" class=" sign_btn_new" data-tspages="true" href="<?=base_url()?>Home/signup_special_offers">Sign Up For Special Offers</a>
           <div class="d-flex justify-content-around mt-3">
-            <a href="https://www.facebook.com/DandDJewelers">
+            <a href="https://www.facebook.com/DandDJewelers" target=”_blank” >
               <i style="color: #3b5998;font-size: 1.7rem;" class="fab fa-facebook-square"></i>
             </a>
-            <a href="https://www.instagram.com/danddjewelry/">
+            <a href="https://www.instagram.com/danddjewelry/" target=”_blank” >
               <i style="    color: #517fa4;font-size: 1.7rem;" class="fab fa-instagram"></i>
             </a>
-            <a href="https://www.pinterest.com/jewelplus">
+            <a href="https://www.pinterest.com/jewelplus" target=”_blank” >
               <i style="    color: #cb2027;font-size: 1.7rem;" class="fab fa-pinterest"></i>
             </a>
-            <a href="https://www.youtube.com/user/jewelplus1">
+            <a href="https://www.youtube.com/user/jewelplus1" target=”_blank” >
               <i style="    color: #b00;font-size: 1.7rem;" class="fab fa-youtube"></i>
             </a>
-            <a href="https://www.youtube.com/user/jewelplus1">
+            <a href="https://www.youtube.com/user/jewelplus1" target=”_blank” >
               <i style="    color: #55AFE7;font-size: 1.7rem;" class="fab fa-twitter"></i>
             </a>
           </div>
