@@ -360,7 +360,7 @@ $idw=base64_decode($iw);
                   "mincat_id2" => $idw,
                  
                 );
-                $last_id = $this->base_model->insert_table("tbl_cron_jobs", $data_insert_cr, 1);
+                $last_idd = $this->base_model->insert_table("tbl_cron_jobs", $data_insert_cr, 1);
               }
   
   
