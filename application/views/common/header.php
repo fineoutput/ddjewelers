@@ -249,6 +249,7 @@
         height: 100%;
       
         text-align: justify;
+        overflow: auto;
       }
     </style>
     <header>
