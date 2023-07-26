@@ -56,7 +56,7 @@
         <div class="panel-heading" role="tab" id="heading4">
              <h4 class="panel-title">
         <a data-toggle="collapse" data-parent="#accordion" href="#collapse4" aria-expanded="true" aria-controls="collapse4">
-         Primary store Size
+         Primary Stone Size
         </a>
       </h4>
         </div>
@@ -133,7 +133,7 @@ foreach ($sd->result() as $a){
         <div class="panel-heading" role="tab" id="heading4">
              <h4 class="panel-title">
         <a data-toggle="collapse" data-parent="#accordion" href="#collapse4" aria-expanded="true" aria-controls="collapse4">
-         Primary store type
+         Primary Stone type
         </a>
       </h4>
         </div>
@@ -204,7 +204,7 @@ if(!empty($a->product_type)){
         <div class="panel-heading" role="tab" id="heading5">
              <h4 class="panel-title">
         <a data-toggle="collapse" data-parent="#accordion" href="#collapse5" aria-expanded="true" aria-controls="collapse5">
-         total diamond type weight
+         total diamond weight
         </a>
       </h4>
         </div>
