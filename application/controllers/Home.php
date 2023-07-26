@@ -6604,6 +6604,10 @@ class Home extends CI_Controller
                 $this->session->set_userdata('id', $last_id);
                 $this->session->set_userdata('name', $name);
             }
+            else{
+                $this->session->set_flashdata('emessage', validation_errors());
+                redirect($_SERVER['HTTP_REFERER']);
+            }
             if ($last_id != 0) {
                 $this->session->set_flashdata('smessage', 'Sign Up Success');
                 redirect($_SERVER['HTTP_REFERER']);
