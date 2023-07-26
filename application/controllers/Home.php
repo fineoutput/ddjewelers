@@ -67,7 +67,7 @@ class Home extends CI_Controller
             // $order1_da = Order1::wherenull('deleted_at')->where('id', $order_id)->first();
             // $order1_da->update($data);
             $this->db->where('id', $order_id);
-            $zapak=$this->db->update('tbl_order1', $data);
+            $zapak = $this->db->update('tbl_order1', $data);
             //delete Tbl Cart data of user
             // if($page != 0){
             // 			$this->db->select('*');
@@ -4968,9 +4968,13 @@ class Home extends CI_Controller
     }
     public function register()
     {
-        $this->load->view('common/header');
-        $this->load->view('register');
-        $this->load->view('common/footer');
+        if ($this->session->get_userdata('user_id')) {
+            redirect("/", "refresh");
+        } else {
+            $this->load->view('common/header');
+            $this->load->view('register');
+            $this->load->view('common/footer');
+        }
     }
     // public function cart()
     // 	{
@@ -6589,35 +6593,39 @@ class Home extends CI_Controller
             // exit;
             $this->form_validation->set_rules('psw', 'psw', 'required|xss_clean|trim');
             $this->form_validation->set_rules('name', 'name', 'required|xss_clean|trim');
-            $this->form_validation->set_rules('email', 'email', 'required|xss_clean|valid_email|trim|is_unique[tbl_users.email]');
+            $this->form_validation->set_rules('email', 'email', 'required|xss_clean|valid_email|trim');
             if ($this->form_validation->run() == TRUE) {
                 $email = $this->input->post('email');
                 $passw = $this->input->post('psw');
                 $name = $this->input->post('name');
-                $pass = md5($passw);
-                $data_insert = array(
-                    'email' => $email,
-                    'psw' => $pass,
-                    'name' => $name
-                );
-                $last_id = $this->base_model->insert_table("tbl_users", $data_insert, 1);
-
-                $this->session->set_userdata('id', $last_id);
-                $this->session->set_userdata('name', $name);
-
-                if ($last_id != 0) {
-                    $this->session->set_flashdata('smessage', 'Sign Up Success');
-                    redirect($_SERVER['HTTP_REFERER']);
+                // --- check for already exist user ------
+                $checkUser = $this->db->get_where('tbl_users', array('email' => $email))->result();
+                if (empty($checkUser)) {
+                    $pass = md5($passw);
+                    $data_insert = array(
+                        'email' => $email,
+                        'psw' => $pass,
+                        'name' => $name
+                    );
+                    $last_id = $this->base_model->insert_table("tbl_users", $data_insert, 1);
+                    $this->session->set_userdata('user_name', $name);
+                    $this->session->set_userdata('user_id', $last_id);
+                    //$this->session->set_userdata('name',$name);
+                    if ($last_id != 0) {
+                        $this->session->set_flashdata('smessage', 'Sign Up Success');
+                        redirect("Home/index", "refresh");
+                    } else {
+                        $this->session->set_flashdata('emessage', 'Sorry error occured');
+                        redirect($_SERVER['HTTP_REFERER']);
+                    }
                 } else {
-                    $this->session->set_flashdata('emessage', 'Sorry error occured');
+                    $this->session->set_flashdata('emessage', 'Email already exist!');
                     redirect($_SERVER['HTTP_REFERER']);
                 }
-            }
-            else{
+            } else {
                 $this->session->set_flashdata('emessage', validation_errors());
                 redirect($_SERVER['HTTP_REFERER']);
             }
-            
         } else {
             $this->session->set_flashdata('emessage', 'No post data');
             redirect($_SERVER['HTTP_REFERER']);
