@@ -4967,8 +4967,8 @@ class Home extends CI_Controller
         $this->load->view('common/footer');
     }
     public function register()
-    {
-        if ($this->session->get_userdata('user_id')) {
+    { 
+        if (!empty($this->session->userdata('user_id'))) {
             redirect("/", "refresh");
         } else {
             $this->load->view('common/header');
@@ -6677,8 +6677,7 @@ class Home extends CI_Controller
     public function logout()
     {
         if (!empty($this->session->userdata('user_name'))) {
-            $this->session->unset_userdata('user_id');
-            $this->session->unset_userdata('user_name');
+            $this->session->sess_destroy();
             redirect("Home/index", "refresh");
         } else {
             echo "Error Loging out";
