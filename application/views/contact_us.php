@@ -224,12 +224,12 @@
         <a href="https://policies.google.com/privacy" target="_blank">Privacy Policy</a> and
         <a href="https://policies.google.com/terms" target="_blank">Terms of Service</a> apply.
     </small></p> -->
-                            <div id="custom_form" class="g-recaptcha" style="visibility: hidden;">
+                            <!-- <div id="custom_form" class="g-recaptcha" style="visibility: hidden;">
                                 <div class="grecaptcha-badge" data-style="inline" style="width: 256px; height: 60px; box-shadow: gray 0px 0px 5px;">
-                                    <div class="grecaptcha-logo"><iframe title="reCAPTCHA" src="https://www.google.com/recaptcha/api2/anchor?ar=1&amp;k=6LeGH_QmAAAAAESodt2Bw0XfNXuFfy0SkwMXOaQl&amp;co=aHR0cHM6Ly93d3cuamV3ZWxwbHVzLmNvbTo0NDM.&amp;hl=en&amp;v=6OAif-f8nYV0qSFmq-D6Qssr&amp;size=invisible&amp;badge=inline&amp;cb=f3cqgfdgdukd" width="256" height="60" role="presentation" name="a-6p2028lj629z" frameborder="0" scrolling="no" sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-top-navigation allow-modals allow-popups-to-escape-sandbox"></iframe></div>
+                                    <div class="grecaptcha-logo"><iframe title="reCAPTCHA" src="https://www.google.com/recaptcha/api2/anchor?ar=1&amp;k=6LfptFUnAAAAALUJCFk-lmhAvMIGGLWpn7nrZ9LW&amp;co=aHR0cHM6Ly93d3cuamV3ZWxwbHVzLmNvbTo0NDM.&amp;hl=en&amp;v=6OAif-f8nYV0qSFmq-D6Qssr&amp;size=invisible&amp;badge=inline&amp;cb=f3cqgfdgdukd" width="256" height="60" role="presentation" name="a-6p2028lj629z" frameborder="0" scrolling="no" sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-top-navigation allow-modals allow-popups-to-escape-sandbox"></iframe></div>
                                     <div class="grecaptcha-error"></div><textarea id="g-recaptcha-response" name="g-recaptcha-response" class="g-recaptcha-response" style="width: 250px; height: 40px; border: 1px solid rgb(193, 193, 193); margin: 10px 25px; padding: 0px; resize: none; display: none;"></textarea>
                                 </div><iframe style="display: none;"></iframe>
-                            </div>
+                            </div> -->
                         </form>
                         <div class="confirmation conceal d-none">
                             <hr>
