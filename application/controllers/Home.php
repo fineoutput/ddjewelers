@@ -4967,7 +4967,7 @@ class Home extends CI_Controller
         $this->load->view('common/footer');
     }
     public function register()
-    { 
+    {
         if (!empty($this->session->userdata('user_id'))) {
             redirect("/", "refresh");
         } else {
@@ -5254,7 +5254,8 @@ class Home extends CI_Controller
                 $cur_date = date("Y-m-d H:i:s");
                 $recaptchaResponse = trim($this->input->post('g-recaptcha-response'));
                 $userIp =  $ip;
-                $secret = "6LeGH_QmAAAAAGpZCC1XAVFzo8rNDqgkZs3mKP6x";
+                $secret = "6LeGH_QmAAAAAGpZCC1XAVFzo8rNDqgkZs3mKP6x"; //----live
+                // $secret = "6LfptFUnAAAAADfFrpsNFyP9W9ms3Wq_jQSUdaHW";//----localhost
                 $url = "https://www.google.com/recaptcha/api/siteverify?secret=" . $secret . "&response=" . $recaptchaResponse . "&remoteip=" . $userIp;
                 $ch = curl_init();
                 curl_setopt($ch, CURLOPT_URL, $url);
@@ -5275,6 +5276,53 @@ class Home extends CI_Controller
                     );
                     $last_id = $this->base_model->insert_table("tbl_contact", $data_insert, 1);
                     if ($last_id != 0) {
+                        //---- sent email to user ------
+                        $config = array(
+                            'protocol' => 'smtp',
+                            'smtp_host' => SMTP_HOST,
+                            'smtp_port' => SMTP_PORT,
+                            'smtp_user' => USER_NAME, // change it to yours
+                            'smtp_pass' => PASSWORD, // change it to yours
+                            'mailtype' => 'html',
+                            'charset' => 'iso-8859-1',
+                            'wordwrap' => true
+                        );
+                        $message2 = "
+                        Dear ,". $fname . ",<br/><br/>
+                        Thank you for contacting us! We've received your message and will get back to you shortly.<br/><br/>
+                        Best regards,<br/>
+                        DD Jewellry
+                           ";
+                        $this->load->library('email', $config);
+                        $this->email->set_newline("");
+                        $this->email->from(EMAIL, EMAIL_NAME); // change it to yours
+                        $this->email->to($email); // change it to yours
+                        $this->email->subject("Thank You! We'll be in touch soon.");
+                        $this->email->message($message2);
+                        if ($this->email->send()) {
+                        }else{
+                            // show_error($this->email->print_debugger());
+                        }
+                        //---- sent email to admin ------
+                        $message2 = '
+                            Hello Admin<br/><br/>
+                            You have received new contact query and below are the details<br/><br/>
+                            <b>First Name</b> - ' . $fname . '<br/>
+                            <b>Last Name</b> - ' . $lname . '<br/>
+                            <b>Email</b> - ' . $email . '<br/>
+                            <b>Phone</b> - ' . $phone . '<br/>
+                            <b>Message</b> - ' . $message . '<br/>
+                              ';
+                        $this->load->library('email', $config);
+                        $this->email->set_newline("");
+                        $this->email->from(EMAIL, EMAIL_NAME); // change it to yours
+                        $this->email->to('jewelplus@gmail.com'); // change it to yours
+                        $this->email->subject('New contact query received');
+                        $this->email->message($message2);
+                        if ($this->email->send()) {
+                        }else{
+                            // show_error($this->email->print_debugger());
+                        }
                         $this->session->set_flashdata('smessage', 'Thankyou for contacting us. We will get back to you.');
                         redirect("Home/contact_us", "refresh");
                     } else {
