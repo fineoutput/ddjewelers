@@ -159,7 +159,8 @@
                                     <label for="id_honeypot" class="form-control-label">
                                         Email Address
                                     </label>
-                                    <input autocomplete="off" class="form-control" id="id_honeypot" name="honeypot" type="email">
+                                    <input autocomplete="off" class="form-control" id="offer" name="offer" type="hidden" value="1">
+                                    <input autocomplete="off" class="form-control" id="id_honeypot" name="email" type="email">
                                     <span class="form-text">
                                     </span>
                                 </div>

@@ -5241,12 +5241,14 @@ class Home extends CI_Controller
             $this->form_validation->set_rules('lname', 'lname', 'required|xss_clean|trim');
             $this->form_validation->set_rules('email', 'email', 'required|xss_clean|valid_email|trim');
             $this->form_validation->set_rules('phone', 'phone', 'xss_clean|trim');
-            $this->form_validation->set_rules('message', 'message', 'required|xss_clean|trim');
+            $this->form_validation->set_rules('offer', 'offer', 'xss_clean|trim');
+            $this->form_validation->set_rules('message', 'message', 'xss_clean|trim');
             if ($this->form_validation->run() == TRUE) {
                 $fname = $this->input->post('fname');
                 $lname = $this->input->post('lname');
                 $email = $this->input->post('email');
                 $phone = $this->input->post('phone');
+                $offer = $this->input->post('offer');
                 $message = $this->input->post('message');
                 // $user_id=$this->input->post('user_id');
                 $ip = $this->input->ip_address();
@@ -5255,7 +5257,7 @@ class Home extends CI_Controller
                 $recaptchaResponse = trim($this->input->post('g-recaptcha-response'));
                 $userIp =  $ip;
                 $secret = "6LeGH_QmAAAAAGpZCC1XAVFzo8rNDqgkZs3mKP6x"; //----live
-                // $secret = "6LfptFUnAAAAADfFrpsNFyP9W9ms3Wq_jQSUdaHW";//----localhost
+                // $secret = "6LfptFUnAAAAADfFrpsNFyP9W9ms3Wq_jQSUdaHW"; //----localhost
                 $url = "https://www.google.com/recaptcha/api/siteverify?secret=" . $secret . "&response=" . $recaptchaResponse . "&remoteip=" . $userIp;
                 $ch = curl_init();
                 curl_setopt($ch, CURLOPT_URL, $url);
@@ -5287,24 +5289,46 @@ class Home extends CI_Controller
                             'charset' => 'iso-8859-1',
                             'wordwrap' => true
                         );
-                        $message2 = "
-                        Dear ,". $fname . ",<br/><br/>
-                        Thank you for contacting us! We've received your message and will get back to you shortly.<br/><br/>
-                        Best regards,<br/>
-                        DD Jewellry
-                           ";
+                        if (!empty($offer)) {
+                            $subject = " Thanks for Signing Up!";
+                            $message2 = "
+                            Dear, " . $fname . ",<br/><br/>
+                            Thanks for signing up! We're thrilled to have you on board. Expect exciting offers coming your way soon!<br/><br/>
+                            Best regards,<br/>
+                            DD Jewellry
+                               ";
+                        } else {
+                            $subject = "Thank You! We'll be in touch soon.";
+                            $message2 = "
+                            Dear, " . $fname . ",<br/><br/>
+                            Thank you for contacting us! We've received your message and will get back to you shortly.<br/><br/>
+                            Best regards,<br/>
+                            DD Jewellry
+                               ";
+                        }
                         $this->load->library('email', $config);
                         $this->email->set_newline("");
                         $this->email->from(EMAIL, EMAIL_NAME); // change it to yours
                         $this->email->to($email); // change it to yours
-                        $this->email->subject("Thank You! We'll be in touch soon.");
+                        $this->email->subject($subject);
                         $this->email->message($message2);
                         if ($this->email->send()) {
-                        }else{
+                        } else {
                             // show_error($this->email->print_debugger());
                         }
                         //---- sent email to admin ------
-                        $message2 = '
+                        if (!empty($offer)) {
+                            $subject = "New special offers signup received";
+                            $message2 = '
+                            Hello Admin<br/><br/>
+                            You have received new special offers signup and below are the details<br/><br/>
+                            <b>First Name</b> - ' . $fname . '<br/>
+                            <b>Last Name</b> - ' . $lname . '<br/>
+                            <b>Email</b> - ' . $email . '<br/>
+                              ';
+                        } else {
+                            $subject = "New contact query received.";
+                            $message2 = '
                             Hello Admin<br/><br/>
                             You have received new contact query and below are the details<br/><br/>
                             <b>First Name</b> - ' . $fname . '<br/>
@@ -5313,18 +5337,24 @@ class Home extends CI_Controller
                             <b>Phone</b> - ' . $phone . '<br/>
                             <b>Message</b> - ' . $message . '<br/>
                               ';
+                        }
                         $this->load->library('email', $config);
                         $this->email->set_newline("");
                         $this->email->from(EMAIL, EMAIL_NAME); // change it to yours
-                        $this->email->to('jewelplus@gmail.com'); // change it to yours
-                        $this->email->subject('New contact query received');
+                        $this->email->to('office.fineoutput@gmail.com'); // change it to yours
+                        $this->email->subject($subject);
                         $this->email->message($message2);
                         if ($this->email->send()) {
-                        }else{
+                        } else {
                             // show_error($this->email->print_debugger());
                         }
-                        $this->session->set_flashdata('smessage', 'Thankyou for contacting us. We will get back to you.');
-                        redirect("Home/contact_us", "refresh");
+                        if (!empty($offer)) {
+                            $this->session->set_flashdata('smessage', 'Thankyou for signing up');
+                            redirect("Home/signup_special_offers", "refresh");
+                        }else{
+                            $this->session->set_flashdata('smessage', 'Thankyou for contacting us. We will get back to you.');
+                            redirect("Home/contact_us", "refresh");
+                        }
                     } else {
                         $this->session->set_flashdata('emessage', 'Sorry error occured');
                         redirect($_SERVER['HTTP_REFERER']);
