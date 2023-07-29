@@ -95,7 +95,7 @@
 
 
         <div class="dnd  text-center">
-            <img src="<?=base_url()?>assets/jewel/img/logo.png" alt="D&D" class="img-fluid">
+            <img src="<?= base_url() ?>assets/jewel/img/logo.png" alt="D&D" class="img-fluid">
             <h3 class=" text-center lobi " style="margin-block-end: 0;">D&amp;D Jewelry</h3>
             <h5 style="    margin-block-start:0;
                         margin-block-end: 0;">Since 1985</h5>
@@ -117,21 +117,91 @@
 
 
         <section>
-            <div class="Italian_section ">
-                <div class="row">
-                    <div class="col-lg-4 ">
-                        <img src="https://meteor.stullercloud.com/das/107374947?obj=metals&obj.recipe=rose&$standard$?$xlarge$" alt="D&D" class="img-fluid">
-                    </div>
-                    <div class="col-lg-8 Italian_sec">
-                        <h3>Italian Collection-14VANE199Y18</h3>
-                        <p>Quantity:1</p>
-                        <p>Brand:Italian Collection</p>
-                        <p>Stock#14VANE199Y18</p>
+            <?
+            $this->db->select('*');
+            $this->db->from('tbl_order2');
+            $this->db->where('main_id', $id);
+            $order2 = $this->db->get();
 
-                        <h3 style="margin-top: 40px;"> $487.50</h3>
+
+
+            $this->db->select('*');
+            $this->db->from('tbl_users');
+            $this->db->where('id', $order1_data->user_id);
+            $user = $this->db->get()->row();
+
+            $this->db->select('*');
+                        $this->db->from('tbl_user_address');
+                        $this->db->where('user_id',$id);
+                        $user_address= $this->db->get()->row();
+                        if(!empty($user_address)){
+                            $name=$user_address->first_name.' '.$user_address->last_name;
+                            $address1=$user_address->address;
+                            $address2=$user_address->address2;
+                            $city=$user_address->city;
+
+                            $state_id=$user_address->state_id;
+                            $zipcode=$user_address->zipcode;
+
+                            $this->db->select('*');
+                                        $this->db->from('tbl_state');
+                                        $this->db->where('id',$state_id);
+                                        $statedata= $this->db->get()->row();
+                            $state=$statedata->name;
+
+                            $country_id=$user_address->	country_id;
+
+                            $this->db->select('*');
+                                        $this->db->from('tbl_country');
+                                        $this->db->where('id',$country_id);
+                                        $contrydata= $this->db->get()->row();
+                            $country=$contrydata->name;
+                                       
+                        }else{
+                            $name='';
+                            $state='';
+                            $country='';
+                            $city='';
+                            $address2='';
+                            $address1='';
+                            $zipcode='';
+                        }
+                       
+
+
+            ?>
+            <? $count=0;foreach ($order2->result() as $ord) {
+
+                $this->db->select('*');
+                $this->db->from('tbl_products');
+                $this->db->where('id', $ord->product_id);
+                $product = $this->db->get()->row();
+            ?>
+                <div class="Italian_section ">
+                    <div class="row">
+                        <div class="col-lg-4 ">
+                            <img src="<?= base_url() . $product->image1 ?>" alt="D&D" class="img-fluid">
+                        </div>
+
+
+                        <div class="col-lg-8 Italian_sec">
+
+
+
+
+                            <h3><?= $product->description ?></h3>
+                            <p><?= 'QTY : '.$ord->quantity ?></p>
+
+                            <p><?= 'Sku Id :'.$product->sku ?></p>
+                            <h3><?= '$' . $product->price ?></h3>
+
+                        </div>
                     </div>
                 </div>
-            </div>
+            <?
+            $count++;
+            }
+            ?>
         </section>
 
 
@@ -145,16 +215,17 @@
 
                         <p class="text-uppercase mt-3">Order Information</p>
                         <div>
-                            <p>Name: Patrick Sannon</p>
-                            <p> Email:<a href="#" target="_blank"> patsannon11@gmail.com</a></p>
-                            <p>phone: 419572611</p>
+                            <p>Name: <?=$name ?></p>
+                            <!-- <p> Email:<a href="#" target="_blank"> patsannon11@gmail.com</a></p>
+                            <p>phone: 419572611</p> -->
                         </div>
 
                         <div class="mt-5">
-                            <p>Order#460</p>
-                            <p> Transaction ID:2C665062DU7253149</p>
-                            <p> Quantity Ordered: 1</p>
-                            <p> Payment: Paypal</p>
+                            <p><?= 'Order Id : '.$id ?></p>
+                            <p> <?= 'Txn Id :'.$order1_data->txnid ?></p>
+                            <p> <?= 'Total Product : '.$count ?></p>
+                            <p><?= 'Payment Type : '.$order1_data->payment_type; ?></p>
+                            <!-- <p> Payment: Paypal</p> -->
                         </div>
 
                     </div>
@@ -164,16 +235,16 @@
                             <h4 class="table ">Order Summary</h4>
                             <table>
                                 <tr style="width: 100%;">
-                                    <td style="width: 95%;">Tax:</td>
-                                    <td style="width: 5%;">$0.00</td>
+                                    <td style="width: 95%;">Payment Discount:</td>
+                                    <td style="width: 5%;"><?= $order1_data->p_discount; ?></td>
                                 </tr>
                                 <tr>
                                     <td>Shipping:</td>
-                                    <td>$0.00</td>
+                                    <td><?=$order1_data->shipping; ?></td>
                                 </tr>
                                 <tr>
                                     <th>Total:</th>
-                                    <th><span style="color: rgb(145, 37, 37); "> $487.50</span></th>
+                                    <th><span style="color: rgb(145, 37, 37); "><?='$'.$order1_data->total_amount; ?></span></th>
                                 </tr>
                             </table>
                         </div>
@@ -194,32 +265,30 @@
             <div class="customer_section">
                 <h2>Customer Info</h2>
                 <div class="row">
-                    <div class="col-lg-4">
-                        <p class="text-uppercase mt-3">Billing Information</p>
-                        <p style="color:#343a40;"><b>Billing Address</b></p>
-                        <div>
-                            <p>Patrick Sannon</p>
-                            <p> 4701 Franklin Blvd</p>
-                            <p>cleveland, OH 44102</p>
-                        </div>
-                    </div>
+                   
 
                     <div class="col-lg-4">
                         <p class="text-uppercase mt-3 ">Shipping Information</p>
                         <p style="color:#343a40;"><b>Shipping Address</b></p>
                         <div>
-                            <p>Patrick Sannon</p>
-                            <p> 4701 Franklin Blvd</p>
-                            <p>cleveland, OH 44102</p>
+                            <p><?=$name?></p>
+                            <p>Address : <?=$address1 ?></p>
+                           
+                            <p> City : <?=$city ?></p>
+                           
+                            <p> Zipcode : <?=$zipcode ?></p>
+                            
+                           
                         </div>
 
-                        <p style="color:#343a40;"><b>Shipping Info</b></p>
-                        <div>
-                            <p>Method: Standard Shipping-USA</p>
-                            <p>only</p>
-                            <p>THIS IS A GIFT ORDER</p>
-                        </div>
+                        
                     </div>
+                    <div class="col-lg-4">
+                    <p>Address2 : <?=$address2 ?></p>
+                    <p> State : <?=$state ?></p>
+                    <p> Country : <?=$country ?></p>
+                       
+                       </div>
 
                 </div>
             </div>

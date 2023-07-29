@@ -543,6 +543,38 @@ class Order extends CI_Controller
             redirect("/", "refresh");
         }
     }
+    public function viewemail(){
+
+        $this->db->select('*');
+        $this->db->from('tbl_order1');
+        $this->db->where('id',4);
+        $order1= $this->db->get()->row();
+
+        $this->db->select('*');
+                    $this->db->from('tbl_users');
+                    $this->db->where('id',$order1->user_id);
+                    $user= $this->db->get()->row();
+                   
+
+        if (!empty($user->email)) {
+
+           
+                       
+
+            $to = $user->email;
+            $name = $user->name;
+            $data['name'] = $name;
+            $data['id'] = $order1->id;
+            $data['order1_data'] = $order1;
+            $message = $this->load->view('email', $data, TRUE);
+            // print_r($message);
+            // exit;
+        }
+
+      
+		$this->load->view('email');
+	
+    }
     //==================== Google Pay order placing ==============
     public function  googlePay_verify()
     {
@@ -588,9 +620,68 @@ class Order extends CI_Controller
                         'payment_status' => 1,
                         'order_status' => 1,
                     );
+
                     $this->db->where('id', $id);
                     $zapak = $this->db->update('tbl_order1', $data_update);
                     $user_id = $this->session->userdata('user_id');
+
+                //------------User Sent Email Start--------------//
+                
+            $config['protocol'] = PROTOCOL;
+            $config['smtp_host'] = SMTP_HOST;
+            $config['smtp_port'] = SMTP_PORT;
+            $config['smtp_timeout'] = '7';
+            $config['smtp_user'] = USER_NAME;
+            $config['smtp_pass'] = PASSWORD;
+            $config['charset'] = 'utf-8';
+            $config['newline'] = "\r\n";
+            $config['mailtype'] = 'html'; // or html
+            $config['validation'] = TRUE; // bool whether to validate email or not  
+            // print_r($user_data);die();
+            $this->db->select('*');
+            $this->db->from('tbl_order1');
+            $this->db->where('id',$id);
+            $order1= $this->db->get()->row();
+
+            $this->db->select('*');
+                        $this->db->from('tbl_users');
+                        $this->db->where('id',$order1->user_id);
+                        $user= $this->db->get()->row();
+                       
+
+            if (!empty($user->email)) {
+
+               
+                           
+
+                $to = $user->email;
+                $name = $user->name;
+                $data['name'] = $name;
+                $data['order1_id'] = $id;
+                $data['order1_data'] = $order1;
+                $message = $this->load->view('email', $data, TRUE);
+                //  print_r($message);
+                // exit;
+                $this->load->library('email', $config);
+                $this->email->set_newline("");
+                // $this->email->from(EMAIL); // change it to yours
+              //  $this->email->from(USER_NAME, MAIL_NAME);
+                $this->email->to($to); // change it to yours
+                $this->email->subject('Order Placed');
+                $this->email->message($message);
+                if ($this->email->send()) {
+                    // echo 'Email sent.';
+                } else {
+                    // show_error($this->email->print_debugger());
+                }
+            }
+                
+
+                //------------User Sent Email End--------------//
+
+                       
+
+
                     if ($zapak != 0) {
                         $this->session->set_flashdata('order_id', $id);
                         $this->session->set_flashdata('amount', $order1_data[0]->final_amount);
