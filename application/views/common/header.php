@@ -12,6 +12,9 @@
   <link href="https://vjs.zencdn.net/7.18.1/video-js.css" rel="stylesheet" />
   <link href="https://unpkg.com/video.js@7/dist/video-js.min.css" rel="stylesheet" />
   <script src="https://js.braintreegateway.com/web/dropin/1.34.0/js/dropin.min.js"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
+
   <!-- City -->
   <link href="https://unpkg.com/@videojs/themes@1/dist/city/index.css" rel="stylesheet" />
 </head>

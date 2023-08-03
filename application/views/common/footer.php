@@ -166,6 +166,7 @@
 <script src="<?=base_url();?>assets/jewel/js/jquery.zoom.js"></script>
 <script>
 		$(document).ready(function(){
+      $('.select2').select2();
 			jQuery('#pic-1').zoom();
 			jQuery('#pic-2').zoom();
 			jQuery('#pic-3').zoom();

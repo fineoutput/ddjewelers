@@ -103,7 +103,7 @@
             <form action="<?= base_url(); ?>Home/add_new_address" method="post" enctype="multipart/form-data">
               <div class="form-group">
                 <label>Country *</label>
-                <select name="country_id" class="form-control" required>
+                <select name="country_id" class="form-control select2" required>
                   <option value="">-----select Country-----</option>
                   <?php $i = 1;
                   foreach ($country_data->result() as $country) { ?>
@@ -135,9 +135,9 @@
                 <input type="text" name="city" id="city" required></textarea>
               </div>
               <div style="display:flex; " class="resp">
-                <div class="form-group col-md-6 p-0">
+                <div class="form-group col-md-6 p-0" style="margin-right: 10px;">
                   <label for="state">States *</label>
-                <select name="state_id" class="form-control" required>
+                <select name="state_id" class="form-control select2" required>
                   <option value="">----Select State---</option>
                     <?php
                     foreach($states->result() as $st){
