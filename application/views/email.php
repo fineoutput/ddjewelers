@@ -109,9 +109,7 @@
             <div class="order_section ">
                 <h1><b>Order Confirmation</b></h1>
                 <p>A new order was made on <a href="#" target="_blank">www.dd.jewelplus.com</a>, you can view this order in your site admin.</p>
-                <button type="button" class="btn-secondary btn-lg btn"><b>View Order</b></button>
-                <button type="button" class="btn-secondary btn-lg btn"><b>Print</b></button>
-            </div>
+               
         </section>
 
 
