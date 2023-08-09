@@ -1,7 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- PAGE TITLE -->
+    <?if(!empty($title)){?>
+  <title><?=$title?></title>
+  <?}else{?>
   <title>D&D Jewelry</title>
+  <?}?>
+  <!-- //-------- PAGE KEYWORDS ------ -->
+  <?if(!empty($keyword)){?>
+  <meta name="keywords" content="<?=$keyword?>">
+  <?}?>
+  <!-- -------- PAGE DESCRIPTION ---------- -->
+  <?if(!empty($dsc)){?>
+  <meta name="description" content="<?=$dsc?>">
+  <?}?>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.css" rel="stylesheet" type='text/css'>
@@ -14,7 +27,6 @@
   <script src="https://js.braintreegateway.com/web/dropin/1.34.0/js/dropin.min.js"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
-
   <!-- City -->
   <link href="https://unpkg.com/@videojs/themes@1/dist/city/index.css" rel="stylesheet" />
 </head>

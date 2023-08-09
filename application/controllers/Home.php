@@ -5217,6 +5217,9 @@ class Home extends CI_Controller
     public function contact_us()
     {
         $data['contact_data'] = $this->db->get_where('tbl_contact_us_page', array('is_active' => 1))->result();
+        $data['title'] =  $data['contact_data'][0]->page_title;
+        $data['keyword'] =  $data['contact_data'][0]->keyword;
+        $data['dsc'] =  $data['contact_data'][0]->dsc;
         $this->load->view('common/header', $data);
         $this->load->view('contact_us');
         $this->load->view('common/footer');
@@ -6886,6 +6889,9 @@ class Home extends CI_Controller
         $this->db->from('tbl_about_us');
         $this->db->where('is_active', 1);
         $data['about_us'] = $this->db->get()->row();
+        $data['title'] =  $data['about_us']->page_title;
+        $data['keyword'] =  $data['about_us']->keyword;
+        $data['dsc'] =  $data['about_us']->dsc;
         $this->load->view('common/header', $data);
         $this->load->view('about_us');
         $this->load->view('common/footer');
@@ -6900,6 +6906,9 @@ class Home extends CI_Controller
         $this->db->from('tbl_terms_and_conditions');
         $this->db->where('is_active', 1);
         $data['terms_and_conditions'] = $this->db->get()->row();
+        $data['title'] =  $data['terms_and_conditions']->page_title;
+        $data['keyword'] =  $data['terms_and_conditions']->keyword;
+        $data['dsc'] =  $data['terms_and_conditions']->dsc;
         $this->load->view('common/header', $data);
         $this->load->view('terms_and_conditions');
         $this->load->view('common/footer');
@@ -6910,6 +6919,9 @@ class Home extends CI_Controller
         $this->db->from('tbl_return_policy');
         $this->db->where('is_active', 1);
         $data['return_policy'] = $this->db->get()->row();
+        $data['title'] =  $data['return_policy']->page_title;
+        $data['keyword'] =  $data['return_policy']->keyword;
+        $data['dsc'] =  $data['return_policy']->dsc;
         $this->load->view('common/header', $data);
         $this->load->view('return_policy');
         $this->load->view('common/footer');
@@ -6920,6 +6932,9 @@ class Home extends CI_Controller
         $this->db->from('tbl_privacy_policy');
         $this->db->where('is_active', 1);
         $data['privacy_policy'] = $this->db->get()->row();
+        $data['title'] =  $data['privacy_policy']->page_title;
+        $data['keyword'] =  $data['privacy_policy']->keyword;
+        $data['dsc'] =  $data['privacy_policy']->dsc;
         $this->load->view('common/header', $data);
         $this->load->view('privacy_policy');
         $this->load->view('common/footer');
@@ -6930,6 +6945,9 @@ class Home extends CI_Controller
         $this->db->from('tbl_why_us');
         $this->db->where('is_active', 1);
         $data['why_us_data'] = $this->db->get()->row();
+        $data['title'] =  $data['why_us_data']->page_title;
+        $data['keyword'] =  $data['why_us_data']->keyword;
+        $data['dsc'] =  $data['why_us_data']->dsc;
         $this->load->view('common/header', $data);
         $this->load->view('why_us');
         $this->load->view('common/footer');
@@ -6940,6 +6958,9 @@ class Home extends CI_Controller
         $this->db->from('tbl_flexiblefinancing');
         $this->db->where('is_active', 1);
         $data['flexiblefinancing_data'] = $this->db->get()->row();
+        $data['title'] =  $data['flexiblefinancing_data']->page_title;
+        $data['keyword'] =  $data['flexiblefinancing_data']->keyword;
+        $data['dsc'] =  $data['flexiblefinancing_data']->dsc;
         $this->load->view('common/header', $data);
         $this->load->view('flexiblefinancing');
         $this->load->view('common/footer');
@@ -6950,6 +6971,9 @@ class Home extends CI_Controller
         $this->db->from('tbl_free_shipping');
         $this->db->where('is_active', 1);
         $data['free_shipping_data'] = $this->db->get()->row();
+        $data['title'] =  $data['free_shipping_data']->page_title;
+        $data['keyword'] =  $data['free_shipping_data']->keyword;
+        $data['dsc'] =  $data['free_shipping_data']->dsc;
         $this->load->view('common/header', $data);
         $this->load->view('free_shipping');
         $this->load->view('common/footer');
@@ -6960,6 +6984,9 @@ class Home extends CI_Controller
         $this->db->from('tbl_lifetime_upgrades');
         $this->db->where('is_active', 1);
         $data['lifetime_upgrades_data'] = $this->db->get()->row();
+        $data['title'] =  $data['lifetime_upgrades_data']->page_title;
+        $data['keyword'] =  $data['lifetime_upgrades_data']->keyword;
+        $data['dsc'] =  $data['lifetime_upgrades_data']->dsc;
         $this->load->view('common/header', $data);
         $this->load->view('lifetime_upgrades');
         $this->load->view('common/footer');
@@ -6970,6 +6997,9 @@ class Home extends CI_Controller
         $this->db->from('tbl_lifetime_warranty');
         $this->db->where('is_active', 1);
         $data['lifetime_warranty_data'] = $this->db->get()->row();
+        $data['title'] =  $data['lifetime_warranty_data']->page_title;
+        $data['keyword'] =  $data['lifetime_warranty_data']->keyword;
+        $data['dsc'] =  $data['lifetime_warranty_data']->dsc;
         $this->load->view('common/header', $data);
         $this->load->view('lifetime_warranty');
         $this->load->view('common/footer');
@@ -6980,6 +7010,9 @@ class Home extends CI_Controller
         $this->db->from('tbl_visit_our_showroom');
         $this->db->where('is_active', 1);
         $data['visit_us'] = $this->db->get()->row();
+        $data['title'] =  $data['visit_us']->page_title;
+        $data['keyword'] =  $data['visit_us']->keyword;
+        $data['dsc'] =  $data['visit_us']->dsc;
         $this->load->view('common/header', $data);
         $this->load->view('visit_our_showroom');
         $this->load->view('common/footer');
@@ -6994,6 +7027,9 @@ class Home extends CI_Controller
         $this->db->from('tbl_services');
         $this->db->where('is_active', 1);
         $data['services_data'] = $this->db->get()->row();
+        $data['title'] =  $data['services_data']->page_title;
+        $data['keyword'] =  $data['services_data']->keyword;
+        $data['dsc'] =  $data['services_data']->dsc;
         $this->load->view('common/header', $data);
         $this->load->view('services');
         $this->load->view('common/footer');

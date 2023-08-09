@@ -18,7 +18,6 @@
                         <h3 class="panel-title"><i class="fa fa-money fa-fw"></i>View Contact Us Page</h3>
                     </div>
                     <div class="panel panel-default">
-
                         <? if (!empty($this->session->flashdata('smessage'))) { ?>
                             <div class="alert alert-success alert-dismissible">
                                 <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
@@ -33,8 +32,6 @@
                                 <? echo $this->session->flashdata('emessage'); ?>
                             </div>
                         <? } ?>
-
-
                         <div class="panel-body">
                             <div class="box-body table-responsive no-padding">
                                 <table class="table table-bordered table-hover table-striped" id="userTable">
@@ -44,16 +41,13 @@
                                             <!-- <th>Heading</th> -->
                                             <th>Address heading</th>
                                             <th>Number</th>
-
-
                                             <th>Address</th>
-
                                             <th>Map address</th>
-
                                             <!-- <th>Hours</th> -->
                                             <th>Hours list </th>
-
-
+                                            <th>Page Title</th>
+                                            <th>Keyword</th>
+                                            <th>Meta Description</th>
                                             <th>Status</th>
                                             <th>Action</th>
                                         </tr>
@@ -66,22 +60,17 @@
                                                 <!-- <td><?php echo $data->heading ?></td> -->
                                                 <td><?php echo $data->address_heading ?></td>
                                                 <td><?php echo $data->number ?></td>
-
                                                 <td><?php echo $data->address ?></td>
                                                 <td><?php echo $data->map_address ?></td>
                                                 <!-- <td><?php echo $data->hours ?></td> -->
                                                 <td><?php echo $data->hours_list ?></td>
-
-
-
-
+                                                <td><?php echo $data->page_title ?></td>
+                                                <td><?php echo $data->keyword ?></td>
+                                                <td><?php echo $data->dsc ?></td>
                                                 <td><?php if ($data->is_active == 1) { ?>
                                                         <p class="label bg-green">Active</p>
-
                                                     <?php } else { ?>
                                                         <p class="label bg-yellow">Inactive</p>
-
-
                                                     <?php        }   ?>
                                                 </td>
                                                 <td>
@@ -89,7 +78,6 @@
                                                         <div class="btn-group">
                                                             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false"> Action <span class="caret"></span></button>
                                                             <ul class="dropdown-menu" role="menu">
-
                                                                 <!-- <?php if ($data->is_active == 1) { ?>
 <li><a href="<?php echo base_url() ?>dcadmin/Contact_us_page/updateContact_us_pageStatus/<?php echo base64_encode($data->id) ?>/inactive">Inactive</a></li>
 <?php } else { ?>
@@ -100,7 +88,6 @@
                                                             </ul>
                                                         </div>
                                                     </div>
-
                                                     <div style="display:none" id="cnfbox<?php echo $i ?>">
                                                         <p> Are you sure delete this </p>
                                                         <a href="<?php echo base_url() ?>dcadmin/Contact_us_page/delete_Contact_us_page/<?php echo base64_encode($data->id); ?>" class="btn btn-danger">Yes</a>
@@ -112,24 +99,14 @@
                                         } ?>
                                     </tbody>
                                 </table>
-
-
-
-
-
-
                             </div>
                         </div>
                     </div>
-
                 </div>
-
             </div>
         </div>
     </section>
 </div>
-
-
 <style>
     label {
         margin: 5px;
@@ -143,24 +120,18 @@
         // responsive: true,
         // // bSort: true
         // });
-
         $(document.body).on('click', '.dCnf', function() {
             var i = $(this).attr("mydata");
             console.log(i);
-
             $("#btns" + i).hide();
             $("#cnfbox" + i).show();
-
         });
-
         $(document.body).on('click', '.cans', function() {
             var i = $(this).attr("mydatas");
             console.log(i);
-
             $("#btns" + i).show();
             $("#cnfbox" + i).hide();
         })
-
     });
 </script>
 <!-- <script type="text/javascript" src="<?php echo base_url() ?>assets/slider/ajaxupload.3.5.js"></script>
