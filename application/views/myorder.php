@@ -1,6 +1,5 @@
 <!-- my order start -->
 <section class="my_order">
-
     <? if (!empty($this->session->flashdata('smessage'))) { ?>
         <div class="alert alert-success alert-dismissible">
             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
@@ -15,20 +14,14 @@
             <? echo $this->session->flashdata('emessage'); ?>
         </div>
     <? } ?>
-
-
     <?php
     $user_id = $this->session->userdata('user_id');
     //    echo "<pre>";
     // print_r($orders_data->result()); die();
-
     $i = 0;
     if (!empty($orders_data)) {
         foreach ($orders_data->result() as $data_order1) {
-
             if ($data_order1->order_status != 0) {
-
-
                 // $this->db->select('*');
                 // $this->db->from('tbl_promocode');
                 // $this->db->where('id',$data_order1->promocode);
@@ -46,10 +39,7 @@
                 // $promo_discount= 0;
                 // $promo_name= "N/A";
                 // }
-
-
     ?>
-
                 <div class="container-fluid bg-white order_cont mb-5 pt-5 pb-0 pl-5 pr-5">
                     <div class="row">
                         <div class="col-12">
@@ -82,8 +72,6 @@
                                 </div>
                             </div>
                         </div>
-
-
                         <?php
                         $this->db->select('*');
                         $this->db->from('tbl_order2');
@@ -91,15 +79,11 @@
                         $d1 = $this->db->get();
                         if (!empty($d1)) {
                             foreach ($d1->result() as $dd1) {
-
-
-
                                 $this->db->select('*');
                                 $this->db->from('tbl_products');
                                 $this->db->where('id', $dd1->product_id);
                                 $this->db->where('is_active', 1);
                                 $op_da = $this->db->get()->row();
-
                                 if (!empty($op_da)) {
                                     $o_product_name = $op_da->description;
                                     $o_product_sku = $op_da->sku;
@@ -108,9 +92,7 @@
                                     $o_product_name = "Product Not Found!";
                                     $o_product_image = "";
                                 }
-
                         ?>
-
                                 <div class="col-12 mt-3 pt-3" style="border-top: 1px solid lightgrey;">
                                     <div class="row">
                                         <div class="col-2">
@@ -119,51 +101,28 @@
                                         <div class="col-10">
                                             <h4><?= $o_product_name; ?></h4>
                                             <p>SKU: <a href="#"> <?= $o_product_sku; ?></a></p>
-
-
                                             <?php if (!empty($dd1->desc_e_name2)) { ?>
-
                                                 <p><?= $dd1->desc_e_name2; ?>: <a href="#"> <?= $dd1->desc_e_value2 ?></a></p>
-
-
                                             <?php } ?>
-
                                             <?php if (!empty($dd1->desc_e_name3)) { ?>
-
                                                 <p><?= $dd1->desc_e_name3; ?>: <a href="#"> <?= $dd1->desc_e_value3 ?></a></p>
-
-
                                             <?php } ?>
-
                                             <?php if (!empty($dd1->desc_e_name4)) { ?>
-
                                                 <p><?= $dd1->desc_e_name4; ?>: <a href="#"> <?= $dd1->desc_e_value4 ?></a></p>
-
-
                                             <?php } ?>
-
                                             <?php if (!empty($dd1->desc_e_name5)) { ?>
-
                                                 <p><?= $dd1->desc_e_name5; ?>: <a href="#"> <?= $dd1->desc_e_value5 ?></a></p>
-
                                             <?php } ?>
-
-
-
                                             <p>Quantity: <a href="#"> <?= $dd1->quantity; ?></a></p>
                                             <p>Price: <a href="#">$<?= $dd1->amount; ?></a></p>
                                         </div>
                                     </div>
                                 </div>
-
                         <?php }
                         } ?>
-
                         <div class="col-12 mt-3 pt-3 pb-3 " style="border-top: 1px solid lightgrey;">
                             <div class="row">
                                 <div class="col-12 col-sm-2 col-md-2 col-lg-2 mt-5 mt-lg-0">
-
-
                                     <?php if ($data_order1->order_status == 3) { ?>
                                         <button class="can_btn" style="color:orange !important;"><i class="fa fa-truck pr-2"></i>Dispatched</button>
                                     <?php } elseif ($data_order1->order_status == 4) { ?>
@@ -172,30 +131,24 @@
                                         <button class="can_btn"><i class="fa fa-times pr-2"></i>Cancelled</button>
                                     <?php } else { ?>
                                         <!-- <a href="<?= base_url() ?>Home/cancel_order/<?= base64_encode($data_order1->id); ?>"> -->
-                                        <button class="can_btn" data-toggle="modal" data-target="#orderCancleModel_<?= $data_order1->id ?>"><i class="fa fa-times pr-2"></i>CANCEL ORDER</button>
+                                        <button class="can_btn" data-toggle="modal" data-target="#orderCancleModel_<?= $data_order1->id ?>"><i class="fa fa-times pr-2" style="width:13%"></i>CANCEL ORDER</button>
                                         <!-- </a> -->
                                     <?php } ?>
-
-
                                     <!-- <button class="can_btn"><i class="fa fa-times pr-2"></i>CANCEL ORDER
               </button> -->
                                 </div>
                                 <div class="col-12 col-sm-10 col-md-10 col-lg-10 d-flex align-items-center ab_p_h" style="justify-content: space-between;">
-                                    <p class="mb-0">Payment Method : <a href="#"> <?=$data_order1->payment_type?></a></p>
-
-                                    <h5 class="mb-0">Total Amount $<a href="#"><?= $data_order1->total_amount; ?></a></h5>
+                                    <p class="mb-0">Payment Method : <a href="#"> <?= $data_order1->payment_type ?></a></p>
+                                    <p class="mb-0 ml-2">Subtotal $<a href="#"><?= $data_order1->total_amount; ?></a></p>
+                                    <?if(!empty($data_order1->shipping)){?><p class="mb-0">Shipping $<a href="#"><?= $data_order1->shipping; ?></a></p><?}?>
+                                    <?if(!empty($data_order1->p_discount)){?><p class="mb-0">Coupon Discount $<a href="#"><?= $data_order1->p_discount; ?></a></p><?}?>
+                                    <p class="mb-0">Total Amount $<a href="#"><?= $data_order1->final_amount; ?></a></p>
                                 </div>
                             </div>
                         </div>
-
                     </div>
                 </div>
-
-
-
-
                 <!-- order cancle model popup code start -->
-
                 <div class="modal" tabindex="-1" id="orderCancleModel_<?= $data_order1->id ?>" role="dialog">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
@@ -217,14 +170,10 @@
                         </div>
                     </div>
                 </div>
-
                 <!-- order cancle model popup code end -->
-
-
     <?php
             }
         }
     } ?>
-
 </section>
 <!-- my order end -->
