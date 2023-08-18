@@ -239,11 +239,13 @@
   </section>
   <section class="header">
     <style>
-      #menu {
-        /* width: 200px; */
-        height: 100%;
-        text-align: justify;
-        overflow: auto;
+      @media (max-width:1024px) {
+        #menu {
+          /* width: 200px; */
+          height: 100% !important;
+          text-align: justify !important;
+          overflow: auto !important;
+        }
       }
     </style>
     <header>
