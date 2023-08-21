@@ -891,7 +891,6 @@ if(stuller_pro_id == "" || stuller_pro_id == null){
         localStorage.setItem("cartItems" , JSON.stringify(cart_array));
         var cookieData =JSON.parse(localStorage.getItem("cartItems"));
     var a= cookieData.length;
-    // alert(a);
     $("#totalCartItems").text(a);
     $("#totalCartItemsM").text(a);
     $("#totalCartItemsMb").text(a);

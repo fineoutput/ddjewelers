@@ -425,8 +425,10 @@
               <a href="<?= base_url(); ?>Home/cart" class="carticon" style="position:relative;padding-right:rem;border-right: px solid #adadad;margin-Left:10px;">
                 <!-- margin-right:1.5rem;  -->
                 <i class="fa fa-shopping-cart I_size"></i>
-                <? if (empty($this->session->userdata('user_id'))) { ?>
-                  <small class="cart-value"><span>0</span></small>
+                <? if (empty($this->session->userdata('user_id'))) { 
+
+                  ?>
+                  <small class="cart-value" id="totalCartItemsM"><span>0</span></small>
                 <? } else { ?>
                   <small class="cart-value"><span><? $this->db->select('*');
                                                   $this->db->from('tbl_cart');
