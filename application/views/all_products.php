@@ -620,36 +620,53 @@ if(!empty($a->dcolor)){
 if(!empty($subcategory_name)){
 if(!empty($minorsub_name)){
   echo $minorsub_name." ( ".$productCount." )";
+  $this->db->select('*');
+  $this->db->from('tbl_sub_category');
+  $this->db->where('id',$level_id);
+//  $this->db->where('id',44);
+  $dsa= $this->db->get();
+  $dai=$dsa->row();
+  $dess = $dai?$dai->description:'';
+  $imgg = $dai?$dai->image:'';
   
 }else{
   echo $subcategory_name." ( ".$productCount." )";
-}
-}else{
-  echo $category_name." ( ".$productCount." )";
-}
-$this->db->select('*');
+  $this->db->select('*');
             $this->db->from('tbl_sub_category');
             $this->db->where('id',$level_id);
           //  $this->db->where('id',44);
             $dsa= $this->db->get();
             $dai=$dsa->row();
-            // print_r($dai);die();
+            $dess = $dai?$dai->description:'';
+            $imgg = $dai?$dai->banner:'';
+}
+}else{
+  echo $category_name." ( ".$productCount." )";
+  $this->db->select('*');
+  $this->db->from('tbl_category');
+  $this->db->where('id',$level_id);
+//  $this->db->where('id',44);
+  $dsa= $this->db->get();
+  $dai=$dsa->row();
+  $dess = $dai?$dai->description:'';
+  $imgg = $dai?$dai->image:'';
+}
+
 ?>
                                 </h1>
                                 <?
-                                if(!empty($description)){
+                                if(!empty($dess)){
                                   ?>
-                                    <h6 class="mt-3 mb-4"><i><?=$description;?></i></h6>
+                                    <h6 class="mt-3 mb-4"><i><?=$dess;?></i></h6>
                                   <?
                                 }
                                 ?>
                             </div>
                             <!-- <img src="https://meteor.stullercloud.com/das/68074515?scl=1&$sharpen$" alt="img"> -->
                             <?
-                            if(!empty($dai->banner)){
-                              $imgd=$dai->banner;
+                            if(!empty($imgg)){
                             ?>
-                              <img src="<?php echo base_url().$imgd ?>" alt="img">
+                              <img src="<?php echo base_url().$imgg ?>" alt="img">
                               <?
                             }else{
                               // echo "No Image Found";
