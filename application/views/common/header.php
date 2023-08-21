@@ -1,20 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <!-- PAGE TITLE -->
-    <?if(!empty($title)){?>
-  <title><?=$title?></title>
-  <?}else{?>
-  <title>D&D Jewelry</title>
-  <?}?>
+  <!-- PAGE TITLE -->
+  <? if (!empty($title)) { ?>
+    <title><?= $title ?></title>
+  <? } else { ?>
+    <title>D&D Jewelry</title>
+  <? } ?>
   <!-- //-------- PAGE KEYWORDS ------ -->
-  <?if(!empty($keyword)){?>
-  <meta name="keywords" content="<?=$keyword?>">
-  <?}?>
+  <? if (!empty($keyword)) { ?>
+    <meta name="keywords" content="<?= $keyword ?>">
+  <? } ?>
   <!-- -------- PAGE DESCRIPTION ---------- -->
-  <?if(!empty($dsc)){?>
-  <meta name="description" content="<?=$dsc?>">
-  <?}?>
+  <? if (!empty($dsc)) { ?>
+    <meta name="description" content="<?= $dsc ?>">
+  <? } ?>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.css" rel="stylesheet" type='text/css'>
@@ -26,7 +27,7 @@
   <link href="https://unpkg.com/video.js@7/dist/video-js.min.css" rel="stylesheet" />
   <script src="https://js.braintreegateway.com/web/dropin/1.34.0/js/dropin.min.js"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
-<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
   <!-- City -->
   <link href="https://unpkg.com/@videojs/themes@1/dist/city/index.css" rel="stylesheet" />
 </head>
@@ -42,6 +43,7 @@
     background-color: #fff;
     z-index: 99;
   }
+
   .loader {
     border: 16px solid #f3f3f3;
     border-top: 16px solid #1A2F64;
@@ -51,30 +53,45 @@
     animation: spin 2s linear infinite;
     z-index: 100;
   }
+
   @keyframes spin {
     0% {
       transform: rotate(0deg);
     }
+
     100% {
       transform: rotate(360deg);
     }
   }
 </style>
 <!--Start of Tawk.to Script-->
+<!--Start of Tawk.to Script-->
+
 <script type="text/javascript">
   var Tawk_API = Tawk_API || {},
     Tawk_LoadStart = new Date();
+
   (function() {
+
     var s1 = document.createElement("script"),
       s0 = document.getElementsByTagName("script")[0];
+
     s1.async = true;
-    s1.src = 'https://embed.tawk.to/64a2c521cc26a871b0260d3e/1h4dt43ab';
+
+    s1.src = 'https://embed.tawk.to/64a60968cc26a871b0269e7f/1h4k99gg5';
+
     s1.charset = 'UTF-8';
+
     s1.setAttribute('crossorigin', '*');
+
     s0.parentNode.insertBefore(s1, s0);
+
   })();
 </script>
+
 <!--End of Tawk.to Script-->
+<!--End of Tawk.to Script-->
+
 <body>
   <div class="center">
     <div class="loader"></div>
@@ -100,33 +117,41 @@
         align-items: center;
         justify-content: center;
       }
+
       #totalCartItems {
         left: 0px !important;
       }
+
       .mbs-sm-5 {
         margin-top: 1rem;
         margin-bottom: 1rem;
       }
+
       .mr-sm {
         margin-right: 20px;
       }
     }
+
     .signup {
       background: #333366;
       color: white !important;
     }
+
     .pro_ul::-webkit-scrollbar-thumb {
       background: #1a2f64 !important;
     }
+
     .pro_ul::-webkit-scrollbar {
       background: #fff !important;
       Width: 4px !important;
     }
+
     @media (min-width: 991px) and (max-width: 1038px) {
       .displaynone {
         display: none;
       }
     }
+
     .ulcontent {
       display: none;
       position: absolute;
@@ -139,30 +164,37 @@
       display: none;
       z-index: 50;
     }
+
     .ulcontent li a {
       padding: 3px 8px;
     }
+
     @media (max-width: 1950px) {
       .ulcontent {
         top: 45%;
       }
     }
+
     @media (max-width: 1500px) {
       .ulcontent {
         top: 42%;
       }
     }
+
     @media (max-width: 1350px) {
       .ulcontent {
         top: 40%;
       }
     }
+
     .showcontent:hover .ulcontent {
       display: block;
     }
+
     .showcontent {
       cursor: pointer;
     }
+
     @media (min-width: 1025px) and (max-width: 1350px) {}
   </style>
   <section class="top_her">
@@ -479,6 +511,7 @@
         .form-control:focus {
           box-shadow: none;
         }
+
         #mobSearch {
           display: none;
         }
