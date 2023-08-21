@@ -1,6 +1,6 @@
 <?php
-    if ( ! defined('BASEPATH')) exit('No direct script access allowed');
-       require_once(APPPATH . 'core/CI_finecontrol.php');
+if (!defined('BASEPATH')) exit('No direct script access allowed');
+require_once(APPPATH . 'core/CI_finecontrol.php');
 class Sub_category extends CI_finecontrol
 {
   function __construct()
@@ -10,7 +10,6 @@ class Sub_category extends CI_finecontrol
     $this->load->model("admin/base_model");
     $this->load->library('user_agent');
     $this->load->library('upload');
-
   }
 
   public function view_sub_category()
@@ -38,7 +37,6 @@ class Sub_category extends CI_finecontrol
 
       redirect("login/admin_login", "refresh");
     }
-
   }
 
   public function add_sub_category()
@@ -124,6 +122,7 @@ class Sub_category extends CI_finecontrol
           $type = $this->input->post('type');
 
           $api_id1 = $this->input->post('api_id');
+          $cleanedString = str_replace(' ', '', $api_id1);
           $seq = $this->input->post('seq');
           $finshed = $this->input->post('finshed');
           $exlude_series = $this->input->post('exlude_series');
@@ -132,7 +131,7 @@ class Sub_category extends CI_finecontrol
           $include_sku = $this->input->post('include_sku');
           $description = $this->input->post('description');
 
-          $api_id = explode(",", $api_id1);
+          $api_id = explode(",", $cleanedString);
 
           if ($finshed == 1) {
             $f_id = 1;
@@ -388,27 +387,27 @@ class Sub_category extends CI_finecontrol
             );
             $this->db->where('id', $idw);
             $last_id = $this->db->update('tbl_sub_category', $data_insert);
-            
 
-             //===============add data in tbl_cron_job start===================//
-          
-             $this->db->select('*');
-             $this->db->from('tbl_sub_category');
-             $this->db->where('id', $idw);
-             $cat_data = $this->db->get()->row();
- 
-             if (!empty($cat_data->api_id)) {
- 
-               $data_insert_cr = array(
-                 "cat_id" =>$category,
-                 "subcat_id" => $idw,
-                 
-               );
-               $last_ids = $this->base_model->insert_table("tbl_cron_jobs", $data_insert_cr, 1);
-             }
- 
- 
-             //===============add data in tbl_cron_job End===================//
+
+            //===============add data in tbl_cron_job start===================//
+
+            $this->db->select('*');
+            $this->db->from('tbl_sub_category');
+            $this->db->where('id', $idw);
+            $cat_data = $this->db->get()->row();
+
+            if (!empty($cat_data->api_id)) {
+
+              $data_insert_cr = array(
+                "cat_id" => $category,
+                "subcat_id" => $idw,
+
+              );
+              $last_ids = $this->base_model->insert_table("tbl_cron_jobs", $data_insert_cr, 1);
+            }
+
+
+            //===============add data in tbl_cron_job End===================//
 
           }
           if ($last_id != 0) {

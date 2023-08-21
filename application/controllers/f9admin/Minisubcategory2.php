@@ -159,6 +159,7 @@ class Minisubcategory2 extends CI_finecontrol
           $type = $this->input->post('type');
 
           $api_id1 = $this->input->post('api_id');
+          $cleanedString = str_replace(' ', '', $api_id1);
           $seq = $this->input->post('seq');
           $finshed = $this->input->post('finshed');
           $exlude_series = $this->input->post('exlude_series');
@@ -167,7 +168,7 @@ class Minisubcategory2 extends CI_finecontrol
           $include_sku = $this->input->post('include_sku');
           $description = $this->input->post('description');
 
-          $api_id = explode(",", $api_id1);
+          $api_id = explode(",", $cleanedString);
 
           if ($finshed == 1) {
             $f_id = 1;
