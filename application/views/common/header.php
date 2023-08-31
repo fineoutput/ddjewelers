@@ -587,8 +587,9 @@
             $db = $this->db->get();
             if (!empty($db->row())) {
             ?>
-              <ul class="hov_ul" style="height: 250px;
-    overflow: auto;">
+            <!-- style="height: 250px;
+    overflow: auto;" -->
+              <ul class="hov_ul" >
                 <? $i = 1;
                 foreach ($db->result() as $df) {
                   if ($df->name == "Loose Natural Diamonds without Grading Report") { ?>
