@@ -87,7 +87,19 @@ else{
         Sorry No File Found
         <?php } ?>
         </td>
-<td><?php echo $data->api_id ?></td>
+        <td><?php 
+ $string = strip_tags($data->api_id);
+ if (strlen($string) > 50) {
+
+     // truncate string
+     $stringCut = substr($string, 0, 50);
+     $endPoint = strrpos($stringCut, ' ');
+
+     //if the string doesn't contain any space then it will cut without word basis.
+     $string = $endPoint? substr($stringCut, 0, $endPoint) : substr($stringCut, 0);
+     $string .= '...';
+ }
+ echo $string; ?></td>
 <td><?php echo $data->seq ?></td>
 <td><?php echo $data->exlude_series ?></td>
 <td><?php echo $data->exlude_sku ?></td>

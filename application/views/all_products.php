@@ -649,7 +649,7 @@ if(!empty($minorsub_name)){
   $dsa= $this->db->get();
   $dai=$dsa->row();
   $dess = $dai?$dai->description:'';
-  $imgg = $dai?$dai->image:'';
+  $imgg = $dai?$dai->banner:'';
 }
 
 ?>
