@@ -621,13 +621,13 @@ if(!empty($subcategory_name)){
 if(!empty($minorsub_name)){
   echo $minorsub_name." ( ".$productCount." )";
   $this->db->select('*');
-  $this->db->from('tbl_sub_category');
+  $this->db->from('tbl_minisubcategory');
   $this->db->where('id',$level_id);
 //  $this->db->where('id',44);
   $dsa= $this->db->get();
   $dai=$dsa->row();
   $dess = $dai?$dai->description:'';
-  $imgg = $dai?$dai->image:'';
+  $imgg = $dai?$dai->banner:'';
   
 }else{
   echo $subcategory_name." ( ".$productCount." )";
