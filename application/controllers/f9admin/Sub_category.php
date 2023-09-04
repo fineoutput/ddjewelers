@@ -258,6 +258,39 @@ class Sub_category extends CI_finecontrol
 
 
             $last_id = $this->base_model->insert_table("tbl_sub_category", $data_insert, 1);
+              //===============add data in tbl_cron_job start===================//
+
+              $min_id = '';
+              $min2_id = '';
+              $this->db->select('*');
+              $this->db->from('tbl_minisubcategory');
+              $this->db->where('category', $category);
+              $this->db->where('subcategory', $last_id);
+              $min_data = $this->db->get()->row();
+              if (!empty($min_data)) {
+                $min_id = $min_data->id;
+                $this->db->select('*');
+                $this->db->from('tbl_minisubcategory2');
+                $this->db->where('category', $category);
+                $this->db->where('subcategory', $last_id);
+                $this->db->where('minorsubcategory', $min_data->id);
+                $min2_data = $this->db->get()->row();
+                $min2_id = $min2_data ? $min2_data->id : '';
+              }
+  
+  
+  
+              $data_insert_cr = array(
+                "cat_id" => $category,
+                "subcat_id" => $last_id,
+                "mincat_id1" => $min_id,
+                "mincat_id2" => $min2_id,
+  
+              );
+              $last_idd = $this->base_model->insert_table("tbl_cron_jobs", $data_insert_cr, 1);
+  
+  
+              //===============add data in tbl_cron_job End===================//
           }
           if ($typ == 2) {
 
@@ -391,20 +424,34 @@ class Sub_category extends CI_finecontrol
 
             //===============add data in tbl_cron_job start===================//
 
+            $min_id = '';
+            $min2_id = '';
             $this->db->select('*');
-            $this->db->from('tbl_sub_category');
-            $this->db->where('id', $idw);
-            $cat_data = $this->db->get()->row();
-
-            if (!empty($cat_data->api_id)) {
-
-              $data_insert_cr = array(
-                "cat_id" => $category,
-                "subcat_id" => $idw,
-
-              );
-              $last_ids = $this->base_model->insert_table("tbl_cron_jobs", $data_insert_cr, 1);
+            $this->db->from('tbl_minisubcategory');
+            $this->db->where('category', $category);
+            $this->db->where('subcategory', $idw);
+            $min_data = $this->db->get()->row();
+            if (!empty($min_data)) {
+              $min_id = $min_data->id;
+              $this->db->select('*');
+              $this->db->from('tbl_minisubcategory2');
+              $this->db->where('category', $category);
+              $this->db->where('subcategory', $idw);
+              $this->db->where('minorsubcategory', $min_data->id);
+              $min2_data = $this->db->get()->row();
+              $min2_id = $min2_data ? $min2_data->id : '';
             }
+
+
+
+            $data_insert_cr = array(
+              "cat_id" => $category,
+              "subcat_id" => $idw,
+              "mincat_id1" => $min_id,
+              "mincat_id2" => $min2_id,
+
+            );
+            $last_idd = $this->base_model->insert_table("tbl_cron_jobs", $data_insert_cr, 1);
 
 
             //===============add data in tbl_cron_job End===================//

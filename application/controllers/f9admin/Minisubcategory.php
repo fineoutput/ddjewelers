@@ -217,6 +217,46 @@ class Minisubcategory extends CI_finecontrol
                 // echo json_encode($file_info);
               }
             }
+            //Banner
+$ban2 = 'banner';
+
+
+$file_check = ($_FILES['banner']['error']);
+if ($file_check != 4) {
+
+  $image_upload_folder = FCPATH . "assets/uploads/category/";
+  if (!file_exists($image_upload_folder)) {
+    mkdir($image_upload_folder, DIR_WRITE_MODE, true);
+  }
+  $new_file_name = "categoryBanner" . date("Ymdhms");
+  $this->upload_config = array(
+    'upload_path'   => $image_upload_folder,
+    'file_name' => $new_file_name,
+    'allowed_types' => 'xlsx|csv|xls|pdf|doc|docx|txt|jpg|jpeg|png',
+    'max_size'      => 25000
+  );
+  $this->upload->initialize($this->upload_config);
+  if (!$this->upload->do_upload($ban2)) {
+    $upload_error = $this->upload->display_errors();
+    // echo json_encode($upload_error);
+
+    //$this->session->set_flashdata('emessage',$upload_error);
+    //redirect($_SERVER['HTTP_REFERER']);
+  } else {
+
+    $file_info = $this->upload->data();
+
+    $videoNAmePath = "assets/uploads/category/" . $new_file_name . $file_info['file_ext'];
+    $file_info['new_name'] = $videoNAmePath;
+    // $this->step6_model->updateappIconImage($imageNAmePath,$appInfoId);
+    $banner = $file_info['file_name'];
+    $banner2 = $videoNAmePath;
+
+    // echo json_encode($file_info);
+  }
+} else {
+  $banner2 = '';
+}
 
 
 
@@ -226,6 +266,8 @@ class Minisubcategory extends CI_finecontrol
               'name' => $name,
               'type' => $type,
               'image' => $nnnn3,
+              'banner' => $banner2,
+
               'api_id' => $api_id,
               'seq' => $seq,
               'finshed' => $finshed,
@@ -300,18 +342,61 @@ if($file_check!=4){
                          // echo json_encode($file_info);
                      }
         }
+//Banner
+$ban2 = 'banner';
 
+
+$file_check = ($_FILES['banner']['error']);
+if ($file_check != 4) {
+
+  $image_upload_folder = FCPATH . "assets/uploads/minisubcategory/";
+  if (!file_exists($image_upload_folder)) {
+    mkdir($image_upload_folder, DIR_WRITE_MODE, true);
+  }
+  $new_file_name = "minisubcategoryBanner" . date("Ymdhms");
+  $this->upload_config = array(
+    'upload_path'   => $image_upload_folder,
+    'file_name' => $new_file_name,
+    'allowed_types' => 'xlsx|csv|xls|pdf|doc|docx|txt|jpg|jpeg|png',
+    'max_size'      => 25000
+  );
+  $this->upload->initialize($this->upload_config);
+  if (!$this->upload->do_upload($ban2)) {
+    $upload_error = $this->upload->display_errors();
+    // echo json_encode($upload_error);
+
+    //$this->session->set_flashdata('emessage',$upload_error);
+    //redirect($_SERVER['HTTP_REFERER']);
+  } else {
+
+    $file_info = $this->upload->data();
+
+    $videoNAmePath = "assets/uploads/minisubcategory/" . $new_file_name . $file_info['file_ext'];
+    $file_info['new_name'] = $videoNAmePath;
+    // $this->step6_model->updateappIconImage($imageNAmePath,$appInfoId);
+    $banner = $file_info['file_name'];
+    $banner2 = $videoNAmePath;
+
+    // echo json_encode($file_info);
+  }
+} else {
+  $banner2 = '';
+}
 
 
  if(!empty($da)){ $img = $da ->image;
 if(!empty($img)) { if(empty($nnnn3)){ $nnnn3 = $img; } }else{ if(empty($nnnn3)){ $nnnn3= ""; } } }
-
+if(empty($banner2)){
+  $banner2=$da->banner;
+}
 $data_insert = array(
        'category'=>$category,
 'subcategory'=>$subcategory,
 'name'=>$name,
 'type'=>$type,
 'image'=>$nnnn3,
+'banner' => $banner2,
+
 'api_id'=>$api_id,
 'seq'=>$seq,
 'finshed'=>$finshed,

@@ -4918,6 +4918,7 @@ class Home extends CI_Controller
         if (!empty($subcate_da)) {
             $subcategory_name = $subcate_da->name;
             $category_id = $subcate_da->category;
+            $banner = $subcate_da->banner;
             $description = $subcate_da->description;
             //get name Category
             $this->db->select('*');
@@ -4933,11 +4934,13 @@ class Home extends CI_Controller
             $category_id = "";
             $cate_name = "N/A";
             $subcategory_name = "N/A";
+            $banner = "";
             $description = "N/A";
         }
         $data['category_id'] = $category_id;
         $data['category_name'] = $cate_name;
         $data['subcategory_name'] = $subcategory_name;
+        $data['banner'] = $banner;
         $data['description'] = $description;
         $this->load->view('common/header', $data);
         $this->load->view('minorsub_category');

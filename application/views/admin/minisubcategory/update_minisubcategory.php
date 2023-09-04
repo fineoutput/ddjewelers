@@ -89,6 +89,11 @@
                         <?php if ($minisubcategory_data->image != "") { ?> <img id="slide_img_path" height=200 width=300 src="<?php echo base_url() . $minisubcategory_data->image; ?> "> <?php } else { ?> Sorry No File Found <?php } ?> </td>
                     </tr>
                     <tr>
+                      <td> <strong>Banner</strong> <span style="color:red;">*</span></strong> </td>
+                      <td> <input type="file" name="banner" class="form-control" placeholder="" />
+                        <?php if ($minisubcategory_data->banner != "") { ?> <img id="slide_img_path" height=200 width=300 src="<?php echo base_url() . $minisubcategory_data->banner; ?> "> <?php } else { ?> Sorry No File Found <?php } ?> </td>
+                    </tr>
+                    <tr>
                       <td> <strong>Type</strong> <span style="color:red;">*</span></strong> </td>
                       <td>
                         <select class="form-control" name="type" required>
@@ -152,7 +157,7 @@
                     </tr>
                     <tr>
                       <td> <strong>Description</strong> <span style="color:red;">*</span></strong> </td>
-                      <td> <textarea name="description" class="form-control" placeholder=""><?=$minisubcategory_data->description;?></textarea> </td>
+                      <td> <textarea name="description" class="form-control" placeholder=""><?= $minisubcategory_data->description; ?></textarea> </td>
                     </tr>
                     <tr>
                       <td colspan="2">

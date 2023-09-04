@@ -41,6 +41,7 @@
 
                       <th>Category Leval1</th>
                       <th>Image</th>
+                      <th>Banner</th>
                       <th>Description</th>
                       <th>Api Id</th>
                       <th>Sequence No.</th>
@@ -71,6 +72,13 @@
                             Sorry No File Found
                           <?php } ?>
                         </td>
+                        <td>
+        <?php if($data->banner!=""){ ?>
+        <img id="slide_img_path" height=50 width=100 src="<?php echo base_url() ?>/<? echo $data->banner;?>" >
+        <?php }else { ?>
+        Sorry No File Found
+        <?php } ?>
+        </td>
                         <td><?php
                             $string = strip_tags($data->description);
                             if (strlen($string) > 150) {

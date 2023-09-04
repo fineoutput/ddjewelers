@@ -195,7 +195,46 @@ class Category extends CI_finecontrol
                 // echo json_encode($file_info);
               }
             }
+ //Banner
+ $ban2 = 'banner';
 
+
+ $file_check = ($_FILES['banner']['error']);
+ if ($file_check != 4) {
+
+   $image_upload_folder = FCPATH . "assets/uploads/category/";
+   if (!file_exists($image_upload_folder)) {
+     mkdir($image_upload_folder, DIR_WRITE_MODE, true);
+   }
+   $new_file_name = "categoryBanner" . date("Ymdhms");
+   $this->upload_config = array(
+     'upload_path'   => $image_upload_folder,
+     'file_name' => $new_file_name,
+     'allowed_types' => 'xlsx|csv|xls|pdf|doc|docx|txt|jpg|jpeg|png',
+     'max_size'      => 25000
+   );
+   $this->upload->initialize($this->upload_config);
+   if (!$this->upload->do_upload($ban2)) {
+     $upload_error = $this->upload->display_errors();
+     // echo json_encode($upload_error);
+
+     //$this->session->set_flashdata('emessage',$upload_error);
+     //redirect($_SERVER['HTTP_REFERER']);
+   } else {
+
+     $file_info = $this->upload->data();
+
+     $videoNAmePath = "assets/uploads/category/" . $new_file_name . $file_info['file_ext'];
+     $file_info['new_name'] = $videoNAmePath;
+     // $this->step6_model->updateappIconImage($imageNAmePath,$appInfoId);
+     $banner = $file_info['file_name'];
+     $banner2 = $videoNAmePath;
+
+     // echo json_encode($file_info);
+   }
+ } else {
+   $banner2 = '';
+ }
             if (!empty($nnnn1)) {
               $nnnn1 = $nnnn1;
             } else {
@@ -205,6 +244,7 @@ class Category extends CI_finecontrol
             $data_insert = array(
               'name' => $name,
               'image' => $nnnn1,
+              'banner' => $banner2,
               'description' => $description,
               'type' => $type,
               'api_id' => $api_id,
@@ -224,6 +264,46 @@ class Category extends CI_finecontrol
 
 
             $last_id = $this->base_model->insert_table("tbl_category", $data_insert, 1);
+
+            //===============add data in tbl_cron_job start===================//
+
+            $this->db->select('*');
+            $this->db->from('tbl_sub_category');
+            $this->db->where('category', $last_id);
+            $sub_data = $this->db->get()->row();
+            $min_id='';
+            $min2_id='';
+            if (!empty($sub_data)) {
+              $sub_id = $sub_data ? $sub_data->id : '';
+              $this->db->select('*');
+              $this->db->from('tbl_minisubcategory');
+              $this->db->where('category', $last_id);
+              $this->db->where('subcategory', $sub_data->id);
+              $min_data = $this->db->get()->row();
+              $min_id = $min_data ? $min_data->id : '';
+              if (!empty($min_data)) {
+                $this->db->select('*');
+                $this->db->from('tbl_minisubcategory2');
+                $this->db->where('category', $last_id);
+                $this->db->where('subcategory', $sub_data->id);
+                $this->db->where('minorsubcategory', $min_data->id);
+                $min2_data = $this->db->get()->row();
+                $min2_id = $min2_data ? $min2_data->id : '';
+              }
+            }
+
+
+            $data_insert_cr = array(
+              "cat_id" => $last_id,
+              "subcat_id" => $sub_id,
+              "mincat_id1" => $min_id,
+              "mincat_id2" => $min2_id,
+
+            );
+            $last_idd = $this->base_model->insert_table("tbl_cron_jobs", $data_insert_cr, 1);
+
+
+            //===============add data in tbl_cron_job End===================//
           }
           if ($typ == 2) {
 
@@ -275,6 +355,46 @@ class Category extends CI_finecontrol
                 // echo json_encode($file_info);
               }
             }
+//Banner
+$ban2 = 'banner';
+
+
+$file_check = ($_FILES['banner']['error']);
+if ($file_check != 4) {
+
+  $image_upload_folder = FCPATH . "assets/uploads/category/";
+  if (!file_exists($image_upload_folder)) {
+    mkdir($image_upload_folder, DIR_WRITE_MODE, true);
+  }
+  $new_file_name = "categoryBanner" . date("Ymdhms");
+  $this->upload_config = array(
+    'upload_path'   => $image_upload_folder,
+    'file_name' => $new_file_name,
+    'allowed_types' => 'xlsx|csv|xls|pdf|doc|docx|txt|jpg|jpeg|png',
+    'max_size'      => 25000
+  );
+  $this->upload->initialize($this->upload_config);
+  if (!$this->upload->do_upload($ban2)) {
+    $upload_error = $this->upload->display_errors();
+    // echo json_encode($upload_error);
+
+    //$this->session->set_flashdata('emessage',$upload_error);
+    //redirect($_SERVER['HTTP_REFERER']);
+  } else {
+
+    $file_info = $this->upload->data();
+
+    $videoNAmePath = "assets/uploads/category/" . $new_file_name . $file_info['file_ext'];
+    $file_info['new_name'] = $videoNAmePath;
+    // $this->step6_model->updateappIconImage($imageNAmePath,$appInfoId);
+    $banner = $file_info['file_name'];
+    $banner2 = $videoNAmePath;
+
+    // echo json_encode($file_info);
+  }
+} else {
+  $banner2 = '';
+}
 
 
 
@@ -290,10 +410,14 @@ class Category extends CI_finecontrol
                 }
               }
             }
+            if(empty($banner2)){
+              $banner2=$da->banner;
+            }
 
             $data_insert = array(
               'name' => $name,
               'image' => $nnnn1,
+              'banner' => $banner2,
               'description' => $description,
               'type' => $type,
               'api_id' => $api_id,
@@ -307,6 +431,45 @@ class Category extends CI_finecontrol
             );
             $this->db->where('id', $idw);
             $last_id = $this->db->update('tbl_category', $data_insert);
+               //===============add data in tbl_cron_job start===================//
+
+               $this->db->select('*');
+               $this->db->from('tbl_sub_category');
+               $this->db->where('category', $idw);
+               $sub_data = $this->db->get()->row();
+               $min_id='';
+               $min2_id='';
+               if (!empty($sub_data)) {
+                 $sub_id = $sub_data ? $sub_data->id : '';
+                 $this->db->select('*');
+                 $this->db->from('tbl_minisubcategory');
+                 $this->db->where('category', $idw);
+                 $this->db->where('subcategory', $sub_data->id);
+                 $min_data = $this->db->get()->row();
+                 $min_id = $min_data ? $min_data->id : '';
+                 if (!empty($min_data)) {
+                   $this->db->select('*');
+                   $this->db->from('tbl_minisubcategory2');
+                   $this->db->where('category', $idw);
+                   $this->db->where('subcategory', $sub_data->id);
+                   $this->db->where('minorsubcategory', $min_data->id);
+                   $min2_data = $this->db->get()->row();
+                   $min2_id = $min2_data ? $min2_data->id : '';
+                 }
+               }
+   
+   
+               $data_insert_cr = array(
+                 "cat_id" => $last_id,
+                 "subcat_id" => $sub_id,
+                 "mincat_id1" => $min_id,
+                 "mincat_id2" => $min2_id,
+   
+               );
+               $last_idd = $this->base_model->insert_table("tbl_cron_jobs", $data_insert_cr, 1);
+   
+   
+               //===============add data in tbl_cron_job End===================//
           }
           if ($last_id != 0) {
             $this->session->set_flashdata('smessage', 'Data inserted successfully');
