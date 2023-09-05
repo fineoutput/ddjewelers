@@ -67,23 +67,40 @@
                         $this->db->select('*');
                         $this->db->from('tbl_user_address');
                         $this->db->where('id', $order1_data->address_id);
-                        $address = $this->db->get()->row();
-                        $addres = $address->address;
-                        $customer_email = $address->customer_email;
-                        $customer_phone = $address->customer_phone;
-
-                        // $location_addres= $address->location_address;
-                        // $doorflat= $address->doorflat;
-                        // $landmark= $address->landmark;
-                        if (!empty($addres)) {
-                            //   echo $addres;
+                        $addr_da = $this->db->get()->row();
+                        if (!empty($addr_da)) {
+                            $address = $addr_da->address;
+                            if (!empty($addr_da->country_id)) {
+                                $country_data1 = $this->db->get_where('tbl_country', array('id' => $addr_da->country_id))->result();
+                                $country = $country_data1[0]->name;
+                            } else {
+                                $country = '';
+                            }
+                            if (!empty($addr_da->state_id)) {
+                                $state_data = $this->db->get_where('tbl_state', array('id' => $addr_da->state_id))->result();
+                                if(!empty($state_data)){
+                
+                                    $state_name = $state_data[0]->name;
+                                }else{
+                                    $state_name='';
+                                }
+                            } else {
+                                $state_name = '';
+                            }
+                            $name = $addr_da->first_name . ' ' . $addr_da->last_name;
+                            $state = $state_name;
+                            $city = $addr_da->city;
+                            $zip = $addr_da->zipcode;
+                            $notes = $addr_da->notes;
                         } else {
-                            echo "no address";
+                            $name = '';
+                            $address = "";
+                            $state = "";
+                            $city = "";
+                            $zip = "";
+                            $country = "";
+                            $notes = '';
                         }
-                        $state = $address->state;
-                        $town_city = $address->town_city;
-                        $postal_code = $address->postal_code;
-                        $address = $address->address;
                     }
 
                     // $name=$order1_data->first_name." ".$order1_data->last_name;
@@ -103,13 +120,13 @@
                 <div class="col-sm-6"></div>
                 <div class="col-sm-6 shipping_content"><span class="font-weight-bold ">Shipping Address:</span> <br>
                     Name:
-                    <?= $user_name; ?>
+                    <?= $name; ?>
                     <br>
                     Email:
                     <?= $user_email; ?>
                     <br>
                     Phone:
-                    <?= $customer_phone ?>
+                    <?= $user_contact ?>
                     <br>
                     Address: <?php
                                 // if(empty($location_addres)){
@@ -127,10 +144,12 @@
 
                     State:
                     <?php echo $state; ?><br>
-                    Town City :
-                    <?php echo $town_city; ?><br>
+                    City :
+                    <?php echo $city; ?><br>
                     Zipcode:
-                    <?php echo $postal_code; ?><br>
+                    <?php echo $zip; ?><br>
+                    Country:
+                    <?php echo $country; ?><br>
                 </div>
             </div>
             <div class="row">
@@ -260,7 +279,21 @@
                                                                 } ?></th>
 
                         <th class="product_table"><?php if (!empty($order1_data)) {
-                                                        echo "+$ " . $order1_data->shipping;
+                                                        echo "+$" . $order1_data->shipping;
+                                                    } ?></th>
+                    </tr>
+                    <tr>
+                        <th>Delivery Charge:</th>
+
+                        <th class="product_table"><?php if (!empty($order1_data)) {
+                                                        echo "";
+                                                    } ?></th>
+                        <th class="product_table" colspan="3"><?php if (!empty($order1_data)) {
+                                                                    echo "";
+                                                                } ?></th>
+
+                        <th class="product_table"><?php if (!empty($order1_data)) {
+                                                        echo "+$" . $order1_data->delivery_charge;
                                                     } ?></th>
                     </tr>
                     <tr>
@@ -273,9 +306,11 @@
                                                                     echo "";
                                                                 } ?></th>
 
-                        <!-- <th class="product_table"><?php if (!empty($order1_data)) {
-                                                            echo "-$ " . $order1_data->discount;
-                                                        } ?></th> -->
+                        <th class="product_table"><?php if (!empty($order1_data->p_discount)) {
+                                                            echo "-$ " . $order1_data->p_discount;
+                                                        }else{
+                                                            echo "-$0";
+                                                        } ?></th>
                     </tr>
 
                     <tr>
@@ -285,7 +320,7 @@
 
                     <tr>
                         <th colspan="5">SubTotal</th>
-                        <th class="product_table">$.<?php if (!empty($order1_data)) {
+                        <th class="product_table">$<?php if (!empty($order1_data)) {
                                                             echo  $order1_data->final_amount;
                                                         } ?></th>
 
