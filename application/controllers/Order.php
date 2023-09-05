@@ -670,7 +670,7 @@ class Order extends CI_Controller
                     $this->email->set_newline("");
                     $this->email->from(EMAIL, EMAIL_NAME); // change it to yours
                     // $this->email->to('jewelplus@gmail.com');  // change it to yours
-                    $this->email->to('office.fineoutput@gmail.com');  // change it to yours
+                    $this->email->to(TO);  // change it to yours
                     $this->email->subject('New order received');
                     $this->email->message($message);
                     if ($this->email->send()) {
@@ -952,7 +952,7 @@ class Order extends CI_Controller
                 $this->email->set_newline("");
                 $this->email->from(EMAIL, EMAIL_NAME); // change it to yours
                 // $this->email->to('jewelplus@gmail.com');  // change it to yours
-                $this->email->to('office.fineoutput@gmail.com');  // change it to yours
+                $this->email->to(TO);  // change it to yours
                 $this->email->subject('New order received');
                 $this->email->message($message);
                 if ($this->email->send()) {
