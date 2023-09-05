@@ -70,21 +70,24 @@
                 <div class="row ">
                     <div class="col-sm-6 col-md-8 add1">
                         <h5 class="font-we"><b>Address</b></h5>
-                        <p class="border" style="padding: 10px;"><b>Name : </b><?= $name; ?>
-                            <br>
-                            <b>Address : </b><?= $address; ?>
-                            <br>
-                            <b>City : </b><?= $city; ?>
-                            <br>
-                            <b>State : </b><?= $state_name; ?>
-                            <br>
-                            <b>Zipcode : </b><?= $zip; ?>
-                            <br>
-                            <b>Country : </b><?= $country; ?>
-                            <br>
-                            <b>Notes : </b><?= $notes; ?>
-                        </p>
-                        <h5 class="font-we Address "><b>Cart Details</b></h5>
+                        <div class="border" style="padding: 10px;">
+
+                       
+                        <p style="margin-bottom: 5px;overflow-wrap: break-word"><b>Name : </b><?= $name; ?></p>
+                            
+                           <p style="margin-bottom: 5px;overflow-wrap: break-word"> <b>Address : </b><?= $address; ?></p>
+                            
+                           <p style="margin-bottom: 5px;overflow-wrap: break-word"> <b>City : </b><?= $city; ?></p>
+                            
+                           <p style="margin-bottom: 5px;overflow-wrap: break-word"> <b>State : </b><?= $state_name; ?></p>
+                            
+                           <p style="margin-bottom: 5px;overflow-wrap: break-word"> <b>Zipcode : </b><?= $zip; ?></p>
+                            
+                           <p style="margin-bottom: 5px;overflow-wrap: break-word"> <b>Country : </b><?= $country; ?></p>
+                            
+                          <p style="margin-bottom: 5px;overflow-wrap: break-word">  <b>Notes : </b><?= $notes; ?></p>
+                        </div>
+                        <h5 class="font-we Address mt-2"><b>Cart Details</b></h5>
                         <div class="  border">
                             <div class="col">
                                 <div class="row bold_text bg-light">
@@ -259,7 +262,7 @@
                             </div>
                             <input type="hidden" name="shipping_arr" id="shipping_arr" value='<?= json_encode($shipping_costs) ?>'>
                             <? if (!empty($methods_data)) { ?>
-                                <div class=" mb-3 text-center">
+                                <div class=" mb-3 text-center mb-2">
                                     <!-- <form action="<?= base_url(); ?>Home/affrim_place_order" method="post" enctype="multipart/form-data"> -->
                                     <input type="hidden" value="<?= $address_id; ?>" name="addresss_id">
                                     <input type="hidden" value="" name="applied_promocode" id="applied_promocode">
