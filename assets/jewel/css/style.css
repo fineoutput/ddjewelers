@@ -431,15 +431,21 @@ transform: rotate(90deg); */
         font-size: 22px;
     }
     .payicon {
-        width: 73px;
-        height: 73px;
+        width: 237px;
+        height: 57px;
         margin-left: 10px;
     }
+
     .payiconn {
-        width: 250px;
-        height: 73px;
+        width: 236px;
+        height: 59px;
         margin-left: 10px;
     }
+    .d-flex.pay_ic{
+        width: 80% ;
+    }
+    
+    
     .sign_btn_new {
         padding: .375rem .75rem;
         font-size: 1rem;
@@ -838,9 +844,9 @@ p {
 .scroll_up_div {
     width: 60px;
     height: 60px;
-    bottom: 20px;
+    bottom: 55px;
     position: fixed;
-    left: 40px;
+    right: 40px;
     color: #bbb;
     background-color: #666;
     border-radius: 50%;
@@ -897,6 +903,7 @@ p {
     /* margin-left: 5em; */
     font-size: 30px;
     color: #000000;
+    align-items: center;
 }
 @media only screen and (max-width: 600px) {
     .pay_ic {
@@ -2252,7 +2259,7 @@ hr {
     border-radius: 25px !important;
 }
 .paypal-button:not(.paypal-button-card) {
-    height: 51px !important;
+    height: 48px !important;
     min-height: 35px;
     max-height: 55px;
 }

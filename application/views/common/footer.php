@@ -131,8 +131,8 @@
           <p class=" mt-3 mb-0">@copyright <?=$date=$newdate->format('Y');?> <strong>D&amp;D Jewelry</strong> all right reserved</p>
         </div>
         <div class="col-md-8">
-          <div class="d-flex pay_ic
-           ">
+          <div class="d-flex pay_ic 
+           " style="align-items: center;">
           <img class="payicon" style="" src="<?=base_url()?>assets\jewel\img\payment.png"/>
             <!-- <i class="fab fa-cc-visa"></i>
             <i class="fab fa-cc-mastercard"></i>
@@ -140,7 +140,7 @@
             <img class="payicon" style="" src="<?=base_url()?>assets\jewel\img\master-card (1).png"/>
             <img class="payicon" style="" src="<?=base_url()?>assets\jewel\img\paymentamex.png"/>
             <img class="payicon" style="" src="<?=base_url()?>assets\jewel\img\paydiscover.png"/>
-            <img class="payicon" style="" src="<?=base_url()?>assets\jewel\img\paypal.png"/>
+            <img class="payicon" style="width: 97px; height: auto;" src="<?=base_url()?>assets\jewel\img\paypal.png"/>
             <img class="payicon" style="" src="<?=base_url()?>assets\jewel\img\google-pay.png"/>
             <img class="payiconn" style="" src="<?=base_url()?>assets\jewel\img\pay3.png"/>
             <!-- <i class="fab fa-cc-amex"></i> -->
@@ -166,7 +166,6 @@
 <script src="<?=base_url();?>assets/jewel/js/jquery.zoom.js"></script>
 <script>
 		$(document).ready(function(){
-      $('.select2').select2();
 			jQuery('#pic-1').zoom();
 			jQuery('#pic-2').zoom();
 			jQuery('#pic-3').zoom();
@@ -891,6 +890,7 @@ if(stuller_pro_id == "" || stuller_pro_id == null){
         localStorage.setItem("cartItems" , JSON.stringify(cart_array));
         var cookieData =JSON.parse(localStorage.getItem("cartItems"));
     var a= cookieData.length;
+    // alert(a);
     $("#totalCartItems").text(a);
     $("#totalCartItemsM").text(a);
     $("#totalCartItemsMb").text(a);
