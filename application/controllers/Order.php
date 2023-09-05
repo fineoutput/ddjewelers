@@ -895,8 +895,8 @@ class Order extends CI_Controller
                 $this->db->where('id', $id);
                 $zapak = $this->db->update('tbl_order1', $data_update);
                 $user_id = $this->session->userdata('user_id');
-                 //------------User Sent Email Start--------------//
-                 $config = array(
+                //------------User Sent Email Start--------------//
+                $config = array(
                     'protocol' => 'smtp',
                     'smtp_host' => SMTP_HOST,
                     'smtp_port' => SMTP_PORT,
@@ -1010,6 +1010,43 @@ class Order extends CI_Controller
             $respone['status'] = false;
             $respone['message'] = 'Please insert some data, No data available';
             echo json_encode($respone);
+        }
+    }
+
+    public function delete_address($idd)
+    {
+
+        if (!empty($this->session->userdata('user_id'))) {
+
+            $id = base64_decode($idd);
+            $user_id = $this->session->userdata('user_id');
+
+            $this->db->select('id');
+            $this->db->from('tbl_user_address');
+            $this->db->where('id', $id);
+            $this->db->where('user_id', $user_id);
+            $da = $this->db->get()->row();
+
+            if (!empty($da)) {
+                $data_update = array(
+                    'is_active' => 0,
+                );
+                $this->db->where('id', $id);
+                $zapak = $this->db->update('tbl_user_address', $data_update);
+                if ($zapak != 0) {
+                    $this->session->set_flashdata('smessage', 'Address successfully deleted!');
+                    redirect($_SERVER['HTTP_REFERER']);
+                } else {
+                    $this->session->set_flashdata('emessage', 'Sorry error occured');
+                    redirect($_SERVER['HTTP_REFERER']);
+
+                }
+            } else {
+                $this->session->set_flashdata('emessage', 'Sorry error occured');
+                redirect($_SERVER['HTTP_REFERER']);
+            }
+        } else {
+            redirect("Home/login", "refresh");
         }
     }
 }

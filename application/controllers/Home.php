@@ -5197,6 +5197,7 @@ class Home extends CI_Controller
             $user_id = $this->session->userdata('user_id');
             $this->db->select('*');
             $this->db->from('tbl_user_address');
+            $this->db->where('is_active', 1);
             $this->db->where('user_id', $user_id);
             $data['user_addr_data'] = $this->db->get();
             $this->db->select('*');

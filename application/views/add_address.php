@@ -1,10 +1,10 @@
 <!-- register start -->
 <style>
-  @media(max-width: 767px){
-    .resp{
-        flex-wrap: wrap !important;
+  @media(max-width: 767px) {
+    .resp {
+      flex-wrap: wrap !important;
     }
-}
+  }
 </style>
 <section>
   <div class="container-fluid pl-5 pr-5 pt-3 pb-5">
@@ -40,12 +40,11 @@
                   if (!empty($address->state_id)) {
 
                     $state_data = $this->db->get_where('tbl_state', array('id' => $address->state_id))->result();
-                    if(!empty($state_data)){
+                    if (!empty($state_data)) {
                       $state_name = $state_data[0]->name;
-                    }else{
-                    $state_name='';
+                    } else {
+                      $state_name = '';
                     }
-                    
                   } else {
                     $state_name = '';
                   }
@@ -53,24 +52,32 @@
               ?>
 
                   <div class=" row add_sel">
-                    <div class="col-2 col-md-1">
+                    <!-- <div class="col-1 col-md-1">
                       <input type="radio" name="selected_address" value="<?= $address->id; ?>" <?php if ($i == 0) {
                                                                                                   echo 'checked';
                                                                                                 } ?> required>
+                    </div> -->
+                    <div class="col-10 col-md-11 row">
+                      <input type="radio" name="selected_address" value="<?= $address->id; ?>" <?php if ($i == 0) {
+                                                                                                  echo 'checked';
+                                                                                                } ?> required>
+                      <div style="margin-left:20px">
+                        <p><b>Name:</b> <a><?= $address->first_name . ' ' . $address->last_name; ?></a></p>
+                        <p><b>Address:</b> <a><?= $address->address; ?></a></p>
+
+
+
+
+                        <p><b>city:</b><a><?= $address->city; ?></a></p>
+                        <p><b>Zipcode:</b><a><?= $address->zipcode; ?></a></p>
+
+                        <p><b>State:</b><a><?= $state_name; ?></a></p>
+                        <p><b>Country:</b><a><?= $country_name; ?></a></p>
+                      </div>
+
                     </div>
-                    <div class="col-10 col-md-11">
-                    
-                      <p><b>Name:</b> <a><?= $address->first_name.' '.$address->last_name; ?></a></p>
-                      <p><b>Address:</b> <a><?= $address->address; ?></a></p>
-                    
-
-                    
-
-                      <p><b>city:</b><a><?= $address->city; ?></a></p>
-                      <p><b>Zipcode:</b><a><?= $address->zipcode; ?></a></p>
-                     
-                      <p><b>State:</b><a><?= $state_name;?></a></p>
-                      <p><b>Country:</b><a><?= $country_name; ?></a></p>
+                    <div class="col-2 col-md-1">
+                     <a href="<?= base_url(); ?>Order/delete_address/<?=base64_encode($address->id)?>"><i class="fa fa-trash" aria-hidden="true"></i></a>
                     </div>
                   </div>
 
@@ -111,7 +118,7 @@
                   <?php } ?>
                 </select>
               </div>
-              <div style="display:flex; gap:6px; " class="resp" >
+              <div style="display:flex; gap:6px; " class="resp">
                 <div class="form-group col-md-6 p-0">
                   <label for="first_name">First Name *</label>
                   <input type="text" class="form-control" name="first_name" id="first_name" required>
@@ -124,11 +131,11 @@
               </div>
               <div class="form-group">
                 <label for="address">Address *</label>
-                <textarea  name="address" id="address" required></textarea>
+                <textarea name="address" id="address" required></textarea>
               </div>
               <div class="form-group">
                 <label for="address2">Address 2</label>
-                <textarea  name="address2" id="address2"></textarea>
+                <textarea name="address2" id="address2"></textarea>
               </div>
               <div class="form-group">
                 <label for="city">City *</label>
@@ -137,43 +144,43 @@
               <div style="display:flex; " class="resp">
                 <div class="form-group col-md-6 p-0" style="margin-right: 10px;">
                   <label for="state">States *</label>
-                <select name="state_id" class="form-control select2" required>
-                  <option value="">----Select State---</option>
+                  <select name="state_id" class="form-control select2" required>
+                    <option value="">----Select State---</option>
                     <?php
-                    foreach($states->result() as $st){
+                    foreach ($states->result() as $st) {
 
                       $this->db->select('*');
-                                  $this->db->from('tbl_state');
-                                  $this->db->where('name',$st->name);
-                                  $dsa_id= $this->db->get()->row();
-                                 
-                 
-                      ?>
-                      <option value="<?=$dsa_id->id ?>"><?=$st->name ?></option>
-                      <?php
+                      $this->db->from('tbl_state');
+                      $this->db->where('name', $st->name);
+                      $dsa_id = $this->db->get()->row();
+
+
+                    ?>
+                      <option value="<?= $dsa_id->id ?>"><?= $st->name ?></option>
+                    <?php
 
                     }
                     ?>
-                </select>
+                  </select>
                 </div>
-                <div class="form-group col-md-6 p-0" >
+                <div class="form-group col-md-6 p-0">
                   <label for="zipcode">Zip/Postal Code *</label>
                   <input type="text" class="form-control" name="zipcode" id="zipcode" required>
                 </div>
 
               </div>
               <div class="form-group col-md-6 mb-2  ">
-                 
-                  <input type="checkbox" class="form-check-input"  style="width:5%; height:auto;" name="is_gift" id="is_gift" value="1">
-                  <span style="margin-left:8px">This Order Contains a Gift</span>
-                </div>
-                <div class="form-group">
+
+                <input type="checkbox" class="form-check-input" style="width:5%; height:auto;" name="is_gift" id="is_gift" value="1">
+                <span style="margin-left:8px">This Order Contains a Gift</span>
+              </div>
+              <div class="form-group">
                 <label for="notes">Special Instruction or Notes</label>
-                <textarea  name="notes" id="notes"></textarea>
+                <textarea name="notes" id="notes"></textarea>
               </div>
 
 
-              
+
               <button class="sub_btn">SUBMIT</button>
             </form>
           </div>
