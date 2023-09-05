@@ -99,6 +99,8 @@ class Order extends CI_Controller
                             $this->session->set_flashdata('emessage', 'Some error occured.');
                             redirect($_SERVER['HTTP_REFERER']);
                         }
+                        $delivery_charge=0;
+                       
                         //get product sku end
                         // echo $total_cart_amount;die();
                         //Inventory Check api start
@@ -132,6 +134,8 @@ class Order extends CI_Controller
                         // echo $status;
                         // echo $inventory;
                         // die();
+                        
+                        
                         //Inventory Check api end
                         if (!empty($status) && $status != 'Out Of Stock') {
                             // $db_quantity=$pro_inv_da->inventory;
@@ -146,7 +150,7 @@ class Order extends CI_Controller
                                         'payment_type' => 0,
                                         'payment_status' => 0,
                                         'order_status' => 0,
-                                        'delivery_charge' => 0,
+                                        'delivery_charge' => $delivery_charge,
                                         'txnid' => $txnid,
                                         'ip' => $ip,
                                         'date' => $cur_date
@@ -247,7 +251,7 @@ class Order extends CI_Controller
                                             'payment_type' => 0,
                                             'payment_status' => 0,
                                             'order_status' => 0,
-                                            'delivery_charge' => 0,
+                                            'delivery_charge' => $delivery_charge,
                                             'txnid' => $txnid,
                                             'ip' => $ip,
                                             'date' => $cur_date
@@ -383,8 +387,16 @@ class Order extends CI_Controller
                         }
                     }
                 }
+                $address_data = $this->db->get_where('tbl_user_address', array('is_active' => 1, 'id' => $address_id))->row();
+                $state_data = $this->db->get_where('tbl_state_detail', array('is_active' => 1, 'zip_code' => $address_data->zipcode))->row();
+                if(!empty($state_data) && $state_data->Percentage!=0){
+                    $delivery_charge=round($total_cart_amount1 * $state_data->Percentage /100,2);
+                }else{
+                    $delivery_charge=0;
+                }
                 $data_insert_order11 = array(
                     'total_amount' => $total_cart_amount1,
+                    'delivery_charge' => $delivery_charge,
                 );
                 $this->db->where('id', $last_order_id);
                 $zapak2 = $this->db->update('tbl_order1', $data_insert_order11);
@@ -502,7 +514,7 @@ class Order extends CI_Controller
                         'method_id' => $temp_array[0]['id'],
                         'shipping' => $shipping_costs[0]['shipment_cost'],
                         'shipping_rule_id' => $shipping_costs[0]['id'],
-                        'final_amount' => $order_data[0]->total_amount + $shipping_costs[0]['shipment_cost'],
+                        'final_amount' => $order_data[0]->total_amount + $shipping_costs[0]['shipment_cost'] +$order_data[0]->delivery_charge,
                     );
                     $this->db->where('id', $id);
                     $zapak2 = $this->db->update('tbl_order1', $data_update2);
@@ -718,7 +730,7 @@ class Order extends CI_Controller
                     'method_id' => $method_id,
                     'shipping' => $shipping_arr[$index]->shipment_cost,
                     'shipping_rule_id' =>  $shipping_arr[$index]->id,
-                    'final_amount' => $order_data[0]->total_amount + $shipping_arr[$index]->shipment_cost - $order_data[0]->p_discount,
+                    'final_amount' => $order_data[0]->total_amount + $shipping_arr[$index]->shipment_cost - $order_data[0]->p_discount + $order_data[0]->delivery_charge,
                 );
                 $this->db->where('id', $id);
                 $zapak2 = $this->db->update('tbl_order1', $data_update2);
@@ -811,7 +823,7 @@ class Order extends CI_Controller
                                 $data_update = array(
                                     'p_discount' => $discount,
                                     'promocode' => $promo_data[0]->id,
-                                    'final_amount' => $order_data[0]->total_amount + $order_data[0]->shipping -  $discount
+                                    'final_amount' => $order_data[0]->total_amount + $order_data[0]->shipping + $order_data[0]->delivery_charge -  $discount
                                 );
                                 $this->db->where('id', $id);
                                 $zapak = $this->db->update('tbl_order1', $data_update);
@@ -857,7 +869,7 @@ class Order extends CI_Controller
                 $data_update2 = array(
                     'promocode' => '',
                     'p_discount' => '',
-                    'final_amount' => $order1_data[0]->final_amount + $order1_data[0]->p_discount,
+                    'final_amount' => $order1_data[0]->final_amount + $order1_data[0]->p_discount ,
                 );
                 $this->db->where('id', $order_id);
                 $zapak2 = $this->db->update('tbl_order1', $data_update2);
@@ -1039,7 +1051,6 @@ class Order extends CI_Controller
                 } else {
                     $this->session->set_flashdata('emessage', 'Sorry error occured');
                     redirect($_SERVER['HTTP_REFERER']);
-
                 }
             } else {
                 $this->session->set_flashdata('emessage', 'Sorry error occured');

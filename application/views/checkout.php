@@ -203,6 +203,14 @@
                                         <p>+$<?= number_format((float)$order1_data[0]->shipping, 2, '.', '') ?></p>
                                     </div>
                                 </div>
+                                <div class="row bold_text border-bottom bg-light">
+                                    <div class="col-9 col-sm-9">
+                                        <p>Delivery Charge:</p>
+                                    </div>
+                                    <div class="col-3 col-sm-3">
+                                        <p>+$<?= number_format((float)$order1_data[0]->delivery_charge, 2, '.', '') ?></p>
+                                    </div>
+                                </div>
                                 <? if (!empty($order1_data[0]->p_discount)) { ?>
                                     <div class="row bold_text border-bottom bg-light">
                                         <div class="col-9 col-sm-9">
@@ -232,12 +240,12 @@
                             <form method="post" action="<?= base_url() ?>Order/apply_promocode">
                                 <label>Promo Code</label><br>
                                 <div class="row">
-                                    <div class="col-8  col-sm-8 ">
+                                    <div class="col-9  col-sm-9  col-9">
                                         <input type="hidden" name="id" value="<?= $order1_data[0]->id ?>">
                                         <input type="text" name="promocode" class="border" style="height: 38px; width: 100%;">
                                         <!-- style="height: 40px; width:250px;" -->
                                     </div>
-                                    <div class="col-4  col-sm-4">
+                                    <div class="col-3  col-sm-3 col-3">
                                         <Button class="btn signup text-center" type="submit" style=" width: 100%;"> Apply</Button>
                                     </div>
                                 </div>
