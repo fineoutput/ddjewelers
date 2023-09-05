@@ -316,7 +316,7 @@
               <h6 class="m-auto">100% Satisfaction Guarantee</h6>
             </div>
             <div class="mt-2" style="padding-left:70px;">
-              <a aria-label="Sign Special Offers m-auto" class="btn-md btn signup text-right" data-tspages="true" href="<?= base_url() ?>Home/signup_special_offers">Sign Up For Special Offers</a>
+              <a aria-label="Sign Special Offers m-auto" class="btn-md btn signup text-right" data-tspages="true" href="<?= base_url() ?>Home/signup_special_offers" target="_blank" rel="noopener">Sign Up For Special Offers</a>
             </div>
           </div>
           <div class="col-md-4 d-none d-lg-block">

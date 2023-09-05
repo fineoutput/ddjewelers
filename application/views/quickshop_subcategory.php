@@ -9,16 +9,19 @@
     padding-bottom: 10px;
     font-weight: 100 !important;
   }
+
   .text_light p {
     color: rgb(38, 38, 38);
     line-height: 1.42857;
     font-size: 14px;
   }
+
   .img_chng {
     width: 400px;
     margin: auto;
     display: flex;
   }
+
   .quick_btn {
     position: relative;
     padding: 0px 8px;
@@ -33,6 +36,7 @@
     box-shadow: rgb(0 0 0 / 35%) 0px 2px 3px 0px;
     text-transform: uppercase;
   }
+
   .this_new h2 {
     line-height: 1;
     color: rgb(85, 85, 85);
@@ -43,9 +47,11 @@
     padding-bottom: 10px;
     font-weight: 100 !important;
   }
+
   .this_new i {
     color: #000;
   }
+
   .prod_btn {
     position: relative;
     padding: 0px 8px;
@@ -59,10 +65,12 @@
     line-height: 32px;
     box-shadow: rgb(0 0 0 / 25%) 0px 2px 3px 0px;
   }
+
   .pad_img_new img {
     padding-left: 35px;
     width: 200px;
   }
+
   .black_tex {
     position: relative;
     padding: 12px 40px !important;
@@ -72,15 +80,18 @@
     font-size: 1rem;
     font-weight: 500;
   }
+
   .col-md-dd {
     width: 144px;
     text-align: center;
     padding-left: 15px;
     padding-right: 15px;
   }
+
   .col-md-dd img {
     width: 100%;
   }
+
   .col-md-dd p {
     font-size: 12px;
   }
@@ -160,14 +171,26 @@
                         // $this->db->where('is_active', 1);
                         // $this->db->where('is_quick', 1);
                         // $product_da = $this->db->get();
+                        // $this->db->select('*');
+                        // $this->db->from('tbl_products');
+                        // $this->db->where('minisub_category2', $quick_mini_subcate2->id);
+                        // $this->db->where('is_active', 1);
+                        // $this->db->where('is_quick', 1);
+                        // // $this->db->where("sku_series_type1 = (SELECT MAX(sku_series_type1) FROM tbl_products WHERE sku_series = tbl_products.sku_series)", NULL, FALSE);
+                        // $this->db->where('sku_series IN (SELECT sku_series FROM tbl_products GROUP BY sku_series HAVING COUNT(*) = 1)');
+                        // $product_da = $this->db->get();
                         $this->db->select('*');
                         $this->db->from('tbl_products');
                         $this->db->where('minisub_category2', $quick_mini_subcate2->id);
                         $this->db->where('is_active', 1);
                         $this->db->where('is_quick', 1);
-                        $this->db->where("sku_series_type1 = (SELECT MAX(sku_series_type1) FROM tbl_products WHERE sku_series = tbl_products.sku_series)", NULL, FALSE);
+                        $this->db->group_by('sku_series');
+                        // $this->db->having('COUNT(sku_series)', 1);
                         $product_da = $this->db->get();
-                        // print_r($product_da);die();
+
+                        // $result = $query->result();
+                        // print_r($result);
+                        // die();
                         // echo $product_da= $this->db->count_all_results(); die();
                         if (!empty($product_da->row())) {
                           foreach ($product_da->result() as $prod) {

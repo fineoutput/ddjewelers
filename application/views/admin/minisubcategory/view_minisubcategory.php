@@ -40,15 +40,15 @@
                       <th>Category Level1</th>
                       <th>Subcategory Level2</th>
                       <th>Subcategory Level3</th>
-                      <th>Image</th>
-                      <th>Banner</th>
+                      <!-- <th>Image</th>
+                      <th>Banner</th> -->
                       <th>Api Id</th>
                       <th>Sequence</th>
                       <th>Excluded Series</th>
                       <th>Excluded Sku</th>
                       <th>Include Series</th>
                       <th>Include Sku</th>
-                      <th>Description</th>
+                      <!-- <th>Description</th> -->
 
 
 
@@ -96,7 +96,7 @@
                             ?></td>
                         <td><?php echo $data->name ?></td>
 
-                        <td>
+                        <!-- <td>
                           <?php if ($data->image != "") { ?>
                             <img id="slide_img_path" height=50 width=100 src="<?php echo base_url() . $data->image
                                                                               ?>">
@@ -110,21 +110,11 @@
                           <?php } else { ?>
                             Sorry No File Found
                           <?php } ?>
-                        </td>
+                        </td> -->
 
-                        <td><?php
-                            $string = strip_tags($data->api_id);
-                            if (strlen($string) > 50) {
-
-                              // truncate string
-                              $stringCut = substr($string, 0, 50);
-                              $endPoint = strrpos($stringCut, ' ');
-
-                              //if the string doesn't contain any space then it will cut without word basis.
-                              $string = $endPoint ? substr($stringCut, 0, $endPoint) : substr($stringCut, 0);
-                              $string .= '...';
-                            }
-                            echo $string; ?></td>
+                        <td style="max-width: 150px;overflow-wrap: break-word;"><?php
+                            
+                            echo $data->api_id; ?></td>
                         <td><?php echo $data->seq ?></td>
                         <td><?php echo $data->exlude_series ?></td>
                         <td><?php echo $data->exlude_sku ?></td>

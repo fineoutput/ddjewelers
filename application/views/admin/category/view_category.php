@@ -40,9 +40,9 @@
                       <th>#</th>
 
                       <th>Category Leval1</th>
-                      <th>Image</th>
+                      <!-- <th>Image</th>
                       <th>Banner</th>
-                      <th>Description</th>
+                      <th>Description</th> -->
                       <th>Api Id</th>
                       <th>Sequence No.</th>
                       <th>Excluded Series</th>
@@ -64,7 +64,7 @@
 
                         <td><?php echo $data->name ?></td>
 
-                        <td>
+                        <!-- <td>
                           <?php if ($data->image != "") { ?>
                             <img id="slide_img_path" height=50 width=100 src="<?php echo base_url() . $data->image
                                                                               ?>">
@@ -92,20 +92,9 @@
                               $string .= '...';
                             }
                             echo $string; ?>
-                        </td>
-                        <td><?php 
- $string = strip_tags($data->api_id);
- if (strlen($string) > 50) {
-
-     // truncate string
-     $stringCut = substr($string, 0, 50);
-     $endPoint = strrpos($stringCut, ' ');
-
-     //if the string doesn't contain any space then it will cut without word basis.
-     $string = $endPoint? substr($stringCut, 0, $endPoint) : substr($stringCut, 0);
-     $string .= '...';
- }
- echo $string; ?></td>
+                        </td> -->
+                        <td style="max-width: 150px;overflow-wrap: break-word;"><?php 
+ echo $data->api_id; ?></td>
                         <td><?php echo $data->seq; ?></td>
                         <td><?php echo $data->exlude_series ?></td>
                         <td><?php echo $data->exlude_sku ?></td>
