@@ -5666,6 +5666,7 @@ class Products extends CI_finecontrol
                     // echo $TotalNumberOfProducts;die();
                     $NextPage = "";
                     for ($i = 0; $i < $total_pages; $i++) {
+                        set_time_limit(0);
                         // code...
                         // echo $i;
                         $url = 'https://api.stuller.com/v2/products';
