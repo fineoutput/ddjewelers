@@ -90,11 +90,17 @@
                 </div>
               </div>
             </div>
+           <? if (!empty($user_addr_data->row())) {?>
             <div class="col-md-12  mt-3 mb-2">
               <!-- <a href="<?= base_url(); ?>Home/checkout"> -->
               <button class="sub_btn" type="submit">Continue</button>
               <!-- </a> -->
             </div>
+            <?}else{?>
+              <div class="text-center w-100 mt-5">
+                <p style="color:#dc3545">Please add address to proceed further </p>
+              </div>
+              <?}?>
           </div>
         </form>
       </div>
