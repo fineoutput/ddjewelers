@@ -4884,9 +4884,13 @@ class Home extends CI_Controller
         $this->db->from('tbl_category');
         $this->db->where('id', $id);
         $cate_da = $this->db->get()->row();
+        $cat_banner = '';
         if (!empty($cate_da)) {
             $cate_name = $cate_da->name;
             $cate_description = $cate_da->description;
+            if (!empty($cate_da->banner)) {
+                $cat_banner = base_url() . $cate_da->banner;
+            }
         } else {
             $cate_name = "";
             $cate_description = "";
@@ -4894,6 +4898,7 @@ class Home extends CI_Controller
         $data['category_id'] = $id;
         $data['category_name'] = $cate_name;
         $data['cate_description'] = $cate_description;
+        $data['cat_banner'] = $cat_banner;
         $this->load->view('common/header', $data);
         $this->load->view('sub_category');
         $this->load->view('common/footer');
@@ -5366,7 +5371,7 @@ class Home extends CI_Controller
                         if (!empty($offer)) {
                             $this->session->set_flashdata('smessage', 'Thankyou for signing up');
                             redirect("Home/signup_special_offers", "refresh");
-                        }else{
+                        } else {
                             $this->session->set_flashdata('smessage', 'Thankyou for contacting us. We will get back to you.');
                             redirect("Home/contact_us", "refresh");
                         }

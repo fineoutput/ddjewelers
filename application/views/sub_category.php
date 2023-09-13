@@ -12,7 +12,7 @@
 
       <div class="col-md-12">
         <h1 class="r-title"><?=$category_name;?></h1>
-        <!-- <img src="<?=base_url();?>assets/jewel/img/sub.jpg"> -->
+        <img src="<?=$cat_banner;?>">
         <h6 class="mt-3 mb-4"><i><?=$cate_description;?></i></h6>
         <div class="row">
           <?php $i=1; foreach($sub_category->result() as $data) {
