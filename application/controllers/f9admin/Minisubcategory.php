@@ -218,45 +218,45 @@ class Minisubcategory extends CI_finecontrol
               }
             }
             //Banner
-$ban2 = 'banner';
+            $ban2 = 'banner';
 
 
-$file_check = ($_FILES['banner']['error']);
-if ($file_check != 4) {
+            $file_check = ($_FILES['banner']['error']);
+            if ($file_check != 4) {
 
-  $image_upload_folder = FCPATH . "assets/uploads/category/";
-  if (!file_exists($image_upload_folder)) {
-    mkdir($image_upload_folder, DIR_WRITE_MODE, true);
-  }
-  $new_file_name = "categoryBanner" . date("Ymdhms");
-  $this->upload_config = array(
-    'upload_path'   => $image_upload_folder,
-    'file_name' => $new_file_name,
-    'allowed_types' => 'xlsx|csv|xls|pdf|doc|docx|txt|jpg|jpeg|png',
-    'max_size'      => 25000
-  );
-  $this->upload->initialize($this->upload_config);
-  if (!$this->upload->do_upload($ban2)) {
-    $upload_error = $this->upload->display_errors();
-    // echo json_encode($upload_error);
+              $image_upload_folder = FCPATH . "assets/uploads/category/";
+              if (!file_exists($image_upload_folder)) {
+                mkdir($image_upload_folder, DIR_WRITE_MODE, true);
+              }
+              $new_file_name = "categoryBanner" . date("Ymdhms");
+              $this->upload_config = array(
+                'upload_path'   => $image_upload_folder,
+                'file_name' => $new_file_name,
+                'allowed_types' => 'xlsx|csv|xls|pdf|doc|docx|txt|jpg|jpeg|png',
+                'max_size'      => 25000
+              );
+              $this->upload->initialize($this->upload_config);
+              if (!$this->upload->do_upload($ban2)) {
+                $upload_error = $this->upload->display_errors();
+                // echo json_encode($upload_error);
 
-    //$this->session->set_flashdata('emessage',$upload_error);
-    //redirect($_SERVER['HTTP_REFERER']);
-  } else {
+                //$this->session->set_flashdata('emessage',$upload_error);
+                //redirect($_SERVER['HTTP_REFERER']);
+              } else {
 
-    $file_info = $this->upload->data();
+                $file_info = $this->upload->data();
 
-    $videoNAmePath = "assets/uploads/category/" . $new_file_name . $file_info['file_ext'];
-    $file_info['new_name'] = $videoNAmePath;
-    // $this->step6_model->updateappIconImage($imageNAmePath,$appInfoId);
-    $banner = $file_info['file_name'];
-    $banner2 = $videoNAmePath;
+                $videoNAmePath = "assets/uploads/category/" . $new_file_name . $file_info['file_ext'];
+                $file_info['new_name'] = $videoNAmePath;
+                // $this->step6_model->updateappIconImage($imageNAmePath,$appInfoId);
+                $banner = $file_info['file_name'];
+                $banner2 = $videoNAmePath;
 
-    // echo json_encode($file_info);
-  }
-} else {
-  $banner2 = '';
-}
+                // echo json_encode($file_info);
+              }
+            } else {
+              $banner2 = '';
+            }
 
 
 
@@ -286,254 +286,281 @@ if ($file_check != 4) {
 
 
             $last_id = $this->base_model->insert_table("tbl_minisubcategory", $data_insert, 1);
+             //===============add data in tbl_cron_job start===================//
+
+             $min2_id = '';
+             $this->db->select('*');
+             $this->db->from('tbl_minisubcategory2');
+             $this->db->where('category', $category);
+             $this->db->where('subcategory', $subcategory);
+             $this->db->where('minorsubcategory', $last_id);
+             $min2_data = $this->db->get()->row();
+             $min2_id = $min2_data ? $min2_data->id : '';
+
+             $data_insert_cr = array(
+               "cat_id" => $category,
+               "subcat_id" => $subcategory,
+               "mincat_id1" => $last_id,
+               "mincat_id2" => $min2_id,
+ 
+             );
+             $last_idd = $this->base_model->insert_table("tbl_cron_jobs", $data_insert_cr, 1);
           }
-        
-           if($typ==2){
 
-    $idw=base64_decode($iw);
+          if ($typ == 2) {
 
-
- $this->db->select('*');
- $this->db->from('tbl_minisubcategory');
- $this->db->where('id',$idw);
- $dsa=$this->db->get();
- $da=$dsa->row();
+            $idw = base64_decode($iw);
 
 
-
-$img3='image';
-
-
-           $file_check=($_FILES['image']['error']);
-if($file_check!=4){
-
-         $image_upload_folder = FCPATH . "assets/uploads/minisubcategory/";
-                     if (!file_exists($image_upload_folder))
-                     {
-                         mkdir($image_upload_folder, DIR_WRITE_MODE, true);
-                     }
-                     $new_file_name="minisubcategory".date("Ymdhms");
-                     $this->upload_config = array(
-                             'upload_path'   => $image_upload_folder,
-                             'file_name' => $new_file_name,
-                             'allowed_types' =>'xlsx|csv|xls|pdf|doc|docx|txt|jpg|jpeg|png',
-                             'max_size'      => 25000
-                     );
-                     $this->upload->initialize($this->upload_config);
-                     if (!$this->upload->do_upload($img3))
-                     {
-                         $upload_error = $this->upload->display_errors();
-                         // echo json_encode($upload_error);
-
-           //$this->session->set_flashdata('emessage',$upload_error);
-             //redirect($_SERVER['HTTP_REFERER']);
-                     }
-                     else
-                     {
-
-                         $file_info = $this->upload->data();
-
-                         $videoNAmePath = "assets/uploads/minisubcategory/".$new_file_name.$file_info['file_ext'];
-                         $file_info['new_name']=$videoNAmePath;
-                         // $this->step6_model->updateappIconImage($imageNAmePath,$appInfoId);
-                         $nnnn=$file_info['file_name'];
-                         $nnnn3=$videoNAmePath;
-
-                         // echo json_encode($file_info);
-                     }
-        }
-//Banner
-$ban2 = 'banner';
+            $this->db->select('*');
+            $this->db->from('tbl_minisubcategory');
+            $this->db->where('id', $idw);
+            $dsa = $this->db->get();
+            $da = $dsa->row();
 
 
-$file_check = ($_FILES['banner']['error']);
-if ($file_check != 4) {
 
-  $image_upload_folder = FCPATH . "assets/uploads/minisubcategory/";
-  if (!file_exists($image_upload_folder)) {
-    mkdir($image_upload_folder, DIR_WRITE_MODE, true);
-  }
-  $new_file_name = "minisubcategoryBanner" . date("Ymdhms");
-  $this->upload_config = array(
-    'upload_path'   => $image_upload_folder,
-    'file_name' => $new_file_name,
-    'allowed_types' => 'xlsx|csv|xls|pdf|doc|docx|txt|jpg|jpeg|png',
-    'max_size'      => 25000
-  );
-  $this->upload->initialize($this->upload_config);
-  if (!$this->upload->do_upload($ban2)) {
-    $upload_error = $this->upload->display_errors();
-    // echo json_encode($upload_error);
-
-    //$this->session->set_flashdata('emessage',$upload_error);
-    //redirect($_SERVER['HTTP_REFERER']);
-  } else {
-
-    $file_info = $this->upload->data();
-
-    $videoNAmePath = "assets/uploads/minisubcategory/" . $new_file_name . $file_info['file_ext'];
-    $file_info['new_name'] = $videoNAmePath;
-    // $this->step6_model->updateappIconImage($imageNAmePath,$appInfoId);
-    $banner = $file_info['file_name'];
-    $banner2 = $videoNAmePath;
-
-    // echo json_encode($file_info);
-  }
-} else {
-  $banner2 = '';
-}
+            $img3 = 'image';
 
 
- if(!empty($da)){ $img = $da ->image;
-if(!empty($img)) { if(empty($nnnn3)){ $nnnn3 = $img; } }else{ if(empty($nnnn3)){ $nnnn3= ""; } } }
-if(empty($banner2)){
-  $banner2=$da->banner;
-}
-$data_insert = array(
-       'category'=>$category,
-'subcategory'=>$subcategory,
-'name'=>$name,
-'type'=>$type,
-'image'=>$nnnn3,
-'banner' => $banner2,
+            $file_check = ($_FILES['image']['error']);
+            if ($file_check != 4) {
 
-'api_id'=>$api_id,
-'seq'=>$seq,
-'finshed'=>$finshed,
-'exlude_series'=>$exlude_series,
-'exlude_sku'=>$exlude_sku,
-'include_series'=>$include_series,
-'include_sku'=>$include_sku,
-'description'=>$description
+              $image_upload_folder = FCPATH . "assets/uploads/minisubcategory/";
+              if (!file_exists($image_upload_folder)) {
+                mkdir($image_upload_folder, DIR_WRITE_MODE, true);
+              }
+              $new_file_name = "minisubcategory" . date("Ymdhms");
+              $this->upload_config = array(
+                'upload_path'   => $image_upload_folder,
+                'file_name' => $new_file_name,
+                'allowed_types' => 'xlsx|csv|xls|pdf|doc|docx|txt|jpg|jpeg|png',
+                'max_size'      => 25000
+              );
+              $this->upload->initialize($this->upload_config);
+              if (!$this->upload->do_upload($img3)) {
+                $upload_error = $this->upload->display_errors();
+                // echo json_encode($upload_error);
 
+                //$this->session->set_flashdata('emessage',$upload_error);
+                //redirect($_SERVER['HTTP_REFERER']);
+              } else {
 
-                     );
-             $this->db->where('id', $idw);
-             $last_id=$this->db->update('tbl_minisubcategory', $data_insert);
-           }
-                       if($last_id!=0){
-                               $this->session->set_flashdata('smessage','Data inserted successfully');
-                               redirect("dcadmin/minisubcategory/view_minisubcategory","refresh");
-                              }
-                               else
-                                   {
+                $file_info = $this->upload->data();
 
-                                    $this->session->set_flashdata('emessage','Sorry error occured');
-                                    redirect($_SERVER['HTTP_REFERER']);
-                                  }
-               }
-             else{
+                $videoNAmePath = "assets/uploads/minisubcategory/" . $new_file_name . $file_info['file_ext'];
+                $file_info['new_name'] = $videoNAmePath;
+                // $this->step6_model->updateappIconImage($imageNAmePath,$appInfoId);
+                $nnnn = $file_info['file_name'];
+                $nnnn3 = $videoNAmePath;
 
-        $this->session->set_flashdata('emessage',validation_errors());
-      redirect($_SERVER['HTTP_REFERER']);
-
-             }
-
-             }
-           else{
-
- $this->session->set_flashdata('emessage','Please insert some data, No data available');
-      redirect($_SERVER['HTTP_REFERER']);
-
-           }
-           }
-           else{
-
-       redirect("login/admin_login","refresh");
+                // echo json_encode($file_info);
+              }
+            }
+            //Banner
+            $ban2 = 'banner';
 
 
-           }
+            $file_check = ($_FILES['banner']['error']);
+            if ($file_check != 4) {
 
-           }
+              $image_upload_folder = FCPATH . "assets/uploads/minisubcategory/";
+              if (!file_exists($image_upload_folder)) {
+                mkdir($image_upload_folder, DIR_WRITE_MODE, true);
+              }
+              $new_file_name = "minisubcategoryBanner" . date("Ymdhms");
+              $this->upload_config = array(
+                'upload_path'   => $image_upload_folder,
+                'file_name' => $new_file_name,
+                'allowed_types' => 'xlsx|csv|xls|pdf|doc|docx|txt|jpg|jpeg|png',
+                'max_size'      => 25000
+              );
+              $this->upload->initialize($this->upload_config);
+              if (!$this->upload->do_upload($ban2)) {
+                $upload_error = $this->upload->display_errors();
+                // echo json_encode($upload_error);
 
-               public function updateminisubcategoryStatus($idd,$t){
+                //$this->session->set_flashdata('emessage',$upload_error);
+                //redirect($_SERVER['HTTP_REFERER']);
+              } else {
 
-                        if(!empty($this->session->userdata('admin_data'))){
+                $file_info = $this->upload->data();
+
+                $videoNAmePath = "assets/uploads/minisubcategory/" . $new_file_name . $file_info['file_ext'];
+                $file_info['new_name'] = $videoNAmePath;
+                // $this->step6_model->updateappIconImage($imageNAmePath,$appInfoId);
+                $banner = $file_info['file_name'];
+                $banner2 = $videoNAmePath;
+
+                // echo json_encode($file_info);
+              }
+            } else {
+              $banner2 = '';
+            }
 
 
-                          $data['user_name']=$this->load->get_var('user_name');
+            if (!empty($da)) {
+              $img = $da->image;
+              if (!empty($img)) {
+                if (empty($nnnn3)) {
+                  $nnnn3 = $img;
+                }
+              } else {
+                if (empty($nnnn3)) {
+                  $nnnn3 = "";
+                }
+              }
+            }
+            if (empty($banner2)) {
+              $banner2 = $da->banner;
+            }
+            $data_insert = array(
+              'category' => $category,
+              'subcategory' => $subcategory,
+              'name' => $name,
+              'type' => $type,
+              'image' => $nnnn3,
+              'banner' => $banner2,
 
-                          // echo SITE_NAME;
-                          // echo $this->session->userdata('image');
-                          // echo $this->session->userdata('position');
-                          // exit;
-                          $id=base64_decode($idd);
+              'api_id' => $api_id,
+              'seq' => $seq,
+              'finshed' => $finshed,
+              'exlude_series' => $exlude_series,
+              'exlude_sku' => $exlude_sku,
+              'include_series' => $include_series,
+              'include_sku' => $include_sku,
+              'description' => $description
 
-                          if($t=="active"){
 
-                            $data_update = array(
-                        'is_active'=>1
+            );
+            $this->db->where('id', $idw);
+            $last_id = $this->db->update('tbl_minisubcategory', $data_insert);
+            //===============add data in tbl_cron_job start===================//
 
-                        );
+            $min2_id = '';
+            $this->db->select('*');
+            $this->db->from('tbl_minisubcategory2');
+            $this->db->where('category', $category);
+            $this->db->where('subcategory', $subcategory);
+            $this->db->where('minorsubcategory', $idw);
+            $min2_data = $this->db->get()->row();
+            $min2_id = $min2_data ? $min2_data->id : '';
 
-                        $this->db->where('id', $id);
-                       $zapak=$this->db->update('tbl_minisubcategory', $data_update);
 
-                            if($zapak!=0){
-                            redirect("dcadmin/minisubcategory/view_minisubcategory","refresh");
-                                    }
-                                    else
-                                    {
-        $this->session->set_flashdata('emessage','Sorry error occured');
+
+            $data_insert_cr = array(
+              "cat_id" => $category,
+              "subcat_id" => $subcategory,
+              "mincat_id1" => $idw,
+              "mincat_id2" => $min2_id,
+
+            );
+            $last_idd = $this->base_model->insert_table("tbl_cron_jobs", $data_insert_cr, 1);
+          }
+          if ($last_id != 0) {
+            $this->session->set_flashdata('smessage', 'Data inserted successfully');
+            redirect("dcadmin/minisubcategory/view_minisubcategory", "refresh");
+          } else {
+
+            $this->session->set_flashdata('emessage', 'Sorry error occured');
+            redirect($_SERVER['HTTP_REFERER']);
+          }
+        } else {
+
+          $this->session->set_flashdata('emessage', validation_errors());
           redirect($_SERVER['HTTP_REFERER']);
-                                    }
-                          }
-                          if($t=="inactive"){
-                            $data_update = array(
-                         'is_active'=>0
+        }
+      } else {
 
-                         );
+        $this->session->set_flashdata('emessage', 'Please insert some data, No data available');
+        redirect($_SERVER['HTTP_REFERER']);
+      }
+    } else {
 
-                         $this->db->where('id', $id);
-                         $zapak=$this->db->update('tbl_minisubcategory', $data_update);
+      redirect("login/admin_login", "refresh");
+    }
+  }
 
-                             if($zapak!=0){
-                             redirect("dcadmin/minisubcategory/view_minisubcategory","refresh");
-                                     }
-                                     else
-                                     {
+  public function updateminisubcategoryStatus($idd, $t)
+  {
 
-                $this->session->set_flashdata('emessage','Sorry error occured');
-                  redirect($_SERVER['HTTP_REFERER']);
-                                     }
-                          }
+    if (!empty($this->session->userdata('admin_data'))) {
 
 
+      $data['user_name'] = $this->load->get_var('user_name');
 
-                      }
-                      else{
+      // echo SITE_NAME;
+      // echo $this->session->userdata('image');
+      // echo $this->session->userdata('position');
+      // exit;
+      $id = base64_decode($idd);
 
-                         redirect("login/admin_login","refresh");
+      if ($t == "active") {
 
-                      }
+        $data_update = array(
+          'is_active' => 1
 
-                      }
+        );
+
+        $this->db->where('id', $id);
+        $zapak = $this->db->update('tbl_minisubcategory', $data_update);
+
+        if ($zapak != 0) {
+          redirect("dcadmin/minisubcategory/view_minisubcategory", "refresh");
+        } else {
+          $this->session->set_flashdata('emessage', 'Sorry error occured');
+          redirect($_SERVER['HTTP_REFERER']);
+        }
+      }
+      if ($t == "inactive") {
+        $data_update = array(
+          'is_active' => 0
+
+        );
+
+        $this->db->where('id', $id);
+        $zapak = $this->db->update('tbl_minisubcategory', $data_update);
+
+        if ($zapak != 0) {
+          redirect("dcadmin/minisubcategory/view_minisubcategory", "refresh");
+        } else {
+
+          $this->session->set_flashdata('emessage', 'Sorry error occured');
+          redirect($_SERVER['HTTP_REFERER']);
+        }
+      }
+    } else {
+
+      redirect("login/admin_login", "refresh");
+    }
+  }
 
 
 
-               public function delete_minisubcategory($idd){
+  public function delete_minisubcategory($idd)
+  {
 
-                      if(!empty($this->session->userdata('admin_data'))){
+    if (!empty($this->session->userdata('admin_data'))) {
 
-                        $data['user_name']=$this->load->get_var('user_name');
+      $data['user_name'] = $this->load->get_var('user_name');
 
-                        // echo SITE_NAME;
-                        // echo $this->session->userdata('image');
-                        // echo $this->session->userdata('position');
-                        // exit;
-                        $id=base64_decode($idd);
+      // echo SITE_NAME;
+      // echo $this->session->userdata('image');
+      // echo $this->session->userdata('position');
+      // exit;
+      $id = base64_decode($idd);
 
-                       if($this->load->get_var('position')=="Super Admin"){
+      if ($this->load->get_var('position') == "Super Admin") {
 
-                     $this->db->select('image');
-                     $this->db->from('tbl_minisubcategory');
-                     $this->db->where('id',$id);
-                     $dsa= $this->db->get();
-                     $da=$dsa->row();
-                     $img=$da->image;
+        $this->db->select('image');
+        $this->db->from('tbl_minisubcategory');
+        $this->db->where('id', $id);
+        $dsa = $this->db->get();
+        $da = $dsa->row();
+        $img = $da->image;
 
- $zapak=$this->db->delete('tbl_minisubcategory', array('id' => $id));
-        $path = FCPATH .$img;
+        $zapak = $this->db->delete('tbl_minisubcategory', array('id' => $id));
+        $path = FCPATH . $img;
         $zapak = $this->db->delete('tbl_minisubcategory', array('id' => $id));
         if ($zapak != 0) {
           // $path = FCPATH . $img;
