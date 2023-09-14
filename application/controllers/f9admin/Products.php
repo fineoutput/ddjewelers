@@ -9531,4 +9531,25 @@ class Products extends CI_finecontrol
         }
     }
     //==============product_cron job End======//
+    //view category start
+    public function view_cron_job()
+    {
+        if (!empty($this->session->userdata('admin_data'))) {
+            $data['user_name'] = $this->load->get_var('user_name');
+            // echo SITE_NAME;
+            // echo $this->session->userdata('image');
+            // echo $this->session->userdata('position');
+            // exit;
+            $this->db->select('*');
+            $this->db->from('tbl_cron_jobs');
+            $this->db->order_by('id','desc');
+            $data['cron_jobs'] = $this->db->get();
+            $this->load->view('admin/common/header_view', $data);
+            $this->load->view('admin/products/view_cron_jobs');
+            $this->load->view('admin/common/footer_view');
+        } else {
+            redirect("login/admin_login", "refresh");
+        }
+    }
+    //view category end
 }
