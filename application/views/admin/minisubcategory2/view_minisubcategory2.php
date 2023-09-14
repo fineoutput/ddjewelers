@@ -39,14 +39,14 @@
         <tr>
         <th>#</th>
 
- 	 <th>Category Level1</th>
- 	 <th>Subcategory Level2</th>
- 	 <th>Subcategory Level3</th>
- 	 <th>Subcategory Level4</th>
+ 	 <th>CAT Level 1</th>
+ 	 <th>SUBCAT Level 2</th>
+ 	 <th>SUBCAT Level 3</th>
+ 	 <th>SUBCAT Level 4</th>
  	 <!-- <th>Image</th>
     <th>Banner</th> -->
  	 <th>Api Id</th>
- 	 <th>Sequence</th>
+ 	 <th>Seq #</th>
       <th>Excluded Series</th>
       <th>Excluded Sku</th>
       <th>Include Series</th>
