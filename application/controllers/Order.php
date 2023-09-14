@@ -99,8 +99,8 @@ class Order extends CI_Controller
                             $this->session->set_flashdata('emessage', 'Some error occured.');
                             redirect($_SERVER['HTTP_REFERER']);
                         }
-                        $delivery_charge=0;
-                       
+                        $delivery_charge = 0;
+
                         //get product sku end
                         // echo $total_cart_amount;die();
                         //Inventory Check api start
@@ -134,8 +134,8 @@ class Order extends CI_Controller
                         // echo $status;
                         // echo $inventory;
                         // die();
-                        
-                        
+
+
                         //Inventory Check api end
                         if (!empty($status) && $status != 'Out Of Stock') {
                             // $db_quantity=$pro_inv_da->inventory;
@@ -389,10 +389,10 @@ class Order extends CI_Controller
                 }
                 $address_data = $this->db->get_where('tbl_user_address', array('is_active' => 1, 'id' => $address_id))->row();
                 $state_data = $this->db->get_where('tbl_state_detail', array('is_active' => 1, 'zip_code' => $address_data->zipcode))->row();
-                if(!empty($state_data) && $state_data->Percentage!=0){
-                    $delivery_charge=round($total_cart_amount1 * $state_data->Percentage /100,2);
-                }else{
-                    $delivery_charge=0;
+                if (!empty($state_data) && $state_data->Percentage != 0) {
+                    $delivery_charge = round($total_cart_amount1 * $state_data->Percentage / 100, 2);
+                } else {
+                    $delivery_charge = 0;
                 }
                 $data_insert_order11 = array(
                     'total_amount' => $total_cart_amount1,
@@ -454,7 +454,7 @@ class Order extends CI_Controller
                         }
                     }
                 } else {
-                    // print_r($methods[0]);die();
+                    // print_r($methods);die();
                     $meth_data = $this->db->get_where('tbl_method', array('is_active' => 1, 'id' => $methods[0]))->result();
                     if (!empty($meth_data[0]->max)) {
                         if ($meth_data[0]->max >= $order_data[0]->total_amount) {
@@ -465,7 +465,8 @@ class Order extends CI_Controller
                     }
                 }
             }
-            // print_r($method_data);die();
+            // print_r($method_data);
+            // die();
             $temp_array = array();
             $i = 0;
             $key_array = array();
@@ -478,19 +479,21 @@ class Order extends CI_Controller
                 }
                 $i++;
             }
-            // print_r($temp_array);
-            // die();
+
             //---- fectch cost of selected country ------------
             $shipping_costs = [];
             if (!empty($temp_array)) {
                 foreach ($temp_array as $temp) {
                     $costs_data = $this->db->get_where('tbl_shippingrules', array('is_active' => 1, 'shipping_id' => $temp['shipping_id']))->result();
-                    if ($costs_data[0]->start_price <= $order_data[0]->total_amount && $costs_data[0]->end_price >= $order_data[0]->total_amount) {
-                        $shipping_costs[] = array('shipping_id' => $costs_data[0]->shipping_id, 'id' => $costs_data[0]->id, 'shipment_cost' => $costs_data[0]->shipment_cost);
+                    foreach ($costs_data as $cost) {
+                        if ($cost->start_price <= $order_data[0]->total_amount && $cost->end_price >= $order_data[0]->total_amount) {
+                            $shipping_costs[] = array('shipping_id' => $cost->shipping_id, 'id' => $cost->id, 'shipment_cost' => $cost->shipment_cost);
+                        }
                     }
                     // print_r($shipping_costs);die();
                 }
             }
+
             //---- remove method where  cost not found ------------
             if (!empty($temp_array)) {
                 foreach ($temp_array as $key => $temp2) {
@@ -506,6 +509,8 @@ class Order extends CI_Controller
                     }
                 }
             }
+            // print_r($shipping_costs);
+            // die();
             //-------- updating shipping data ---------
             if (!empty($shipping_costs)) {
                 if (empty($order_data[0]->shipping_id)) {
@@ -514,7 +519,7 @@ class Order extends CI_Controller
                         'method_id' => $temp_array[0]['id'],
                         'shipping' => $shipping_costs[0]['shipment_cost'],
                         'shipping_rule_id' => $shipping_costs[0]['id'],
-                        'final_amount' => $order_data[0]->total_amount + $shipping_costs[0]['shipment_cost'] +$order_data[0]->delivery_charge,
+                        'final_amount' => $order_data[0]->total_amount + $shipping_costs[0]['shipment_cost'] + $order_data[0]->delivery_charge,
                     );
                     $this->db->where('id', $id);
                     $zapak2 = $this->db->update('tbl_order1', $data_update2);
@@ -869,7 +874,7 @@ class Order extends CI_Controller
                 $data_update2 = array(
                     'promocode' => '',
                     'p_discount' => '',
-                    'final_amount' => $order1_data[0]->final_amount + $order1_data[0]->p_discount ,
+                    'final_amount' => $order1_data[0]->final_amount + $order1_data[0]->p_discount,
                 );
                 $this->db->where('id', $order_id);
                 $zapak2 = $this->db->update('tbl_order1', $data_update2);
