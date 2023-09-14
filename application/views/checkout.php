@@ -14,7 +14,7 @@
     }
 </style>
 <section>
-    <div class="container-fluid pl-5 pr-5 pt-3 pb-5">
+    <div class="container-fluid pl-5 pr-5 pt-3 pb-5 responsive-padding-mobile">
         <div class="row">
             <div class="col-md-12 page_span">
                 <p><a href="<?= base_url(); ?>"><span>Home</span> > <a href="<?= base_url(); ?>Home/cart"><span> SHOPPING CART </span> </a> > <span> Checkout </span></p>
@@ -89,7 +89,7 @@
                         </div>
                         <h5 class="font-we Address mt-2"><b>Cart Details</b></h5>
                         <div class="  border">
-                            <div class="col">
+                            <div class="col djhj">
                                 <div class="row bold_text bg-light">
                                     <div class="col-5">
                                         <p>Product Name</p>
@@ -161,20 +161,20 @@
                                     $pro_qty_price = $cart->quantity * $now_price;
                                     $total_cart_amount = $total_cart_amount + $pro_qty_price;
                         ?>
-                                    <div class=" pt-3 border_new ">
+                                    <div class=" pt-3 border_new table-font-size ">
                                         <div class="col-12">
                                             <div class="row ">
                                                 <div class="col-5  " style="    padding-left: 11px;">
                                                     <p><?= $pro_da->description; ?></p>
                                                 </div>
                                                 <div class="col-3 p-0">
-                                                    <p><?= "SLR-" . $pro_da->sku; ?></p>
+                                                    <p class="qut-price1"><?= "SLR-" . $pro_da->sku; ?></p>
                                                 </div>
                                                 <div class="col-2 p-0">
-                                                    <p><?= $cart->quantity; ?></p>
+                                                    <p class="qut-price2"><?= $cart->quantity; ?></p>
                                                 </div>
                                                 <div class="col-2 p-0">
-                                                    <p><b>$<a><?= number_format((float)$pro_qty_price, 2, '.', ''); ?></a></b></p>
+                                                    <p class="qut-price3" ><b>$<a><?= number_format((float)$pro_qty_price, 2, '.', ''); ?></a></b></p>
                                                 </div>
                                             </div>
                                         </div>
@@ -205,7 +205,7 @@
                                 </div>
                                 <div class="row bold_text border-bottom bg-light">
                                     <div class="col-9 col-sm-9">
-                                        <p>Delivery Charge:</p>
+                                        <p>Tax:</p>
                                     </div>
                                     <div class="col-3 col-sm-3">
                                         <p>+$<?= number_format((float)$order1_data[0]->delivery_charge, 2, '.', '') ?></p>
