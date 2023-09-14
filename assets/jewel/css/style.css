@@ -915,6 +915,13 @@ p {
 @media only screen and (max-width: 600px) {
     .pay_ic {
         margin-left: 0em;
+        flex-wrap: wrap !important;
+    }
+
+    .payiconn {
+        width: 50% !important;
+        /* height: 30px; */
+        margin-left: 5px;
     }
 }
 .pay_ic i {
@@ -2334,3 +2341,4 @@ hr {
         margin-top: 10px !important;
     }
 }
+
