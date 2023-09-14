@@ -2263,3 +2263,26 @@ hr {
     min-height: 35px;
     max-height: 55px;
 }
+@media(max-width:991px){
+    section.Address .container-fluid .row .col-md-4.col-sm-6.p-0 .px-3.border.pt-0 form .row .col-3.col-sm-3.col-3{
+        padding: 0px 5px !important;
+    }
+    
+}
+@media(max-width:1142px){
+    section.Address .container-fluid .row .col-md-4.col-sm-6.p-0 .px-3.border.pt-0 form .row .col-3.col-sm-3.col-3 button.btn.signup.text-center{
+        padding-left: 8px !important;
+    }
+}
+
+@media(max-width:425px){
+    section.Address .container-fluid .row .col-md-4.col-sm-6.p-0 .px-3.border.pt-0 form .row .col-3.col-sm-3.col-3{
+        padding: 0px 5px !important;
+    }
+    
+}
+@media(max-width:346px){
+    section.Address .container-fluid .row .col-md-4.col-sm-6.p-0 .px-3.border.pt-0 form .row .col-3.col-sm-3.col-3 button.btn.signup.text-center{
+        padding-left: 8px !important;
+    }
+}

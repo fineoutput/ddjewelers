@@ -240,7 +240,7 @@
                             <form method="post" action="<?= base_url() ?>Order/apply_promocode">
                                 <label>Promo Code</label><br>
                                 <div class="row">
-                                    <div class="col-9  col-sm-9  col-9">
+                                    <div class="col-9  col-sm-9  col-9" style="padding-right: 0px ;">
                                         <input type="hidden" name="id" value="<?= $order1_data[0]->id ?>">
                                         <input type="text" name="promocode" class="border" style="height: 38px; width: 100%;">
                                         <!-- style="height: 40px; width:250px;" -->
