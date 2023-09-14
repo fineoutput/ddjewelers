@@ -38,13 +38,13 @@
                   <thead>
                     <tr>
                       <th>#</th>
+                      <th>Seq #</th>
 
-                      <th>Category Leval1</th>
+                      <th>CAT Level 1</th>
                       <!-- <th>Image</th>
                       <th>Banner</th>
                       <th>Description</th> -->
                       <th>Api Id</th>
-                      <th>Sequence No.</th>
                       <th>Excluded Series</th>
                       <th>Excluded Sku</th>
                       <th>Include Series</th>
@@ -61,6 +61,7 @@
                     foreach ($category_data->result() as $data) { ?>
                       <tr>
                         <td><?php echo $i ?> </td>
+                        <td><?php echo $data->seq; ?></td>
 
                         <td><?php echo $data->name ?></td>
 
@@ -95,7 +96,6 @@
                         </td> -->
                         <td style="max-width: 150px;overflow-wrap: break-word;"><?php 
  echo $data->api_id; ?></td>
-                        <td><?php echo $data->seq; ?></td>
                         <td><?php echo $data->exlude_series ?></td>
                         <td><?php echo $data->exlude_sku ?></td>
                         <td><?php echo $data->include_series ?></td>

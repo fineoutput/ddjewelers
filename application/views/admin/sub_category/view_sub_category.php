@@ -36,12 +36,12 @@
         <thead>
         <tr>
         <th>#</th>
- 	 <th>Category Level</th>
- 	 <th>SubCategory Level2</th>
+ 	 <th>CAT Level 1</th>
+ 	 <th>SUBCAT Level 2</th>
  	 <!-- <th>Image</th>
  	 <th>Banner</th> -->
  	 <th>Api Id</th>
- 	 <th>Sequence</th>
+ 	 <th>Seq #</th>
       <th>Excluded Series</th>
       <th>Excluded Sku</th>
       <th>Include Series</th>
