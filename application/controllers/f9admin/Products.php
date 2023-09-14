@@ -9496,9 +9496,8 @@ class Products extends CI_finecontrol
 
         if ($last_id != 0) {
             $data_insert = array(
-                'completed' => 1,
+                'status' => 2,
             );
-            $compeleted = 1;
             $this->db->where('id', $cron_jobs->id);
             $last_id = $this->db->update('tbl_cron_jobs', $data_insert);
             if (!empty($minisubcategory)) {
