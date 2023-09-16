@@ -120,7 +120,7 @@
                         <td><?php echo $data->exlude_sku ?></td>
                         <td><?php echo $data->include_series ?></td>
                         <td><?php echo $data->include_sku ?></td>
-                        <td><?php echo $data->description ?></td>
+                        <!-- <td><?php echo $data->description ?></td> -->
 
 
 
