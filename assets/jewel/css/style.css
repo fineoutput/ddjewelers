@@ -303,13 +303,13 @@ transform: rotate(90deg); */
         font-size: 26px;
     }
     .payiconn {
-        width: 280px;
-        height: 73px;
+        width: 28%;
+        /* height: 73px; */
         margin-left: 10px;
     }
     .payicon {
-        width: 80px;
-        height: 80px;
+        width: 7%;
+        /* height: 80px; */
         margin-left: 10px;
     }
     .foot_logo p {
@@ -382,8 +382,14 @@ transform: rotate(90deg); */
         font-size: 22px;
     }
     .payicon {
-        width: 80px;
-        height: 80px;
+        width: 10%;
+        /* height: 80px; */
+        margin-left: 10px;
+    }
+
+    .payiconn {
+        width: 30%;
+        /* height: 80px; */
         margin-left: 10px;
     }
     .logo img {
@@ -432,18 +438,18 @@ transform: rotate(90deg); */
         font-size: 22px;
     }
     .payicon {
-        width: 237px;
-        height: 57px;
+        width: 7%;
+        /* height: 57px; */
         margin-left: 10px;
     }
 
     .payiconn {
-        width: 236px;
-        height: 59px;
+        width: 30%;
+        /* height: 59px; */
         margin-left: 10px;
     }
     .d-flex.pay_ic{
-        width: 80% ;
+        width: 100% ;
     }
     
     
@@ -489,13 +495,13 @@ transform: rotate(90deg); */
 }
 @media (min-width:1025px) and (max-width:1365px) {
     .payicon {
-        width: 50px;
-        height: 50px;
+        width: 7%;
+        /* height: 50px; */
         margin-left: 10px;
     }
     .payiconn {
-        width: 180px;
-        height: 50px;
+        width: 32%;
+        /* height: 50px; */
         margin-left: 10px;
     }
     .B_size {
@@ -593,13 +599,13 @@ transform: rotate(90deg); */
 }
 @media (min-width:768px) and (max-width:1150px) {
     .payicon {
-        width: 40px;
-        height: 40px;
+        width: 8%;
+        /* height: 40px; */
         margin: 25px 0 0 10px;
     }
     .payiconn {
-        width: 150px;
-        height: 40px;
+        width: 34%;
+        /* height: 40px; */
         margin: 25px 0 0 10px;
     }
     .sign_btn_new {
@@ -635,13 +641,13 @@ transform: rotate(90deg); */
 }
 @media (min-width:320px) and (max-width:767px) {
     .payicon {
-        width: 30px;
-        height: 30px;
+        width: 10%;
+        /* height: 30px; */
         margin-left: 5px;
     }
     .payiconn {
-        width: 115px;
-        height: 30px;
+        width: 31%;
+        /* height: 30px; */
         margin-left: 5px;
     }
     .sign_btn_new {
@@ -900,7 +906,7 @@ p {
     margin-right: 15px;
 }
 .pay_ic {
-    justify-content: center;
+    justify-content: start;
     /* margin-left: 5em; */
     font-size: 30px;
     color: #000000;
@@ -909,6 +915,13 @@ p {
 @media only screen and (max-width: 600px) {
     .pay_ic {
         margin-left: 0em;
+        flex-wrap: wrap !important;
+    }
+
+    .payiconn {
+        width: 50% !important;
+        /* height: 30px; */
+        margin-left: 5px;
     }
 }
 .pay_ic i {
@@ -2328,3 +2341,4 @@ hr {
         margin-top: 10px !important;
     }
 }
+
