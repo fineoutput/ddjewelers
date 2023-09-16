@@ -302,6 +302,8 @@ class Minisubcategory extends CI_finecontrol
                "subcat_id" => $subcategory,
                "mincat_id1" => $last_id,
                "mincat_id2" => $min2_id,
+               'ip' => $ip,
+              'date' => $cur_date
  
              );
              $last_idd = $this->base_model->insert_table("tbl_cron_jobs", $data_insert_cr, 1);
@@ -453,6 +455,8 @@ class Minisubcategory extends CI_finecontrol
               "subcat_id" => $subcategory,
               "mincat_id1" => $idw,
               "mincat_id2" => $min2_id,
+              'ip' => $ip,
+              'date' => $cur_date
 
             );
             $last_idd = $this->base_model->insert_table("tbl_cron_jobs", $data_insert_cr, 1);
