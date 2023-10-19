@@ -53,8 +53,8 @@
                           <?php $i = 1;
                           foreach ($category->result() as $data) { ?>
                             <option value="<?= $data->id ?>" <?php if ($data->id == $minisubcategory2_data->category) {
-                                                              echo 'selected';
-                                                            } ?>><?= $data->name ?></option>
+                                                                echo 'selected';
+                                                              } ?>><?= $data->name ?></option>
                           <?php $i++;
                           } ?>
                         </select>
@@ -69,8 +69,8 @@
                           <?php $i = 1;
                           foreach ($subcategory->result() as $data) { ?>
                             <option value="<?= $data->id ?>" <?php if ($data->id == $minisubcategory2_data->subcategory) {
-                                                              echo 'selected';
-                                                            } ?>><?= $data->name ?></option>
+                                                                echo 'selected';
+                                                              } ?>><?= $data->name ?></option>
                           <?php $i++;
                           } ?>
                         </select>
@@ -86,8 +86,8 @@
                           <?php $i = 1;
                           foreach ($minisubcategory->result() as $data) { ?>
                             <option value="<?= $data->id ?>" <?php if ($data->id == $minisubcategory2_data->minorsubcategory) {
-                                                              echo 'selected';
-                                                            } ?>><?= $data->name ?></option>
+                                                                echo 'selected';
+                                                              } ?>><?= $data->name ?></option>
                           <?php $i++;
                           } ?>
                         </select>
@@ -129,7 +129,11 @@
                       <td> <strong>Api Id</strong> <span style="color:red;">*</span></strong> </td>
                       <?
                       $d_api = json_decode($minisubcategory2_data->api_id);
-                      $api = implode(',', $d_api)
+                      if (is_array($d_api)) {
+                        $api = implode(',', $d_api);
+                      } else {
+                        $api = "";
+                      }
                       ?>
                       <td><textarea name="api_id" class="form-control" rows="5" cols="50"><?= $api; ?></textarea></td>
                     </tr>
