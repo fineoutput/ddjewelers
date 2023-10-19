@@ -129,7 +129,7 @@
                       <td> <strong>Api Id</strong> <span style="color:red;">*</span></strong> </td>
                       <?
                       $d_api = json_decode($minisubcategory2_data->api_id);
-                      if (is_array($d_api)) {
+                      if (!empty($d_api)) {
                         $api = implode(',', $d_api);
                       } else {
                         $api = "";
