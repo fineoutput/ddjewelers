@@ -3822,26 +3822,47 @@ class Products extends CI_finecontrol
                             $data = '{"Include":["All", "Media", "DescriptiveElements"],"Filter":["Orderable","OnPriceList"],"Series":["' . $value . '"]}';
                         }
                     }
-                    //product data insert from the api start
-                    $postdata = $data;
-                    // echo $postdata;
-                    // exit;
-                    $header = array();
-                    $header[] = 'Host:api.stuller.com';
-                    $header[] = 'Content-Type:application/json';
-                    $header[] = 'Authorization:Basic ZGV2amV3ZWw6Q29kaW5nMjA9';
-                    $ch = curl_init($url);
-                    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
-                    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
-                    curl_setopt($ch, CURLOPT_POST, 1);
-                    curl_setopt($ch, CURLOPT_POSTFIELDS, $postdata);
-                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-                    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
-                    curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
-                    $result = curl_exec($ch);
-                    curl_close($ch);
-                    // print_r($result);
-                    $result_da = json_decode($result);
+                    if ($type == 3) {
+                        // foreach ($api_ids as $value) {
+                        $this->db->delete('tbl_products', array('sku' => $value));
+                        $url = 'https://api.stuller.com/v2/products?SKU=' . $value;
+                        $header = array();
+                        $header[] = 'Host:api.stuller.com';
+                        $header[] = 'Content-Type:application/json';
+                        $header[] = 'Authorization:Basic ZGV2amV3ZWw6Q29kaW5nMjA9';
+                        $ch = curl_init($url);
+                        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+                        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+                        // curl_setopt($ch, CURLOPT_POST, 1);
+                        // curl_setopt($ch, CURLOPT_POSTFIELDS, $postdata);
+                        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+                        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+                        curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
+                        $result = curl_exec($ch);
+                        curl_close($ch);
+                        $result_da = json_decode($result);
+                    } else {
+                        //product data insert from the api start
+                        $postdata = $data;
+                        // echo $postdata;
+                        // exit;
+                        $header = array();
+                        $header[] = 'Host:api.stuller.com';
+                        $header[] = 'Content-Type:application/json';
+                        $header[] = 'Authorization:Basic ZGV2amV3ZWw6Q29kaW5nMjA9';
+                        $ch = curl_init($url);
+                        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+                        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+                        curl_setopt($ch, CURLOPT_POST, 1);
+                        curl_setopt($ch, CURLOPT_POSTFIELDS, $postdata);
+                        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+                        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+                        curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
+                        $result = curl_exec($ch);
+                        curl_close($ch);
+                        // print_r($result);
+                        $result_da = json_decode($result);
+                    }
                     // print_r($result_da);
                     // exit;
                     if (!empty($result_da->TotalNumberOfProducts)) {
@@ -9542,7 +9563,7 @@ class Products extends CI_finecontrol
             // exit;
             $this->db->select('*');
             $this->db->from('tbl_cron_jobs');
-            $this->db->order_by('id','desc');
+            $this->db->order_by('id', 'desc');
             $data['cron_jobs'] = $this->db->get();
             $this->load->view('admin/common/header_view', $data);
             $this->load->view('admin/products/view_cron_jobs');
