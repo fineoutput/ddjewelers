@@ -37,17 +37,18 @@
                     <tr>
                       <th>#</th>
 
+                      <th>Seq #</th>
                       <th>CAT Level 1</th>
                       <th>SUBCAT Level 2</th>
                       <th>SUBCAT Level 3</th>
-                      <!-- <th>Image</th>
-                      <th>Banner</th> -->
-                      <th>Api Id</th>
-                      <th>Seq #</th>
+                      <th>Type</th>
+                      <th>Image</th>
+                      <th>Banner</th>
+                      <!-- <th>Api Id</th>
                       <th>Excluded Series</th>
                       <th>Excluded Sku</th>
                       <th>Include Series</th>
-                      <th>Include Sku</th>
+                      <th>Include Sku</th> -->
                       <!-- <th>Description</th> -->
 
 
@@ -62,6 +63,7 @@
                     foreach ($minisubcategory_data->result() as $data) { ?>
                       <tr>
                         <td><?php echo $i ?> </td>
+                        <td><?php echo $data->seq ?></td>
 
                         <td><?php
 
@@ -95,8 +97,18 @@
 
                             ?></td>
                         <td><?php echo $data->name ?></td>
-
-                        <!-- <td>
+                        <td style="max-width: 150px;overflow-wrap: break-word;"><?php
+                                                                                if ($data->type == 1) {
+                                                                                  echo "Category ID";
+                                                                                } else if ($data->type == 2) {
+                                                                                  echo "Series No.";
+                                                                                } else if ($data->type == 3) {
+                                                                                  echo "SKU";
+                                                                                } else {
+                                                                                  echo "None";
+                                                                                }
+                                                                                ?></td>
+                        <td>
                           <?php if ($data->image != "") { ?>
                             <img id="slide_img_path" height=50 width=100 src="<?php echo base_url() . $data->image
                                                                               ?>">
@@ -110,16 +122,15 @@
                           <?php } else { ?>
                             Sorry No File Found
                           <?php } ?>
-                        </td> -->
+                        </td>
 
-                        <td style="max-width: 150px;overflow-wrap: break-word;"><?php
-                            
-                            echo $data->api_id; ?></td>
-                        <td><?php echo $data->seq ?></td>
+                        <!-- <td style="max-width: 150px;overflow-wrap: break-word;"><?php
+
+                                                                                      echo $data->api_id; ?></td>
                         <td><?php echo $data->exlude_series ?></td>
                         <td><?php echo $data->exlude_sku ?></td>
                         <td><?php echo $data->include_series ?></td>
-                        <td><?php echo $data->include_sku ?></td>
+                        <td><?php echo $data->include_sku ?></td> -->
                         <!-- <td><?php echo $data->description ?></td> -->
 
 

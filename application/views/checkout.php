@@ -81,7 +81,7 @@
                             
                            <p style="margin-bottom: 5px;overflow-wrap: break-word"> <b>State : </b><?= $state_name; ?></p>
                             
-                           <p style="margin-bottom: 5px;overflow-wrap: break-word"> <b>Zipcode : </b><?= $zip; ?></p>
+                           <p style="margin-bottom: 5px;overflow-wrap: break-word"> <b>Zip Code : </b><?= $zip; ?></p>
                             
                            <p style="margin-bottom: 5px;overflow-wrap: break-word"> <b>Country : </b><?= $country; ?></p>
                             

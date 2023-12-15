@@ -146,7 +146,7 @@
                     <?php echo $state; ?><br>
                     City :
                     <?php echo $city; ?><br>
-                    Zipcode:
+                    Zip Code:
                     <?php echo $zip; ?><br>
                     Country:
                     <?php echo $country; ?><br>

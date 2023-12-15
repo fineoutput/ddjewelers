@@ -68,8 +68,8 @@
 
 
 
-                        <p><b>city:</b><a><?= $address->city; ?></a></p>
-                        <p><b>Zipcode:</b><a><?= $address->zipcode; ?></a></p>
+                        <p><b>City:</b><a><?= $address->city; ?></a></p>
+                        <p><b>Zip Code:</b><a><?= $address->zipcode; ?></a></p>
 
                         <p><b>State:</b><a><?= $state_name; ?></a></p>
                         <p><b>Country:</b><a><?= $country_name; ?></a></p>
