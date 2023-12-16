@@ -5432,6 +5432,7 @@ class Home extends CI_Controller
                     'zipcode' => $zipcode,
                     'is_gift' => $is_gift,
                     'notes' => $notes,
+                    'is_active' => 1,
                 );
                 // echo "<pre>";
                 // print_r($data_insert);
