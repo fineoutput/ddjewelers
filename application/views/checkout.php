@@ -1,3 +1,4 @@
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
 <style>
     @media (min-width: 360px) and (max-width: 767px) {
         .p30 {
@@ -12,6 +13,23 @@
             padding: 30px;
         }
     }
+    button.pay_btn.pay_btn-2 {
+    border-radius: 0px !important;
+    color: black;
+    background-color: transparent;
+    /* border: 1px solid; */
+    box-shadow: 0px -1px 5px 0px rgba(0,0,0,0.75);
+}
+
+
+i.bi.bi-arrow-right {
+    margin-left: 7px;
+    color: white;
+    background: #333366;
+    padding: 7px 10px;
+    border-radius: 50%;
+}
+
 </style>
 <section>
     <div class="container-fluid pl-5 pr-5 pt-3 pb-5 responsive-padding-mobile">
@@ -274,7 +292,7 @@
                                     <!-- <form action="<?= base_url(); ?>Home/affrim_place_order" method="post" enctype="multipart/form-data"> -->
                                     <input type="hidden" value="<?= $address_id; ?>" name="addresss_id">
                                     <input type="hidden" value="" name="applied_promocode" id="applied_promocode">
-                                    <a href="javascript:void(0)"><button class="pay_btn" style="align-items: baseline;" type="submit" onclick="affirm_open()">Buy With <img src="<?= base_url() ?>assets/frontend/affirm.png" class="img-fluid ml-2" style="width:17%;" /></button></a>
+                                    <a href="javascript:void(0)"><button class="pay_btn pay_btn-2" style="align-items: baseline;" type="submit" onclick="affirm_open()"><img src="<?= base_url() ?>assets/frontend/affirm.png" class="img-fluid mx-2" style="width:17%;" />Pay over time <i class="bi bi-arrow-right"></i> </button></a>
                                     <!-- </form> -->
                                 </div>
                                 <div class=" mb-3 text-center ">
@@ -282,7 +300,7 @@
                                     <input type="hidden" value="" name="applied_promocode" id="applied_promocode">
                                     <!-- <button class="pay_btn" type="submit">Buy With <img src="<?= base_url() ?>assets/frontend/paypal.png" class="img-fluid ml-2" style="width:20%;" /></button> -->
                                     <div style="text-align:center;" id="paypal-button-container"></div>
-                                    <div style="text-align:center;" id="paypal-button"></div>
+                                    <div style="text-align:center;" id="paypal-button" class="btn-space"></div>
                                 </div>
                                 <div class="justify-content-center text-center">
                                     <div id="google-pay-button"></div>

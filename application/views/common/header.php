@@ -18,6 +18,7 @@
   <? } ?>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="<?= base_url() ?>assets/jewel\img\dd.jewelplus.com_Website_Latest_-removebg-preview.png" sizes="32x32">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.css" rel="stylesheet" type='text/css'>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
   <link rel="stylesheet" type="text/css" href="<?= base_url(); ?>assets/jewel/css/style.css">
