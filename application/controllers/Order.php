@@ -440,11 +440,24 @@ class Order extends CI_Controller
             // print_r($order_data[0]->total_amount);die();
             //---- fetch methods of selected country ------------
             $method_data = [];
-            foreach ($ship_data as $ship) {
-                $methods = json_decode($ship->method_id);
-                if (count($methods) > 1) {
-                    foreach ($methods as $method) {
-                        $meth_data = $this->db->get_where('tbl_method', array('is_active' => 1, 'id' => $method))->result();
+            $error_msg = '';
+            if (!empty($ship_data)) {
+                foreach ($ship_data as $ship) {
+                    $methods = json_decode($ship->method_id);
+                    if (count($methods) > 1) {
+                        foreach ($methods as $method) {
+                            $meth_data = $this->db->get_where('tbl_method', array('is_active' => 1, 'id' => $method))->result();
+                            if (!empty($meth_data[0]->max)) {
+                                if ($meth_data[0]->max >= $order_data[0]->total_amount) {
+                                    $method_data[] = array('shipping_id' => $ship->id, 'id' => $meth_data[0]->id, 'name' => $meth_data[0]->name, 'max' => $meth_data[0]->max);
+                                }
+                            } else {
+                                $method_data[] = array('shipping_id' => $ship->id, 'id' => $meth_data[0]->id, 'name' => $meth_data[0]->name, 'max' => $meth_data[0]->max);
+                            }
+                        }
+                    } else {
+                        // print_r($methods);die();
+                        $meth_data = $this->db->get_where('tbl_method', array('is_active' => 1, 'id' => $methods[0]))->result();
                         if (!empty($meth_data[0]->max)) {
                             if ($meth_data[0]->max >= $order_data[0]->total_amount) {
                                 $method_data[] = array('shipping_id' => $ship->id, 'id' => $meth_data[0]->id, 'name' => $meth_data[0]->name, 'max' => $meth_data[0]->max);
@@ -453,20 +466,10 @@ class Order extends CI_Controller
                             $method_data[] = array('shipping_id' => $ship->id, 'id' => $meth_data[0]->id, 'name' => $meth_data[0]->name, 'max' => $meth_data[0]->max);
                         }
                     }
-                } else {
-                    // print_r($methods);die();
-                    $meth_data = $this->db->get_where('tbl_method', array('is_active' => 1, 'id' => $methods[0]))->result();
-                    if (!empty($meth_data[0]->max)) {
-                        if ($meth_data[0]->max >= $order_data[0]->total_amount) {
-                            $method_data[] = array('shipping_id' => $ship->id, 'id' => $meth_data[0]->id, 'name' => $meth_data[0]->name, 'max' => $meth_data[0]->max);
-                        }
-                    } else {
-                        $method_data[] = array('shipping_id' => $ship->id, 'id' => $meth_data[0]->id, 'name' => $meth_data[0]->name, 'max' => $meth_data[0]->max);
-                    }
                 }
+            } else {
+                $error_msg = "we are currently not servable in the selected county";
             }
-            // print_r($method_data);
-            // die();
             $temp_array = array();
             $i = 0;
             $key_array = array();
@@ -516,7 +519,7 @@ class Order extends CI_Controller
                 if (empty($order_data[0]->shipping_id)) {
                     $data_update2 = array(
                         'shipping_id' => $shipping_costs[0]['shipping_id'],
-                        'method_id' => $temp_array?$temp_array[0]['id']:'',
+                        'method_id' => $temp_array[0]['id'],
                         'shipping' => $shipping_costs[0]['shipment_cost'],
                         'shipping_rule_id' => $shipping_costs[0]['id'],
                         'final_amount' => $order_data[0]->total_amount + $shipping_costs[0]['shipment_cost'] + $order_data[0]->delivery_charge,
@@ -537,6 +540,7 @@ class Order extends CI_Controller
             $data2['promocode_data'] = $promocode_data;
             $data2['address_id'] = $order_data[0]->address_id;
             $data2['cart_data'] = $cart_da;
+            $data2['error_msg'] = $error_msg;
             $data2['methods_data'] = array_values($temp_array);
             $data2['shipping_costs'] = array_values($shipping_costs);
             $gateway = new Braintree\Gateway([

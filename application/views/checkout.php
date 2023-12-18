@@ -4,34 +4,36 @@
         .p30 {
             padding: 10px 30px;
         }
+
         .add1 {
             padding: 0;
         }
     }
+
     @media (max-width: 768) {
         .add1 {
             padding: 30px;
         }
     }
+
     button.pay_btn.pay_btn-2 {
         padding: 0px;
-    display: inline-table;
-    border-radius: 0px !important;
-    color: black;
-    background-color: transparent;
-    /* border: 1px solid; */
-    box-shadow: 0px 1px 8px 2px rgb(104 97 97 / 75%);
-}
+        display: inline-table;
+        border-radius: 0px !important;
+        color: black;
+        background-color: transparent;
+        /* border: 1px solid; */
+        box-shadow: 0px 1px 8px 2px rgb(104 97 97 / 75%);
+    }
 
 
-i.bi.bi-arrow-right {
-    margin-left: 7px;
-    color: white;
-    background: #333366;
-    padding: 8px;
-    border-radius: 50%;
-}
-
+    i.bi.bi-arrow-right {
+        margin-left: 7px;
+        color: white;
+        background: #333366;
+        padding: 8px;
+        border-radius: 50%;
+    }
 </style>
 <section>
     <div class="container-fluid pl-5 pr-5 pt-3 pb-5 responsive-padding-mobile">
@@ -61,11 +63,11 @@ i.bi.bi-arrow-right {
             }
             if (!empty($addr_da->state_id)) {
                 $state_data = $this->db->get_where('tbl_state', array('id' => $addr_da->state_id))->result();
-                if(!empty($state_data)){
+                if (!empty($state_data)) {
 
                     $state_name = $state_data[0]->name;
-                }else{
-                    $state_name='';
+                } else {
+                    $state_name = '';
                 }
             } else {
                 $state_name = '';
@@ -92,20 +94,20 @@ i.bi.bi-arrow-right {
                         <h5 class="font-we"><b>Address</b></h5>
                         <div class="border" style="padding: 10px;">
 
-                       
-                        <p style="margin-bottom: 5px;overflow-wrap: break-word"><b>Name : </b><?= $name; ?></p>
-                            
-                           <p style="margin-bottom: 5px;overflow-wrap: break-word"> <b>Address : </b><?= $address; ?></p>
-                            
-                           <p style="margin-bottom: 5px;overflow-wrap: break-word"> <b>City : </b><?= $city; ?></p>
-                            
-                           <p style="margin-bottom: 5px;overflow-wrap: break-word"> <b>State : </b><?= $state_name; ?></p>
-                            
-                           <p style="margin-bottom: 5px;overflow-wrap: break-word"> <b>Zip Code : </b><?= $zip; ?></p>
-                            
-                           <p style="margin-bottom: 5px;overflow-wrap: break-word"> <b>Country : </b><?= $country; ?></p>
-                            
-                          <p style="margin-bottom: 5px;overflow-wrap: break-word">  <b>Notes : </b><?= $notes; ?></p>
+
+                            <p style="margin-bottom: 5px;overflow-wrap: break-word"><b>Name : </b><?= $name; ?></p>
+
+                            <p style="margin-bottom: 5px;overflow-wrap: break-word"> <b>Address : </b><?= $address; ?></p>
+
+                            <p style="margin-bottom: 5px;overflow-wrap: break-word"> <b>City : </b><?= $city; ?></p>
+
+                            <p style="margin-bottom: 5px;overflow-wrap: break-word"> <b>State : </b><?= $state_name; ?></p>
+
+                            <p style="margin-bottom: 5px;overflow-wrap: break-word"> <b>Zip Code : </b><?= $zip; ?></p>
+
+                            <p style="margin-bottom: 5px;overflow-wrap: break-word"> <b>Country : </b><?= $country; ?></p>
+
+                            <p style="margin-bottom: 5px;overflow-wrap: break-word"> <b>Notes : </b><?= $notes; ?></p>
                         </div>
                         <h5 class="font-we Address mt-2"><b>Cart Details</b></h5>
                         <div class="  border">
@@ -194,7 +196,7 @@ i.bi.bi-arrow-right {
                                                     <p class="qut-price2"><?= $cart->quantity; ?></p>
                                                 </div>
                                                 <div class="col-2 p-0">
-                                                    <p class="qut-price3" ><b>$<a><?= number_format((float)$pro_qty_price, 2, '.', ''); ?></a></b></p>
+                                                    <p class="qut-price3"><b>$<a><?= number_format((float)$pro_qty_price, 2, '.', ''); ?></a></b></p>
                                                 </div>
                                             </div>
                                         </div>
@@ -284,7 +286,11 @@ i.bi.bi-arrow-right {
                                     }
                                 } else { ?>
                                     <a href="<?= base_url() ?>Home/contact_us">
-                                        <p style="color:red">Contact us for shipping cost</p>
+                                        <? if (!empty($error_msg)) { ?>
+                                            <p style="color:red"><?= $error_msg ?></p>
+                                        <? } else { ?>
+                                            <p style="color:red">Contact us for shipping cost</p>
+                                        <? } ?>
                                     </a>
                                 <? } ?>
                             </div>
@@ -474,6 +480,7 @@ $return_url = site_url() . 'Home/callback/' . $ordr_id_enc;
         m[n] = b
     })
     (window, affirm_config, "affirm", "checkout", "ui", "script", "ready", "jsReady");
+
     function affirm_open() {
         affirm.checkout({
             "merchant": {
