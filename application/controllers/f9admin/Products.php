@@ -9510,8 +9510,13 @@ class Products extends CI_finecontrol
                 //    $last_id2= $this->include_serieswise($apis2, $category, $sub_category, $minisubcategory, $minisubcategory2, $type, $finshed);
             }
         } else {
-            $this->session->set_flashdata('emessage', 'Api Id not found.');
-            redirect($_SERVER['HTTP_REFERER']);
+            $rep = array(
+                'status' => 201,
+                'message' => 'Api Id not found'
+            );
+
+            echo json_encode($rep);
+            exit;
         }
 
 
@@ -9525,30 +9530,65 @@ class Products extends CI_finecontrol
                 if (empty($minisubcategory2)) {
                     $minisub = base64_encode($minisubcategory);
                     $page = base64_encode(1);
-                    $this->session->set_flashdata('smessage', 'Data inserted successfully');
-                    redirect("dcadmin/products/view_products/" . $minisub . "/" . $page, "refresh");
+                    // $this->session->set_flashdata('smessage', 'Data inserted successfully');
+                    // redirect("dcadmin/products/view_products/" . $minisub . "/" . $page, "refresh");
+                    $rep = array(
+                        'status' => 200,
+                        'message' => 'Data inserted successfully'
+                    );
+        
+                    echo json_encode($rep);
+                    exit;
                 } else {
                     $minisub2 = base64_encode($minisubcategory2);
                     $page = base64_encode(2);
-                    $this->session->set_flashdata('smessage', 'Data inserted successfully');
-                    redirect("dcadmin/products/view_products/" . $minisub2 . "/" . $page, "refresh");
+                    $rep = array(
+                        'status' => 200,
+                        'message' => 'Data inserted successfully'
+                    );
+        
+                    echo json_encode($rep);
+                    exit;
+                    // $this->session->set_flashdata('smessage', 'Data inserted successfully');
+                    // redirect("dcadmin/products/view_products/" . $minisub2 . "/" . $page, "refresh");
                 }
             } else {
                 if (!empty($sub_category)) {
                     $sub = base64_encode($sub_category);
                     $page = base64_encode(0);
-                    $this->session->set_flashdata('smessage', 'Data inserted successfully');
-                    redirect("dcadmin/products/view_products/" . $sub . "/" . $page, "refresh");
+                    // $this->session->set_flashdata('smessage', 'Data inserted successfully');
+                    // redirect("dcadmin/products/view_products/" . $sub . "/" . $page, "refresh");
+                    $rep = array(
+                        'status' => 200,
+                        'message' => 'Data inserted successfully'
+                    );
+        
+                    echo json_encode($rep);
+                    exit;
                 } else {
                     $cate = base64_encode($category);
                     $page = base64_encode(3);
-                    $this->session->set_flashdata('smessage', 'Data inserted successfully');
-                    redirect("dcadmin/products/view_products/" . $cate . "/" . $page, "refresh");
+                    // $this->session->set_flashdata('smessage', 'Data inserted successfully');
+                    // redirect("dcadmin/products/view_products/" . $cate . "/" . $page, "refresh");
+                    $rep = array(
+                        'status' => 200,
+                        'message' => 'Data inserted successfully'
+                    );
+        
+                    echo json_encode($rep);
+                    exit;
                 }
             }
         } else {
-            $this->session->set_flashdata('emessage', 'Sorry error occured');
-            redirect($_SERVER['HTTP_REFERER']);
+            // $this->session->set_flashdata('emessage', 'Sorry error occured');
+            // redirect($_SERVER['HTTP_REFERER']);
+            $rep = array(
+                'status' => 201,
+                'message' => 'Sorry error occured'
+            );
+
+            echo json_encode($rep);
+            exit;
         }
     }
     //==============product_cron job End======//
