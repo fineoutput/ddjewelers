@@ -23,16 +23,17 @@
         color: black;
         background-color: transparent;
         /* border: 1px solid; */
-        box-shadow: 0px 1px 8px 2px rgb(104 97 97 / 75%);
+        box-shadow: 0px 1px 4px 1px rgb(104 97 97 / 75%);
     }
 
 
     i.bi.bi-arrow-right {
         margin-left: 7px;
-        color: white;
-        background: #6b6ddf;
-        padding: 8px;
-        border-radius: 50%;
+    color: white;
+    background: #6b6ddf;
+    padding: 8px 9px;
+    border-radius: 50%;
+    font-size: 15px;
     }
 </style>
 <section>
@@ -300,7 +301,13 @@
                                     <!-- <form action="<?= base_url(); ?>Home/affrim_place_order" method="post" enctype="multipart/form-data"> -->
                                     <input type="hidden" value="<?= $address_id; ?>" name="addresss_id">
                                     <input type="hidden" value="" name="applied_promocode" id="applied_promocode">
-                                    <a href="javascript:void(0)"><button class="pay_btn pay_btn-2" style="align-items: baseline;" type="submit" onclick="affirm_open()"><img src="<?= base_url() ?>assets/frontend/affirm.png" class="img-fluid mx-2" style="width:17%;" /><span style="text-transform:none">Pay over time</span> <i class="bi bi-arrow-right"></i> </button></a>
+                                    <a href="javascript:void(0)">
+                                        <button class="pay_btn pay_btn-2" style="align-items: baseline;" type="submit" onclick="affirm_open()">
+                                        <div style="padding-top: 4px;">                                        <img src="<?= base_url() ?>assets/frontend/affirm.png" class="img-fluid mx-2" style="width:17%;margin-bottom: 10px"  /><span style="text-transform: none; color: black; font-weight: 600;">Pay over time</span> <i class="bi bi-arrow-right"></i>
+                                        </div>
+
+                                    
+                                    </button></a>
                                     <!-- </form> -->
                                 </div>
                                 <div class=" mb-3 text-center ">
