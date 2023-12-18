@@ -516,7 +516,7 @@ class Order extends CI_Controller
                 if (empty($order_data[0]->shipping_id)) {
                     $data_update2 = array(
                         'shipping_id' => $shipping_costs[0]['shipping_id'],
-                        'method_id' => $temp_array[0]['id'],
+                        'method_id' => $temp_array?$temp_array[0]['id']:'',
                         'shipping' => $shipping_costs[0]['shipment_cost'],
                         'shipping_rule_id' => $shipping_costs[0]['id'],
                         'final_amount' => $order_data[0]->total_amount + $shipping_costs[0]['shipment_cost'] + $order_data[0]->delivery_charge,

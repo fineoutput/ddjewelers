@@ -14,11 +14,13 @@
         }
     }
     button.pay_btn.pay_btn-2 {
+        padding: 0px;
+    display: inline-table;
     border-radius: 0px !important;
     color: black;
     background-color: transparent;
     /* border: 1px solid; */
-    box-shadow: 0px -1px 5px 0px rgba(0,0,0,0.75);
+    box-shadow: 0px 1px 8px 2px rgb(104 97 97 / 75%);
 }
 
 
@@ -26,7 +28,7 @@ i.bi.bi-arrow-right {
     margin-left: 7px;
     color: white;
     background: #333366;
-    padding: 7px 10px;
+    padding: 8px;
     border-radius: 50%;
 }
 
@@ -292,7 +294,7 @@ i.bi.bi-arrow-right {
                                     <!-- <form action="<?= base_url(); ?>Home/affrim_place_order" method="post" enctype="multipart/form-data"> -->
                                     <input type="hidden" value="<?= $address_id; ?>" name="addresss_id">
                                     <input type="hidden" value="" name="applied_promocode" id="applied_promocode">
-                                    <a href="javascript:void(0)"><button class="pay_btn pay_btn-2" style="align-items: baseline;" type="submit" onclick="affirm_open()"><img src="<?= base_url() ?>assets/frontend/affirm.png" class="img-fluid mx-2" style="width:17%;" />Pay over time <i class="bi bi-arrow-right"></i> </button></a>
+                                    <a href="javascript:void(0)"><button class="pay_btn pay_btn-2" style="align-items: baseline;" type="submit" onclick="affirm_open()"><img src="<?= base_url() ?>assets/frontend/affirm.png" class="img-fluid mx-2" style="width:17%;" /><span style="text-transform:none">Pay over time</span> <i class="bi bi-arrow-right"></i> </button></a>
                                     <!-- </form> -->
                                 </div>
                                 <div class=" mb-3 text-center ">

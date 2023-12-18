@@ -350,6 +350,13 @@
             <? if (!empty($this->session->userdata('user_id'))) { ?>
               <?php
               $user_id = $this->session->userdata('user_id');
+              $ctd = $this->db->get_where('tbl_cart', array('user_id' => $this->session->userdata('user_id')))->result();
+              foreach ($ctd as $cc) {
+                $pp_data = $this->db->get_where('tbl_products', array('is_active' => 1, 'id' => $cc->product_id))->row();
+                if (empty($pp_data)) {
+                  $delete = $this->db->delete('tbl_cart', array('product_id', $cc->product_id));
+                }
+              }
               $this->db->select('*');
               $this->db->from('tbl_cart');
               $this->db->where('user_id', $user_id);
@@ -426,15 +433,24 @@
               <a href="<?= base_url(); ?>Home/cart" class="carticon" style="position:relative;padding-right:rem;border-right: px solid #adadad;margin-Left:10px;">
                 <!-- margin-right:1.5rem;  -->
                 <i class="fa fa-shopping-cart I_size"></i>
-                <? if (empty($this->session->userdata('user_id'))) { 
+                <? if (empty($this->session->userdata('user_id'))) {
 
-                  ?>
+                ?>
                   <small class="cart-value" id="totalCartItemsM"><span>0</span></small>
                 <? } else { ?>
-                  <small class="cart-value"><span><? $this->db->select('*');
+                  <small class="cart-value"><span><?
+                                                  $ctd = $this->db->get_where('tbl_cart', array('user_id' => $this->session->userdata('user_id')))->result();
+                                                  foreach ($ctd as $cc) {
+                                                    $pp_data = $this->db->get_where('tbl_products', array('is_active' => 1, 'id' => $cc->product_id))->row();
+                                                    if (empty($pp_data)) {
+                                                      $delete = $this->db->delete('tbl_cart', array('product_id', $cc->product_id));
+                                                    }
+                                                  }
+                                                  $this->db->select('*');
                                                   $this->db->from('tbl_cart');
                                                   $this->db->where('user_id', $this->session->userdata('user_id'));
                                                   $cart_count = $this->db->count_all_results();
+
                                                   echo $cart_count ?></span></small>
                 <? } ?>
               </a>
@@ -588,9 +604,9 @@
             $db = $this->db->get();
             if (!empty($db->row())) {
             ?>
-            <!-- style="height: 250px;
+              <!-- style="height: 250px;
     overflow: auto;" -->
-              <ul class="hov_ul" >
+              <ul class="hov_ul">
                 <? $i = 1;
                 foreach ($db->result() as $df) {
                   if ($df->name == "Loose Natural Diamonds without Grading Report") { ?>
