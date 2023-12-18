@@ -30,7 +30,7 @@
     i.bi.bi-arrow-right {
         margin-left: 7px;
         color: white;
-        background: #333366;
+        background: #6b6ddf;
         padding: 8px;
         border-radius: 50%;
     }
