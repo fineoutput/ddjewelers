@@ -784,40 +784,7 @@ if(!empty($minorsub_name)){
                     </style>
                     <div class="row w-100">
                     <?php $i=1;
-                    $product1 =[];
-                    foreach($product->result() as $data) {
-                      // $sku1=explode(":",$data->sku);
-                      // $sku = $sku1[0];
-                      $a=0;
-                      if(!empty($product1)){
-                        foreach ($product1 as $value) {
-                      if($data->sku_series==$value['sku_series']){
-                        $a=1;
-                      }
-                    }}
-                      if($a==1){
-                        continue;
-                      }else{
-                        // $this->db->select('*');
-                        // $this->db->from('tbl_products');
-                        // $this->db->where('sku_series',$data->sku_series);
-                        // $this->db->like('id',$data->sku_series);
-                        // $data['']= $this->db->get()->row();
-                        $product1[]=array('id'=>$data->id,
-                        'sku'=>$data->sku,
-                        'sku_series'=>$data->sku_series,
-                        'image1'=>$data->FullySetImage1,
-                        'image2'=>$data->FullySetImage2,
-                        'description'=>$data->description,
-                        'price'=>$data->price,
-                        'currency'=>$data->currency,
-                      );
-                      }
-                      $i++;
-                    }
-                    // echo $i;die();
-                    // print_r($product1);
-                    // exit;
+                    
                     foreach($product1 as $data){
                       ?>
                         <div class="col-md-3 col-4 searchColumn">

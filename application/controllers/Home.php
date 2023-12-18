@@ -1922,11 +1922,24 @@ class Home extends CI_Controller
                 // $this->db->where('sku_series',$data->sku_series);
                 // $this->db->like('id',$data->sku_series);
                 // $data['']= $this->db->get()->row();
+                $image1 = '';
+                $image2 = '';
+                if ($count_data->gimage1) {
+                    $image1 = $count_data->gimage1;
+                    $image2 = $count_data->gimage2;
+                } else  if ($count_data->FullySetImage1) {
+                    $image1 = $count_data->FullySetImage1;
+                    $image2 = $count_data->FullySetImage2;
+                } else {
+                    $image1 = $count_data->image1;
+                    $image2 = $count_data->image2;
+                }
                 $product1[] = array(
                     'id' => $count_data->id,
+                    'sku' => $count_data->sku,
                     'sku_series' => $count_data->sku_series,
-                    'image1' => $count_data->FullySetImage1,
-                    'image2' => $count_data->FullySetImage2,
+                    'image1' => $image1,
+                    'image2' => $image2,
                     'description' => $count_data->description,
                     'price' => $count_data->price,
                     'currency' => $count_data->currency,
@@ -1937,6 +1950,7 @@ class Home extends CI_Controller
         foreach ($product1 as $prod1) {
             $counting++;
         }
+        $data['product1'] = $product1;
         $data['productCount'] = $counting;
         // $products=[];
         // $ss=[];
