@@ -2273,7 +2273,7 @@ hr {
     border-radius: 25px !important;
 }
 .paypal-button:not(.paypal-button-card) {
-    height: 48px !important;
+    height: 51px !important;
     min-height: 35px;
     max-height: 55px;
 }
