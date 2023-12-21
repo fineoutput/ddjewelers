@@ -1570,7 +1570,7 @@ class Home extends CI_Controller
                 //sorting logic end
             }
         } else {
-            // echo "hi";
+            // echo $id;
             // exit;
             //minor subcategory
             //pagination code
@@ -1582,6 +1582,8 @@ class Home extends CI_Controller
             $this->db->where('minisub_category', $id);
             $this->db->where('is_active', 1);
             $config["total_rows"] = $this->db->count_all_results();
+            //  echo $config["total_rows"];
+            // exit;
             $config["per_page"] = 100;
             $config["uri_segment"] = 6;
             $this->pagination->initialize($config);
@@ -1896,12 +1898,13 @@ class Home extends CI_Controller
                     $this->db->group_by(array("sku_series", "sku_series_type1"));
                     $this->db->where('minisub_category', $id);
                     $this->db->where('is_active', 1);
-                    $this->db->limit($config["per_page"], $page);
+                    // $this->db->limit($config["per_page"], $page);
                     $data['product'] = $this->db->get();
                 }
                 //sorting logic end
             }
         }
+        // print_r($data['product']);die();
         $product1 = [];
         foreach ($data['product']->result() as $count_data) {
             // $sku1=explode(":",$data->sku);
