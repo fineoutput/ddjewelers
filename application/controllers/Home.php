@@ -469,7 +469,7 @@ class Home extends CI_Controller
         $this->load->view('common/footer');
     }
     //Search Products Page after search
-    public function search_products()
+    public function search_products_old()
     {
         $this->load->helper(array('form', 'url'));
         $this->load->library('form_validation');
@@ -695,6 +695,240 @@ class Home extends CI_Controller
             // redirect("auth/login","refresh");
             redirect($_SERVER['HTTP_REFERER']);
         }
+    }
+    public function search_products()
+    {
+        $this->load->helper(array('form', 'url'));
+        $this->load->library('form_validation');
+        $this->load->helper('security');
+
+        if ($this->input->post()) {
+            $this->form_validation->set_rules('search_input', 'search_input', 'required|xss_clean|trim');
+
+            if ($this->form_validation->run() == TRUE) {
+                $string_main = $this->input->post('search_input');
+                $string = str_replace('SLR-', '', $string_main);
+                $user_id = $this->session->userdata('user_id');
+                $ss = [];
+
+                $string1 = explode(" ", $string);
+                $st_count = count($string1);
+
+                $det = array();
+
+                for ($i = 0; $i < min($st_count, 6); $i++) {
+                    $det[] = "sdesc LIKE '%" . $string1[$i] . "%'";
+                }
+
+                $isactiveProductCondition = "AND is_active = 1";
+                $groupByCondition = " GROUP BY sku_series, sku_series_type1";
+                $findProduct = "";
+
+                if ($st_count >= 1) {
+                    $a = " " . $string1[0] . " ";
+                    $det[] = "sdesc LIKE '%" . $a . "%'";
+                    $findProduct = $this->getProductType($string1[0]);
+                }
+
+                if ($st_count >= 2) {
+                    $b = $string1[1];
+                    $det[] = "AND sdesc LIKE '%" . $b . "%'";
+                }
+
+                if (!empty($findProduct)) {
+                    $native_query = "SELECT 'id, product_id, category, sub_category, minisub_category, minisub_category2, vendor, sku, sku_series, description, sdesc, gdesc, mcat1, mcat2, mcat3, mcat4, mcat5, product_type, collection, onhand, status, price, currency, unitofsale, weight, weightunit, gramweight, ringsizable, ringsize, ringsizetype, leadtime, agta, desc_e_grp, desc_e_name1, desc_e_value1, desc_e_name2, desc_e_value2, desc_e_name3, desc_e_value3, desc_e_name4, desc_e_value4, desc_e_name5, desc_e_value5, desc_e_name6, desc_e_value6, desc_e_name7, desc_e_value7, desc_e_name8, desc_e_value8, desc_e_name9, desc_e_value9, desc_e_name10, desc_e_value10, desc_e_name11, desc_e_value11, desc_e_name12, desc_e_value12, desc_e_name13, desc_e_value13, desc_e_name14, desc_e_value14, desc_e_name15, desc_e_value15, readytowear, smi, FullySetImage1, FullySetImage2, image3, video, gimage1, gimage2, gimage3, gvideo, creationdate, currencycode, country, dclarity, dcolor, totalweight, ip, date, added_by, is_active' FROM tbl_products WHERE product_type='" . $findProduct . "' " . $isactiveProductCondition . $groupByCondition;
+                } else {
+                    $placeholders = implode(' ', $det);
+                    $native_query = "SELECT 'id, product_id, category, sub_category, minisub_category, minisub_category2, vendor, sku, sku_series, description, sdesc, gdesc, mcat1, mcat2, mcat3, mcat4, mcat5, product_type, collection, onhand, status, price, currency, unitofsale, weight, weightunit, gramweight, ringsizable, ringsize, ringsizetype, leadtime, agta, desc_e_grp, desc_e_name1, desc_e_value1, desc_e_name2, desc_e_value2, desc_e_name3, desc_e_value3, desc_e_name4, desc_e_value4, desc_e_name5, desc_e_value5, desc_e_name6, desc_e_value6, desc_e_name7, desc_e_value7, desc_e_name8, desc_e_value8, desc_e_name9, desc_e_value9, desc_e_name10, desc_e_value10, desc_e_name11, desc_e_value11, desc_e_name12, desc_e_value12, desc_e_name13, desc_e_value13, desc_e_name14, desc_e_value14, desc_e_name15, desc_e_value15, readytowear, smi, FullySetImage1, FullySetImage2, image3, video, gimage1, gimage2, gimage3, gvideo, creationdate, currencycode, country, dclarity, dcolor, totalweight, ip, date, added_by, is_active' FROM tbl_products WHERE " . implode(' AND ', $det) . $isactiveProductCondition . $groupByCondition;
+                }
+
+                $details = $this->db->query($native_query);
+
+                if ($details->num_rows() > 0) {
+                    $ss = [];
+                    foreach ($details->result() as $dt) {
+                        $a = 0;
+                        if (!empty($ss)) {
+                            foreach ($ss as $value) {
+                                if ($dt->sku_series == $value['sku_series']) {
+                                    $a = 1;
+                                }
+                            }
+                        }
+
+                        if ($a == 1) {
+                            continue;
+                        } else {
+                            $ss[] = $this->prepareProductData($dt);
+                        }
+                    }
+                } else {
+                    $ss = [];
+                }
+
+                $this->db->select('id, product_id, category, sub_category, minisub_category, minisub_category2, vendor, sku, sku_series, description, sdesc, gdesc, mcat1, mcat2, mcat3, mcat4, mcat5, product_type, collection, onhand, status, price, currency, unitofsale, weight, weightunit, gramweight, ringsizable, ringsize, ringsizetype, leadtime, agta, desc_e_grp, desc_e_name1, desc_e_value1, desc_e_name2, desc_e_value2, desc_e_name3, desc_e_value3, desc_e_name4, desc_e_value4, desc_e_name5, desc_e_value5, desc_e_name6, desc_e_value6, desc_e_name7, desc_e_value7, desc_e_name8, desc_e_value8, desc_e_name9, desc_e_value9, desc_e_name10, desc_e_value10, desc_e_name11, desc_e_value11, desc_e_name12, desc_e_value12, desc_e_name13, desc_e_value13, desc_e_name14, desc_e_value14, desc_e_name15, desc_e_value15, readytowear, smi, FullySetImage1, FullySetImage2, image3, video, gimage1, gimage2, gimage3, gvideo, creationdate, currencycode, country, dclarity, dcolor, totalweight, ip, date, added_by, is_active');
+                $this->db->from('tbl_products');
+                $this->db->group_by(array("sku_series", "sku_series_type1"));
+                $this->db->like("sku", $string);
+                $this->db->where('is_active', 1);
+                $detail_sku = $this->db->get();
+                $yy = [];
+
+                foreach ($detail_sku->result() as $dt) {
+                    $b = 0;
+
+                    if (empty($ss)) {
+                        foreach ($yy as $value) {
+                            if ($dt->sku_series == $value['sku_series']) {
+                                $b = 1;
+                            }
+                        }
+                    }
+
+                    if ($b == 1) {
+                        continue;
+                    } else {
+                        $yy[] = $this->prepareProductData($dt);
+                    }
+                }
+
+                $detail = array_merge($ss, $yy);
+
+                if (empty($detail)) {
+                    $detail = $ss;
+                }
+
+                $detail = array_map("unserialize", array_unique(array_map("serialize", $detail)));
+                sort($detail);
+
+                $data['product'] = $detail;
+                $data['search_string'] = $string_main;
+
+                if (count($detail) == 1) {
+                    redirect('Home/product_detail/' . $detail[0]['sku']);
+                } else {
+                    $this->load->view('common/header', $data);
+                    $this->load->view('search_products');
+                    $this->load->view('common/footer');
+                }
+            } else {
+                $this->session->set_flashdata('emessage', validation_errors());
+                redirect($_SERVER['HTTP_REFERER']);
+            }
+        } else {
+            $this->session->set_flashdata('emessage', 'Sorry, an error occurred.');
+            redirect($_SERVER['HTTP_REFERER']);
+        }
+    }
+    function getProductType($input)
+    {
+        $productTypes = [
+            "RING" => "Rings",
+            "RINGS" => "Rings",
+            "EARRING" => "Earrings",
+            "EARRINGS" => "Earrings",
+            "SHANK" => "Shanks",
+            "SHANKS" => "Shanks",
+            "NECKLACE" => "Necklaces",
+            "NECKLACES" => "Necklaces",
+            "BRACELET" => "Bracelets",
+            "BRACELETS" => "Bracelets",
+            "PENDANT" => "Pendants",
+            "PENDANTS" => "Pendants",
+            "CHARM" => "Charms",
+            "CHARMS" => "Charms"
+        ];
+
+        $upperInput = strtoupper($input);
+
+        return isset($productTypes[$upperInput]) ? $productTypes[$upperInput] : "";
+    }
+    function prepareProductData($dt)
+    {
+        return array(
+            'id' => $dt->id,
+            'product_id' => $dt->product_id,
+            'category' => $dt->category,
+            'sub_category' => $dt->sub_category,
+            'minisub_category' => $dt->minisub_category,
+            'minisub_category2' => $dt->minisub_category2,
+            'vendor' => $dt->vendor,
+            'sku' => $dt->sku,
+            'sku_series' => $dt->sku_series,
+            'description' => $dt->description,
+            'sdesc' => $dt->sdesc,
+            'gdesc' => $dt->gdesc,
+            'mcat1' => $dt->mcat1,
+            'mcat2' => $dt->mcat2,
+            'mcat3' => $dt->mcat3,
+            'mcat4' => $dt->mcat4,
+            'mcat5' => $dt->mcat5,
+            'product_type' => $dt->product_type,
+            'collection' => $dt->collection,
+            'onhand' => $dt->onhand,
+            'status' => $dt->status,
+            'price' => $dt->price,
+            'currency' => $dt->currency,
+            'unitofsale' => $dt->unitofsale,
+            'weight' => $dt->weight,
+            'weightunit' => $dt->weightunit,
+            'gramweight' => $dt->gramweight,
+            'ringsizable' => $dt->ringsizable,
+            'ringsize' => $dt->ringsize,
+            'ringsizetype' => $dt->ringsizetype,
+            'leadtime' => $dt->leadtime,
+            'agta' => $dt->agta,
+            'desc_e_grp' => $dt->desc_e_grp,
+            'desc_e_name1' => $dt->desc_e_name1,
+            'desc_e_value1' => $dt->desc_e_value1,
+            'desc_e_name2' => $dt->desc_e_name2,
+            'desc_e_value2' => $dt->desc_e_value2,
+            'desc_e_name3' => $dt->desc_e_name3,
+            'desc_e_value3' => $dt->desc_e_value3,
+            'desc_e_name4' => $dt->desc_e_name4,
+            'desc_e_value4' => $dt->desc_e_value4,
+            'desc_e_name5' => $dt->desc_e_name5,
+            'desc_e_value5' => $dt->desc_e_value5,
+            'desc_e_name6' => $dt->desc_e_name6,
+            'desc_e_value6' => $dt->desc_e_value6,
+            'desc_e_name7' => $dt->desc_e_name7,
+            'desc_e_value7' => $dt->desc_e_value7,
+            'desc_e_name8' => $dt->desc_e_name8,
+            'desc_e_value8' => $dt->desc_e_value8,
+            'desc_e_name9' => $dt->desc_e_name9,
+            'desc_e_value9' => $dt->desc_e_value9,
+            'desc_e_name10' => $dt->desc_e_name10,
+            'desc_e_value10' => $dt->desc_e_value10,
+            'desc_e_name11' => $dt->desc_e_name11,
+            'desc_e_value11' => $dt->desc_e_value11,
+            'desc_e_name12' => $dt->desc_e_name12,
+            'desc_e_value12' => $dt->desc_e_value12,
+            'desc_e_name13' => $dt->desc_e_name13,
+            'desc_e_value13' => $dt->desc_e_value13,
+            'desc_e_name14' => $dt->desc_e_name14,
+            'desc_e_value14' => $dt->desc_e_value14,
+            'desc_e_name15' => $dt->desc_e_value15,
+            'readytowear' => $dt->readytowear,
+            'smi' => $dt->smi,
+            'FullySetImage1' => $dt->FullySetImage1,
+            'FullySetImage2' => $dt->FullySetImage2,
+            'image3' => $dt->image3,
+            'video' => $dt->video,
+            'gimage1' => $dt->gimage1,
+            'gimage2' => $dt->gimage2,
+            'gimage3' => $dt->gimage3,
+            'gvideo' => $dt->gvideo,
+            'creationdate' => $dt->creationdate,
+            'currencycode' => $dt->currencycode,
+            'country' => $dt->country,
+            'dclarity' => $dt->dclarity,
+            'dcolor' => $dt->dcolor,
+            'totalweight' => $dt->totalweight,
+            'ip' => $dt->ip,
+            'date' => $dt->date,
+            'added_by' => $dt->added_by,
+            'is_active' => $dt->is_active
+        );
     }
     //search result data
     public function search_results()
@@ -7359,6 +7593,199 @@ class Home extends CI_Controller
         } else {
             $this->session->set_flashdata('emessage', 'Please insert some data, No data available');
             redirect($_SERVER['HTTP_REFERER']);
+        }
+    }
+
+
+    public function generateRandomString($length = 20)
+    {
+        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $charactersLength = strlen($characters);
+        $randomString = '';
+        for ($i = 0; $i < $length; $i++) {
+            $randomString .= $characters[rand(0, $charactersLength - 1)];
+        }
+        return $randomString;
+    }
+
+    //========================forgot password email submit===================================
+    public function form_submit_forgot_password()
+    {
+        if (empty($this->session->userdata('user_data'))) {
+            $this->load->helper(array('form', 'url'));
+            $this->load->library('form_validation');
+            $this->load->helper('security');
+            if ($this->input->post()) {
+                $this->form_validation->set_rules('reset_email', 'reset_email', 'required|valid_email|xss_clean|trim');
+
+                if ($this->form_validation->run() == true) {
+                    $email = $this->input->post('reset_email');
+
+
+                    $this->db->select('*');
+                    $this->db->from('tbl_users');
+                    $this->db->where('email', $email);
+                    $user_data = $this->db->get()->row();
+                    // print_r($user_data);
+                    // exit;
+                    if (!empty($user_data)) {
+
+                        if ($user_data->is_active == 1) {
+                            $user_id = $user_data->id;
+                            $user_email = $user_data->email;
+                            $user_name = $user_data->name;
+                            $ip = $this->input->ip_address();
+                            date_default_timezone_set("Asia/Calcutta");
+                            $cur_date = date("Y-m-d H:i:s");
+
+                            //generate unique string number for txn_id
+
+                            $txn_id =  $this->generateRandomString(6);
+
+                            $data_insert = array(
+                                'user_id' => $user_id,
+                                'txn_id' => $txn_id,
+                                'status' => 0,
+                                'ip' => $ip,
+                                'date' => $cur_date
+                            );
+
+                            $last_id = $this->base_model->insert_table("tbl_forgot_pass", $data_insert, 1);
+                            $link = base_url() . "Home/forget_password_reset/" . $txn_id;
+                            $forgot_password_data = array(
+                                'user_name' => $user_name,
+                                'link' => $link
+
+                            );
+
+                            $config = array(
+                                'protocol' => 'smtp',
+                                'smtp_host' => SMTP_HOST,
+                                'smtp_port' => SMTP_PORT,
+                                'smtp_user' => USER_NAME, // change it to yours
+                                'smtp_pass' => PASSWORD, // change it to yours
+                                'mailtype' => 'html',
+                                'charset' => 'iso-8859-1',
+                                'wordwrap' => true
+                            );
+                            $to = $user_email;
+
+                            $message =     $this->load->view('email/forgetpassword', $forgot_password_data, true);
+
+                            $this->load->library('email', $config);
+                            $this->email->set_newline("");
+                            $this->email->from(EMAIL); // change it to yours
+                            $this->email->to($to); // change it to yours
+                            $this->email->subject('Reset Your Password');
+                            $this->email->message($message);
+                            if ($this->email->send()) {
+                                // echo 'Email sent.';
+                            } else {
+                                show_error($this->email->print_debugger());
+                            }
+
+                            $this->session->set_flashdata('smessage', 'Password reset link has been sent successfully');
+                            redirect('/');
+                        } else {
+                            $this->session->set_flashdata('emessage', 'Your account is inactive. Please contact admin.');
+                            redirect($_SERVER['HTTP_REFERER']);
+                        }
+                    } else {
+                        $this->session->set_flashdata('emessage', 'User does not exists');
+                        redirect($_SERVER['HTTP_REFERER']);
+                    }
+                } else {
+                    $this->session->set_flashdata('emessage', validation_errors());
+                    redirect($_SERVER['HTTP_REFERER']);
+                }
+            } else {
+                $this->session->set_flashdata('emessage', 'Please insert some data, No data available');
+                redirect($_SERVER['HTTP_REFERER']);
+            }
+        } else {
+            redirect("/", "refresh");
+        }
+    }
+
+    //---forget-password-reset-----
+    public function forget_password_reset($t)
+    {
+        if (empty($this->session->userdata('user_data'))) {
+            $id = $t;
+            $this->db->select('*');
+            $this->db->from('tbl_forgot_pass');
+            $this->db->where('txn_id', $id);
+            $u1 = $this->db->get()->row();
+            $st = $u1->status;
+
+            if ($st == 0) {
+                $data_update = array('status' => 1);
+                $this->db->where('status', $u1->status);
+                $zapak = $this->db->update('tbl_forgot_pass', $data_update);
+                $data['auth'] = $id;
+
+                $this->load->view('common/header', $data);
+                $this->load->view('forgot_pass');
+                $this->load->view('common/footer');
+            } else {
+                $this->session->set_flashdata('emessage', 'Link already used');
+                redirect("/");
+            }
+        } else {
+            redirect("/", "refresh");
+        }
+    }
+    ////-------update password------
+    public function update_password($t)
+    {
+        if (empty($this->session->userdata('user_data'))) {
+            $txn_id = $t;
+
+            $this->db->select('*');
+            $this->db->from('tbl_forgot_pass');
+            $this->db->where('txn_id', $txn_id);
+            $u2 = $this->db->get()->row();
+            $ui = $u2->user_id;
+            $data['auth'] = $txn_id;
+            $this->load->helper(array('form', 'url'));
+            $this->load->library('form_validation');
+            $this->load->helper('security');
+            if ($this->input->post()) {
+                $this->form_validation->set_rules('reset_password', 'reset_password', 'required|xss_clean|trim');
+
+                if ($this->form_validation->run() == true) {
+                    $reset_password = $this->input->post('reset_password');
+
+                    $this->db->select('*');
+                    $this->db->from('tbl_users');
+                    $this->db->where('id', $ui);
+                    $this->db->where('is_active', 1);
+                    $user = $this->db->get()->row();
+
+                    if (!empty($user)) {
+                        $rs = md5($reset_password);
+                        $data_update = array('psw' => $rs);
+                        $this->db->where('id', $user->id);
+                        $zapak = $this->db->update('tbl_users', $data_update);
+
+                        if ($zapak != 0) {
+                            $this->session->set_flashdata('smessage', 'Password reset successfully');
+                            redirect("/", "refresh");
+                        }
+                    } else {
+                        $this->session->set_flashdata('emessage', 'User not found');
+                        redirect($_SERVER['HTTP_REFERER']);
+                    }
+                } else {
+                    $this->session->set_flashdata('emessage', validation_errors());
+                    redirect($_SERVER['HTTP_REFERER']);
+                }
+            } else {
+                $this->session->set_flashdata('emessage', 'Please insert some data, No data available');
+                redirect($_SERVER['HTTP_REFERER']);
+            }
+        } else {
+            redirect("/", "refresh");
         }
     }
 }

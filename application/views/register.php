@@ -41,7 +41,7 @@
           <!-- <span>or use your account</span> -->
           <input type="email" placeholder="Email" name="email" required="" />
           <input type="password" placeholder="Password" name="psw" required="" />
-          <a href="#">Forgot your password?</a>
+          <a href="javascript:void(0)" data-toggle="modal" data-target="#ForgotModal">Forgot your password?</a>
           <button>Sign In</button>
         </form>
       </div>
@@ -111,6 +111,30 @@
     </div>
   </section>
 </section>
+<!-- Modal -->
+<div class="modal fade" id="ForgotModal" tabindex="-1" role="dialog" aria-labelledby="ForgotModal" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Forgot Password</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <!-- <form method="post" action="javascript:void(0)" id="loginForm" enctype="multipart/form-data" style="padding-left: 20px;padding-right: 20px;"> -->
+        <form method="post" action="<?= base_url() ?>Home/form_submit_forgot_password" enctype="multipart/form-data" style="padding-left: 20px;padding-right: 20px;">
+          <div class="form-group">
+            <input name="reset_email" required="" type="email" class="form-control rounded-0" placeholder="Enter Your Email">
+          </div>
+          <div class="form-group text-center">
+            <button class="sub_btn " type="submit">Reset</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
 <!-- poup end -->
 <!-- script start -->
 <!-- script end -->
