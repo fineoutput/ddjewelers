@@ -7070,6 +7070,14 @@ class Home extends CI_Controller
         $this->load->view('iframe_subcategory');
         $this->load->view('common/footer');
     }
+    public function minor_category($t)
+    {
+        $t_decode = base64_decode($t);
+        $data['t_dec'] = $t_decode;
+        $this->load->view('common/header', $data);
+        $this->load->view('iframe_minor_category');
+        $this->load->view('common/footer');
+    }
     //open iframes end
     //open show header signup page start
     public function signup_special_offers()

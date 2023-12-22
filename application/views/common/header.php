@@ -33,15 +33,15 @@
   <link href="https://unpkg.com/@videojs/themes@1/dist/city/index.css" rel="stylesheet" />
 </head>
 <style>
+  ul.hov_ul li a {
+    width: 100%;
+    display: block;
+  }
 
-ul.hov_ul li a {
-  width:100%;
-  display: block;
-}
-
-#menu ul:hover {
+  #menu ul:hover {
     display: block !important;
-}
+  }
+
   .center {
     display: flex;
     justify-content: center;
@@ -621,13 +621,13 @@ ul.hov_ul li a {
                     <? $i = 1;
                     foreach ($db->result() as $df) {
                       if ($df->name == "Loose Natural Diamonds without Grading Report") { ?>
-                       
+
                         <li>
                           <a href="<?= base_url(); ?>Home/subcategories/<?= base64_encode(1); ?>" target="_blank">
                             <?= $df->name ?>
                           </a>
                         </li>
-                    
+
                       <?php } elseif ($df->name == "Loose Lab-Grown Diamonds without Grading Report") { ?>
                         <li>
                           <a href="<?= base_url(); ?>Home/subcategories/<?= base64_encode(2); ?>" target="_blank">
@@ -643,6 +643,12 @@ ul.hov_ul li a {
                       <?php } elseif ($df->name == "Loose Natural Diamonds with Grading Report") { ?>
                         <li>
                           <a href="<?= base_url(); ?>Home/subcategories/<?= base64_encode(4); ?>" target="_blank">
+                            <?= $df->name ?>
+                          </a>
+                        </li>
+                      <?php } elseif ($df->id == 82) { ?>
+                        <li>
+                          <a href="<?= base_url(); ?>Home/minor_category/<?= base64_encode($df->id); ?>" target="_blank">
                             <?= $df->name ?>
                           </a>
                         </li>

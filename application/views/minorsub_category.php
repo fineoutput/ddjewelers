@@ -30,12 +30,16 @@
           <?php $i = 1;
           foreach ($minorsub_category->result() as $data) { ?>
             <div class="col-md-4">
-              <a href="<?= base_url(); ?>Home/all_products/<?= $data->id ?>/<?= base64_encode(1); ?>">
-                <div class="text-center sub_img">
-                  <img src="<?= base_url(); ?><?= $data->image ?>">
-                  <p><a href="<?= base_url(); ?>Home/all_products/<?= $data->id ?>/<?= base64_encode(1); ?>"><?= $data->name ?></a></p>
-                </div>
-              </a>
+              <? if ($data->id == 34 || $data->id == 37) { ?>
+                <a href="<?= base_url(); ?>Home/minor_category/<?= base64_encode($data->id) ?>">
+                <? } else { ?>
+                  <a href="<?= base_url(); ?>Home/all_products/<?= $data->id ?>/<?= base64_encode(1); ?>">
+                  <? } ?>
+                  <div class="text-center sub_img">
+                    <img src="<?= base_url(); ?><?= $data->image ?>">
+                    <p><a href="<?= base_url(); ?>Home/all_products/<?= $data->id ?>/<?= base64_encode(1); ?>"><?= $data->name ?></a></p>
+                  </div>
+                  </a>
             </div>
           <?php $i++;
           } ?>
