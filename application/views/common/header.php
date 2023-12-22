@@ -33,6 +33,15 @@
   <link href="https://unpkg.com/@videojs/themes@1/dist/city/index.css" rel="stylesheet" />
 </head>
 <style>
+
+ul.hov_ul li a {
+  width:100%;
+  display: block;
+}
+
+#menu ul:hover {
+    display: block !important;
+}
   .center {
     display: flex;
     justify-content: center;
@@ -578,87 +587,91 @@
         foreach ($data->result() as $da) {
           $cid = $da->id ?>
           <div class=" menu_col">
-            <p class="text-center menu_p">
-              <?php
-              $this->db->select('*');
-              $this->db->from('tbl_sub_category');
-              $this->db->where('is_active', 1);
-              $this->db->where('category', $da->id);
-              $subcategory_da = $this->db->get()->row();
-              if ($da->name == 'DIAMONDS') { ?>
-                <?= $da->name ?>
-              <?php   } else { ?>
-                <?php if (!empty($subcategory_da)) { ?>
-                  <a href="<?= base_url(); ?>Home/sub_category/<?= $da->id ?>">
-                  <?php   } else { ?>
-                    <a href="<?= base_url(); ?>Home/all_products/<?= $da->id ?>/<?= base64_encode(3); ?>">
-                    <?php  } ?>
-                    <?= $da->name ?>
-                    </a>
-                  <?php  } ?>
-            </p>
-            <? $this->db->select('*');
+            <?php
+            $this->db->select('*');
             $this->db->from('tbl_sub_category');
-            $this->db->where('category', $cid);
-            $this->db->order_by('seq', 'ASC');
-            $db = $this->db->get();
-            if (!empty($db->row())) {
-            ?>
-              <!-- style="height: 250px;
-    overflow: auto;" -->
-              <ul class="hov_ul">
-                <? $i = 1;
-                foreach ($db->result() as $df) {
-                  if ($df->name == "Loose Natural Diamonds without Grading Report") { ?>
-                    <li>
-                      <a href="<?= base_url(); ?>Home/subcategories/<?= base64_encode(1); ?>" target="_blank">
-                        <?= $df->name ?>
-                      </a>
-                    </li>
-                  <?php } elseif ($df->name == "Loose Lab-Grown Diamonds without Grading Report") { ?>
-                    <li>
-                      <a href="<?= base_url(); ?>Home/subcategories/<?= base64_encode(2); ?>" target="_blank">
-                        <?= $df->name ?>
-                      </a>
-                    </li>
-                  <?php } elseif ($df->name == "Loose Lab-Grown Diamonds with Grading Report") { ?>
-                    <li>
-                      <a href="<?= base_url(); ?>Home/subcategories/<?= base64_encode(3); ?>" target="_blank">
-                        <?= $df->name ?>
-                      </a>
-                    </li>
-                  <?php } elseif ($df->name == "Loose Natural Diamonds with Grading Report") { ?>
-                    <li>
-                      <a href="<?= base_url(); ?>Home/subcategories/<?= base64_encode(4); ?>" target="_blank">
-                        <?= $df->name ?>
-                      </a>
-                    </li>
-                    <?php } else {
-                    $this->db->select('*');
-                    $this->db->from('tbl_minisubcategory');
-                    $this->db->where('subcategory', $df->id);
-                    // $this->db->order_by('seq','ASC');
-                    $this->db->where('is_active', 1);
-                    $minorsub_category = $this->db->get()->row();
-                    if (empty($minorsub_category)) {
-                    ?>
-                      <li>
-                        <a href="<?= base_url(); ?>Home/all_products/<?= $df->id ?>/<?= base64_encode(0); ?>">
-                          <?= $df->name ?>
-                        </a>
-                      </li>
-                    <?php } else { ?>
-                      <li>
-                        <a href="<?= base_url(); ?>Home/minor_sub_products/<?= base64_encode($df->id); ?>">
-                          <?= $df->name ?>
-                        </a>
-                      </li>
-                    <?php } ?>
-                  <?php } ?>
-                <?php $i++;
-                } ?>
-              </ul>
-            <? } ?>
+            $this->db->where('is_active', 1);
+            $this->db->where('category', $da->id);
+            $subcategory_da = $this->db->get()->row();
+            if ($da->name == 'DIAMONDS') { ?>
+              <p class="text-center menu_p">
+                <?= $da->name ?>
+              </p>
+            <?php   } else { ?>
+              <?php if (!empty($subcategory_da)) { ?>
+                <a class="text-center menu_p" href="<?= base_url(); ?>Home/sub_category/<?= $da->id ?>">
+                <?php   } else { ?>
+                  <a href="<?= base_url(); ?>Home/all_products/<?= $da->id ?>/<?= base64_encode(3); ?>">
+                  <?php  } ?>
+                  <p class="text-center menu_p">
+                    <?= $da->name ?>
+                  </p>
+                  </a>
+                <?php  } ?>
+                <? $this->db->select('*');
+                $this->db->from('tbl_sub_category');
+                $this->db->where('category', $cid);
+                $this->db->order_by('seq', 'ASC');
+                $db = $this->db->get();
+                if (!empty($db->row())) {
+                ?>
+                  <!-- style="height: 250px;
+              overflow: auto;" -->
+                  <ul class="hov_ul">
+                    <? $i = 1;
+                    foreach ($db->result() as $df) {
+                      if ($df->name == "Loose Natural Diamonds without Grading Report") { ?>
+                       
+                        <li>
+                          <a href="<?= base_url(); ?>Home/subcategories/<?= base64_encode(1); ?>" target="_blank">
+                            <?= $df->name ?>
+                          </a>
+                        </li>
+                    
+                      <?php } elseif ($df->name == "Loose Lab-Grown Diamonds without Grading Report") { ?>
+                        <li>
+                          <a href="<?= base_url(); ?>Home/subcategories/<?= base64_encode(2); ?>" target="_blank">
+                            <?= $df->name ?>
+                          </a>
+                        </li>
+                      <?php } elseif ($df->name == "Loose Lab-Grown Diamonds with Grading Report") { ?>
+                        <li>
+                          <a href="<?= base_url(); ?>Home/subcategories/<?= base64_encode(3); ?>" target="_blank">
+                            <?= $df->name ?>
+                          </a>
+                        </li>
+                      <?php } elseif ($df->name == "Loose Natural Diamonds with Grading Report") { ?>
+                        <li>
+                          <a href="<?= base_url(); ?>Home/subcategories/<?= base64_encode(4); ?>" target="_blank">
+                            <?= $df->name ?>
+                          </a>
+                        </li>
+                        <?php } else {
+                        $this->db->select('*');
+                        $this->db->from('tbl_minisubcategory');
+                        $this->db->where('subcategory', $df->id);
+                        // $this->db->order_by('seq','ASC');
+                        $this->db->where('is_active', 1);
+                        $minorsub_category = $this->db->get()->row();
+                        if (empty($minorsub_category)) {
+                        ?>
+                          <li>
+                            <a href="<?= base_url(); ?>Home/all_products/<?= $df->id ?>/<?= base64_encode(0); ?>">
+                              <?= $df->name ?>
+                            </a>
+                          </li>
+                        <?php } else { ?>
+                          <li>
+                            <a href="<?= base_url(); ?>Home/minor_sub_products/<?= base64_encode($df->id); ?>">
+                              <?= $df->name ?>
+                            </a>
+                          </li>
+                        <?php } ?>
+                      <?php } ?>
+                    <?php $i++;
+                    } ?>
+                  </ul>
+                <? } ?>
           </div>
         <?php $i++;
         } ?>

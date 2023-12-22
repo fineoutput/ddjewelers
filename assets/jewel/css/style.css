@@ -238,6 +238,7 @@ transform: rotate(90deg); */
     font-family: 'Spectral', serif !important;
     font-size: 12px;
 }
+
 @media (max-width:1023px) {
     .side_option {
         display: block !important;
@@ -719,6 +720,9 @@ transform: rotate(90deg); */
     border-bottom: 1px solid rgb(172, 172, 172);
 }
 #menu p:hover~ul {
+    display: block;
+}
+#menu a:hover~ul {
     display: block;
 }
 #menu ul:hover {
