@@ -1160,6 +1160,37 @@ class Home extends CI_Controller
     }
     public function all_products($idd, $t)
     {
+        $type = base64_decode($t);
+        if ($type == 1) {
+            $data['products_data'] = $this->db->group_by(array("series_id"))->get_where('tbl_products', array('is_active' => 1, 'minisub_category' => $idd))->result();
+            $data['productCount'] = $this->db->group_by(array("series_id"))->get_where('tbl_products', array('is_active' => 1, 'minisub_category' => $idd))->num_rows();
+            $mini_data = $this->db->get_where('tbl_minisubcategory', array('is_active' => 1, 'id' => $idd))->row();
+            $subcat_data = $this->db->get_where('tbl_sub_category', array('is_active' => 1, 'id' => $mini_data->subcategory))->row();
+            $cat_data = $this->db->get_where('tbl_category', array('is_active' => 1, 'id' => $mini_data->category))->row();
+            $data['category_name'] = $cat_data->name;
+            $data['subcategory_name'] = $subcat_data->name;
+            $data['category_id'] = $cat_data->id;
+            $data['minorsub_name'] = $mini_data->name;
+        } else {
+            $data['products_data'] = $this->db->group_by(array("series_id"))->get_where('tbl_products', array('is_active' => 1, 'sub_category' => $idd))->result();
+            $data['productCount'] = $this->db->group_by(array("series_id"))->get_where('tbl_products', array('is_active' => 1, 'sub_category' => $idd))->num_rows();
+            $subcat_data = $this->db->get_where('tbl_sub_category', array('is_active' => 1, 'id' => $idd))->row();
+            $cat_data = $this->db->get_where('tbl_category', array('is_active' => 1, 'id' => $subcat_data->category))->row();
+            $data['category_name'] = $cat_data->name;
+            $data['subcategory_name'] = $subcat_data->name;
+            $data['category_id'] = $cat_data->id;
+        }
+        $data['sort_type'] = '';
+        $data['level_id'] = $idd;
+
+
+        // echo (json_encode($pro_data));
+        $this->load->view('common/header', $data);
+        $this->load->view('all_products');
+        $this->load->view('common/footer');
+    }
+    public function all_products_old($idd, $t)
+    {
         // echo 4;die();
         $id = $idd;
         $page = base64_decode($t);
@@ -1171,6 +1202,7 @@ class Home extends CI_Controller
             $sort_type = "";
         }
         if ($page == 3) {
+
             //pagination code
             $config = array();
             $config["base_url"] = base_url() . "Home/all_products/" . $id . "/" . $t;
@@ -1478,6 +1510,7 @@ class Home extends CI_Controller
                 //sorting logic end
             }
         } elseif ($page == 0) {
+
             //pagination code
             $config = array();
             $config["base_url"] = base_url() . "Home/all_products/" . $id . "/" . $t;
@@ -1791,6 +1824,13 @@ class Home extends CI_Controller
                     $this->db->where('is_active', 1);
                     $data['product'] = $this->db->get('tbl_products');
                     // $this->db->select('*');
+                    // $this->db->from('tbl_products');
+                    // $this->db->where('is_active', 1);
+                    // $this->db->group_by(array("series_id"));
+                    // $data['product'] = $this->db->get();
+                    // echo $data['product'];
+                    // die();
+                    // $this->db->select('*');
                     //
                     // $this->db->from('tbl_products');
                     // $this->db->group_by(array("sku_series", "sku_series_type1"));
@@ -1804,6 +1844,7 @@ class Home extends CI_Controller
                 //sorting logic end
             }
         } else {
+
             // echo $id;
             // exit;
             //minor subcategory

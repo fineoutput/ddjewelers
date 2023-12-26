@@ -1439,6 +1439,9 @@ class Products extends CI_finecontrol
                                                             'ip' => $ip,
                                                             'added_by' => $addedby,
                                                             'is_active' => 1,
+                                                            'group_id' => $prod->DescriptiveElementGroup->GroupId,
+                                                            'series_id' => $prod->DescriptiveElementGroup->DescriptiveElements[0]->Value,
+
                                                             'date' => $cur_date
                                                         );
                                                         $last_id = $this->base_model->insert_table("tbl_products", $data_insert, 1);
@@ -2039,6 +2042,9 @@ class Products extends CI_finecontrol
                                                         'ip' => $ip,
                                                         'added_by' => $addedby,
                                                         'is_active' => 1,
+                                                        'group_id' => $prod->DescriptiveElementGroup->GroupId,
+                                                        'series_id' => $prod->DescriptiveElementGroup->DescriptiveElements[0]->Value,
+
                                                         'date' => $cur_date
                                                     );
                                                     $last_id = $this->base_model->insert_table("tbl_products", $data_insert, 1);
@@ -2650,6 +2656,9 @@ class Products extends CI_finecontrol
                                                     'ip' => $ip,
                                                     'added_by' => $addedby,
                                                     'is_active' => 1,
+                                                    'group_id' => $prod->DescriptiveElementGroup->GroupId,
+                                                    'series_id' => $prod->DescriptiveElementGroup->DescriptiveElements[0]->Value,
+
                                                     'date' => $cur_date
                                                 );
                                                 $last_id = $this->base_model->insert_table("tbl_products", $data_insert, 1);
@@ -3206,6 +3215,9 @@ class Products extends CI_finecontrol
                                                     'ip' => $ip,
                                                     'added_by' => $addedby,
                                                     'is_active' => 1,
+                                                    'group_id' => $prod->DescriptiveElementGroup->GroupId,
+                                                    'series_id' => $prod->DescriptiveElementGroup->DescriptiveElements[0]->Value,
+
                                                     'date' => $cur_date
                                                 );
                                                 $last_id = $this->base_model->insert_table("tbl_products", $data_insert, 1);
@@ -3761,6 +3773,9 @@ class Products extends CI_finecontrol
                                             'ip' => $ip,
                                             'added_by' => $addedby,
                                             'is_active' => 1,
+                                            'group_id' => $prod->DescriptiveElementGroup->GroupId,
+                                            'series_id' => $prod->DescriptiveElementGroup->DescriptiveElements[0]->Value,
+
                                             'date' => $cur_date
                                         );
                                         $last_id = $this->base_model->insert_table("tbl_products", $data_insert, 1);
@@ -4444,6 +4459,9 @@ class Products extends CI_finecontrol
                                                 'ip' => $ip,
                                                 'added_by' => $addedby,
                                                 'is_active' => 1,
+                                                'group_id' => $prod->DescriptiveElementGroup->GroupId,
+                                                'series_id' => $prod->DescriptiveElementGroup->DescriptiveElements[0]->Value,
+
                                                 'date' => $cur_date
                                             );
                                             // print_r($data_insert);
@@ -5004,6 +5022,9 @@ class Products extends CI_finecontrol
                                                 'ip' => $ip,
                                                 'added_by' => $addedby,
                                                 'is_active' => 1,
+                                                'group_id' => $prod->DescriptiveElementGroup->GroupId,
+                                                'series_id' => $prod->DescriptiveElementGroup->DescriptiveElements[0]->Value,
+
                                                 'date' => $cur_date
                                             );
                                             $last_id = $this->base_model->insert_table("tbl_products", $data_insert, 1);
@@ -5579,6 +5600,9 @@ class Products extends CI_finecontrol
                                                 'ip' => $ip,
                                                 'added_by' => $addedby,
                                                 'is_active' => 1,
+                                                'group_id' => $prod->DescriptiveElementGroup->GroupId,
+                                                'series_id' => $prod->DescriptiveElementGroup->DescriptiveElements[0]->Value,
+
                                                 'date' => $cur_date
                                             );
                                             $last_id = $this->base_model->insert_table("tbl_products", $data_insert, 1);
@@ -6250,6 +6274,9 @@ class Products extends CI_finecontrol
                                                     'ip' => $ip,
                                                     'added_by' => $addedby,
                                                     'is_active' => 1,
+                                                    'group_id' => $prod->DescriptiveElementGroup->GroupId,
+                                                    'series_id' => $prod->DescriptiveElementGroup->DescriptiveElements[0]->Value,
+
                                                     'date' => $cur_date
                                                 );
                                                 $last_id = $this->base_model->insert_table("tbl_products", $data_insert, 1);
@@ -6829,6 +6856,9 @@ class Products extends CI_finecontrol
                                                     'ip' => $ip,
                                                     'added_by' => $addedby,
                                                     'is_active' => 1,
+                                                    'group_id' => $prod->DescriptiveElementGroup->GroupId,
+                                                    'series_id' => $prod->DescriptiveElementGroup->DescriptiveElements[0]->Value,
+
                                                     'date' => $cur_date
                                                 );
                                                 $last_id = $this->base_model->insert_table("tbl_products", $data_insert, 1);
@@ -7413,6 +7443,9 @@ class Products extends CI_finecontrol
                                                     'ip' => $ip,
                                                     'added_by' => $addedby,
                                                     'is_active' => 1,
+                                                    'group_id' => $prod->DescriptiveElementGroup->GroupId,
+                                                    'series_id' => $prod->DescriptiveElementGroup->DescriptiveElements[0]->Value,
+
                                                     'date' => $cur_date
                                                 );
                                                 $last_id = $this->base_model->insert_table("tbl_products", $data_insert, 1);
@@ -8069,6 +8102,9 @@ class Products extends CI_finecontrol
                                                     'ip' => $ip,
                                                     'added_by' => $addedby,
                                                     'is_active' => 1,
+                                                    'group_id' => $prod->DescriptiveElementGroup->GroupId,
+                                                    'series_id' => $prod->DescriptiveElementGroup->DescriptiveElements[0]->Value,
+
                                                     'date' => $cur_date
                                                 );
                                                 $last_id = $this->base_model->insert_table("tbl_products", $data_insert, 1);
@@ -8659,6 +8695,9 @@ class Products extends CI_finecontrol
                                                     'ip' => $ip,
                                                     'added_by' => $addedby,
                                                     'is_active' => 1,
+                                                    'group_id' => $prod->DescriptiveElementGroup->GroupId,
+                                                    'series_id' => $prod->DescriptiveElementGroup->DescriptiveElements[0]->Value,
+
                                                     'date' => $cur_date
                                                 );
                                                 $last_id = $this->base_model->insert_table("tbl_products", $data_insert, 1);
@@ -9247,6 +9286,9 @@ class Products extends CI_finecontrol
                                                     'ip' => $ip,
                                                     'added_by' => $addedby,
                                                     'is_active' => 1,
+                                                    'group_id' => $prod->DescriptiveElementGroup->GroupId,
+                                                    'series_id' => $prod->DescriptiveElementGroup->DescriptiveElements[0]->Value,
+
                                                     'date' => $cur_date
                                                 );
                                                 $last_id = $this->base_model->insert_table("tbl_products", $data_insert, 1);
@@ -9536,7 +9578,7 @@ class Products extends CI_finecontrol
                         'status' => 200,
                         'message' => 'Data inserted successfully'
                     );
-        
+
                     echo json_encode($rep);
                     exit;
                 } else {
@@ -9546,7 +9588,7 @@ class Products extends CI_finecontrol
                         'status' => 200,
                         'message' => 'Data inserted successfully'
                     );
-        
+
                     echo json_encode($rep);
                     exit;
                     // $this->session->set_flashdata('smessage', 'Data inserted successfully');
@@ -9562,7 +9604,7 @@ class Products extends CI_finecontrol
                         'status' => 200,
                         'message' => 'Data inserted successfully'
                     );
-        
+
                     echo json_encode($rep);
                     exit;
                 } else {
@@ -9574,7 +9616,7 @@ class Products extends CI_finecontrol
                         'status' => 200,
                         'message' => 'Data inserted successfully'
                     );
-        
+
                     echo json_encode($rep);
                     exit;
                 }
