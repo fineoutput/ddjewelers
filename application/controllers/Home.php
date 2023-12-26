@@ -1171,6 +1171,14 @@ class Home extends CI_Controller
             $data['subcategory_name'] = $subcat_data->name;
             $data['category_id'] = $cat_data->id;
             $data['minorsub_name'] = $mini_data->name;
+        } else if ($type == 3) {
+            $data['products_data'] = $this->db->group_by(array("series_id"))->get_where('tbl_products', array('is_active' => 1, 'category' => $idd))->result();
+            $data['productCount'] = $this->db->group_by(array("series_id"))->get_where('tbl_products', array('is_active' => 1, 'category' => $idd))->num_rows();
+            $cat_data = $this->db->get_where('tbl_category', array('is_active' => 1, 'id' => $idd))->row();
+            $data['category_name'] = $cat_data->name;
+            $data['category_id'] = $cat_data->id;
+            $data['subcategory_name'] = '';
+            $data['minorsub_name'] = '';
         } else {
             $data['products_data'] = $this->db->group_by(array("series_id"))->get_where('tbl_products', array('is_active' => 1, 'sub_category' => $idd))->result();
             $data['productCount'] = $this->db->group_by(array("series_id"))->get_where('tbl_products', array('is_active' => 1, 'sub_category' => $idd))->num_rows();

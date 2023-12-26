@@ -308,6 +308,7 @@
 
                                     
                                     </button></a>
+                                    <P class="mt-1" style="font-size:12px"> <a href='https://www.affirm.com/how-it-works' target='_blank' rel='noopener noreferrer'>Affirm How is Works</a></P>
                                     <!-- </form> -->
                                 </div>
                                 <div class=" mb-3 text-center ">

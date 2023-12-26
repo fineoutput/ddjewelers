@@ -60,6 +60,7 @@
 					<P ><a href="<?=base_url();?>Home/privacy_policy">Privacy Policy</a></P>
 					<P ><a href="<?=base_url();?>Home/return_policy">Return Policy</a></P>
                     <P ><a href="<?=base_url(); ?>Home/faq">FAQ</a></P>
+                    <P > <a href='https://www.affirm.com/how-it-works' target='_blank' rel='noopener noreferrer'>Affirm How is Works</a></P>
 				</div>
         <div class="col-md-7 m-auto foot_logo">
           <h3 class="text-center"><b>Lab Partners & Associations</b></h3>
@@ -96,6 +97,7 @@
               </div>
           </div>
 				</div>
+      
         <div class="col-md-3 foot_logo ml-auto logo">
         <img src="<?=base_url()?>assets/jewel/img/dd.jewelplus.com_Website_Latest_-removebg-preview.png" height='300px' width='300px'/>
         <br/>
