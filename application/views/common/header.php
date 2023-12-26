@@ -610,6 +610,7 @@
                 <?php  } ?>
                 <? $this->db->select('*');
                 $this->db->from('tbl_sub_category');
+                $this->db->where('is_active', 1);
                 $this->db->where('category', $cid);
                 $this->db->order_by('seq', 'ASC');
                 $db = $this->db->get();
@@ -655,6 +656,7 @@
                         <?php } else {
                         $this->db->select('*');
                         $this->db->from('tbl_minisubcategory');
+                        $this->db->where('is_active', 1);
                         $this->db->where('subcategory', $df->id);
                         // $this->db->order_by('seq','ASC');
                         $this->db->where('is_active', 1);
