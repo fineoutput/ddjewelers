@@ -6,9 +6,9 @@
       $images = json_decode($data->full_set_images);
     ?>
       <div class="col-md-3 text-center">
-        <p><b><?= $data->series_id ?></b></p>
+        <a href="<?=base_url()?>dcadmin/ProductsUpdated/test_details/<?=$data->series_id?>/<?=$data->pro_id?>?groupId=<?=$data->group_id?>"><p><b><?= $data->series_id ?></b></p>
         <img src="<?= $images[0]->FullUrl ?>" class="img-fluid">
-        <p><?= $data->short_description ?></p>
+        <p><?= $data->description ?></p></a>
       </div>
     <? } ?>
   </div>

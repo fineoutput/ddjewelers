@@ -31,6 +31,9 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
   <!-- City -->
   <link href="https://unpkg.com/@videojs/themes@1/dist/city/index.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"> 
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.3.5/jquery.fancybox.min.css"> 
+  <link rel="stylesheet" href="https://www.insightindia.com/mcss/icon-font.css"> 
 </head>
 <style>
   ul.hov_ul li a {

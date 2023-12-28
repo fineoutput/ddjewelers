@@ -1162,8 +1162,8 @@ class Home extends CI_Controller
     {
         $type = base64_decode($t);
         if ($type == 1) {
-            $data['products_data'] = $this->db->group_by(array("series_id"))->get_where('tbl_products', array('is_active' => 1, 'minisub_category' => $idd))->result();
-            $data['productCount'] = $this->db->group_by(array("series_id"))->get_where('tbl_products', array('is_active' => 1, 'minisub_category' => $idd))->num_rows();
+            $data['products_data'] = $this->db->group_by(array("series_id"))->get_where('tbl_products', array('minor_category_id' => $idd))->result();
+            $data['productCount'] = $this->db->group_by(array("series_id"))->get_where('tbl_products', array('minor_category_id' => $idd))->num_rows();
             $mini_data = $this->db->get_where('tbl_minisubcategory', array('is_active' => 1, 'id' => $idd))->row();
             $subcat_data = $this->db->get_where('tbl_sub_category', array('is_active' => 1, 'id' => $mini_data->subcategory))->row();
             $cat_data = $this->db->get_where('tbl_category', array('is_active' => 1, 'id' => $mini_data->category))->row();
@@ -1172,16 +1172,16 @@ class Home extends CI_Controller
             $data['category_id'] = $cat_data->id;
             $data['minorsub_name'] = $mini_data->name;
         } else if ($type == 3) {
-            $data['products_data'] = $this->db->group_by(array("series_id"))->get_where('tbl_products', array('is_active' => 1, 'category' => $idd))->result();
-            $data['productCount'] = $this->db->group_by(array("series_id"))->get_where('tbl_products', array('is_active' => 1, 'category' => $idd))->num_rows();
+            $data['products_data'] = $this->db->group_by(array("series_id"))->get_where('tbl_products', array('category_id' => $idd))->result();
+            $data['productCount'] = $this->db->group_by(array("series_id"))->get_where('tbl_products', array( 'category_id' => $idd))->num_rows();
             $cat_data = $this->db->get_where('tbl_category', array('is_active' => 1, 'id' => $idd))->row();
             $data['category_name'] = $cat_data->name;
             $data['category_id'] = $cat_data->id;
             $data['subcategory_name'] = '';
             $data['minorsub_name'] = '';
         } else {
-            $data['products_data'] = $this->db->group_by(array("series_id"))->get_where('tbl_products', array('is_active' => 1, 'sub_category' => $idd))->result();
-            $data['productCount'] = $this->db->group_by(array("series_id"))->get_where('tbl_products', array('is_active' => 1, 'sub_category' => $idd))->num_rows();
+            $data['products_data'] = $this->db->group_by(array("series_id"))->get_where('tbl_products', array('subcategory_id' => $idd))->result();
+            $data['productCount'] = $this->db->group_by(array("series_id"))->get_where('tbl_products', array( 'subcategory_id' => $idd))->num_rows();
             $subcat_data = $this->db->get_where('tbl_sub_category', array('is_active' => 1, 'id' => $idd))->row();
             $cat_data = $this->db->get_where('tbl_category', array('is_active' => 1, 'id' => $subcat_data->category))->row();
             $data['category_name'] = $cat_data->name;
@@ -1196,6 +1196,139 @@ class Home extends CI_Controller
         $this->load->view('common/header', $data);
         $this->load->view('all_products');
         $this->load->view('common/footer');
+    }
+    public function product_details($series_id, $pro_id)
+    {
+        $group_id = $_GET['groupId'];
+        $data['products'] = $this->db->get_where('tbl_products', array('pro_id' => $pro_id))->row();
+        $data['stone_data']  = $this->db->select("id,pro_id,stone")->group_by('stone')->get_where('tbl_products', array('series_id' => $series_id, 'group_id' => $group_id))->result();
+        $product_data  = $this->db->group_by('pro_id')->get_where('tbl_products', array('series_id' => $series_id, 'group_id' => $group_id, 'stone' => $data['products']->stone, ''))->result();
+        //---add category id in more products
+        $data['more_products'] = $this->db->group_by('series_id')->limit(15)->order_by('rand()')->get_where('tbl_products', array())->result();
+        $data['suggested_products'] = $this->db->group_by('series_id')->limit(15)->order_by('rand()')->get_where('tbl_products', array())->result();
+        $options = [];
+        // $pro_elements = json_decode($data['products']->elements);
+        $DescriptiveElements = json_decode($data['products']->elements);
+        $searchedValues = [];
+        foreach ($product_data as $product) {
+            $jsonData = json_decode($product->elements, true);
+            foreach ($jsonData as $index => $element) {
+                $key = $element['Name'];
+                $value = $element['DisplayValue'];
+                // Collect unique options for each key
+                if (!isset($options[$key])) {
+                    $options[$key] = [];
+                }
+                // // Check if the value is not already in the options for the key
+                $existingValues = array_column($options[$key], 'DisplayValue');
+                if (!in_array($value, $existingValues)) {
+                    // if ($value == $data['products']) {
+                    if ($DescriptiveElements[$index]->Name == $key && $DescriptiveElements[$index]->DisplayValue == $value) {
+                        $selected = "selected";
+                        $searchedValues[]  = $value;
+                    } else {
+                        $selected = "";
+                    }
+                    $options[$key][] = [
+                        'DisplayValue' => $value,
+                        'selected' => $selected,
+                        'value' => $element['Value'],
+                    ];
+                }
+            }
+        }
+        // Sort options in ascending order
+        foreach ($options as &$option) {
+            usort($option, function ($a, $b) {
+                return strcmp($a['DisplayValue'], $b['DisplayValue']);
+            });
+        }
+        //---- CALCULATE PRICE -------
+        $pr_data = $this->db->get_where('tbl_price_rule', array())->row();
+        $multiplier = $pr_data->multiplier;
+        $cost_price = $data['products']->price;
+        $retail = $cost_price * $multiplier;
+        $now_price = $cost_price;
+        if ($cost_price <= 500) {
+            $cost_price2 = $cost_price * $cost_price;
+            $number = round($cost_price * ($pr_data->cost_price1 * $cost_price2 + $pr_data->cost_price2 * $cost_price + $pr_data->cost_price3), 2);
+            $unit = 5;
+            $remainder = $number % $unit;
+            $mround = ($remainder < $unit / 2) ? $number - $remainder : $number + ($unit - $remainder);
+            $now_price = round($mround) - 1 + 0.95;
+        }
+        if ($cost_price > 500) {
+            $number = round($cost_price * ($pr_data->cost_price4 * $cost_price / $multiplier + $pr_data->cost_price5));
+            $unit = 5;
+            $remainder = $number % $unit;
+            $mround = ($remainder < $unit / 2) ? $number - $remainder : $number + ($unit - $remainder);
+            $now_price = round($mround) - 1 + 0.95;
+        }
+        $saved = round($retail - $now_price);
+        $dis_percent = $saved / $retail * 100;
+
+        $data['now_price'] = $now_price;
+        $data['saved'] = $saved;
+        $data['dis_percent'] = $dis_percent;
+        $data['retail'] = $retail;
+        $data['options'] = $options;
+        $data['product_data'] = $product_data;
+        $data['searchedValues'] = $searchedValues;
+        $this->load->view('common/header', $data);
+        $this->load->view('product_detail_new');
+        $this->load->view('common/footer');
+    }
+    public  function GetProductId()
+    {
+        $this->load->helper(array('form', 'url'));
+        $this->load->library('form_validation');
+        $this->load->helper('security');
+        if ($this->input->post()) {
+            $this->form_validation->set_rules('pro_id', 'pro_id', 'required|xss_clean|trim');
+            $this->form_validation->set_rules('group_id', 'group_id', 'required|xss_clean|trim');
+            $this->form_validation->set_rules('series_id', 'series_id', 'required|xss_clean|trim');
+            $this->form_validation->set_rules('catalog_key', 'catalog_key', 'required|xss_clean|trim');
+            $this->form_validation->set_rules('catalog_value', 'catalog_value', 'required|xss_clean|trim');
+            if ($this->form_validation->run() == true) {
+                $pro_id = $this->input->post('pro_id');
+                $group_id = $this->input->post('group_id');
+                $series_id = $this->input->post('series_id');
+                $catalog_key = $this->input->post('catalog_key');
+                $catalog_value = $this->input->post('catalog_value');
+                $existing_pro_data = $this->db->get_where('tbl_products', array('pro_id' => $pro_id, 'group_id' => $group_id, 'series_id' => $series_id))->row();
+                $catalogValues = json_decode($existing_pro_data->catalog_values);
+                // print_r($catalogValues);
+                $catalogValues[$catalog_key] = $catalog_value;
+                // print_r($catalogValues);
+                // die();
+                $new_pro_data = $this->db->like('catalog_values', json_encode($catalogValues))->get_where('tbl_products', array('group_id' => $group_id, 'series_id' => $series_id))->row();
+                if (!empty($new_pro_data)) {
+                    $res = array(
+                        'message' => $new_pro_data->pro_id,
+                        'status' => 200
+                    );
+                    echo json_encode($res);
+                } else {
+                    $res = array(
+                        'message' => 'No combination found!',
+                        'status' => 201
+                    );
+                    echo json_encode($res);
+                }
+            } else {
+                $res = array(
+                    'message' => validation_errors(),
+                    'status' => 201
+                );
+                echo json_encode($res);
+            }
+        } else {
+            $res = array(
+                'message' => 'Please insert some data, No data available',
+                'status' => 201
+            );
+            echo json_encode($res);
+        }
     }
     public function all_products_old($idd, $t)
     {
