@@ -389,8 +389,9 @@
                 if ($key == 'Quality' && $option['selected'] == 'selected') {
                   $quality  = $option['DisplayValue'];
                 }
+                $DisplayValue = str_replace("K X1", "K Forever", $option['DisplayValue']);
               ?>
-                <option value="<?php echo $option['value']; ?>" data-key="<?= $index ?>" <?php echo $option['selected']; ?>><?php echo $option['DisplayValue']; ?></option>
+                <option value="<?php echo $option['value']; ?>" data-key="<?= $index ?>" <?php echo $option['selected']; ?>><?php echo $DisplayValue; ?></option>
               <?php endforeach; ?>
             </select>
           </div>
@@ -699,9 +700,9 @@
         url: "<?= base_url() ?>Home/GetProductId",
         method: "POST",
         data: {
-          pro_id: <?= $products->pro_id ?>,
-          group_id: <?= $products->group_id ?>,
-          series_id: <?= $products->series_id ?>,
+          pro_id: '<?= $products->pro_id ?>',
+          group_id: '<?= $products->group_id ?>',
+          series_id: '<?= $products->series_id ?>',
           catalog_key: dataKeyValue,
           catalog_value: this.value,
         },

@@ -269,17 +269,19 @@
               $images = json_decode($data->full_set_images);
               $image1 = '';
               $image2 = '';
-              if ($images[1]->FullUrl) {
-                $image1 = $images[0]->FullUrl;
-                $image2 = $images[1]->FullUrl;
-              } else {
-                $image1 = $images[0]->FullUrl;
-                $image2 = $images[0]->FullUrl;
-              }
+              // if (count($images) > 1) {
+                if (!empty($images[1]) && $images[1]->FullUrl) {
+                  $image1 = $images[0]->FullUrl;
+                  $image2 = $images[1]->FullUrl;
+                } else {
+                  $image1 = $images[0]->FullUrl;
+                  $image2 = $images[0]->FullUrl;
+                }
+              // }
             ?>
               <div class="col-md-3 col-4 searchColumn">
                 <p class="text-center"><i><?= $data->series_id ?></i></p>
-                <a href="<?=base_url()?>Home/product_details/<?=$data->series_id?>/<?=$data->pro_id?>?groupId=<?=$data->group_id?>">
+                <a href="<?= base_url() ?>Home/product_details/<?= $data->series_id ?>/<?= $data->pro_id ?>?groupId=<?= $data->group_id ?>">
                   <? if (!empty($image1)) { ?>
                     <img src="<?= $image1 ?>" alt="" class=" img-fluid first_img">
                     <img src="<?= $image2 ? $image2 : $image1 ?>" alt="" class="img-fluid second_img" style="margin-left: 28px;">
