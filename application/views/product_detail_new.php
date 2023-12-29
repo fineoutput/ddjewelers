@@ -388,7 +388,7 @@
 
 
             <!-- =============== video =============== -->
-            <!-- if (!empty($type_data[0]->video)) { ?>
+           <!-- <? if (!empty($type_data[0]->video)) { ?>
                           <a data-fancybox="gallery" href="<?= base_url() . $type_data[0]->video ?>"> <video>
                               <source type="video/mp4" autoplay controls src="<?= base_url() . $type_data[0]->video ?>" class="img-fluid gc-zoom">
                             </video> </a>
@@ -407,17 +407,10 @@
               <?php endforeach; ?>
 
 
-              
-
                <!-- =============== video =============== -->
-            <!--  if (!empty($type_data[0]->video)) { ?>
+            <!--  <?if (!empty($type_data[0]->video)) { ?>
                           <li><img src="<?= base_url() ?>assets/frontend/img/play.jpg"></li> <? }?>-->
               <!-- =============== video end =============== -->
-
-
-
-
-
             </ul>
 
 
