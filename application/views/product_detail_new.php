@@ -1,6 +1,106 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 
 <style>
+  .vodiapicker {
+    display: none;
+  }
+
+  #a {
+    padding-left: 0px;
+  }
+
+
+
+  #a img, .btn-select img {
+    width: 26px;
+}
+
+  #a li {
+    list-style: none;
+    padding-top: 5px;
+    padding-bottom: 5px;
+  }
+
+  #a li:hover {
+    background-color: #F4F3F3;
+  }
+
+  #a li img {
+    margin: 5px;
+  }
+
+  #a li span,
+  .btn-select li span {
+    margin-left: 2px;
+  }
+
+  /* item list */
+
+  .b {
+    display: none;
+    width: 100%;
+    max-width: 350px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, .175);
+    border: 1px solid rgba(0, 0, 0, .15);
+    border-radius: 5px;
+
+  }
+
+  .open {
+    display: show !important;
+  }
+
+  .btn-select {
+
+    width: 100%;
+    max-width: 350px;
+
+    background-color: #fff;
+    border: 1px solid #7e7e7e;
+    padding: 5px;
+  }
+
+  .btn-select li {
+    list-style: none;
+    float: left;
+    padding-bottom: 0px;
+  }
+
+  /* .btn-select:hover li {
+    margin-left: 0px;
+  }
+
+  .btn-select:hover {
+    background-color: #F4F3F3;
+    border: 1px solid transparent;
+    box-shadow: inset 0 0px 0px 1px #ccc;
+
+
+  } */
+
+  .btn-select:focus {
+    outline: none;
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   .slick-slider .slick-prev,
   .slick-slider .slick-next {
 
@@ -237,7 +337,7 @@
 </style>
 
 
-<div class="container-fluid pl-5 pr-5 pt-3 pb-5">
+<div class="container-fluid ">
   <div class="row">
     <div class="col-md-12 page_span">
       <?= $products->description ?></span></p>
@@ -284,6 +384,7 @@
               <?php foreach ($images as $img) :
               ?>
                 <a data-fancybox="gallery" href="<?= $img->ZoomUrl ?>"><img src="<?= $img->FullUrl ?>" class="img-fluid2"></a>
+              
               <?php endforeach; ?>
             </div>
             <!-- Begin product thumb nav -->
@@ -379,7 +480,64 @@
               <p><?= $uniqueOptions[0]['DisplayValue'] ?></p>
             </div>
           <? }
-        } else { ?>
+        } else if ($key == 'Quality') { ?>
+          <div class="d-flex jus_cont">
+            <p><b><?php echo $key; ?></b></p>
+            <select class="w-100 vodiapicker" id="<?php echo $key; ?>" name="<?php echo $key; ?>">
+              <?php
+              $quality = '';
+              foreach ($uniqueOptions as $option) :
+                if ($key == 'Quality' && $option['selected'] == 'selected') {
+                  $quality  = $option['DisplayValue'];
+                }
+                $DisplayValue = str_replace("K X1", "K Forever", $option['DisplayValue']);
+                if (strpos($DisplayValue, 'Rose')) {
+                  $stone = 'rose.png';
+                } else if (strpos($DisplayValue, 'White') || strpos($DisplayValue, 'Silver') || strpos($DisplayValue, 'Platinum')) {
+                  $stone = 'white.png';
+                } else if (strpos($DisplayValue, 'Yellow')) {
+                  $stone = 'yellow.png';
+                } else if (strpos($DisplayValue, 'black')) {
+                  $stone = 'black.png';
+                } else if (strpos($DisplayValue, 'white_rose')) {
+                  $stone = 'white_rose.png';
+                } else if (strpos($DisplayValue, 'rose_white')) {
+                  $stone = 'rose_white.png';
+                }
+              ?>
+                <option value="<?php echo $option['value']; ?>" data-key="<?= $index ?>" <?php echo $option['selected']; ?> data-thumbnail="<?= base_url() ?>assets/jewel/img/stone_quality/<?= $stone ?>"> <?php echo $DisplayValue; ?></option>
+              <?php endforeach; ?>
+            </select>
+            <div class="lang-select w-100" style="    position: relative;">
+              <button class="btn-select" id="btn_quality" value=""></button>
+              <i class="fa fa-angle-down" style="position: absolute;float: right; right: 3%;top: 11px;
+"></i>
+              <div class="b">
+                <ul id="a"></ul>
+              </div>
+            </div>
+          </div>
+          <?
+          if (strpos($quality, 'Forever') == true) {
+            $extra = ' (This is a special "Extreme White" grade gold from a new family of karat white gold casting grain that is formulated to achieve a superior white color whithout the need for rhodium plating)';
+          } else if (strpos($quality, 'Palladium') == true) {
+            $extra = '(Palladium has a white color that lasts. 950 Palladium is a Platinum Group Metal and is enhanced 95% palladium alloy. Palladium is hypoallergenic and lead-free. It achieves the look and benefits of platinum at half the weight and at a more affordable price. This strong alloy will not tarnish and requires no rhodium plating to retain its bright white color. It will never lose metal weight when poished and is formulated to have the hardness of 14K Gold)';
+          } else if (strpos($quality, 'Platinum') == true) {
+            $extra = 'Considered the noblest element. Platinum is 30 times more rare than gold, making it the most precious metal. Platinum is also hypoallergenic.)';
+          } else if (strpos($quality, 'Continuum') == true) {
+            $extra = "(Continuum Sterling Silver is a bright white metal(no rhodium plating required) with more than 95% precious metal content. This patented sterling silver's superior oxidation and tarnish resistance  grade allows for a longer lasting finish.)";
+          } else {
+            $extra = '';
+          }
+          if (!empty($extra)) {
+          ?>
+            <div class="d-flex jus_cont">
+              <p>
+              </p>
+              <p style="color: #547f9e; font-size: 0.8rem;"><?= $extra ?></p>
+            </div>
+          <? } ?>
+        <? } else { ?>
           <div class="d-flex jus_cont">
             <p><b><?php echo $key; ?></b></p>
             <select class="w-100" id="<?php echo $key; ?>" name="<?php echo $key; ?>">
@@ -395,28 +553,6 @@
               <?php endforeach; ?>
             </select>
           </div>
-          <?
-          if ($key == 'Quality') {
-            if (strpos($quality, 'Forever') == true) {
-              $extra = ' (This is a special "Extreme White" grade gold from a new family of karat white gold casting grain that is formulated to achieve a superior white color whithout the need for rhodium plating)';
-            } else if (strpos($quality, 'Palladium') == true) {
-              $extra = '(Palladium has a white color that lasts. 950 Palladium is a Platinum Group Metal and is enhanced 95% palladium alloy. Palladium is hypoallergenic and lead-free. It achieves the look and benefits of platinum at half the weight and at a more affordable price. This strong alloy will not tarnish and requires no rhodium plating to retain its bright white color. It will never lose metal weight when poished and is formulated to have the hardness of 14K Gold)';
-            } else if (strpos($quality, 'Platinum') == true) {
-              $extra = 'Considered the noblest element. Platinum is 30 times more rare than gold, making it the most precious metal. Platinum is also hypoallergenic.)';
-            } else if (strpos($quality, 'Continuum') == true) {
-              $extra = "(Continuum Sterling Silver is a bright white metal(no rhodium plating required) with more than 95% precious metal content. This patented sterling silver's superior oxidation and tarnish resistance  grade allows for a longer lasting finish.)";
-            } else {
-              $extra = '';
-            }
-            if (!empty($extra)) {
-          ?>
-              <div class="d-flex jus_cont">
-                <p>
-                </p>
-                <p style="color: #547f9e; font-size: 0.8rem;"><?= $extra ?></p>
-              </div>
-          <? }
-          } ?>
         <? } ?>
       <?php $index++;
       endforeach; ?>
@@ -685,7 +821,7 @@
 
 
 
-<input name="ring_size" id="r_size" type="hidden" value="<?=$products->ring_size?>">
+<input name="ring_size" id="r_size" type="hidden" value="<?= $products->ring_size ?>">
 <script>
   jQuery(document).ready(function() {
     //----------- DROPDOWN CHANGE ---------------
@@ -800,6 +936,58 @@
     }
   }
 </script>
+<script>
+  //test for getting url value from attr
+  // var img1 = $('.test').attr("data-thumbnail");
+  // console.log(img1);
+
+  //test for iterating over child elements
+  var langArray = [];
+  $('.vodiapicker option').each(function() {
+    var img = $(this).attr("data-thumbnail");
+    var text = this.innerText;
+    var value = $(this).val();
+    var item = '<li><img src="' + img + '" alt="" value="' + value + '"/><span>' + text + '</span></li>';
+    langArray.push(item);
+  })
+
+  $('#a').html(langArray);
+
+  //Set the button value to the first el of the array
+  $('.btn-select').html(langArray[0]);
+  $('.btn-select').attr('value', 'en');
+
+  //change button stuff on click
+  $('#a li').click(function() {
+    var img = $(this).find('img').attr("src");
+    var value = $(this).find('img').attr('value');
+    var text = this.innerText;
+    var item = '<li><img src="' + img + '" alt="" /><span>' + text + '</span></li>';
+    $('.btn-select').html(item);
+    $('.btn-select').attr('value', value);
+    $(".b").toggle();
+    //console.log(value);
+  });
+
+  $(".btn-select").click(function() {
+    $(".b").toggle();
+  });
+
+  //check local storage for the lang
+  var sessionLang = localStorage.getItem('lang');
+  if (sessionLang) {
+    //find an item with value of sessionLang
+    var langIndex = langArray.indexOf(sessionLang);
+    $('.btn-select').html(langArray[langIndex]);
+    $('.btn-select').attr('value', sessionLang);
+  } else {
+    var langIndex = langArray.indexOf('ch');
+    console.log(langIndex);
+    $('.btn-select').html(langArray[langIndex]);
+    //$('.btn-select').attr('value', 'en');
+  }
+</script>
+
 
 
 <!-- product details end -->
