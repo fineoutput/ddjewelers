@@ -20,6 +20,21 @@
   .searchColumn {
     margin-bottom: 3.5rem;
   }
+  li.page-item.active.page-link {
+    color: #ffffff;
+    background: #007bff;
+}
+.page-link {
+    position: relative;
+    display: block;
+    padding: 0.5rem 0.75rem;
+    margin-left: -1px;
+    line-height: 1.25;
+    color: black;
+    background-color: #fff;
+    border: 1px solid #dee2e6;
+}
+
 </style>
 <section>
   <div class="container pl-5 pr-5 pt-3 pb-5">
@@ -254,7 +269,8 @@
               } ?>
             <? } else { ?>
               <div class="text-center">
-                <img src="<?= base_url() ?>/assets/frontend/no_data.jpg" class="img-fluid">
+                <img src="<?= base_url() ?>/assets/frontend/no_data.jpg"  style="    max-width: 45%;
+    height: auto;">
                 <h5 class="mt-2">Opps! No Data Found...</h5>
               </div>
             <? } ?>
