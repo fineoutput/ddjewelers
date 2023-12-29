@@ -1,4 +1,26 @@
 <!-- all products start-->
+<style>
+  .tgl {
+    font-size: 14px !important;
+    font-weight: 400;
+  }
+
+  .sb-text {
+    font-weight: bold;
+  }
+
+  .sb-text label section {
+    font-size: 14px !important;
+  }
+
+  .img-fluid {
+    max-width: 75% !important;
+  }
+
+  .searchColumn {
+    margin-bottom: 3.5rem;
+  }
+</style>
 <section>
   <div class="container-fluid pl-5 pr-5 pt-3 pb-5">
     <div class="row">
@@ -18,7 +40,7 @@
       </div>
     </div>
     <div class="row ">
-      <div class="col-md-3 all_pro_fil ">
+      <!-- <div class="col-md-3 all_pro_fil ">
         <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
           <div class="panel panel-default">
             <div class="panel-heading" role="tab" id="heading1">
@@ -88,109 +110,32 @@
         </div>
         <a href="#">
           <input type="submit" class="mt-3 add-btn" value="Remove Filter">
-      </div>
-      <div class="col-md-9">
+      </div> -->
+      <div class="col-md-12">
         <div class="row">
           <div class="col-md-12 mb-4">
             <div class="row ">
               <div class="col-md-8 mb-4 hrds">
                 <h1 class="r-title">
-                  <?php
-                  if (!empty($subcategory_name)) {
-                    if (!empty($minorsub_name)) {
-                      echo $minorsub_name . " ( " . $productCount . " )";
-                      $this->db->select('*');
-                      $this->db->from('tbl_minisubcategory');
-                      $this->db->where('id', $level_id);
-                      //  $this->db->where('id',44);
-                      $dsa = $this->db->get();
-                      $dai = $dsa->row();
-                      $dess = $dai ? $dai->description : '';
-                      $imgg = $dai ? $dai->banner : '';
-                    } else {
-                      echo $subcategory_name . " ( " . $productCount . " )";
-                      $this->db->select('*');
-                      $this->db->from('tbl_sub_category');
-                      $this->db->where('id', $level_id);
-                      //  $this->db->where('id',44);
-                      $dsa = $this->db->get();
-                      $dai = $dsa->row();
-                      $dess = $dai ? $dai->description : '';
-                      $imgg = $dai ? $dai->banner : '';
-                    }
-                  } else {
-                    echo $category_name . " ( " . $productCount . " )";
-                    $this->db->select('*');
-                    $this->db->from('tbl_category');
-                    $this->db->where('id', $level_id);
-                    //  $this->db->where('id',44);
-                    $dsa = $this->db->get();
-                    $dai = $dsa->row();
-                    $dess = $dai ? $dai->description : '';
-                    $imgg = $dai ? $dai->banner : '';
-                  }
-
-                  ?>
+                  <?= $heading . " ( " . $productCount . " )"; ?>
                 </h1>
                 <?
-                if (!empty($dess)) {
+                if (!empty($description)) {
                 ?>
-                  <h6 class="mt-3 mb-4"><i><?= $dess; ?></i></h6>
+                  <h6 class="mt-3 mb-4"><i><?= $description; ?></i></h6>
                 <?
                 }
                 ?>
               </div>
-              <!-- <img src="https://meteor.stullercloud.com/das/68074515?scl=1&$sharpen$" alt="img"> -->
               <?
-              if (!empty($imgg)) {
+              if (!empty($banner)) {
               ?>
-                <img src="<?php echo base_url() . $imgg ?>" alt="img">
+                <img src="<?php echo base_url() . $banner ?>" alt="img">
               <?
-              } else {
-                // echo "No Image Found";
               }
               ?>
-              <!-- <div class="col-md-12">
-                                <div class="pd-toggle">
-                                    <div class="toggle-text">
-                                        <div class="tgl-lt">
-                                            <label class="switch mr-2">
-                                                <input type="checkbox" checked>
-                                                <span class="slider round"></span>
-                                            </label>
-                                        </div>
-                                        <div class="prgrf">
-                                            <p class="lettr"><b>Ready to Ship</b> - Only show products that have at
-                                                least one in-stock option <span class="new-feature-badge">NEW</span>
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="pd-toggle-2">
-                                    <div class="toggle-text">
-                                        <div class="tgl-lt">
-                                            <label class="switch mr-2">
-                                                <input type="checkbox" checked>
-                                                <span class="slider round"></span>
-                                            </label>
-                                        </div>
-                                        <div class="prgrf">
-                                            <p class="lettr"><b>Ready to Ship</b> - Only show products that have at
-                                                least one in-stock option</p> <span class="new-feature-badge">NEW</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div> -->
-              <style>
-                .sb-text {
-                  font-weight: bold;
-                }
 
-                .sb-text label section {
-                  font-size: 14px !important;
-                }
-              </style>
-              <div class="col-md-12 mt-5 hrdx">
+              <!-- <div class="col-md-12 mt-5 hrdx">
                 <div class="sb-text ">
                   <div class="s-option">
                     <label for="sort" class="tgl">Sort-by:</label>
@@ -207,22 +152,8 @@
                       <option value="3" <?php if ($sort_type == 3) {
                                           echo "selected";
                                         } ?>>Price:Low to High</option>
-                      <!-- <option value="audi">Name</option>
-                                            <option value="audi">Bestseller</option> -->
                     </select>
                   </div>
-                  <style>
-                    .tgline {
-                      width: inherit;
-                      margin-right: 0.5rem
-                    }
-
-                    .tgl {
-                      /* width: inherit; */
-                      font-size: 14px !important;
-                      font-weight: 400;
-                    }
-                  </style>
                 </div>
                 <hr class="dt mt-0">
               </div>
@@ -250,26 +181,18 @@
                   </div>
                 </div>
                 <hr>
-              </div>
+              </div> -->
             </div>
           </div>
-          <style>
-            .img-fluid {
-              max-width: 75% !important;
-            }
 
-            .searchColumn {
-              margin-bottom: 3.5rem;
-            }
-          </style>
           <div class="row w-100">
             <?php $i = 1;
-
-            foreach ($products_data as $data) {
-              $images = json_decode($data->full_set_images);
-              $image1 = '';
-              $image2 = '';
-              // if (count($images) > 1) {
+            if (!empty($products_data)) {
+              foreach ($products_data as $data) {
+                $images = json_decode($data->full_set_images);
+                $image1 = '';
+                $image2 = '';
+                // if (count($images) > 1) {
                 if (!empty($images[1]) && $images[1]->FullUrl) {
                   $image1 = $images[0]->FullUrl;
                   $image2 = $images[1]->FullUrl;
@@ -277,59 +200,66 @@
                   $image1 = $images[0]->FullUrl;
                   $image2 = $images[0]->FullUrl;
                 }
-              // }
+                // }
             ?>
-              <div class="col-md-3 col-4 searchColumn">
-                <p class="text-center"><i><?= $data->series_id ?></i></p>
-                <a href="<?= base_url() ?>Home/product_details/<?= $data->series_id ?>/<?= $data->pro_id ?>?groupId=<?= $data->group_id ?>">
-                  <? if (!empty($image1)) { ?>
-                    <img src="<?= $image1 ?>" alt="" class=" img-fluid first_img">
-                    <img src="<?= $image2 ? $image2 : $image1 ?>" alt="" class="img-fluid second_img" style="margin-left: 28px;">
-                  <? } else { ?>
-                    <img src="<?= base_url() ?>assets/uploads/no-image-found.jpg" alt="" class="img-fluid first_img">
-                    <img src="<?= base_url() ?>assets/uploads/no-image-found.jpg" alt="" class="img-fluid second_img" style="margin-left: 28px;">
-                  <? } ?>
-                  <p><b><?= $data->description ?></b></p>
-                  <? if (!empty($data->price)) {
-                    $this->db->select('*');
-                    $this->db->from('tbl_price_rule');
-                    $pr_data = $this->db->get()->row();
-                    $multiplier = $pr_data->multiplier;
-                    $cost_price11 = $pr_data->cost_price1;
-                    $cost_price22 = $pr_data->cost_price2;
-                    $cost_price33 = $pr_data->cost_price3;
-                    $cost_price44 = $pr_data->cost_price4;
-                    $cost_price55 = $pr_data->cost_price5;
-                    $cost_price = $data->price;
-                    $retail = $cost_price * $multiplier;
-                    $now_price = $cost_price;
-                    if ($cost_price <= 500) {
-                      $cost_price2 = $cost_price * $cost_price;
-                      $number = round($cost_price * ($cost_price11 * $cost_price2 + $cost_price22 * $cost_price + $cost_price33), 2);
-                      $unit = 5;
-                      $remainder = $number % $unit;
-                      $mround = ($remainder < $unit / 2) ? $number - $remainder : $number + ($unit - $remainder);
-                      $now_price = round($mround) - 1 + 0.95;
-                    }
-                    if ($cost_price > 500) {
-                      $number = round($cost_price * ($cost_price44 * $cost_price / $multiplier + $cost_price55));
-                      $unit = 5;
-                      $remainder = $number % $unit;
-                      $mround = ($remainder < $unit / 2) ? $number - $remainder : $number + ($unit - $remainder);
-                      $now_price = round($mround) - 1 + 0.95;
-                    }
-                    $saved = round($retail - $now_price);
-                  ?>
-                    <p class="price">$<?= number_format($now_price, 2); ?></p>
-                  <? } else { ?>
-                    <p class="price"><a href="<?= base_url(); ?>Home/contact_us">contact</a></p>
-                  <? } ?>
-                </a>
-                </a>
+                <div class="col-md-3 col-4 searchColumn">
+                  <p class="text-center"><i><?= $data->series_id ?></i></p>
+                  <a href="<?= base_url() ?>Home/product_details/<?= $data->series_id ?>/<?= $data->pro_id ?>?groupId=<?= $data->group_id ?>">
+                    <? if (!empty($image1)) { ?>
+                      <img src="<?= $image1 ?>" alt="" class=" img-fluid first_img">
+                      <img src="<?= $image2 ? $image2 : $image1 ?>" alt="" class="img-fluid second_img" style="margin-left: 28px;">
+                    <? } else { ?>
+                      <img src="<?= base_url() ?>assets/uploads/no-image-found.jpg" alt="" class="img-fluid first_img">
+                      <img src="<?= base_url() ?>assets/uploads/no-image-found.jpg" alt="" class="img-fluid second_img" style="margin-left: 28px;">
+                    <? } ?>
+                    <p><b><?= $data->description ?></b></p>
+                    <? if (!empty($data->price)) {
+                      $this->db->select('*');
+                      $this->db->from('tbl_price_rule');
+                      $pr_data = $this->db->get()->row();
+                      $multiplier = $pr_data->multiplier;
+                      $cost_price11 = $pr_data->cost_price1;
+                      $cost_price22 = $pr_data->cost_price2;
+                      $cost_price33 = $pr_data->cost_price3;
+                      $cost_price44 = $pr_data->cost_price4;
+                      $cost_price55 = $pr_data->cost_price5;
+                      $cost_price = $data->price;
+                      $retail = $cost_price * $multiplier;
+                      $now_price = $cost_price;
+                      if ($cost_price <= 500) {
+                        $cost_price2 = $cost_price * $cost_price;
+                        $number = round($cost_price * ($cost_price11 * $cost_price2 + $cost_price22 * $cost_price + $cost_price33), 2);
+                        $unit = 5;
+                        $remainder = $number % $unit;
+                        $mround = ($remainder < $unit / 2) ? $number - $remainder : $number + ($unit - $remainder);
+                        $now_price = round($mround) - 1 + 0.95;
+                      }
+                      if ($cost_price > 500) {
+                        $number = round($cost_price * ($cost_price44 * $cost_price / $multiplier + $cost_price55));
+                        $unit = 5;
+                        $remainder = $number % $unit;
+                        $mround = ($remainder < $unit / 2) ? $number - $remainder : $number + ($unit - $remainder);
+                        $now_price = round($mround) - 1 + 0.95;
+                      }
+                      $saved = round($retail - $now_price);
+                    ?>
+                      <p class="price">$<?= number_format($now_price, 2); ?></p>
+                    <? } else { ?>
+                      <p class="price"><a href="<?= base_url(); ?>Home/contact_us">contact</a></p>
+                    <? } ?>
+                  </a>
+                  </a>
+                </div>
+              <?php $i++;
+              } ?>
+            <? } else { ?>
+              <div class="text-center">
+                <img src="<?= base_url() ?>/assets/frontend/diamond.png" class="img-fluid">
+                <h5 class="mt-2">Opps! No Data Found...</h5>
               </div>
-            <?php $i++;
-            } ?>
+            <? } ?>
           </div>
+          <?= $links ?>
         </div>
       </div>
     </div>

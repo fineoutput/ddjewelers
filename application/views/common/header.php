@@ -469,7 +469,7 @@
               <p class="B_size">Cart</p>
             </div>
             <p class="displaynone"></p>
-            <form class="d-none d-lg-block" action="<?= base_url() ?>Home/search_products" method="POST" enctype="multipart/form-data" style="margin-left:10px;">
+            <form class="d-none d-lg-block" action="<?= base_url() ?>Home/search_product" method="POST" enctype="multipart/form-data" style="margin-left:10px;">
               <div>
                 <div class="w-100 float-right d-flex">
                   <input type="text" id="searchinput" name="search_input" placeholder="What can we help you find?" class="ser_top" style="min-width:100%;">

@@ -649,7 +649,7 @@
         },
         icon_type: 'class',
         template: '<div data-notify="container" class="col-xs-11 col-sm-3 alert alert-{0}" role="alert">' +
-          '<button type="button" aria-hidden="true" class="close" data-notify="dismiss">×</button>' +
+          '<button type="button" class="close" data-dismiss="alert" aria-label="Close">&times;</button>' +
           '<span data-notify="icon"></span> ' +
           '<span data-notify="title">{1}</span> ' +
           '<span data-notify="message">{2}</span>' +
@@ -698,7 +698,7 @@
             },
             icon_type: 'class',
             template: '<div data-notify="container" class="col-xs-11 col-sm-3 alert alert-{0}" role="alert">' +
-              '<button type="button" aria-hidden="true" class="close" data-notify="dismiss">×</button>' +
+              '<button type="button" class="close" data-dismiss="alert" aria-label="Close">&times;</button>' +
               '<span data-notify="icon"></span> ' +
               '<span data-notify="title">{1}</span> ' +
               '<span data-notify="message">{2}</span>' +
@@ -750,7 +750,7 @@
             },
             icon_type: 'class',
             template: '<div data-notify="container" class="col-xs-11 col-sm-3 alert alert-{0}" role="alert">' +
-              '<button type="button" aria-hidden="true" class="close" data-notify="dismiss">×</button>' +
+              '<button type="button" class="close" data-dismiss="alert" aria-label="Close">&times;</button>' +
               '<span data-notify="icon"></span> ' +
               '<span data-notify="title">{1}</span> ' +
               '<span data-notify="message">{2}</span>' +
@@ -802,7 +802,7 @@
             },
             icon_type: 'class',
             template: '<div data-notify="container" class="col-xs-11 col-sm-3 alert alert-{0}" role="alert">' +
-              '<button type="button" aria-hidden="true" class="close" data-notify="dismiss">×</button>' +
+              '<button type="button" class="close" data-dismiss="alert" aria-label="Close">&times;</button>' +
               '<span data-notify="icon"></span> ' +
               '<span data-notify="title">{1}</span> ' +
               '<span data-notify="message">{2}</span>' +
@@ -856,7 +856,7 @@
             },
             icon_type: 'class',
             template: '<div data-notify="container" class="col-xs-11 col-sm-3 alert alert-{0}" role="alert">' +
-              '<button type="button" aria-hidden="true" class="close" data-notify="dismiss">×</button>' +
+              '<button type="button" class="close" data-dismiss="alert" aria-label="Close">&times;</button>' +
               '<span data-notify="icon"></span> ' +
               '<span data-notify="title">{1}</span> ' +
               '<span data-notify="message">{2}</span>' +
@@ -932,7 +932,7 @@
             },
             icon_type: 'class',
             template: '<div data-notify="container" class="col-xs-11 col-sm-3 alert alert-{0}" role="alert">' +
-              '<button type="button" aria-hidden="true" class="close" data-notify="dismiss">×</button>' +
+              '<button type="button" class="close" data-dismiss="alert" aria-label="Close">&times;</button>' +
               '<span data-notify="icon"></span> ' +
               '<span data-notify="title">{1}</span> ' +
               '<span data-notify="message">{2}</span>' +
@@ -971,7 +971,7 @@
             },
             icon_type: 'class',
             template: '<div data-notify="container" class="col-xs-11 col-sm-3 alert alert-{0}" role="alert">' +
-              '<button type="button" aria-hidden="true" class="close" data-notify="dismiss">×</button>' +
+              '<button type="button" class="close" data-dismiss="alert" aria-label="Close">&times;</button>' +
               '<span data-notify="icon"></span> ' +
               '<span data-notify="title">{1}</span> ' +
               '<span data-notify="message">{2}</span>' +
@@ -1059,7 +1059,7 @@
               },
               icon_type: 'class',
               template: '<div data-notify="container" class="col-xs-11 col-sm-3 alert alert-{0}" role="alert">' +
-                '<button type="button" aria-hidden="true" class="close" data-notify="dismiss">×</button>' +
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">&times;</button>' +
                 '<span data-notify="icon"></span> ' +
                 '<span data-notify="title">{1}</span> ' +
                 '<span data-notify="message">{2}</span>' +
@@ -1094,7 +1094,7 @@
               },
               icon_type: 'class',
               template: '<div data-notify="container" class="col-xs-11 col-sm-3 alert alert-{0}" role="alert">' +
-                '<button type="button" aria-hidden="true" class="close" data-notify="dismiss">×</button>' +
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">&times;</button>' +
                 '<span data-notify="icon"></span> ' +
                 '<span data-notify="title">{1}</span> ' +
                 '<span data-notify="message">{2}</span>' +
@@ -1165,7 +1165,7 @@
         },
         icon_type: 'class',
         template: '<div data-notify="container" class="col-xs-11 col-sm-3 alert alert-{0}" role="alert">' +
-          '<button type="button" aria-hidden="true" class="close" data-notify="dismiss">×</button>' +
+          '<button type="button" class="close" data-dismiss="alert" aria-label="Close">&times;</button>' +
           '<span data-notify="icon"></span> ' +
           '<span data-notify="title">{1}</span> ' +
           '<span data-notify="message">{2}</span>' +
@@ -1322,7 +1322,7 @@
             },
             icon_type: 'class',
             template: '<div data-notify="container" class="col-xs-11 col-sm-3 alert alert-{0}" role="alert">' +
-              '<button type="button" aria-hidden="true" class="close" data-notify="dismiss">×</button>' +
+              '<button type="button" class="close" data-dismiss="alert" aria-label="Close">&times;</button>' +
               '<span data-notify="icon"></span> ' +
               '<span data-notify="title">{1}</span> ' +
               '<span data-notify="message">{2}</span>' +
@@ -1363,7 +1363,7 @@
             },
             icon_type: 'class',
             template: '<div data-notify="container" class="col-xs-11 col-sm-3 alert alert-{0}" role="alert">' +
-              '<button type="button" aria-hidden="true" class="close" data-notify="dismiss">×</button>' +
+              '<button type="button" class="close" data-dismiss="alert" aria-label="Close">&times;</button>' +
               '<span data-notify="icon"></span> ' +
               '<span data-notify="title">{1}</span> ' +
               '<span data-notify="message">{2}</span>' +
@@ -1414,7 +1414,7 @@
     //                   },
     //                   icon_type: 'class',
     //                   template: '<div data-notify="container" class="col-xs-11 col-sm-3 alert alert-{0}" role="alert">' +
-    //                   '<button type="button" aria-hidden="true" class="close" data-notify="dismiss">×</button>' +
+    //                   '<button type="button" class="close" data-dismiss="alert" aria-label="Close">&times;</button>' +
     //                   '<span data-notify="icon"></span> ' +
     //                   '<span data-notify="title">{1}</span> ' +
     //                   '<span data-notify="message">{2}</span>' +
@@ -1446,7 +1446,7 @@
 
   function loadSuccessNotify(succ_message) {
     $.notify({
-      icon: 'fa fa-check',
+      icon: '',
       // title: 'Success!',
       message: succ_message
     }, {
@@ -1470,7 +1470,7 @@
       },
       icon_type: 'class',
       template: '<div data-notify="container" class="col-xs-11 col-sm-3 alert alert-{0}" role="alert">' +
-        '<button type="button" aria-hidden="true" class="close" data-notify="dismiss">×</button>' +
+        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">&times;</button>' +
         '<span data-notify="icon"></span> ' +
         '<span data-notify="title">{1}</span> ' +
         '<span data-notify="message">{2}</span>' +
@@ -1484,7 +1484,7 @@
 
   function loadErrorNotify(message) {
     $.notify({
-      icon: 'fa fa-times',
+      icon: '',
       title: '',
       message: message
     }, {
@@ -1508,7 +1508,7 @@
       },
       icon_type: 'class',
       template: '<div data-notify="container" class="col-xs-11 col-sm-3 alert alert-{0}" role="alert">' +
-        '<button type="button" aria-hidden="true" class="close" data-notify="dismiss">×</button>' +
+        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">&times;</button>' +
         '<span data-notify="icon"></span> ' +
         '<span data-notify="title">{1}</span> ' +
         '<span data-notify="message">{2}</span>' +
@@ -1542,7 +1542,7 @@
         // alert(response.data_message)
         if (response.data == true) {
           $.notify({
-            icon: 'fa fa-check',
+            icon: '',
             title: '',
             message: response.data_message
           }, {
@@ -1566,7 +1566,7 @@
             },
             icon_type: 'class',
             template: '<div data-notify="container" class="col-xs-11 col-sm-3 alert alert-{0}" role="alert">' +
-              '<button type="button" aria-hidden="true" class="close" data-notify="dismiss">×</button>' +
+              '<button type="button" class="close" data-dismiss="alert" aria-label="Close">&times;</button>' +
               '<span data-notify="icon"></span> ' +
               '<span data-notify="title">{1}</span> ' +
               '<span data-notify="message">{2}</span>' +
@@ -1579,7 +1579,7 @@
           $("#totalCartItemsW").load(window.location.href + " #totalCartItemsW > *");
         } else if (response.data == false) {
           $.notify({
-            icon: 'fa fa-times',
+            icon: '',
             title: '',
             message: response.data_message
           }, {
@@ -1603,7 +1603,7 @@
             },
             icon_type: 'class',
             template: '<div data-notify="container" class="col-xs-11 col-sm-3 alert alert-{0}" role="alert">' +
-              '<button type="button" aria-hidden="true" class="close" data-notify="dismiss">×</button>' +
+              '<button type="button" class="close" data-dismiss="alert" aria-label="Close">&times;</button>' +
               '<span data-notify="icon"></span> ' +
               '<span data-notify="title">{1}</span> ' +
               '<span data-notify="message">{2}</span>' +

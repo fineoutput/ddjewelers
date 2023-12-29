@@ -820,6 +820,37 @@ class Home extends CI_Controller
             redirect($_SERVER['HTTP_REFERER']);
         }
     }
+    public function search_product()
+    {
+        $this->load->helper(array('form', 'url'));
+        $this->load->library('form_validation');
+        $this->load->helper('security');
+
+        if ($this->input->post()) {
+            $this->form_validation->set_rules('search_input', 'search_input', 'required|xss_clean|trim');
+
+            if ($this->form_validation->run() == TRUE) {
+                $string_main = $this->input->post('search_input');
+                $product_data = $this->db->select('id,pro_id,series_id,group_id,search_values')
+                    ->from('tbl_products')
+                    ->where("JSON_SEARCH(search_values, 'one', '$string_main') IS NOT NULL", null, false)
+                    ->get()->row();
+                $data['search_string'] = $string_main;
+                if (!empty($product_data)) {
+                    redirect('Home/product_details/' . $product_data->series_id . '/' . $product_data->pro_id . '?groupId=' . $product_data->group_id . '');
+                } else {
+                    $this->session->set_flashdata('emessage', 'No Product found!');
+                    redirect($_SERVER['HTTP_REFERER']);
+                }
+            } else {
+                $this->session->set_flashdata('emessage', validation_errors());
+                redirect($_SERVER['HTTP_REFERER']);
+            }
+        } else {
+            $this->session->set_flashdata('emessage', 'Sorry, an error occurred.');
+            redirect($_SERVER['HTTP_REFERER']);
+        }
+    }
     function getProductType($input)
     {
         $productTypes = [
@@ -1158,12 +1189,49 @@ class Home extends CI_Controller
         $this->load->view('product_detail');
         $this->load->view('common/footer');
     }
-    public function all_products($idd, $t)
+    public function all_products($idd, $t, $page_index = "1")
     {
         $type = base64_decode($t);
+        $config['base_url'] = base_url() . 'Home/all_products/' . $idd . '/' . $t;
+        $per_page = 1;
+        $config['per_page'] = $per_page;
+        $config['num_links'] = 3;
+        $config['full_tag_open'] = '<ul class="pagination">';
+        $config['full_tag_close'] = '</ul>';
+        $config['use_page_numbers'] = true;
+        $config['next_link'] = 'First';
+        $config['first_tag_open'] = '<li class="first page">';
+        $config['first_tag_close'] = '</li>';
+        $config['last_link'] = 'Last';
+        $config['last_tag_open'] = '<li class="last page">';
+        $config['last_tag_close'] = '</li>';
+        $config['next_link'] = 'Next';
+        $config['next_tag_open'] = '<li class="page-item nextpage">';
+        $config['next_tag_close'] = '</li>';
+        $config['prev_link'] = ' Previous';
+        $config['prev_tag_open'] = '<li class="page-item prevpage">';
+        $config['prev_tag_close'] = '</li>';
+        $config['cur_tag_open'] = '<li class="page-item active page-link"><a href="">';
+        $config['cur_tag_close'] = '</a></li>';
+        $config['num_tag_open'] = '<li class="page-item page-link">';
+        $config['num_tag_close'] = '</li>';
         if ($type == 1) {
-            $data['products_data'] = $this->db->group_by(array("series_id"))->get_where('tbl_products', array('minor_category_id' => $idd))->result();
             $data['productCount'] = $this->db->group_by(array("series_id"))->get_where('tbl_products', array('minor_category_id' => $idd))->num_rows();
+            //--------- pagination config ----------------------
+            $config['total_rows'] = $data['productCount'];
+            $this->pagination->initialize($config);
+            if (!empty($page_index)) {
+                if (is_numeric($page_index)) {
+                    $start = ($page_index - 1) * $config['per_page'];
+                } else {
+                    $page_index = 0;
+                    $start = 0;
+                }
+            } else {
+                $page_index = 0;
+                $start = 0;
+            }
+            $data['products_data'] = $this->db->limit($config["per_page"], $start)->group_by(array("series_id"))->get_where('tbl_products', array('minor_category_id' => $idd))->result();
             $mini_data = $this->db->get_where('tbl_minisubcategory', array('is_active' => 1, 'id' => $idd))->row();
             $subcat_data = $this->db->get_where('tbl_sub_category', array('is_active' => 1, 'id' => $mini_data->subcategory))->row();
             $cat_data = $this->db->get_where('tbl_category', array('is_active' => 1, 'id' => $mini_data->category))->row();
@@ -1171,28 +1239,65 @@ class Home extends CI_Controller
             $data['subcategory_name'] = $subcat_data->name;
             $data['category_id'] = $cat_data->id;
             $data['minorsub_name'] = $mini_data->name;
+            $data['description'] = $mini_data->description;
+            $data['banner'] = $mini_data->banner;
+            $data['heading'] = $mini_data->name;
         } else if ($type == 3) {
-            $data['products_data'] = $this->db->group_by(array("series_id"))->get_where('tbl_products', array('category_id' => $idd))->result();
-            $data['productCount'] = $this->db->group_by(array("series_id"))->get_where('tbl_products', array( 'category_id' => $idd))->num_rows();
+            $data['productCount'] = $this->db->group_by(array("series_id"))->get_where('tbl_products', array('category_id' => $idd))->num_rows();
+            //--------- pagination config ----------------------
+            $config['total_rows'] = $data['productCount'];
+            $this->pagination->initialize($config);
+            if (!empty($page_index)) {
+                if (is_numeric($page_index)) {
+                    $start = ($page_index - 1) * $config['per_page'];
+                } else {
+                    $page_index = 0;
+                    $start = 0;
+                }
+            } else {
+                $page_index = 0;
+                $start = 0;
+            }
+            $data['products_data'] = $this->db->limit($config["per_page"], $start)->group_by(array("series_id"))->get_where('tbl_products', array('category_id' => $idd))->result();
             $cat_data = $this->db->get_where('tbl_category', array('is_active' => 1, 'id' => $idd))->row();
             $data['category_name'] = $cat_data->name;
             $data['category_id'] = $cat_data->id;
             $data['subcategory_name'] = '';
             $data['minorsub_name'] = '';
+            $data['description'] = $cat_data->description;
+            $data['banner'] = $cat_data->banner;
+            $data['heading'] = $cat_data->name;
         } else {
-            $data['products_data'] = $this->db->group_by(array("series_id"))->get_where('tbl_products', array('subcategory_id' => $idd))->result();
-            $data['productCount'] = $this->db->group_by(array("series_id"))->get_where('tbl_products', array( 'subcategory_id' => $idd))->num_rows();
+            $data['productCount'] = $this->db->group_by(array("series_id"))->get_where('tbl_products', array('subcategory_id' => $idd))->num_rows();
+            //--------- pagination config ----------------------
+            $config['total_rows'] = $data['productCount'];
+            $this->pagination->initialize($config);
+            if (!empty($page_index)) {
+                if (is_numeric($page_index)) {
+                    $start = ($page_index - 1) * $config['per_page'];
+                } else {
+                    $page_index = 0;
+                    $start = 0;
+                }
+            } else {
+                $page_index = 0;
+                $start = 0;
+            }
+            $data['products_data'] = $this->db->limit($config["per_page"], $start)->group_by(array("series_id"))->get_where('tbl_products', array('subcategory_id' => $idd))->result();
             $subcat_data = $this->db->get_where('tbl_sub_category', array('is_active' => 1, 'id' => $idd))->row();
             $cat_data = $this->db->get_where('tbl_category', array('is_active' => 1, 'id' => $subcat_data->category))->row();
             $data['category_name'] = $cat_data->name;
             $data['subcategory_name'] = $subcat_data->name;
             $data['category_id'] = $cat_data->id;
+            $data['description'] = $subcat_data->description;
+            $data['banner'] = $subcat_data->banner;
+            $data['heading'] = $subcat_data->name;
         }
+        $links = $this->pagination->create_links();
         $data['sort_type'] = '';
         $data['level_id'] = $idd;
+        $data['links'] = $links;
 
-
-        // echo (json_encode($pro_data));
         $this->load->view('common/header', $data);
         $this->load->view('all_products');
         $this->load->view('common/footer');

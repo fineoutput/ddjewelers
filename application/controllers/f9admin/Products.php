@@ -397,6 +397,11 @@ class Products extends CI_finecontrol
     {
         date_default_timezone_set("Asia/Calcutta");
         $cur_date = date("Y-m-d H:i:s");
+        $inputArray = [$prod->Id,$prod->SKU,$prod->ShortDescription,$prod->Description,$prod->DescriptiveElementGroup->DescriptiveElements[0]->Value,$prod->DescriptiveElementGroup->GroupId];
+        $cleanedArray = array_map(function ($item) {
+            return str_replace(['\/', '/',], '', $item);
+        }, $inputArray);
+        $search_value = json_encode($cleanedArray);
         $response = array(
             'category_id' => $receive['category_id'],
             'subcategory_id' => $receive['subcategory_id'],
@@ -423,7 +428,8 @@ class Products extends CI_finecontrol
             'on_hand' => $prod->OnHand,
             'lead_time' => $prod->LeadTime,
             'status' => $prod->Status,
-            'weight' => $prod->GramWeight,
+            'weight' => !empty($prod->GramWeight)?$prod->GramWeight:'',
+            'search_values' => $search_value,
             'date' => $cur_date,
         );
         return $response;
