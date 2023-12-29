@@ -384,6 +384,18 @@
               <?php foreach ($images as $img) :
               ?>
                 <a data-fancybox="gallery" href="<?= $img->ZoomUrl ?>"><img src="<?= $img->FullUrl ?>" class="img-fluid2"></a>
+
+
+
+            <!-- =============== video =============== -->
+            <!-- if (!empty($type_data[0]->video)) { ?>
+                          <a data-fancybox="gallery" href="<?= base_url() . $type_data[0]->video ?>"> <video>
+                              <source type="video/mp4" autoplay controls src="<?= base_url() . $type_data[0]->video ?>" class="img-fluid gc-zoom">
+                            </video> </a>
+
+                        <? } ?> -->
+
+                          <!-- =============== video end =============== -->
               
               <?php endforeach; ?>
             </div>
@@ -393,7 +405,23 @@
               ?>
                 <li><img src="<?= $img->ThumbnailUrl ?>"></li>
               <?php endforeach; ?>
+
+
+              
+
+               <!-- =============== video =============== -->
+            <!--  if (!empty($type_data[0]->video)) { ?>
+                          <li><img src="<?= base_url() ?>assets/frontend/img/play.jpg"></li> <? }?>-->
+              <!-- =============== video end =============== -->
+
+
+
+
+
             </ul>
+
+
+            
             <!-- End product thumb nav -->
           </div>
         </div>
