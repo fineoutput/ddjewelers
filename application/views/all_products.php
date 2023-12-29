@@ -22,7 +22,7 @@
   }
   li.page-item.active.page-link {
     color: #ffffff;
-    background: #007bff;
+    background: #547f9e;
 }
 .page-link {
     position: relative;

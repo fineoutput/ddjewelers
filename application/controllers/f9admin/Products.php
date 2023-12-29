@@ -435,6 +435,7 @@ class Products extends CI_finecontrol
             'status' => $prod->Status,
             'weight' => !empty($prod->GramWeight) ? $prod->GramWeight : '',
             'search_values' => $search_value,
+            'videos' => !empty($prod->Videos) ? json_encode($prod->Videos) : '',
             'date' => $cur_date,
         );
         return $response;

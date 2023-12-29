@@ -1193,7 +1193,7 @@ class Home extends CI_Controller
     {
         $type = base64_decode($t);
         $config['base_url'] = base_url() . 'Home/all_products/' . $idd . '/' . $t;
-        $per_page = 1;
+        $per_page = 28;
         $config['per_page'] = $per_page;
         $config['num_links'] = 3;
         $config['full_tag_open'] = '<ul class="pagination " style="margin: auto;">';
@@ -1308,9 +1308,8 @@ class Home extends CI_Controller
         $data['products'] = $this->db->get_where('tbl_products', array('pro_id' => $pro_id))->row();
         $data['stone_data']  = $this->db->select("id,pro_id,stone")->group_by('stone')->get_where('tbl_products', array('series_id' => $series_id, 'group_id' => $group_id))->result();
         $product_data  = $this->db->group_by('pro_id')->get_where('tbl_products', array('series_id' => $series_id, 'group_id' => $group_id, 'stone' => $data['products']->stone, ''))->result();
-        //---add category id in more products
-        $data['more_products'] = $this->db->group_by('series_id')->limit(15)->order_by('rand()')->get_where('tbl_products', array())->result();
-        $data['suggested_products'] = $this->db->group_by('series_id')->limit(15)->order_by('rand()')->get_where('tbl_products', array())->result();
+        $data['more_products'] = $this->db->where('series_id !=',$data['products']->series_id)->group_by('series_id')->limit(15)->order_by('rand()')->get_where('tbl_products', array('category_id'=>$data['products']->category_id))->result();
+        $data['suggested_products'] = $this->db->where('series_id !=',$data['products']->series_id)->group_by('series_id')->limit(15)->order_by('rand()')->get_where('tbl_products', array())->result();
         $options = [];
         // $pro_elements = json_decode($data['products']->elements);
         $DescriptiveElements = json_decode($data['products']->elements);

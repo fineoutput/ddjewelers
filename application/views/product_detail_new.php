@@ -11,9 +11,10 @@
 
 
 
-  #a img, .btn-select img {
+  #a img,
+  .btn-select img {
     width: 26px;
-}
+  }
 
   #a li {
     list-style: none;
@@ -337,7 +338,7 @@
 </style>
 
 
-<div class="container-fluid ">
+<div class="container-fluid mt-3 ">
   <div class="row">
     <div class="col-md-12 page_span">
       <?= $products->description ?></span></p>
@@ -373,6 +374,7 @@
   $elements = json_decode($products->elements);
   $ring_size = json_decode($products->ring_size_data);
   $can_be_set = json_decode($products->can_be_set);
+  $videos = json_decode($products->videos);
   ?>
   <div class="col-md-12 row mt-5">
     <!-- ----------- START MAIN SLIDER ------------- -->
@@ -381,40 +383,34 @@
         <div class="col-md-12 mx-auto">
           <div class="product-images demo-gallery">
             <div class="main-img-slider">
+              <? if (!empty($videos[0]->DownloadUrl)) { ?>
+                <!-- =============== video =============== -->
+                <a data-fancybox="gallery" href="<?= $videos[0]->DownloadUrl ?>">
+                  <video width="400" height="375" loop autoplay muted>
+                    <source type="video/mp4" src="<?= $videos[0]->DownloadUrl ?>" class="img-fluid gc-zoom">
+                  </video> </a>
+                <!-- =============== video end =============== -->
+              <? } ?>
               <?php foreach ($images as $img) :
               ?>
                 <a data-fancybox="gallery" href="<?= $img->ZoomUrl ?>"><img src="<?= $img->FullUrl ?>" class="img-fluid2"></a>
-
-
-
-            <!-- =============== video =============== -->
-           <!-- <? if (!empty($type_data[0]->video)) { ?>
-                          <a data-fancybox="gallery" href="<?= base_url() . $type_data[0]->video ?>"> <video>
-                              <source type="video/mp4" autoplay controls src="<?= base_url() . $type_data[0]->video ?>" class="img-fluid gc-zoom">
-                            </video> </a>
-
-                        <? } ?> -->
-
-                          <!-- =============== video end =============== -->
-              
               <?php endforeach; ?>
             </div>
             <!-- Begin product thumb nav -->
             <ul class="thumb-nav">
+              <? if (!empty($videos[0]->DownloadUrl)) { ?>
+                <!-- =============== video =============== -->
+                <li><img src="<?= base_url() ?>assets/frontend/play.png"></li>
+              <? } ?>
+              <!-- =============== video end =============== -->
               <?php foreach ($images as $img) :
               ?>
                 <li><img src="<?= $img->ThumbnailUrl ?>"></li>
               <?php endforeach; ?>
-
-
-               <!-- =============== video =============== -->
-            <!--  <?if (!empty($type_data[0]->video)) { ?>
-                          <li><img src="<?= base_url() ?>assets/frontend/img/play.jpg"></li> <? }?>-->
-              <!-- =============== video end =============== -->
             </ul>
 
 
-            
+
             <!-- End product thumb nav -->
           </div>
         </div>
@@ -494,7 +490,7 @@
           continue;
         }
         if (count($uniqueOptions) <= 1) {
-          if ($uniqueOptions[0]['DisplayValue'] != 'N/A') {
+          if ($uniqueOptions[0]['DisplayValue'] != 'N/A' && !empty($uniqueOptions[0]['DisplayValue'])) {
       ?>
             <div class="d-flex jus_cont">
               <p><b><?php echo $key; ?></b></p>
@@ -504,7 +500,7 @@
         } else if ($key == 'Quality') { ?>
           <div class="d-flex jus_cont">
             <p><b><?php echo $key; ?></b></p>
-            <select class="w-100 vodiapicker" id="<?php echo $key; ?>" name="<?php echo $key; ?>">
+            <select class="w-100 " id="<?php echo $key; ?>" name="<?php echo $key; ?>">
               <?php
               $quality = '';
               foreach ($uniqueOptions as $option) :
@@ -529,14 +525,14 @@
                 <option value="<?php echo $option['value']; ?>" data-key="<?= $index ?>" <?php echo $option['selected']; ?> data-thumbnail="<?= base_url() ?>assets/jewel/img/stone_quality/<?= $stone ?>"> <?php echo $DisplayValue; ?></option>
               <?php endforeach; ?>
             </select>
-            <div class="lang-select w-100" style="    position: relative;">
+            <!-- <div class="lang-select w-100" style="position: relative;">
               <button class="btn-select" id="btn_quality" value=""></button>
               <i class="fa fa-angle-down" style="position: absolute;float: right; right: 3%;top: 11px;
 "></i>
               <div class="b">
                 <ul id="a"></ul>
               </div>
-            </div>
+            </div> -->
           </div>
           <?
           if (strpos($quality, 'Forever') == true) {
@@ -552,11 +548,11 @@
           }
           if (!empty($extra)) {
           ?>
-            <div class="d-flex jus_cont">
+            <!-- <div class="d-flex jus_cont">
               <p>
               </p>
               <p style="color: #547f9e; font-size: 0.8rem;"><?= $extra ?></p>
-            </div>
+            </div> -->
           <? } ?>
         <? } else { ?>
           <div class="d-flex jus_cont">
@@ -701,7 +697,7 @@
   </div>
   <!-- ===================== START MORE FOR YOU =========================== -->
   <? if (!empty($more_products)) { ?>
-    <div class="row " style="margin-top: 5.5rem!important;">
+    <div class=" container-fluid row " style="margin-top: 5.5rem!important;">
       <div class="col-md-12 txt">
         <h2>More Items to Consider</h2>
         <hr>
@@ -731,7 +727,7 @@
   <!-- ===================== END MORE FOR YOU =========================== -->
   <!-- ===================== START SUGGESTED FOR YOU =========================== -->
   <? if (!empty($suggested_products)) { ?>
-    <div class="row " style="margin-top: 5.5rem!important;">
+    <div class="row container-fluid" style="margin-top: 5.5rem!important;">
       <div class="col-md-12 txt">
         <h2>Suggested for you</h2>
         <hr>
@@ -760,7 +756,7 @@
   <? } ?>
   <!-- ===================== END SUGGESTED FOR YOU =========================== -->
   <!-- ====================== START SPECIFICATIONS ================= -->
-  <div class="row mt-4">
+  <div class="container-fluid row mt-4">
     <div class="col-md-12 txt" id="specification">
       <h2>Specifications</h2>
       <table class="detailsTable">
@@ -786,7 +782,7 @@
   <!-- ====================== END SPECIFICATIONS ================= -->
 
   <!-- ====================== START ADDITIONAL DETAILS ================= -->
-  <div class="row mt-4">
+  <div class=" container-fluid row mt-4">
     <div class="col-md-12 txt">
       <h2>Additional Details</h2>
     </div>
@@ -800,7 +796,7 @@
   <!-- ====================== END ADDITIONAL DETAILS ================= -->
   <!-- ====================== START CAN BE SET WITH ================= -->
   <? if (!empty($can_be_set)) { ?>
-    <div class="row mt-4 comesetwith">
+    <div class="container-fluid row mt-4 comesetwith">
       <div class="col-md-12 txt">
         <h2>Can Be Set With</h2>
       </div>
