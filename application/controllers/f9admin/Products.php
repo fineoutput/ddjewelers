@@ -316,13 +316,15 @@ class Products extends CI_finecontrol
             'minimum_cost' => $minimum_cost->cost,
             'key' => $key,
         ];
-        $this->fetchApiData($send);
-        return;
+        $res = $this->fetchApiData($send);
+        return $res;
     }
     //============================= END FETCH DATA  ==========================
     //============================= START FETCH API DATA  ==========================
     public function fetchApiData($receive)
     {
+        $total_products = 0;
+        $inserted_products = 0;
         $url = 'https://api.stuller.com/v2/products';
         $productCountData = '{"Include":["ExcludeAll"],"Filter":' . $receive['filter'] . ',"' . $receive['key'] . '":' . $receive['api_id'] . '}';
         //================= GET TOTAL NUMBER OF PAGES ========================
@@ -342,6 +344,7 @@ class Products extends CI_finecontrol
         curl_close($ch);
         $result_da = json_decode($result);
         if (!empty($result_da)) {
+            $total_products = $result_da->TotalNumberOfProducts;
             $total_pages = round($result_da->TotalNumberOfProducts / 500) + 1;
         }
         $NextPage = "";
@@ -387,9 +390,11 @@ class Products extends CI_finecontrol
                     }
                 }
                 $this->db->insert_batch('tbl_products', $products);
+                $inserted_products += count($products);
             }
         }
-        return;
+        $send = ['total_products' => $total_products, 'inserted_products' => $inserted_products];
+        return $send;
     }
     //============================= END END FETCH API DATA ==========================
     //============================= START CREATE OBJECT ==========================
@@ -397,7 +402,7 @@ class Products extends CI_finecontrol
     {
         date_default_timezone_set("Asia/Calcutta");
         $cur_date = date("Y-m-d H:i:s");
-        $inputArray = [$prod->Id,$prod->SKU,$prod->ShortDescription,$prod->Description,$prod->DescriptiveElementGroup->DescriptiveElements[0]->Value,$prod->DescriptiveElementGroup->GroupId];
+        $inputArray = [$prod->Id, $prod->SKU, $prod->ShortDescription, $prod->Description, $prod->DescriptiveElementGroup->DescriptiveElements[0]->Value, $prod->DescriptiveElementGroup->GroupId];
         $cleanedArray = array_map(function ($item) {
             return str_replace(['\/', '/',], '', $item);
         }, $inputArray);
@@ -419,16 +424,16 @@ class Products extends CI_finecontrol
             'elements' => json_encode($prod->DescriptiveElementGroup->DescriptiveElements),
             'catalog_values' => json_encode(array_column($prod->DescriptiveElementGroup->DescriptiveElements, 'Value')),
             'ring_sizable' => $prod->RingSizable,
-            'ring_size_data' => !empty($prod->ConfigurationModel->RingSizeOptions)?json_encode($prod->ConfigurationModel->RingSizeOptions):'',
-            'ring_size' => !empty($prod->RingSize)?json_encode($prod->RingSize):'',
-            'stone' => !empty($prod->CenterStoneShape)?$prod->CenterStoneShape:'',
+            'ring_size_data' => !empty($prod->ConfigurationModel->RingSizeOptions) ? json_encode($prod->ConfigurationModel->RingSizeOptions) : '',
+            'ring_size' => !empty($prod->RingSize) ? json_encode($prod->RingSize) : '',
+            'stone' => !empty($prod->CenterStoneShape) ? $prod->CenterStoneShape : '',
             'quality' => $prod->QualityCatalogValue,
-            'can_be_set' => !empty($prod->CanBeSetWith)?json_encode($prod->CanBeSetWith):"",
-            'specification' => !empty($prod->Specifications)?json_encode($prod->Specifications):'',
+            'can_be_set' => !empty($prod->CanBeSetWith) ? json_encode($prod->CanBeSetWith) : "",
+            'specification' => !empty($prod->Specifications) ? json_encode($prod->Specifications) : '',
             'on_hand' => $prod->OnHand,
             'lead_time' => $prod->LeadTime,
             'status' => $prod->Status,
-            'weight' => !empty($prod->GramWeight)?$prod->GramWeight:'',
+            'weight' => !empty($prod->GramWeight) ? $prod->GramWeight : '',
             'search_values' => $search_value,
             'date' => $cur_date,
         );
@@ -438,14 +443,12 @@ class Products extends CI_finecontrol
     //============================= START PRODUCT CRON JOB ==========================
     public function products_cron_jobs()
     {
-        $category = 0;
-        $sub_category = 0;
-        $minisubcategory = 0;
-        $minisubcategory2 = 0;
-        $cron_jobs = $this->db->order_by('id', 'ASC')->get_where('tbl_cron_jobs', array('status' => 0))->result();
+        date_default_timezone_set("Asia/Calcutta");
+        $start_date = date("Y-m-d H:i:s");
+        $cron_jobs = $this->db->order_by('id', 'ASC')->get_where('tbl_cron_jobs', array('status' => 0))->row();
         if (!empty($cron_jobs)) {
             //------ update cron job status to started --------
-            $data_insert = array('status' => 1);
+            $data_insert = array('status' => 1, 'start_time' => $start_date);
             $this->db->where('id', $cron_jobs->id);
             $last_id = $this->db->update('tbl_cron_jobs', $data_insert);
             $send = [
@@ -454,9 +457,11 @@ class Products extends CI_finecontrol
                 'minor_category_id' => $cron_jobs->mincat_id1,
                 'minor2_category_id' => $cron_jobs->mincat_id2,
             ];
-            $this->fetch_product($send);
+            $res = $this->fetch_product($send);
+            date_default_timezone_set("Asia/Calcutta");
+            $end_data = date("Y-m-d H:i:s");
             //------ update cron job status to completed --------
-            $data_insert = array('status' => 2);
+            $data_insert = array('status' => 2, 'end_time' => $end_data, 'total_products' => $res['total_products'], 'inserted_products' => $res['inserted_products']);
             $this->db->where('id', $cron_jobs->id);
             $last_id2 = $this->db->update('tbl_cron_jobs', $data_insert);
             $rep = array(
