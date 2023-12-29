@@ -18,7 +18,7 @@
   <? } ?>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="icon" href="<?= base_url() ?>assets/jewel\img\dd.jewelplus.com_Website_Latest_-removebg-preview.png" sizes="32x32">
+  <link rel="icon" href="<?= base_url() ?>assets/jewel/img/favicon.png" sizes="32x32">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.css" rel="stylesheet" type='text/css'>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
   <link rel="stylesheet" type="text/css" href="<?= base_url(); ?>assets/jewel/css/style.css">
@@ -364,7 +364,7 @@
               $user_id = $this->session->userdata('user_id');
               $ctd = $this->db->get_where('tbl_cart', array('user_id' => $this->session->userdata('user_id')))->result();
               foreach ($ctd as $cc) {
-                $pp_data = $this->db->get_where('tbl_products', array('is_active' => 1, 'id' => $cc->product_id))->row();
+                $pp_data = $this->db->get_where('tbl_products', array('id' => $cc->product_id))->row();
                 if (empty($pp_data)) {
                   $delete = $this->db->delete('tbl_cart', array('product_id', $cc->product_id));
                 }
@@ -453,7 +453,7 @@
                   <small class="cart-value"><span><?
                                                   $ctd = $this->db->get_where('tbl_cart', array('user_id' => $this->session->userdata('user_id')))->result();
                                                   foreach ($ctd as $cc) {
-                                                    $pp_data = $this->db->get_where('tbl_products', array('is_active' => 1, 'id' => $cc->product_id))->row();
+                                                    $pp_data = $this->db->get_where('tbl_products', array('id' => $cc->product_id))->row();
                                                     if (empty($pp_data)) {
                                                       $delete = $this->db->delete('tbl_cart', array('product_id', $cc->product_id));
                                                     }

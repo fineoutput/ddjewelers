@@ -44,7 +44,6 @@ if(empty($data->stuller_pro_id)){
   $this->db->select('*');
   $this->db->from('tbl_products');
   $this->db->where('id',$pid);
-  $this->db->where('is_active', 1);
   $da= $this->db->get()->row();
 }else {
   $this->db->select('*');

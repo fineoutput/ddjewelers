@@ -32,11 +32,10 @@ class Cart extends CI_Controller
 
 			//get product sku start
 
-			if (empty($stuller_pro_id)) {
+			if (!empty($stuller_pro_id)) {
 				$this->db->select('*');
 				$this->db->from('tbl_products');
-				$this->db->where('id', $product_id);
-				$this->db->where('is_active', 1);
+				$this->db->where('pro_id', $stuller_pro_id);
 				$pro_da = $this->db->get()->row();
 			} else {
 				$this->db->select('*');
@@ -45,7 +44,6 @@ class Cart extends CI_Controller
 				$this->db->where('is_active', 1);
 				$pro_da = $this->db->get()->row();
 			}
-
 
 
 			if (!empty($pro_da)) {
@@ -158,11 +156,10 @@ class Cart extends CI_Controller
 			$cur_date = date("Y-m-d H:i:s");
 
 
-			if (empty($stuller_pro_id)) {
+			if (!empty($stuller_pro_id)) {
 				$this->db->select('*');
 				$this->db->from('tbl_products');
-				$this->db->where('id', $product_id);
-				$this->db->where('is_active', 1);
+				$this->db->where('pro_id', $stuller_pro_id);
 				$pro_da = $this->db->get()->row();
 			} else {
 				$this->db->select('*');
