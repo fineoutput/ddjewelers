@@ -603,14 +603,14 @@
               </p>
             <?php   } else { ?>
               <?php if (!empty($subcategory_da)) { ?>
-                <a class="text-center menu_p" href="<?= base_url(); ?>Home/sub_category/<?= $da->id ?>">
-                <?php   } else { ?>
-                  <a href="<?= base_url(); ?>Home/all_products/<?= $da->id ?>/<?= base64_encode(3); ?>">
-                  <?php  } ?>
-                  <p class="text-center menu_p">
+                <a class="text-center menu_p" href="<?= base_url(); ?>Home/sub_category/<?= $da->id ?>">  </a>
+                   <?php   } else { ?>
+                   <a href="<?= base_url(); ?>Home/all_products/<?= $da->id ?>/<?= base64_encode(3); ?>">
+                   <?php  } ?>
+                   <p class="text-center menu_p">
                     <?= $da->name ?>
-                  </p>
-                  </a>
+                     </p>
+                 </a>
                 <?php  } ?>
                 <? $this->db->select('*');
                 $this->db->from('tbl_sub_category');
