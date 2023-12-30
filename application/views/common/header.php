@@ -31,9 +31,9 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
   <!-- City -->
   <link href="https://unpkg.com/@videojs/themes@1/dist/city/index.css" rel="stylesheet" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"> 
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.3.5/jquery.fancybox.min.css"> 
-  <link rel="stylesheet" href="https://www.insightindia.com/mcss/icon-font.css"> 
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.3.5/jquery.fancybox.min.css">
+  <link rel="stylesheet" href="https://www.insightindia.com/mcss/icon-font.css">
 </head>
 <style>
   ul.hov_ul li a {
@@ -442,28 +442,34 @@
               </div>
             <? } ?>
             <div class="text-center d-none d-lg-block " id="totalCartItemsW">
-              <a href="<?= base_url(); ?>Home/cart" class="carticon" style="position:relative;padding-right:rem;border-right: px solid #adadad;margin-Left:10px;">
-                <!-- margin-right:1.5rem;  -->
-                <i class="fa fa-shopping-cart I_size"></i>
-                <? if (empty($this->session->userdata('user_id'))) {
+              <a href="<?= base_url(); ?>Cart/view_cart" class="carticon" style="position:relative;padding-right:rem;border-right: px solid #adadad;margin-Left:10px;">
+                <?
+                $cartCount = 0;
+                if (!empty($this->session->userdata('user_data'))) {
+                  $cartCount = $this->db->get_where('tbl_cart', array('user_id' => $this->session->userdata('user_id')))->num_rows();
+                } else {
+                  if (!empty($this->session->userdata('cart_data'))) {
+                    $cartCount = count($this->session->userdata('cart_data'));
+                  }
+                }
 
                 ?>
-                  <small class="cart-value" id="totalCartItemsM"><span>0</span></small>
+                <i class="fa fa-shopping-cart I_size"></i>
+                <?
+                
+                 if (empty($this->session->userdata('user_id'))) {
+                ?>
+                  <small class="cart-value"><span><?= $cartCount ?></span></small>
                 <? } else { ?>
                   <small class="cart-value"><span><?
                                                   $ctd = $this->db->get_where('tbl_cart', array('user_id' => $this->session->userdata('user_id')))->result();
                                                   foreach ($ctd as $cc) {
-                                                    $pp_data = $this->db->get_where('tbl_products', array('id' => $cc->product_id))->row();
+                                                    $pp_data = $this->db->get_where('tbl_products', array('pro_id' => $cc->pro_id))->row();
                                                     if (empty($pp_data)) {
-                                                      $delete = $this->db->delete('tbl_cart', array('product_id', $cc->product_id));
+                                                      $delete = $this->db->delete('tbl_cart', array('pro_id', $cc->pro_id));
                                                     }
                                                   }
-                                                  $this->db->select('*');
-                                                  $this->db->from('tbl_cart');
-                                                  $this->db->where('user_id', $this->session->userdata('user_id'));
-                                                  $cart_count = $this->db->count_all_results();
-
-                                                  echo $cart_count ?></span></small>
+                                                  echo $cartCount ?></span></small>
                 <? } ?>
               </a>
               <p class="B_size">Cart</p>
@@ -549,7 +555,7 @@
       </style>
       <div id="mobSearch" class="modalsearch" style="width:94%;padding-left:21px;">
         <div class="row mb-1 search d-sm-d-flex d-lg-none " style="border: 1px solid #ced4da;">
-        <div class="col-10" style="padding:0px;">
+          <div class="col-10" style="padding:0px;">
             <div class="w-100">
               <input class="form-control" id="srcinput" type="text" placeholder="Search" aria-label="Search" style="border:none;margin-top:0px;">
             </div>
@@ -562,10 +568,10 @@
             </div>
             <!-- search show search data div end-->
           </div>
-        <div class="col-1" style="padding:0px;">
+          <div class="col-1" style="padding:0px;">
             <img src="https://www.monicavinader.com/images/2020/search-black.svg" width="28px" height="20px" class="" alt="" style="    vertical-align: -webkit-baseline-middle;">
           </div>
-          
+
           <div class="col-1 text-center" style="padding:0px;">
             <button type="button" class="close" onclick="mobSearch()" style="float: unset;">
               <span aria-hidden="true" style="vertical-align: sub;font-size: 35px;">&times;</span>

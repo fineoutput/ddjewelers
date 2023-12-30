@@ -1308,8 +1308,8 @@ class Home extends CI_Controller
         $data['products'] = $this->db->get_where('tbl_products', array('pro_id' => $pro_id))->row();
         $data['stone_data']  = $this->db->select("id,pro_id,stone")->group_by('stone')->get_where('tbl_products', array('series_id' => $series_id, 'group_id' => $group_id))->result();
         $product_data  = $this->db->group_by('pro_id')->get_where('tbl_products', array('series_id' => $series_id, 'group_id' => $group_id, 'stone' => $data['products']->stone, ''))->result();
-        $data['more_products'] = $this->db->where('series_id !=',$data['products']->series_id)->group_by('series_id')->limit(15)->order_by('rand()')->get_where('tbl_products', array('category_id'=>$data['products']->category_id))->result();
-        $data['suggested_products'] = $this->db->where('series_id !=',$data['products']->series_id)->group_by('series_id')->limit(15)->order_by('rand()')->get_where('tbl_products', array())->result();
+        $data['more_products'] = $this->db->where('series_id !=', $data['products']->series_id)->group_by('series_id')->limit(15)->order_by('rand()')->get_where('tbl_products', array('category_id' => $data['products']->category_id))->result();
+        $data['suggested_products'] = $this->db->where('series_id !=', $data['products']->series_id)->group_by('series_id')->limit(15)->order_by('rand()')->get_where('tbl_products', array())->result();
         $options = [];
         // $pro_elements = json_decode($data['products']->elements);
         $DescriptiveElements = json_decode($data['products']->elements);
@@ -1360,8 +1360,7 @@ class Home extends CI_Controller
             $remainder = $number % $unit;
             $mround = ($remainder < $unit / 2) ? $number - $remainder : $number + ($unit - $remainder);
             $now_price = round($mround) - 1 + 0.95;
-        }
-        if ($cost_price > 500) {
+        } else if ($cost_price > 500) {
             $number = round($cost_price * ($pr_data->cost_price4 * $cost_price / $multiplier + $pr_data->cost_price5));
             $unit = 5;
             $remainder = $number % $unit;
@@ -5544,13 +5543,11 @@ class Home extends CI_Controller
     // 	}
     public function cart()
     {
-        // $cart_page= $this->input->get('cart_page');
-        // $id = base64_decode($idd);
-        // if(!empty($cart_page) && $cart_page == 1){
-        // $cart_page= $cart_page;
-        // }else{
-        // $cart_page= 0;
-        // }
+        if (!empty($this->session->userdata('user_data'))) {
+            $cart_fetch = $this->cart->ViewCartOnline();
+        } else {
+            $cart_fetch = $this->cart->ViewCartOffline();
+        }
         if (!empty($this->session->userdata('user_id'))) {
             $user_id =  $this->session->userdata('usersid');
             $this->db->select('*');
@@ -7292,6 +7289,7 @@ class Home extends CI_Controller
                     $nnn4 = $da->id;
                     $this->session->set_userdata('user_name', $nnn3);
                     $this->session->set_userdata('user_id', $nnn4);
+                    $this->session->set_userdata('user_data', $nnn4);
                     //$this->session->set_userdata('name',$name);
                     redirect("Home/index", "refresh");
                 } else {

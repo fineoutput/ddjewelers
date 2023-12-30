@@ -99,7 +99,7 @@
       </div>
 
       <div class="col-md-3 foot_logo ml-auto logo">
-        <img src="<?= base_url() ?>assets/jewel/img/dd.jewelplus.com_Website_Latest_-removebg-preview.png" height='300px' width='300px' />
+        <img src="<?= base_url() ?>assets/jewel/img/dd_logo.png" height='300px' width='300px' />
         <br />
         <a aria-label="Sign Special Offers m-auto" class=" sign_btn_new" data-tspages="true" href="<?= base_url() ?>Home/signup_special_offers">Sign Up For Special Offers</a>
         <div class="d-flex justify-content-around mt-3">
@@ -157,103 +157,63 @@
 </section>
 <!-- footer end -->
 </body>
-<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="<?= base_url(); ?>assets/jewel/js/script.js"></script>
 <script src="<?php echo base_url() ?>assets/frontend/js/bootstrap-notify.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.js"></script>
-<!-- zoom  start -->
-<!-- <script src="<?= base_url(); ?>assets/jewel/js/jquery.min.js"></script>
-<script src="<?= base_url(); ?>assets/jewel/js/jquery3.js"></script> -->
 <script src="<?= base_url(); ?>assets/jewel/js/jquery.zoom.js"></script>
+<!-- //----------- PRODUCT DETAILS SLIDER CND ------------ -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-migrate/3.0.1/jquery-migrate.min.js"></script>
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/popper.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.3.5/jquery.fancybox.min.js"></script>
 <script>
   $(document).ready(function() {
+    //===================== START PRODUCT DETAILS MAIN SLIDER ====================
     $('#detail .main-img-slider').slick({
-
       slidesToShow: 1,
-
       slidesToScroll: 1,
-
       infinite: true,
-
       arrows: true,
-
       fade: true,
-
       autoplay: true,
-
       autoplaySpeed: 4000,
-
       speed: 300,
-
       lazyLoad: 'ondemand',
-
       asNavFor: '.thumb-nav',
-
       prevArrow: '<div class="slick-prev"><i class="i-prev"></i><span class="sr-only sr-only-focusable">Previous</span></div>',
-
       nextArrow: '<div class="slick-next"><i class="i-next"></i><span class="sr-only sr-only-focusable">Next</span></div>'
 
     });
-
     // Thumbnail/alternates slider for product page 
-
     $('.thumb-nav').slick({
-
       slidesToShow: 4,
-
       slidesToScroll: 1,
-
       infinite: true,
-
       centerPadding: '0px',
-
       asNavFor: '.main-img-slider',
-
       dots: false,
-
       centerMode: false,
-
       draggable: true,
-
       speed: 200,
-
       focusOnSelect: true,
-
       prevArrow: '<div class="slick-prev"><i class="i-prev"></i><span class="sr-only sr-only-focusable">Previous</span></div>',
-
       nextArrow: '<div class="slick-next"><i class="i-next"></i><span class="sr-only sr-only-focusable">Next</span></div>'
-
     });
-
-
-
-
-
     //keeps thumbnails active when changing main image, via mouse/touch drag/swipe 
-
     $('.main-img-slider').on('afterChange', function(event, slick, currentSlide, nextSlide) {
-
       //remove all active class 
-
       $('.thumb-nav .slick-slide').removeClass('slick-current');
-
       //set active class for current slide 
-
       $('.thumb-nav .slick-slide:not(.slick-cloned)').eq(currentSlide).addClass('slick-current');
-
     });
     jQuery('#pic-1').zoom();
     jQuery('#pic-2').zoom();
     jQuery('#pic-3').zoom();
     jQuery('#pic-4').zoom();
+    //===================== END PRODUCT DETAILS MAIN SLIDER ====================
+
   });
 </script>
 <script type="text/javascript">
@@ -345,180 +305,15 @@
 //echo $customer_id;  
 ?>
 <input type="hidden" id="customer_id" value="<? echo $customer_id; ?>">
-<script>
-  // insert data from localstorage into table cart after product check on click cart icon on header.
-  function insertdatacartttbl() {
-    var cusomer_id = $('#customer_id').val();
-    checkData();
-    checkDatafrmTbl();
-    var cart_array = localStorage.getItem("cartItems");
-    // alert(cart_array);
-    insertDataFromCart(cusomer_id);
-    // location.reload();
-    window.location.href = '<?= base_url() ?>Home/cart';
-  }
-  //check localstorage cart data
-  function checkData() {
-    // alert('alertfron checkdata');
-    var cusomer_id = $('#customer_id').val();
-    var cart_array = [];
-    var pro_array = [];
-    // var pro_arrays=[];
-    if (localStorage.getItem("cartItems") !== null) {
-      cart_array = JSON.parse(localStorage.getItem("cartItems"));
-      // alert(cart_array);
-      var uu = '<?= base_url() ?>Cart/check_localcart';
-      // alert(cart_array);
-      // for(var ca=0;ca < cart_array.length;ca++){
-      //alert(cart_array[ca].quantity);
-      $.ajax({
-        url: '<?= base_url() ?>Cart/check_localcart',
-        method: 'post',
-        data: {
-          cart_array: cart_array
-        },
-        // dataType: 'json',
-        success: function(response) {
-          // alert(response);
-          var lytt = response;
-          var myArray = JSON.parse(lytt);
-          // console.log(myArray[0]);
-          // die();
-          //delete cart_products
-          for (var i = 0; i < myArray.length; i++) {
-            // var cartItems = [];
-            if (localStorage.getItem("cartItems") !== null) {
-              cartItems = JSON.parse(localStorage.getItem("cartItems"));
-              var index = cartItems.findIndex(x => x.product_id == myArray[i]);
-              // var customer_id = $('#customer_id').val();
-              // deleteCartDataInTbl(customer_id,prod_id);
-              if (index !== -1) {
-                cartItems.splice(index, 1);
-                var cart_array = [...cartItems];
-                localStorage.setItem("cartItems", JSON.stringify(cart_array));
-              }
-            }
-          }
-        }
-      });
-    }
-  }
-  //check Tbl  cart data
-  function checkDatafrmTbl() {
-    // alert('alertfron checkDatafrmTbl');
-    var cusomer_id = $('#customer_id').val();
-    // alert(u);
-    // alert(cusomer_id);
-    $.ajax({
-      url: '<?= base_url() ?>Cart/check_localcart_frm_tbl',
-      method: 'post',
-      data: {
-        user_id: cusomer_id
-      },
-      dataType: 'json',
-      success: function(response) {
-        // alert(response);
-        // console.log('tryy');
-        // console.log(response);
-      }
-    });
-  }
-</script>
-<!--  insert cart data from localstorage -->
-<script>
-  function insertDataFromCart(customer_id) {
-    var cart_array = [];
-    if (localStorage.getItem("cartItems") !== null) {
-      cart_array = JSON.parse(localStorage.getItem("cartItems"));
-      for (var ca = 0; ca < cart_array.length; ca++) {
-        // alert(cart_array[ca].pro_type_id);
-        $.ajax({
-          url: '<?= base_url() ?>Cart/add_to_cart_online',
-          method: 'post',
-          data: {
-            product_id: cart_array[ca].product_id,
-            stuller_pro_id: cart_array[ca].stuller_pro_id,
-            type1: cart_array[ca].desc_e_value2,
-            type2: cart_array[ca].desc_e_value3,
-            type3: cart_array[ca].desc_e_value4,
-            type4: cart_array[ca].desc_e_value5,
-            b1: cart_array[ca].desc_e_name2,
-            b2: cart_array[ca].desc_e_name3,
-            b3: cart_array[ca].desc_e_name4,
-            b4: cart_array[ca].desc_e_name5,
-            user_id: customer_id,
-            quantity: cart_array[ca].quantity
-          },
-          dataType: 'json',
-          success: function(response) {
-            // alert("yay");
-            // alert(response.data);
-            // alert(response.product_id);
-            // die();
-            if (response.data == true) {
-              //after insert user cart delete from local cart
-              if (localStorage.getItem("cartItems") !== null) {
-                cartItems = JSON.parse(localStorage.getItem("cartItems"));
-                var index = cartItems.findIndex(x => x.product_id == response.product_id);
-                // var customer_id = $('#customer_id').val();
-                // deleteCartDataInTbl(customer_id,prod_id);
-                if (index !== -1) {
-                  cartItems.splice(index, 1);
-                  var cart_array = [...cartItems];
-                  localStorage.setItem("cartItems", JSON.stringify(cart_array));
-                }
-              }
-            }
-            // console.log('response');
-            // console.log(response.data);
-            window.location.href = '<?= base_url() ?>Home/cart';
-          }
-        });
-      }
-    }
-  }
-</script>
-<!-- cart manage local to tblcart end -->
 <!-- show count of items in cart -->
 <script>
   $(window).on('load', function() {
-    // alert("hi");
-    // alert(cookieData);
-    var cookieData = JSON.parse(localStorage.getItem("cartItems"));
-    if (cookieData != "" || typeof cookieData !== "undefined" || cookieData != null) {
-      $('.center').hide();
-      var a = cookieData?.length;
-    } else {
-      var a = 0;
-    }
-    // console.log('cookieData');
-    // console.log(a);
-    // console.log(cookieData);
-    // alert(a);
-    $("#totalCartItems").text(a);
-    $("#totalCartItemsM").text(a);
-    $("#totalCartItemsMb").text(a);
-    // alert(a);
-    // total_price of cart
-    // var totalamount= 0;
-    //   for(var ca=0;ca < cookieData.length;ca++){
-    //     var total_mrp= cookieData[ca].total_pro_mrp;
-    //      totalamount = totalamount + total_mrp;
-    //   }
+    $('.center').hide();
   });
 </script>
-<!-- header serach a product js start  -->
+<!-- header search a product js start  -->
 <script>
   $('#searchinput').keyup(function() {
-    // alert("Key up detected");
-    // var total_price = $("#mrp").val();
-    // //var gst_percentage = $("#gst_percentage").val();$(this).val
-    // var gst_percentage = $(this).val();
-    // var gst_price = Math.round((total_price*gst_percentage)/100);
-    // var total_gst_price = parseInt(total_price) + parseInt(gst_price);
-    // //alert(total_gst_price);
-    // $('#gst_percentage_price').val(gst_price);
-    // $('#selling_price').val(total_gst_price);
     var string = $(this).val();
     var base_url = $("#app_base_url_value").val();
     if (string == "") {
@@ -554,15 +349,6 @@
     }
   });
   $('#srcinput').keyup(function() {
-    // alert("Key up detected");
-    // var total_price = $("#mrp").val();
-    // //var gst_percentage = $("#gst_percentage").val();$(this).val
-    // var gst_percentage = $(this).val();
-    // var gst_price = Math.round((total_price*gst_percentage)/100);
-    // var total_gst_price = parseInt(total_price) + parseInt(gst_price);
-    // //alert(total_gst_price);
-    // $('#gst_percentage_price').val(gst_price);
-    // $('#selling_price').val(total_gst_price);
     var string = $(this).val();
     var base_url = $("#app_base_url_value").val();
     if (string == "") {
@@ -600,834 +386,45 @@
 </script>
 <!-- header serach a product js end  -->
 <script>
-  function addToCartOfflineHandler(obj) {
-    //var cart_btn_type = $(obj).attr("data-btn-type");
-    var pro_id = $(obj).attr("data-product-id");
-    var stuller_pro_id = $(obj).attr("data-stuller-product-id");
-    var category_id = $(obj).attr("data-category-id");
-    var subcategory_id = $(obj).attr("data-subcategory-id");
-    var ringsize = $(obj).attr("data-ringsize");
-    var ringprice = $(obj).attr("data-ringprice");
+  function addToCart(obj) {
+    var pro_id = $(obj).attr("data-pro-id");
+    var ring_size = $(obj).attr("data-ring_size");
+    var ring_price = $(obj).attr("data-ringp_rice");
     var quantity = $(obj).attr("quantity");
-    var btn = $(obj).attr("btn");
-    // var type_id= $(obj).attr("data-type-id");
-    var type1 = "";
-    var type2 = "";
-    var type3 = "";
-    var type4 = "";
-    var b1 = "";
-    var b2 = "";
-    var b3 = "";
-    var b4 = "";
+    var btn = $(obj).attr("btn")
     if (quantity == "") {
       quantity = $('#qty').val().trim();
     }
-    // alert(quantity);
     if (quantity == 0) {
-      $.notify({
-        icon: 'fa fa-check',
-        title: '',
-        message: 'Please Select Quantity Greater Than 1. '
-      }, {
-        element: 'body',
-        position: null,
-        type: "danger",
-        allow_dismiss: true,
-        newest_on_top: false,
-        showProgressbar: true,
-        placement: {
-          from: "top",
-          align: "right"
-        },
-        offset: 20,
-        spacing: 10,
-        z_index: 1031,
-        delay: 5000,
-        animate: {
-          enter: 'animated fadeInDown',
-          exit: 'animated fadeOutUp'
-        },
-        icon_type: 'class',
-        template: '<div data-notify="container" class="col-xs-11 col-sm-3 alert alert-{0}" role="alert">' +
-          '<button type="button" class="close" data-dismiss="alert" aria-label="Close">&times;</button>' +
-          '<span data-notify="icon"></span> ' +
-          '<span data-notify="title">{1}</span> ' +
-          '<span data-notify="message">{2}</span>' +
-          // '<div class="progress" data-notify="progressbar">' +
-          // '<div class="progress-bar progress-bar-{0}" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;"></div>' +
-          // '</div>' +
-          '<a href="{3}" target="{4}" data-notify="url"></a>' +
-          '</div>'
-      });
-      $("#totalCartItemsW").load(window.location.href + " #totalCartItemsW > *");
+      loadErrorNotify('Please Select Quantity Greater Than 1. ');
     }
-    if (type1 == "") {
-      var b1 = $("#type1_" + pro_id).attr("b1");
-      var type1 = $("#type1_" + pro_id).val();
-      if (b1 != undefined) {
-        b1 = b1.trim();
-      } else {
-        b1 = "";
-      }
-      if (type1 != undefined) {
-        type1 = type1.trim();
-        // alert(type1); die();
-        if (type1 == "") {
-          $.notify({
-            icon: 'fa fa-check',
-            title: '',
-            message: 'Please Select Prouct All types. '
-          }, {
-            element: 'body',
-            position: null,
-            type: "danger",
-            allow_dismiss: true,
-            newest_on_top: false,
-            showProgressbar: true,
-            placement: {
-              from: "top",
-              align: "right"
-            },
-            offset: 20,
-            spacing: 10,
-            z_index: 1031,
-            delay: 5000,
-            animate: {
-              enter: 'animated fadeInDown',
-              exit: 'animated fadeOutUp'
-            },
-            icon_type: 'class',
-            template: '<div data-notify="container" class="col-xs-11 col-sm-3 alert alert-{0}" role="alert">' +
-              '<button type="button" class="close" data-dismiss="alert" aria-label="Close">&times;</button>' +
-              '<span data-notify="icon"></span> ' +
-              '<span data-notify="title">{1}</span> ' +
-              '<span data-notify="message">{2}</span>' +
-              // '<div class="progress" data-notify="progressbar">' +
-              // '<div class="progress-bar progress-bar-{0}" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;"></div>' +
-              // '</div>' +
-              '<a href="{3}" target="{4}" data-notify="url"></a>' +
-              '</div>'
-          });
-          die();
-        }
-      } else {
-        type1 = "";
-      }
-    }
-    if (type2 == "") {
-      var b2 = $("#type2_" + pro_id).attr("b2");
-      var type2 = $("#type2_" + pro_id).val();
-      if (b2 != undefined) {
-        b2 = b2.trim();
-      } else {
-        b2 = "";
-      }
-      if (type2 != undefined) {
-        type2 = type2.trim();
-        if (type2 == "") {
-          $.notify({
-            icon: 'fa fa-check',
-            title: '',
-            message: 'Please Select Prouct All types. '
-          }, {
-            element: 'body',
-            position: null,
-            type: "danger",
-            allow_dismiss: true,
-            newest_on_top: false,
-            showProgressbar: true,
-            placement: {
-              from: "top",
-              align: "right"
-            },
-            offset: 20,
-            spacing: 10,
-            z_index: 1031,
-            delay: 5000,
-            animate: {
-              enter: 'animated fadeInDown',
-              exit: 'animated fadeOutUp'
-            },
-            icon_type: 'class',
-            template: '<div data-notify="container" class="col-xs-11 col-sm-3 alert alert-{0}" role="alert">' +
-              '<button type="button" class="close" data-dismiss="alert" aria-label="Close">&times;</button>' +
-              '<span data-notify="icon"></span> ' +
-              '<span data-notify="title">{1}</span> ' +
-              '<span data-notify="message">{2}</span>' +
-              // '<div class="progress" data-notify="progressbar">' +
-              // '<div class="progress-bar progress-bar-{0}" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;"></div>' +
-              // '</div>' +
-              '<a href="{3}" target="{4}" data-notify="url"></a>' +
-              '</div>'
-          });
-          die();
-        }
-      } else {
-        type2 = "";
-      }
-    }
-    if (type3 == "") {
-      var b3 = $("#type3_" + pro_id).attr("b3");
-      var type3 = $("#type3_" + pro_id).val();
-      if (b3 != undefined) {
-        b3 = b3.trim();
-      } else {
-        b3 = "";
-      }
-      if (type3 != undefined) {
-        type3 = type3.trim();
-        if (type3 == "") {
-          $.notify({
-            icon: 'fa fa-check',
-            title: '',
-            message: 'Please Select Product All types. '
-          }, {
-            element: 'body',
-            position: null,
-            type: "danger",
-            allow_dismiss: true,
-            newest_on_top: false,
-            showProgressbar: true,
-            placement: {
-              from: "top",
-              align: "right"
-            },
-            offset: 20,
-            spacing: 10,
-            z_index: 1031,
-            delay: 5000,
-            animate: {
-              enter: 'animated fadeInDown',
-              exit: 'animated fadeOutUp'
-            },
-            icon_type: 'class',
-            template: '<div data-notify="container" class="col-xs-11 col-sm-3 alert alert-{0}" role="alert">' +
-              '<button type="button" class="close" data-dismiss="alert" aria-label="Close">&times;</button>' +
-              '<span data-notify="icon"></span> ' +
-              '<span data-notify="title">{1}</span> ' +
-              '<span data-notify="message">{2}</span>' +
-              // '<div class="progress" data-notify="progressbar">' +
-              // '<div class="progress-bar progress-bar-{0}" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;"></div>' +
-              // '</div>' +
-              '<a href="{3}" target="{4}" data-notify="url"></a>' +
-              '</div>'
-          });
-          die();
-        }
-      } else {
-        type3 = "";
-      }
-    }
-    if (type4 == "") {
-      var b4 = $("#type4_" + pro_id).attr("b4");
-      var type4 = $("#type4_" + pro_id).val();
-      // alert("b4");
-      // alert(type4); exit;
-      if (b4 != undefined) {
-        b4 = b4.trim();
-      } else {
-        b4 = "";
-      }
-      if (type4 != undefined) {
-        type4 = type4.trim();
-        if (type4 == "") {
-          $.notify({
-            icon: 'fa fa-check',
-            title: '',
-            message: 'Please Select Product All types. '
-          }, {
-            element: 'body',
-            position: null,
-            type: "danger",
-            allow_dismiss: true,
-            newest_on_top: false,
-            showProgressbar: true,
-            placement: {
-              from: "top",
-              align: "right"
-            },
-            offset: 20,
-            spacing: 10,
-            z_index: 1031,
-            delay: 5000,
-            animate: {
-              enter: 'animated fadeInDown',
-              exit: 'animated fadeOutUp'
-            },
-            icon_type: 'class',
-            template: '<div data-notify="container" class="col-xs-11 col-sm-3 alert alert-{0}" role="alert">' +
-              '<button type="button" class="close" data-dismiss="alert" aria-label="Close">&times;</button>' +
-              '<span data-notify="icon"></span> ' +
-              '<span data-notify="title">{1}</span> ' +
-              '<span data-notify="message">{2}</span>' +
-              '<div class="progress" data-notify="progressbar">' +
-              '<div class="progress-bar progress-bar-{0}" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;"></div>' +
-              '</div>' +
-              '<a href="{3}" target="{4}" data-notify="url"></a>' +
-              '</div>'
-          });
-          die();
-        }
-      } else {
-        type4 = "";
-      }
-    }
-    // alert(type_id);
-    // alert(category_id);
-    // alert(subcategory_id);
-    // alert(pro_id);
-    // alert(quantity);
-    // // alert(variant_id);
-    // alert(b1);
-    // alert(b2);
-    // alert(b3);
-    // alert(b4);
-    // alert(type1);
-    // alert(type2);
-    // alert(type3);
-    // alert(type4);
-    //  exit;
-    var cart_array = [];
-    var oldCartItems = [];
-    var pro_db_img1 = '';
-    var pro_db_name = '';
     var base_url = '<?= base_url(); ?>';
-    // alert(base_url);
-    var cart_success = false;
-    if (localStorage.getItem("cartItems") !== null) {
-      oldCartItems = JSON.parse(localStorage.getItem("cartItems"));
-      cart_array = [...oldCartItems];
-      var cookieData = JSON.parse(localStorage.getItem("cartItems"));
-      var a = cookieData;
-      // console.log('a');
-      // console.log(a);
-      // alert(a);
-      // localStorage.removeItem("cartItems");
-      // alert(stuller_pro_id);
-      if (stuller_pro_id == "" || stuller_pro_id == null) {
-        // alert('ert');
-        if (oldCartItems.some(item => item.product_id === pro_id)) {
-          $.notify({
-            icon: 'fa fa-times',
-            title: '',
-            message: 'Item is already in your cart'
-          }, {
-            element: 'body',
-            position: null,
-            type: "danger",
-            allow_dismiss: true,
-            newest_on_top: false,
-            showProgressbar: true,
-            placement: {
-              from: "top",
-              align: "right"
-            },
-            offset: 20,
-            spacing: 10,
-            z_index: 1031,
-            delay: 5000,
-            animate: {
-              enter: 'animated fadeInDown',
-              exit: 'animated fadeOutUp'
-            },
-            icon_type: 'class',
-            template: '<div data-notify="container" class="col-xs-11 col-sm-3 alert alert-{0}" role="alert">' +
-              '<button type="button" class="close" data-dismiss="alert" aria-label="Close">&times;</button>' +
-              '<span data-notify="icon"></span> ' +
-              '<span data-notify="title">{1}</span> ' +
-              '<span data-notify="message">{2}</span>' +
-              '<a href="{3}" target="{4}" data-notify="url"></a>' +
-              '</div>'
-          });
-          cart_success = false;
-        } else {
-          cart_success = true;
-        }
-      } else {
-        // alert('yes');
-        if (oldCartItems.some(item => item.stuller_pro_id === stuller_pro_id)) {
-          $.notify({
-            icon: 'fa fa-times',
-            title: '',
-            message: 'Item is already in your cart'
-          }, {
-            element: 'body',
-            position: null,
-            type: "danger",
-            allow_dismiss: true,
-            newest_on_top: false,
-            showProgressbar: true,
-            placement: {
-              from: "top",
-              align: "right"
-            },
-            offset: 20,
-            spacing: 10,
-            z_index: 1031,
-            delay: 5000,
-            animate: {
-              enter: 'animated fadeInDown',
-              exit: 'animated fadeOutUp'
-            },
-            icon_type: 'class',
-            template: '<div data-notify="container" class="col-xs-11 col-sm-3 alert alert-{0}" role="alert">' +
-              '<button type="button" class="close" data-dismiss="alert" aria-label="Close">&times;</button>' +
-              '<span data-notify="icon"></span> ' +
-              '<span data-notify="title">{1}</span> ' +
-              '<span data-notify="message">{2}</span>' +
-              '<a href="{3}" target="{4}" data-notify="url"></a>' +
-              '</div>'
-          });
-          cart_success = false;
-        } else {
-          cart_success = true;
-        }
-      }
-    } else {
-      cart_success = true;
-    }
-    if (cart_success == true) {
-      // alert('cart_success');
-      // inventory check
-      $.ajax({
-        url: base_url + 'Cart/check_Inventory',
-        method: 'post',
-        data: {
-          product_id: pro_id,
-          stuller_pro_id: stuller_pro_id,
-          type1: type1,
-          type2: type2,
-          type3: type3,
-          type4: type4,
-          b1: b1,
-          b2: b2,
-          b3: b3,
-          b4: b4,
-          quantity: quantity,
-          ringsize: ringsize,
-          ringprice: ringprice
-        },
-        dataType: 'json',
-        success: function(response) {
-          // alert('false');
-          // alert(response);
-          console.log(response);
-          if (response.data == true) {
-            // alert('true');
-            cart_array.push({
-              product_id: pro_id,
-              stuller_pro_id: stuller_pro_id,
-              desc_e_name2: b1,
-              desc_e_value2: type1,
-              desc_e_name3: b2,
-              desc_e_value3: type2,
-              desc_e_name4: b3,
-              desc_e_value4: type3,
-              desc_e_name5: b4,
-              desc_e_value5: type4,
-              quantity: quantity
-            });
-            localStorage.setItem("cartItems", JSON.stringify(cart_array));
-            var cookieData = JSON.parse(localStorage.getItem("cartItems"));
-            var a = cookieData.length;
-            // alert(a);
-            $("#totalCartItems").text(a);
-            $("#totalCartItemsM").text(a);
-            $("#totalCartItemsMb").text(a);
-            $.notify({
-              icon: 'fa fa-check',
-              // title: 'Success!',
-              message: 'Item Successfully added to your cart'
-            }, {
-              element: 'body',
-              position: null,
-              type: "success",
-              allow_dismiss: true,
-              newest_on_top: false,
-              showProgressbar: true,
-              placement: {
-                from: "top",
-                align: "right"
-              },
-              offset: 20,
-              spacing: 10,
-              z_index: 1031,
-              delay: 5000,
-              animate: {
-                enter: 'animated fadeInDown',
-                exit: 'animated fadeOutUp'
-              },
-              icon_type: 'class',
-              template: '<div data-notify="container" class="col-xs-11 col-sm-3 alert alert-{0}" role="alert">' +
-                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">&times;</button>' +
-                '<span data-notify="icon"></span> ' +
-                '<span data-notify="title">{1}</span> ' +
-                '<span data-notify="message">{2}</span>' +
-                '<a href="{3}" target="{4}" data-notify="url"></a>' +
-                '</div>'
-            });
-          }
-          if (response.data == false) {
-            // alert('false');
-            $.notify({
-              icon: 'fa fa-times',
-              title: '',
-              message: response.data_message
-            }, {
-              element: 'body',
-              position: null,
-              type: "danger",
-              allow_dismiss: true,
-              newest_on_top: false,
-              showProgressbar: false,
-              placement: {
-                from: "top",
-                align: "right"
-              },
-              offset: 20,
-              spacing: 10,
-              z_index: 1031,
-              delay: 1000,
-              animate: {
-                enter: 'animated fadeInDown',
-                exit: 'animated fadeOutUp'
-              },
-              icon_type: 'class',
-              template: '<div data-notify="container" class="col-xs-11 col-sm-3 alert alert-{0}" role="alert">' +
-                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">&times;</button>' +
-                '<span data-notify="icon"></span> ' +
-                '<span data-notify="title">{1}</span> ' +
-                '<span data-notify="message">{2}</span>' +
-                '<a href="{3}" target="{4}" data-notify="url"></a>' +
-                '</div>'
-            });
-          }
-        },
-        error: function(error) {
-          // alert("ty");
-          console.log(error);
-        }
-      });
-    }
-  }
-</script>
-<!-- add to cart online handler -->
-<script>
-  function addToCartOnlineHandler(obj) {
-    //var cart_btn_type = $(obj).attr("data-btn-type");
-    var pro_id = $(obj).attr("data-product-id");
-    var stuller_pro_id = $(obj).attr("data-stuller-product-id");
-    var category_id = $(obj).attr("data-category-id");
-    var subcategory_id = $(obj).attr("data-subcategory-id");
-    var user_id = $(obj).attr("user-id");
-    var ringsize = $(obj).attr("data-ringsize");
-    var ringprice = $(obj).attr("data-ringprice");
-    // var quantity = $(obj).attr("quantity");
-    var quantity = "";
-    var btn = $(obj).attr("btn");
-    var type1 = "";
-    var type2 = "";
-    var type3 = "";
-    var type4 = "";
-    var b1 = "";
-    var b2 = "";
-    var b3 = "";
-    var b4 = "";
-    if (quantity == "") {
-      // quantity=  $('#qtty_'+pro_id).val().trim();
-      // alert()
-      quantity = $('#qty').val().trim();
-    }
-    if (quantity == 0) {
-      // alert("qty 0 detected.");
-      $.notify({
-        icon: 'fa fa-check',
-        title: '',
-        message: 'Please Select Quantity Greater Than 1. '
-      }, {
-        element: 'body',
-        position: null,
-        type: "danger",
-        allow_dismiss: true,
-        newest_on_top: false,
-        showProgressbar: true,
-        placement: {
-          from: "top",
-          align: "right"
-        },
-        offset: 20,
-        spacing: 10,
-        z_index: 1031,
-        delay: 5000,
-        animate: {
-          enter: 'animated fadeInDown',
-          exit: 'animated fadeOutUp'
-        },
-        icon_type: 'class',
-        template: '<div data-notify="container" class="col-xs-11 col-sm-3 alert alert-{0}" role="alert">' +
-          '<button type="button" class="close" data-dismiss="alert" aria-label="Close">&times;</button>' +
-          '<span data-notify="icon"></span> ' +
-          '<span data-notify="title">{1}</span> ' +
-          '<span data-notify="message">{2}</span>' +
-          // '<div class="progress" data-notify="progressbar">' +
-          // '<div class="progress-bar progress-bar-{0}" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;"></div>' +
-          // '</div>' +
-          '<a href="{3}" target="{4}" data-notify="url"></a>' +
-          '</div>'
-      });
-      $("#totalCartItemsW").load(window.location.href + " #totalCartItemsW > *");
-    }
-    if (type1 == "") {
-      var b1 = $("#type1_" + pro_id).attr("b1");
-      var type1 = $("#type1_" + pro_id).val();
-      if (b1 != undefined) {
-        b1 = b1.trim();
-      } else {
-        b1 = "";
-      }
-      if (type1 != undefined) {
-        type1 = type1.trim();
-      } else {
-        type1 = "";
-      }
-    }
-    if (type2 == "") {
-      var b2 = $("#type2_" + pro_id).attr("b2");
-      var type2 = $("#type2_" + pro_id).val();
-      if (b2 != undefined) {
-        b2 = b2.trim();
-      } else {
-        b2 = "";
-      }
-      if (type2 != undefined) {
-        type2 = type2.trim();
-      } else {
-        type2 = "";
-      }
-    }
-    if (type3 == "") {
-      var b3 = $("#type3_" + pro_id).attr("b3");
-      var type3 = $("#type3_" + pro_id).val();
-      if (b3 != undefined) {
-        b3 = b3.trim();
-      } else {
-        b3 = "";
-      }
-      if (type3 != undefined) {
-        type3 = type3.trim();
-      } else {
-        type3 = "";
-      }
-    }
-    if (type4 == "") {
-      var b4 = $("#type4_" + pro_id).attr("b4");
-      var type4 = $("#type4_" + pro_id).val();
-      // alert("b4");
-      // alert(type4); exit;
-      if (b4 != undefined) {
-        b4 = b4.trim();
-      } else {
-        b4 = "";
-      }
-      if (type4 != undefined) {
-        type4 = type4.trim();
-      } else {
-        type4 = "";
-      }
-    }
-    // alert(quantity);
-    //
-    // alert(category_id);
-    // alert(subcategory_id);
-    // alert(pro_id);
-    // alert(quantity);
-    //
-    // alert(color_id);
-    // alert(user_id); die();
-    var cart_array = [];
-    var oldCartItems = [];
-    var pro_db_img1 = '';
-    var pro_db_name = '';
-    var base_url = '<?= base_url(); ?>';
-    // alert(base_url);
-    // inventory check
     $.ajax({
-      url: base_url + 'Cart/add_to_cart_online',
+      url: base_url + 'Cart/addToCart',
       method: 'post',
       data: {
-        product_id: pro_id,
-        stuller_pro_id: stuller_pro_id,
-        type1: type1,
-        type2: type2,
-        type3: type3,
-        type4: type4,
-        b1: b1,
-        b2: b2,
-        b3: b3,
-        b4: b4,
-        user_id: user_id,
+        pro_id: pro_id,
         quantity: quantity,
-        ringsize: ringsize,
-        ringprice: ringprice
+        ring_size: ring_size,
+        ring_price: ring_price
       },
       dataType: 'json',
       success: function(response) {
-        // alert(response);
-        if (response.data == true) {
-          // alert('true');
-          // cart_array.push({product_id : pro_id , category_id : category_id, subcategory_id : subcategory_id, variant_id : variant_id, color_id : color_id, quantity : quantity });
-          // localStorage.setItem("cartItems" , JSON.stringify(cart_array));
-          //     var cookieData =JSON.parse(localStorage.getItem("cartItems"));
-          // var a= cookieData.length;
-          var a = response.cartcount;
-          // alert(a);
-          // total_price of cart
-          // var totalamount= 0;
-          //   for(var ca=0;ca < cookieData.length;ca++){
-          //     var total_mrp= cookieData[ca].total_pro_mrp;
-          //      totalamount = totalamount + total_mrp;
-          //   }
-          // $("#totaltblCartItems").text(a);
-          // $("#totaltblCartItemsM").text(a);
-          // $("#totaltblCartItemsMb").text(a);
-          $("#totalCartItemsW").load(window.location.href + " #totalCartItemsW > *");
-          // $("#totalCartAmount").text(totalamount);
-          //delete wishlist product after added in cart
-          // if(wishlistPro != "" && wishlistPro == "wishProd"){
-          //   removeFromWishlist(pro_id,wishlistCatId,wishlistId);
-          //   location.reload();
-          // }
-          $.notify({
-            icon: 'fa fa-check',
-            // title: 'Success!',
-            message: 'Item Successfully added to your cart'
-          }, {
-            element: 'body',
-            position: null,
-            type: "success",
-            allow_dismiss: true,
-            newest_on_top: false,
-            showProgressbar: true,
-            placement: {
-              from: "top",
-              align: "right"
-            },
-            offset: 20,
-            spacing: 10,
-            z_index: 1031,
-            delay: 5000,
-            animate: {
-              enter: 'animated fadeInDown',
-              exit: 'animated fadeOutUp'
-            },
-            icon_type: 'class',
-            template: '<div data-notify="container" class="col-xs-11 col-sm-3 alert alert-{0}" role="alert">' +
-              '<button type="button" class="close" data-dismiss="alert" aria-label="Close">&times;</button>' +
-              '<span data-notify="icon"></span> ' +
-              '<span data-notify="title">{1}</span> ' +
-              '<span data-notify="message">{2}</span>' +
-              // '<div class="progress" data-notify="progressbar">' +
-              // '<div class="progress-bar progress-bar-{0}" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;"></div>' +
-              // '</div>' +
-              '<a href="{3}" target="{4}" data-notify="url"></a>' +
-              '</div>'
-          });
-          // $("#addtocart").modal('show');
-          // location.reload();
+        if (response.status == true) {
+          loadSuccessNotify('Item Successfully added to your cart');
+          window.location.reload();
         }
-        if (response.data == false) {
-          // alert('false');
-          // alert(response.data_message);
-          $.notify({
-            icon: 'fa fa-times',
-            title: '',
-            message: response.data_message
-          }, {
-            element: 'body',
-            position: null,
-            type: "danger",
-            allow_dismiss: true,
-            newest_on_top: false,
-            showProgressbar: false,
-            placement: {
-              from: "top",
-              align: "right"
-            },
-            offset: 20,
-            spacing: 10,
-            z_index: 1031,
-            delay: 1000,
-            animate: {
-              enter: 'animated fadeInDown',
-              exit: 'animated fadeOutUp'
-            },
-            icon_type: 'class',
-            template: '<div data-notify="container" class="col-xs-11 col-sm-3 alert alert-{0}" role="alert">' +
-              '<button type="button" class="close" data-dismiss="alert" aria-label="Close">&times;</button>' +
-              '<span data-notify="icon"></span> ' +
-              '<span data-notify="title">{1}</span> ' +
-              '<span data-notify="message">{2}</span>' +
-              '<a href="{3}" target="{4}" data-notify="url"></a>' +
-              '</div>'
-          });
+        if (response.status == false) {
+          loadErrorNotify(response.message);
         }
+      },
+      error: function(error) {
+        console.log(error);
       }
     });
-    // loadCartItems();
-    // $("#addtocart").modal('show');
-    // console.log(base_url);
-    // $.ajax({
-    //  url:base_url+'order/get_product_data',
-    //  method: 'post',
-    //  data: {pro_id: pro_id},
-    //  dataType: 'json',
-    //  success: function(response){
-    //       if(response.data == true){
-    //         console.log('done');
-    //        pro_db_name = response.product_data.name;
-    //        pro_db_img1 = base_url + response.product_data.img1;
-    //        $("#cart_data_pro_image").attr("src",pro_db_img1);
-    //        $("#cart_data_pro_name").text(pro_db_name);
-    //
-    //        $.notify({
-    //                   icon: 'fa fa-check',
-    //                   title: 'Success!',
-    //                   message: 'Item Successfully added to your cart'
-    //               },{
-    //                   element: 'body',
-    //                   position: null,
-    //                   type: "success",
-    //                   allow_dismiss: true,
-    //                   newest_on_top: false,
-    //                   showProgressbar: true,
-    //                   placement: {
-    //                       from: "top",
-    //                       align: "right"
-    //                   },
-    //                   offset: 20,
-    //                   spacing: 10,
-    //                   z_index: 1031,
-    //                   delay: 5000,
-    //                   animate: {
-    //                       enter: 'animated fadeInDown',
-    //                       exit: 'animated fadeOutUp'
-    //                   },
-    //                   icon_type: 'class',
-    //                   template: '<div data-notify="container" class="col-xs-11 col-sm-3 alert alert-{0}" role="alert">' +
-    //                   '<button type="button" class="close" data-dismiss="alert" aria-label="Close">&times;</button>' +
-    //                   '<span data-notify="icon"></span> ' +
-    //                   '<span data-notify="title">{1}</span> ' +
-    //                   '<span data-notify="message">{2}</span>' +
-    //                   '<div class="progress" data-notify="progressbar">' +
-    //                   '<div class="progress-bar progress-bar-{0}" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;"></div>' +
-    //                   '</div>' +
-    //                   '<a href="{3}" target="{4}" data-notify="url"></a>' +
-    //                   '</div>'
-    //               });
-    //   }
-    // }
-    // });
   }
+</script>
+<script>
   $(document).ready(function() {
     <?php if (!empty($this->session->flashdata('emessage'))) { ?>
       var fail_message = '<?php echo $this->session->flashdata('emessage') ?>';
@@ -1474,9 +471,6 @@
         '<span data-notify="icon"></span> ' +
         '<span data-notify="title">{1}</span> ' +
         '<span data-notify="message">{2}</span>' +
-        // '<div class="progress" data-notify="progressbar">' +
-        // '<div class="progress-bar progress-bar-{0}" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;"></div>' +
-        // '</div>' +
         '<a href="{3}" target="{4}" data-notify="url"></a>' +
         '</div>'
     });
@@ -1518,103 +512,28 @@
   }
   //---------------wishlist----------
   function wishlist(obj) {
-    var product_id = $(obj).attr("data-product-id");
-    var user_id = $(obj).attr("user_id");
+    var pro_id = $(obj).attr("data-pro-id");
     var status = $(obj).attr("status");
-    var ringsize = $(obj).attr("data-ringsize");
-    var ringprice = $(obj).attr("data-ringprice");
-    // alert(product_id);
-    // alert(user_id);
-    // alert(status);
-    // return;
     $.ajax({
       url: '<?= base_url(); ?>Cart/wishlist',
       method: 'post',
       data: {
-        product_id: product_id,
-        user_id: user_id,
+        pro_id: pro_id,
         status: status,
-        ringsize: ringsize,
-        ringprice: ringprice
       },
       dataType: 'json',
       success: function(response) {
-        // alert(response.data_message)
         if (response.data == true) {
-          $.notify({
-            icon: '',
-            title: '',
-            message: response.data_message
-          }, {
-            element: 'body',
-            position: null,
-            type: "success",
-            allow_dismiss: true,
-            newest_on_top: false,
-            showProgressbar: true,
-            placement: {
-              from: "top",
-              align: "right"
-            },
-            offset: 20,
-            spacing: 10,
-            z_index: 1031,
-            delay: 5000,
-            animate: {
-              enter: 'animated fadeInDown',
-              exit: 'animated fadeOutUp'
-            },
-            icon_type: 'class',
-            template: '<div data-notify="container" class="col-xs-11 col-sm-3 alert alert-{0}" role="alert">' +
-              '<button type="button" class="close" data-dismiss="alert" aria-label="Close">&times;</button>' +
-              '<span data-notify="icon"></span> ' +
-              '<span data-notify="title">{1}</span> ' +
-              '<span data-notify="message">{2}</span>' +
-              '<a href="{3}" target="{4}" data-notify="url"></a>' +
-              '</div>'
-          });
-          // $("#addToWishlistBtn").val(response.button_message)
+          loadSuccessNotify(response.data_message);
           $("#WishlistData").load(window.location.href + " #WishlistData > *");
           $("#totalwishlistItemsM").load(window.location.href + " #totalwishlistItemsM > *");
           $("#totalCartItemsW").load(window.location.href + " #totalCartItemsW > *");
         } else if (response.data == false) {
-          $.notify({
-            icon: '',
-            title: '',
-            message: response.data_message
-          }, {
-            element: 'body',
-            position: null,
-            type: "danger",
-            allow_dismiss: true,
-            newest_on_top: false,
-            showProgressbar: true,
-            placement: {
-              from: "top",
-              align: "right"
-            },
-            offset: 20,
-            spacing: 10,
-            z_index: 1031,
-            delay: 5000,
-            animate: {
-              enter: 'animated fadeInDown',
-              exit: 'animated fadeOutUp'
-            },
-            icon_type: 'class',
-            template: '<div data-notify="container" class="col-xs-11 col-sm-3 alert alert-{0}" role="alert">' +
-              '<button type="button" class="close" data-dismiss="alert" aria-label="Close">&times;</button>' +
-              '<span data-notify="icon"></span> ' +
-              '<span data-notify="title">{1}</span> ' +
-              '<span data-notify="message">{2}</span>' +
-              '<a href="{3}" target="{4}" data-notify="url"></a>' +
-              '</div>'
-          });
+          loadErrorNotify(response.data_message);
           $("#count").load(window.location.href + " #count > *");
           $("#wish").load(window.location.href + " #wish > *");
           $("#w_count").load(window.location.href + " #w_count > *");
         }
-        // window.setTimeout(function(){location.reload()},10000)
       }
     });
   }

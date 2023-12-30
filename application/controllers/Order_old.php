@@ -17,6 +17,8 @@ class Order extends CI_Controller
         $this->load->library('form_validation');
         $this->load->helper('security');
         if ($this->input->post()) {
+            // print_r($this->input->post());
+            // exit;
             $this->form_validation->set_rules('selected_address', 'selected_address', 'required|xss_clean|trim');
             if ($this->form_validation->run() == TRUE) {
                 $address_id = $this->input->post('selected_address');
@@ -25,114 +27,391 @@ class Order extends CI_Controller
                 date_default_timezone_set("Asia/Calcutta");
                 $cur_date = date("Y-m-d H:i:s");
                 $totalAmount = 0;
-                $txn_id =  substr(hash('sha256', mt_rand() . microtime()), 0, 20);
+                $txnid =  substr(hash('sha256', mt_rand() . microtime()), 0, 20);
                 $this->db->select('*');
                 $this->db->from('tbl_cart');
                 $this->db->where('user_id', $user_id);
                 $cart_da = $this->db->get();
                 $total_cart_amount = 0;
                 $total_cart_amount1 = 0;
-                $order_details = [];
                 if (!empty($cart_da)) {
+                    // echo "f"; echo '<pre>'; print_r($cart_da->result()); die();
                     $i = 1;
                     $last_order_id = 0;
                     foreach ($cart_da->result() as $data) {
+                        $product_id = $data->product_id;
                         $quantity = $data->quantity;
                         $inventory = 0;
                         $status = "";
-                        $pro_da = $this->db->get_where('tbl_products', array('pro_id' => $data->pro_id))->row();
+                        //get product sku start
+                        if (empty($data->stuller_pro_id)) {
+                            $this->db->select('*');
+                            $this->db->from('tbl_products');
+                            $this->db->where('id', $product_id);
+                            $this->db->where('is_active', 1);
+                            $pro_da = $this->db->get()->row();
+                        } else {
+                            $this->db->select('*');
+                            $this->db->from('tbl_quickshop_products');
+                            $this->db->where('product_id', $data->stuller_pro_id);
+                            $this->db->where('is_active', 1);
+                            $pro_da = $this->db->get()->row();
+                        }
                         if (!empty($pro_da)) {
                             $sku = $pro_da->sku;
-                            $pr_data = $this->db->get_where('tbl_price_rule', array())->row();
+                            $this->db->select('*');
+                            $this->db->from('tbl_price_rule');
+                            $pr_data = $this->db->get()->row();
                             $multiplier = $pr_data->multiplier;
-                            $cost_price = $pro_da->price;
+                            $cost_price11 = $pr_data->cost_price1;
+                            $cost_price22 = $pr_data->cost_price2;
+                            $cost_price33 = $pr_data->cost_price3;
+                            $cost_price44 = $pr_data->cost_price4;
+                            $cost_price55 = $pr_data->cost_price5;
+                            $cost_price = $pro_da->price + $data->ringprice;
                             $retail = $cost_price * $multiplier;
                             $now_price = $cost_price;
+                            // echo $now_price;
+                            // exit;
                             if ($cost_price <= 500) {
                                 $cost_price2 = $cost_price * $cost_price;
-                                $number = round($cost_price * ($pr_data->cost_price1 * $cost_price2 + $pr_data->cost_price2 * $cost_price + $pr_data->cost_price3), 2);
+                                // $now_price= $cost_price*0.00000264018*($cost_price*2)+(-0.002220133*$cost_price)+1.950022201-1+0.95;
+                                $number = round($cost_price * ($cost_price11 * $cost_price2 + $cost_price22 * $cost_price + $cost_price33), 2);
                                 $unit = 5;
                                 $remainder = $number % $unit;
-                                $m_round = ($remainder < $unit / 2) ? $number - $remainder : $number + ($unit - $remainder);
-                                $now_price = round($m_round) - 1 + 0.95;
-                            } else  if ($cost_price > 500) {
-                                $number = round($cost_price * ($pr_data->cost_price4 * $cost_price / $multiplier + $pr_data->cost_price5));
+                                $mround = ($remainder < $unit / 2) ? $number - $remainder : $number + ($unit - $remainder);
+                                $now_price = round($mround) - 1 + 0.95;
+                                // $now_price = round($mround);
+                                // exit;
+                            }
+                            if ($cost_price > 500) {
+                                $number = round($cost_price * ($cost_price44 * $cost_price / $multiplier + $cost_price55));
                                 $unit = 5;
                                 $remainder = $number % $unit;
-                                $m_round = ($remainder < $unit / 2) ? $number - $remainder : $number + ($unit - $remainder);
-                                $now_price = round($m_round) - 1 + 0.95;
+                                $mround = ($remainder < $unit / 2) ? $number - $remainder : $number + ($unit - $remainder);
+                                $now_price = round($mround) - 1 + 0.95;
+                                // $now_price = round($mround);
                             }
                             $pro_qty_price = $quantity * $now_price;
                             $total_cart_amount1 = $total_cart_amount + $pro_qty_price;
                         } else {
-                            $this->session->set_flashdata('emessage', 'Some error occurred.');
+                            $sku = "";
+                            $this->session->set_flashdata('emessage', 'Some error occured.');
                             redirect($_SERVER['HTTP_REFERER']);
                         }
                         $delivery_charge = 0;
-                        //----- check inventory ----------------
-                        $invRes = $this->check_Inventory($data->pro_id, $quantity);
-                        if ($invRes['data'] == false) {
-                            $response['status'] = false;
-                            $response['message'] = $invRes['data_message'];
-                            echo json_encode($response);
-                            return;
+
+                        //get product sku end
+                        // echo $total_cart_amount;die();
+                        //Inventory Check api start
+                        $curl = curl_init();
+                        curl_setopt_array($curl, array(
+                            CURLOPT_URL => 'https://api.stuller.com/v2/products?SKU=' . $sku,
+                            CURLOPT_RETURNTRANSFER => true,
+                            CURLOPT_ENCODING => '',
+                            CURLOPT_MAXREDIRS => 10,
+                            CURLOPT_TIMEOUT => 0,
+                            CURLOPT_FOLLOWLOCATION => true,
+                            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                            CURLOPT_CUSTOMREQUEST => 'GET',
+                            CURLOPT_HTTPHEADER => array(
+                                'Authorization: Basic ZGV2amV3ZWw6Q29kaW5nMjA9',
+                                'Host: api.stuller.com',
+                                'Cookie: AWSALB=1Sg7jQ5WrUEnBoDmGaVnJorbqXXyK+dQqUw2GqaBRbmyB6wS6B3VR4K87ey+TZIJ5mvDqbTHnp6sD/1ka744OTa6umVGWUfMgFASSRnN0Qg1xRkh7tPLbCA3hfBh; AWSALBCORS=1Sg7jQ5WrUEnBoDmGaVnJorbqXXyK+dQqUw2GqaBRbmyB6wS6B3VR4K87ey+TZIJ5mvDqbTHnp6sD/1ka744OTa6umVGWUfMgFASSRnN0Qg1xRkh7tPLbCA3hfBh'
+                            ),
+                        ));
+                        $response = curl_exec($curl);
+                        curl_close($curl);
+                        // echo $response;
+                        $response_dec = json_decode($response);
+                        // print_r( $response_dec->Products);die();
+                        if (!empty($response_dec->Products)) {
+                            foreach ($response_dec->Products as $res) {
+                                $inventory = $res->OnHand;
+                                $status = $res->Status;
+                            }
                         }
-                        if ($i == 1) {
-                            //---------------- Order1 entry ------
-                            $data_insert_order1 = array(
-                                'user_id' => $user_id,
-                                'total_amount' => $total_cart_amount1,
-                                'address_id' => $address_id,
-                                'payment_type' => 0,
-                                'payment_status' => 0,
-                                'order_status' => 0,
-                                'delivery_charge' => $delivery_charge,
-                                'txnid' => $txn_id,
-                                'ip' => $ip,
-                                'date' => $cur_date
-                            );
-                            $last_order_id = $this->base_model->insert_table("tbl_order1", $data_insert_order1, 1);
+                        // echo $status;
+                        // echo $inventory;
+                        // die();
+
+
+                        //Inventory Check api end
+                        if (!empty($status) && $status != 'Out Of Stock') {
+                            // $db_quantity=$pro_inv_da->inventory;
+                            $db_quantity = $inventory;
+                            if ($status == 'Made To Order') {
+                                if ($i == 1) {
+                                    //tbl order1 entry
+                                    $data_insert_order1 = array(
+                                        'user_id' => $user_id,
+                                        'total_amount' => $total_cart_amount1,
+                                        'address_id' => $address_id,
+                                        'payment_type' => 0,
+                                        'payment_status' => 0,
+                                        'order_status' => 0,
+                                        'delivery_charge' => $delivery_charge,
+                                        'txnid' => $txnid,
+                                        'ip' => $ip,
+                                        'date' => $cur_date
+                                    );
+                                    $last_order_id = $this->base_model->insert_table("tbl_order1", $data_insert_order1, 1);
+                                }
+                                if (empty($data->stuller_pro_id)) {
+                                    $this->db->select('*');
+                                    $this->db->from('tbl_products');
+                                    $this->db->where('id', $data->product_id);
+                                    $this->db->where('is_active', 1);
+                                    $pro_da = $this->db->get()->row();
+                                } else {
+                                    $this->db->select('*');
+                                    $this->db->from('tbl_quickshop_products');
+                                    $this->db->where('product_id', $data->stuller_pro_id);
+                                    $this->db->where('is_active', 1);
+                                    $pro_da = $this->db->get()->row();
+                                }
+                                if (!empty($pro_da)) {
+                                    $sku = $pro_da->sku;
+                                    $this->db->select('*');
+                                    $this->db->from('tbl_price_rule');
+                                    $pr_data = $this->db->get()->row();
+                                    $multiplier = $pr_data->multiplier;
+                                    $cost_price11 = $pr_data->cost_price1;
+                                    $cost_price22 = $pr_data->cost_price2;
+                                    $cost_price33 = $pr_data->cost_price3;
+                                    $cost_price44 = $pr_data->cost_price4;
+                                    $cost_price55 = $pr_data->cost_price5;
+                                    $cost_price = $pro_da->price + $data->ringprice;
+                                    $retail = $cost_price * $multiplier;
+                                    $now_price = $cost_price;
+                                    // echo $now_price;
+                                    // exit;
+                                    if ($cost_price <= 500) {
+                                        $cost_price2 = $cost_price * $cost_price;
+                                        // $now_price= $cost_price*0.00000264018*($cost_price*2)+(-0.002220133*$cost_price)+1.950022201-1+0.95;
+                                        $number = round($cost_price * ($cost_price11 * $cost_price2 + $cost_price22 * $cost_price + $cost_price33), 2);
+                                        $unit = 5;
+                                        $remainder = $number % $unit;
+                                        $mround = ($remainder < $unit / 2) ? $number - $remainder : $number + ($unit - $remainder);
+                                        $now_price = round($mround) - 1 + 0.95;
+                                        // $now_price = round($mround);
+                                        // exit;
+                                    }
+                                    if ($cost_price > 500) {
+                                        $number = round($cost_price * ($cost_price44 * $cost_price / $multiplier + $cost_price55));
+                                        $unit = 5;
+                                        $remainder = $number % $unit;
+                                        $mround = ($remainder < $unit / 2) ? $number - $remainder : $number + ($unit - $remainder);
+                                        $now_price = round($mround) - 1 + 0.95;
+                                        // $now_price = round($mround);
+                                    }
+                                    $pro_qty_price = $quantity * $now_price;
+                                    $total_cart_amount = $total_cart_amount + $pro_qty_price;
+                                    $selling_price = $now_price;
+                                    $product_qty_price = $pro_qty_price;
+                                } else {
+                                    $selling_price = 0;
+                                    $product_qty_price = 0;
+                                }
+                                // print_r($data);die();
+                                //tbl order2 entry
+                                $pr_d = $this->db->get_where('tbl_products', array('id' => $data->product_id))->result();
+                                $data_insert = array(
+                                    'product_id' => $data->product_id,
+                                    'desc_e_name2' => $data->desc_e_name2,
+                                    'desc_e_value2' => $data->desc_e_value2,
+                                    'desc_e_name3' => $data->desc_e_name3,
+                                    'desc_e_value3' => $data->desc_e_value3,
+                                    'desc_e_name4' => $data->desc_e_name4,
+                                    'desc_e_value4' => $data->desc_e_value4,
+                                    'desc_e_name5' => $data->desc_e_name5,
+                                    'desc_e_value5' => $data->desc_e_value5,
+                                    'ringsize' => $data->ringsize,
+                                    'ringprice' => $data->ringprice,
+                                    'quantity' => $data->quantity,
+                                    'amount' => $product_qty_price,
+                                    'main_id' => $last_order_id,
+                                    'unit_price' => $selling_price,
+                                    'series' => $pr_d[0]->sku_series,
+                                    'cat_id' => $pr_d[0]->category,
+                                    'date' => $cur_date
+                                );
+                                $last_id = $this->base_model->insert_table("tbl_order2", $data_insert, 1);
+                                //calculate total cart amount
+                                $totalAmount = $totalAmount + $product_qty_price;
+                                $i++;
+                            } else {
+                                if ($db_quantity >= $quantity) {
+                                    if ($i == 1) {
+                                        //tbl order1 entry
+                                        $data_insert_order1 = array(
+                                            'user_id' => $user_id,
+                                            'total_amount' => $total_cart_amount1,
+                                            'address_id' => $address_id,
+                                            'payment_type' => 0,
+                                            'payment_status' => 0,
+                                            'order_status' => 0,
+                                            'delivery_charge' => $delivery_charge,
+                                            'txnid' => $txnid,
+                                            'ip' => $ip,
+                                            'date' => $cur_date
+                                        );
+                                        $last_order_id = $this->base_model->insert_table("tbl_order1", $data_insert_order1, 1);
+                                    }
+                                    if (empty($data->stuller_pro_id)) {
+                                        $this->db->select('*');
+                                        $this->db->from('tbl_products');
+                                        $this->db->where('id', $data->product_id);
+                                        $this->db->where('is_active', 1);
+                                        $pro_da = $this->db->get()->row();
+                                    } else {
+                                        $this->db->select('*');
+                                        $this->db->from('tbl_quickshop_products');
+                                        $this->db->where('product_id', $data->stuller_pro_id);
+                                        $this->db->where('is_active', 1);
+                                        $pro_da = $this->db->get()->row();
+                                    }
+                                    if (!empty($pro_da)) {
+                                        $sku = $pro_da->sku;
+                                        $this->db->select('*');
+                                        $this->db->from('tbl_price_rule');
+                                        $pr_data = $this->db->get()->row();
+                                        $multiplier = $pr_data->multiplier;
+                                        $cost_price11 = $pr_data->cost_price1;
+                                        $cost_price22 = $pr_data->cost_price2;
+                                        $cost_price33 = $pr_data->cost_price3;
+                                        $cost_price44 = $pr_data->cost_price4;
+                                        $cost_price55 = $pr_data->cost_price5;
+                                        $cost_price = $pro_da->price + $data->ringprice;
+                                        $retail = $cost_price * $multiplier;
+                                        $now_price = $cost_price;
+                                        // echo $now_price;
+                                        // exit;
+                                        if ($cost_price <= 500) {
+                                            $cost_price2 = $cost_price * $cost_price;
+                                            // $now_price= $cost_price*0.00000264018*($cost_price*2)+(-0.002220133*$cost_price)+1.950022201-1+0.95;
+                                            $number = round($cost_price * ($cost_price11 * $cost_price2 + $cost_price22 * $cost_price + $cost_price33), 2);
+                                            $unit = 5;
+                                            $remainder = $number % $unit;
+                                            $mround = ($remainder < $unit / 2) ? $number - $remainder : $number + ($unit - $remainder);
+                                            $now_price = round($mround) - 1 + 0.95;
+                                            // $now_price = round($mround);
+                                            // exit;
+                                        }
+                                        if ($cost_price > 500) {
+                                            $number = round($cost_price * ($cost_price44 * $cost_price / $multiplier + $cost_price55));
+                                            $unit = 5;
+                                            $remainder = $number % $unit;
+                                            $mround = ($remainder < $unit / 2) ? $number - $remainder : $number + ($unit - $remainder);
+                                            $now_price = round($mround) - 1 + 0.95;
+                                            // $now_price = round($mround);
+                                        }
+                                        $pro_qty_price = $quantity * $now_price;
+                                        $total_cart_amount = $total_cart_amount + $pro_qty_price;
+                                        $selling_price = $now_price;
+                                        $product_qty_price = $pro_qty_price;
+                                    } else {
+                                        $selling_price = 0;
+                                        $product_qty_price = 0;
+                                    }
+                                    //tbl order2 entry
+                                    $pr_d = $this->db->get_where('tbl_products', array('id' => $data->product_id))->result();
+                                    $data_insert = array(
+                                        'product_id' => $data->product_id,
+                                        'desc_e_name2' => $data->desc_e_name2,
+                                        'desc_e_value2' => $data->desc_e_value2,
+                                        'desc_e_name3' => $data->desc_e_name3,
+                                        'desc_e_value3' => $data->desc_e_value3,
+                                        'desc_e_name4' => $data->desc_e_name4,
+                                        'desc_e_value4' => $data->desc_e_value4,
+                                        'desc_e_name5' => $data->desc_e_name5,
+                                        'desc_e_value5' => $data->desc_e_value5,
+                                        'ringsize' => $data->ringsize,
+                                        'ringprice' => $data->ringprice,
+                                        'quantity' => $data->quantity,
+                                        'amount' => $product_qty_price,
+                                        'main_id' => $last_order_id,
+                                        'unit_price' => $selling_price,
+                                        'series' => $pr_d[0]->sku_series,
+                                        'cat_id' => $pr_d[0]->category,
+                                        'date' => $cur_date
+                                    );
+                                    $last_id = $this->base_model->insert_table("tbl_order2", $data_insert, 1);
+                                    //calculate total cart amount
+                                    $totalAmount = $totalAmount + $product_qty_price;
+                                    $i++;
+                                } else {
+                                    if (empty($data->stuller_pro_id)) {
+                                        $this->db->select('*');
+                                        $this->db->from('tbl_products');
+                                        $this->db->where('id', $data->product_id);
+                                        $this->db->where('is_active', 1);
+                                        $prodata = $this->db->get()->row();
+                                    } else {
+                                        $this->db->select('*');
+                                        $this->db->from('tbl_quickshop_products');
+                                        $this->db->where('product_id', $data->stuller_pro_id);
+                                        $this->db->where('is_active', 1);
+                                        $prodata = $this->db->get()->row();
+                                    }
+                                    if (!empty($prodata)) {
+                                        $product_name = $prodata->description;
+                                    } else {
+                                        $product_name = "";
+                                    }
+                                    $this->session->set_flashdata('emessage', 'This product ' . $product_name . ' is out of stock.Please remove this product before order place.');
+                                    redirect($_SERVER['HTTP_REFERER']);
+                                }
+                            }
+                        } else {
+                            if (empty($data->stuller_pro_id)) {
+                                $this->db->select('*');
+                                $this->db->from('tbl_products');
+                                $this->db->where('id', $data->product_id);
+                                $this->db->where('is_active', 1);
+                                $prodata = $this->db->get()->row();
+                            } else {
+                                $this->db->select('*');
+                                $this->db->from('tbl_quickshop_products');
+                                $this->db->where('product_id', $data->stuller_pro_id);
+                                $this->db->where('is_active', 1);
+                                $prodata = $this->db->get()->row();
+                            }
+                            if (!empty($prodata)) {
+                                $product_name = $prodata->description;
+                            } else {
+                                $product_name = "";
+                            }
+                            $this->session->set_flashdata('emessage', 'This product ' . $product_name . ' is out of stock.Please remove this product before order place.');
+                            redirect($_SERVER['HTTP_REFERER']);
                         }
-                        //---------------- Order2 entry ------
-                        $data_insert = array(
-                            'pro_id' => $data->pro_id,
-                            'details' => json_encode($pro_da->elements),
-                            'description' => $pro_da->short_description,
-                            'ring_size' => $data->ring_size,
-                            'ring_price' => $data->ring_price,
-                            'quantity' => $data->quantity,
-                            'amount' => $pro_qty_price,
-                            'main_id' => $last_order_id,
-                            'unit_price' => $now_price,
-                            'series_id' => $pro_da->series_id,
-                            'category_id' => $pro_da->category_id,
-                            'date' => $cur_date
-                        );
-                        $last_id = $this->base_model->insert_table("tbl_order2", $data_insert, 1);
-                        //calculate total cart amount
-                        $totalAmount = $totalAmount + $pro_qty_price;
-                        $i++;
                     }
-                    $address_data = $this->db->get_where('tbl_user_address', array('is_active' => 1, 'id' => $address_id))->row();
-                    $state_data = $this->db->get_where('tbl_state_detail', array('is_active' => 1, 'zip_code' => $address_data->zipcode))->row();
-                    if (!empty($state_data) && $state_data->Percentage != 0) {
-                        $delivery_charge = round($total_cart_amount1 * $state_data->Percentage / 100, 2);
-                    } else {
-                        $delivery_charge = 0;
-                    }
-                    $data_insert_order11 = array(
-                        'total_amount' => $total_cart_amount1,
-                        'delivery_charge' => $delivery_charge,
-                    );
-                    $this->db->where('id', $last_order_id);
-                    $zapak2 = $this->db->update('tbl_order1', $data_insert_order11);
-                    $this->session->set_userdata('order_id', $last_order_id);
-                    redirect("Order/view_checkout/" . base64_encode($last_order_id), "refresh");
-                    // $this->load->view('common/header', $data2);
-                    // $this->load->view('checkout');
-                    // $this->load->view('common/footer');
-                } else {
                 }
+                $address_data = $this->db->get_where('tbl_user_address', array('is_active' => 1, 'id' => $address_id))->row();
+                $state_data = $this->db->get_where('tbl_state_detail', array('is_active' => 1, 'zip_code' => $address_data->zipcode))->row();
+                if (!empty($state_data) && $state_data->Percentage != 0) {
+                    $delivery_charge = round($total_cart_amount1 * $state_data->Percentage / 100, 2);
+                } else {
+                    $delivery_charge = 0;
+                }
+                $data_insert_order11 = array(
+                    'total_amount' => $total_cart_amount1,
+                    'delivery_charge' => $delivery_charge,
+                );
+                $this->db->where('id', $last_order_id);
+                $zapak2 = $this->db->update('tbl_order1', $data_insert_order11);
+                // $this->db->select('*');
+                // $this->db->from('tbl_cart');
+                // $this->db->where('user_id', $user_id);
+                // $data['cart_data'] = $this->db->get();
+                // $data2['address_id'] = $address_id;
+                // $data2['cart_data'] = $cart_da;
+                // $data2['af'] = "";
+                $this->session->set_userdata('order_id', $last_order_id);
+                redirect("Order/view_checkout/" . base64_encode($last_order_id), "refresh");
+                // $this->load->view('common/header', $data2);
+                // $this->load->view('checkout');
+                // $this->load->view('common/footer');
             } else {
                 $this->session->set_flashdata('emessage', validation_errors());
                 redirect($_SERVER['HTTP_REFERER']);
@@ -141,54 +420,6 @@ class Order extends CI_Controller
             $this->session->set_flashdata('emessage', 'Some error occured.Post data not found.');
             redirect($_SERVER['HTTP_REFERER']);
         }
-    }
-    // ======================= START CHECK INVENTORY =====================
-    public function check_Inventory($id, $qty)
-    {
-        $curl = curl_init();
-        curl_setopt_array($curl, array(
-            CURLOPT_URL => 'https://api.stuller.com/v2/products?ProductId=' . $id,
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => '',
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 0,
-            CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => 'GET',
-            CURLOPT_HTTPHEADER => array(
-                'Authorization: Basic ZGV2amV3ZWw6Q29kaW5nMjA9',
-                'Host: api.stuller.com',
-                'Cookie: AWSALB=1Sg7jQ5WrUEnBoDmGaVnJorbqXXyK+dQqUw2GqaBRbmyB6wS6B3VR4K87ey+TZIJ5mvDqbTHnp6sD/1ka744OTa6umVGWUfMgFASSRnN0Qg1xRkh7tPLbCA3hfBh; AWSALBCORS=1Sg7jQ5WrUEnBoDmGaVnJorbqXXyK+dQqUw2GqaBRbmyB6wS6B3VR4K87ey+TZIJ5mvDqbTHnp6sD/1ka744OTa6umVGWUfMgFASSRnN0Qg1xRkh7tPLbCA3hfBh'
-            ),
-        ));
-        $response = curl_exec($curl);
-        curl_close($curl);
-        $response_dec = json_decode($response);
-        if (!empty($response_dec->Products)) {
-            foreach ($response_dec->Products as $res) {
-                $inventory = $res->OnHand;
-                $status = $res->Status;
-            }
-        }
-        if (!empty($status) && $status != 'Out Of Stock') {
-            $db_quantity = $inventory;
-            if ($status == 'Made To Order') {
-
-                $data['data'] = true;
-            } else {
-
-                if ($db_quantity >= $qty) {
-                    $data['data'] = true;
-                } else {
-                    $data['data'] = false;
-                    $data['data_message'] = 'Product is out of stock';
-                }
-            }
-        } else {
-            $data['data'] = false;
-            $data['data_message'] = 'Product is out of stock';
-        }
-        return $data;
     }
     public function view_checkout($idd)
     {
@@ -288,7 +519,7 @@ class Order extends CI_Controller
                 if (empty($order_data[0]->shipping_id)) {
                     $data_update2 = array(
                         'shipping_id' => $shipping_costs[0]['shipping_id'],
-                        'method_id' => $temp_array ? $temp_array[0]['id'] : '',
+                        'method_id' => $temp_array?$temp_array[0]['id']:'',
                         'shipping' => $shipping_costs[0]['shipment_cost'],
                         'shipping_rule_id' => $shipping_costs[0]['id'],
                         'final_amount' => $order_data[0]->total_amount + $shipping_costs[0]['shipment_cost'] + $order_data[0]->delivery_charge,

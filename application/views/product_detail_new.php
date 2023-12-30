@@ -408,9 +408,6 @@
                 <li><img src="<?= $img->ThumbnailUrl ?>"></li>
               <?php endforeach; ?>
             </ul>
-
-
-
             <!-- End product thumb nav -->
           </div>
         </div>
@@ -431,7 +428,7 @@
     <!-- ----------- END MAIN SLIDER ------------- -->
     <!-- ----------- START MIDDLE SECTION ------------- -->
     <div class="col-md-5 border-le">
-      <? if (count($stone_data) > 1) { ?>
+      <? if (count($stone_data) > 1 && !empty($stone_data[0]->stone)) { ?>
         <div class="row">
           <div class="col-md-12">
             <h5>Primary Stone Shape</h5>
@@ -475,7 +472,7 @@
             </div>
           </div>
         </div>
-      <? } else { ?>
+      <? } else if (!empty($stone_data[0]->stone)) { ?>
         <div class="d-flex jus_cont">
           <p><b>Primary Stone</b></p>
           <p><?= $stone_data[0]->stone ?></p>
@@ -656,18 +653,14 @@
       </p>
 
       <?php if (empty($this->session->userdata('user_id'))) { ?>
-
-        <input type="submit" class="mt-3 add-btn" value=" Add to cart" onclick="addToCartOfflineHandler(this);" quantity="" id="addToCartBtn" data-product-id="<?= $products->id; ?>" data-stuller-product-id="<?= $products->pro_id; ?>" data-category-id="<?= $products->category_id; ?>" data-subcategory-id="<?= $products->subcategory_id; ?>" data-ringsize="" data-ringprice="">
+        <input type="submit" class="mt-3 add-btn" value=" Add to cart" onclick="addToCart(this);" quantity="" id="addToCartBtn" data-pro-id="<?= $products->pro_id; ?>" data-ring_size="<?= $products->ring_size ?>" data-ring_price="">
       <?php } else { ?>
-
-        <input type="submit" class="mt-3 add-btn" value=" Add to cart" onclick="addToCartOnlineHandler(this);" quantity="" id="addToCartBtn" data-type-id="" data-product-id="<?= $products->id; ?>" data-stuller-product-id="<?= $products->pro_id; ?>" data-category-id="<?= $products->category_id; ?>" data-subcategory-id="<?= $products->subcategory_id; ?>" data-ringsize="" data-ringprice="" user-id="<?= $this->session->userdata('user_id'); ?>">
+        <input type="submit" class="mt-3 add-btn" value=" Add to cart" onclick="addToCart(this);" quantity="" id="addToCartBtn" data-pro-id="<?= $products->pro_id; ?>" data-ring_size="<?= $products->ring_size ?>" data-ring_price="">
 
       <?php } ?>
 
-      <?php if (empty($this->session->userdata('user_id'))) { ?>
-        <input type="submit" class="mt-3 add-btn" value="Add to wishlist" onclick="addToCartOfflineHandler(this);" quantity="" data-product-id="<?= $products->id; ?>" data-stuller-product-id="<?= $products->pro_id; ?>" data-category-id="<?= $products->category_id; ?>" data-subcategory-id="<?= $products->subcategory_id; ?>">
-      <?php } else { ?>
-        <input type="submit" class="mt-3 add-btn" value="Add to wishlist" onclick="addToCartOnlineHandler(this)" quantity="" data-type-id="" data-product-id="<?= $products->id; ?>" data-stuller-product-id="<?= $products->pro_id; ?>" data-category-id="<?= $products->category_id; ?>" data-subcategory-id="<?= $products->subcategory_id; ?>" user-id="<?= $this->session->userdata('user_id'); ?>">
+      <?php if (!empty($this->session->userdata('user_id'))) { ?>
+        <input type="submit" class="mt-3 add-btn" value="Add to wishlist" onclick="wishlist(this)" data-pro-id="<?= $products->pro_id; ?>" status="add">
       <?php } ?>
       <div class="d-flex justify-content-between p-2 pb-4">
         <div>

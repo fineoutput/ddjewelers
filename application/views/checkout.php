@@ -29,11 +29,11 @@
 
     i.bi.bi-arrow-right {
         margin-left: 7px;
-    color: white;
-    background: #6b6ddf;
-    padding: 8px 9px;
-    border-radius: 50%;
-    font-size: 15px;
+        color: white;
+        background: #6b6ddf;
+        padding: 8px 9px;
+        border-radius: 50%;
+        font-size: 15px;
     }
 </style>
 <section>
@@ -133,53 +133,27 @@
                         $total_cart_amount = 0;
                         if (!empty($order2_data)) {
                             foreach ($order2_data as $cart) {
-                                $product_id = $cart->product_id;
-                                if (empty($cart->stuller_pro_id)) {
-                                    $this->db->select('*');
-                                    $this->db->from('tbl_products');
-                                    $this->db->where('id', $product_id);
-                                    $this->db->where('is_active', 1);
-                                    $pro_da = $this->db->get()->row();
-                                } else {
-                                    $this->db->select('*');
-                                    $this->db->from('tbl_quickshop_products');
-                                    $this->db->where('product_id', $cart->stuller_pro_id);
-                                    $this->db->where('is_active', 1);
-                                    $pro_da = $this->db->get()->row();
-                                }
+                                $product_id = $cart->pro_id;
+                                $pro_da = $this->db->get_where('tbl_products', array('pro_id' => $cart->pro_id))->row();
                                 if (!empty($pro_da)) {
-                                    $this->db->select('*');
-                                    $this->db->from('tbl_price_rule');
-                                    $pr_data = $this->db->get()->row();
+                                    $pr_data = $this->db->get_where('tbl_price_rule', array())->row();
                                     $multiplier = $pr_data->multiplier;
-                                    $cost_price11 = $pr_data->cost_price1;
-                                    $cost_price22 = $pr_data->cost_price2;
-                                    $cost_price33 = $pr_data->cost_price3;
-                                    $cost_price44 = $pr_data->cost_price4;
-                                    $cost_price55 = $pr_data->cost_price5;
-                                    $cost_price = $pro_da->price + $cart->ringprice;
+                                    $cost_price = $pro_da->price;
                                     $retail = $cost_price * $multiplier;
                                     $now_price = $cost_price;
-                                    //   echo $cart->ringprice;
-                                    //   exit;
                                     if ($cost_price <= 500) {
                                         $cost_price2 = $cost_price * $cost_price;
-                                        // $now_price= $cost_price*0.00000264018*($cost_price*2)+(-0.002220133*$cost_price)+1.950022201-1+0.95;
-                                        $number = round($cost_price * ($cost_price11 * $cost_price2 + $cost_price22 * $cost_price + $cost_price33), 2);
+                                        $number = round($cost_price * ($pr_data->cost_price1 * $cost_price2 + $pr_data->cost_price2 * $cost_price + $pr_data->cost_price3), 2);
                                         $unit = 5;
                                         $remainder = $number % $unit;
-                                        $mround = ($remainder < $unit / 2) ? $number - $remainder : $number + ($unit - $remainder);
-                                        $now_price = round($mround) - 1 + 0.95;
-                                        // $now_price = round($mround);
-                                        // exit;
-                                    }
-                                    if ($cost_price > 500) {
-                                        $number = round($cost_price * ($cost_price44 * $cost_price / $multiplier + $cost_price55));
+                                        $m_round = ($remainder < $unit / 2) ? $number - $remainder : $number + ($unit - $remainder);
+                                        $now_price = round($m_round) - 1 + 0.95;
+                                    } else  if ($cost_price > 500) {
+                                        $number = round($cost_price * ($pr_data->cost_price4 * $cost_price / $multiplier + $pr_data->cost_price5));
                                         $unit = 5;
                                         $remainder = $number % $unit;
-                                        $mround = ($remainder < $unit / 2) ? $number - $remainder : $number + ($unit - $remainder);
-                                        $now_price = round($mround) - 1 + 0.95;
-                                        // $now_price = round($mround);
+                                        $m_round = ($remainder < $unit / 2) ? $number - $remainder : $number + ($unit - $remainder);
+                                        $now_price = round($m_round) - 1 + 0.95;
                                     }
                                     $pro_qty_price = $cart->quantity * $now_price;
                                     $total_cart_amount = $total_cart_amount + $pro_qty_price;
@@ -303,11 +277,11 @@
                                     <input type="hidden" value="" name="applied_promocode" id="applied_promocode">
                                     <a href="javascript:void(0)">
                                         <button class="pay_btn pay_btn-2" style="align-items: baseline;" type="submit" onclick="affirm_open()">
-                                        <div style="padding-top: 4px;">                                        <img src="<?= base_url() ?>assets/frontend/affirm.png" class="img-fluid mx-2" style="width:17%;margin-bottom: 10px"  /><span style="text-transform: none; color: black; font-weight: 600;">Pay over time</span> <i class="bi bi-arrow-right"></i>
-                                        </div>
+                                            <div style="padding-top: 4px;"> <img src="<?= base_url() ?>assets/frontend/affirm.png" class="img-fluid mx-2" style="width:17%;margin-bottom: 10px" /><span style="text-transform: none; color: black; font-weight: 600;">Pay over time</span> <i class="bi bi-arrow-right"></i>
+                                            </div>
 
-                                    
-                                    </button></a>
+
+                                        </button></a>
                                     <P class="mt-1" style="font-size:12px"> <a href='https://www.affirm.com/how-it-works' target='_blank' rel='noopener noreferrer'>Affirm How is Works</a></P>
                                     <!-- </form> -->
                                 </div>
