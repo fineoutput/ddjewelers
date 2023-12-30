@@ -336,7 +336,7 @@
             <!-- d-none d-lg-block -->
             <a href="<?= base_url(); ?>Home/index">
               <div class="col-md-12 text-center">
-                <img src="<?= base_url() ?>assets/jewel\img\dd.jewelplus.com_Website_Latest_-removebg-preview.png" class="" style="width:40%" />
+                <img src="<?= base_url() ?>assets/jewel\img\dd_logo.png" class="" style="width:40%" />
                 <!-- assets\jewel\img\dd.jewelplus.com_Website_Latest_-removebg-preview.png -->
               </div>
               <!-- <h4 class=" text-center">D&D Jewelry</h4>
@@ -548,11 +548,8 @@
         }
       </style>
       <div id="mobSearch" class="modalsearch" style="width:94%;padding-left:21px;">
-        <div class="row mb-1 search d-sm-block d-lg-none d-flex" style="border: 1px solid #ced4da;">
-          <div class="col-1" style="padding:0px;">
-            <img src="https://www.monicavinader.com/images/2020/search-black.svg" width="28px" height="20px" class="" alt="" style="    vertical-align: -webkit-baseline-middle;">
-          </div>
-          <div class="col-10" style="padding:0px;">
+        <div class="row mb-1 search d-sm-d-flex d-lg-none " style="border: 1px solid #ced4da;">
+        <div class="col-10" style="padding:0px;">
             <div class="w-100">
               <input class="form-control" id="srcinput" type="text" placeholder="Search" aria-label="Search" style="border:none;margin-top:0px;">
             </div>
@@ -565,6 +562,10 @@
             </div>
             <!-- search show search data div end-->
           </div>
+        <div class="col-1" style="padding:0px;">
+            <img src="https://www.monicavinader.com/images/2020/search-black.svg" width="28px" height="20px" class="" alt="" style="    vertical-align: -webkit-baseline-middle;">
+          </div>
+          
           <div class="col-1 text-center" style="padding:0px;">
             <button type="button" class="close" onclick="mobSearch()" style="float: unset;">
               <span aria-hidden="true" style="vertical-align: sub;font-size: 35px;">&times;</span>
