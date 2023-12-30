@@ -39,6 +39,9 @@
                                             <th>SUBCAT Level 2</th>
                                             <th>SUBCAT Level 3</th>
                                             <th>SUBCAT Level 4</th>
+                                            <th>Assign Date</th>
+                                            <th>Start Date</th>
+                                            <th>End Date</th>
                                             <th>Status</th>
                                         </tr>
                                     </thead>
@@ -107,8 +110,24 @@
 
                                                     ?></td>
 
-
-
+                                                <td>
+                                                    <?
+                                                    $newdate = new DateTime($data->date);
+                                                    echo $newdate->format('M j, Y, g:i a');   #d-m-Y  // March 10, 2001, 5:16 pm
+                                                    ?>
+                                                </td>
+                                                <td>
+                                                    <?
+                                                    $newdate = new DateTime($data->start_time);
+                                                    echo $newdate->format('M j, Y, g:i a');   #d-m-Y  // March 10, 2001, 5:16 pm
+                                                    ?>
+                                                </td>
+                                                <td>
+                                                    <?
+                                                    $newdate = new DateTime($data->end_time);
+                                                    echo $newdate->format('M j, Y, g:i a');   #d-m-Y  // March 10, 2001, 5:16 pm
+                                                    ?>
+                                                </td>
                                                 <td><?php if ($data->status == 0) { ?>
                                                         <p class="label bg-red">Pending</p>
 
