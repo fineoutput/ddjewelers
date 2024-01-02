@@ -448,14 +448,14 @@
                     $img = $products->stone == 'EMERALD' ? 'emerald_3.png' : 'emerald_1.png';
                   } else if ($st->stone == 'SQUARE') {
                     $img = $products->stone == 'SQUARE' ? 'square_3.png' : 'square_1.png';
-                  } else if ($st->stone == 'PEAR') {
-                    $img = $products->stone == 'PEAR' ? 'pear_3.png' : 'pear_1.png';
+                  } else if ($st->stone == 'PEAR SHAPE') {
+                    $img = $products->stone == 'PEAR SHAPE' ? 'pear_3.png' : 'pear_1.png';
                   } else if ($st->stone == 'ASSCHER') {
                     $img = $products->stone == 'ASSCHER' ? 'asscher_3.png' : 'asscher_1.png';
                   } else if ($st->stone == 'MARQUISE') {
                     $img = $products->stone == 'MARQUISE' ? 'marquise_3.png' : 'marquise_1.png';
-                  } else if ($st->stone == 'HEART') {
-                    $img = $products->stone == 'HEART' ? 'heart_3.png' : 'heart_1.png';
+                  } else if ($st->stone == 'HEART SHAPE') {
+                    $img = $products->stone == 'HEART SHAPE' ? 'heart_3.png' : 'heart_1.png';
                   } else {
                     $img = "";
                   }
