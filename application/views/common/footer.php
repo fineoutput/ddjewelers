@@ -145,11 +145,15 @@
           <img class="payicon" style="" src="<?= base_url() ?>assets\jewel\img\paydiscover.png" />
           <img class="payicon" style="width: 97px; height: auto;" src="<?= base_url() ?>assets\jewel\img\paypal.png" />
           <img class="payicon" style="" src="<?= base_url() ?>assets\jewel\img\google-pay.png" />
-          <img class="payiconn" style="" src="<?= base_url() ?>assets\jewel\img\pay3.png" />
+          
+          <a href='https://www.affirm.com/how-it-works' target='_blank' rel='noopener noreferrer'>  <img class="payiconn" style="" src="<?= base_url() ?>assets\jewel\img\pay3.png" /> </a>
           <!-- <i class="fab fa-cc-amex"></i> -->
         </div>
       </div>
       <!-- <div class="col-md-4"> -->
+
+
+
       <p></p>
     </div>
   </div>
