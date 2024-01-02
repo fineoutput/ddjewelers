@@ -474,7 +474,7 @@ class Products extends CI_finecontrol
     }
     //============================= END PRODUCT CRON JOB==========================
     //============================= START VIEW PRODUCT CRON JOB==========================
-    public function view_cron_job()
+    public function view_cron_job($dev = 0)
     {
         if (!empty($this->session->userdata('admin_data'))) {
             $data['user_name'] = $this->load->get_var('user_name');
@@ -482,6 +482,7 @@ class Products extends CI_finecontrol
             $this->db->from('tbl_cron_jobs');
             $this->db->order_by('id', 'desc');
             $data['cron_jobs'] = $this->db->get();
+            $data['dev'] = $dev;
             $this->load->view('admin/common/header_view', $data);
             $this->load->view('admin/products/view_cron_jobs');
             $this->load->view('admin/common/footer_view');

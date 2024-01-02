@@ -42,6 +42,10 @@
                                             <th>Assign Date</th>
                                             <th>Start Date</th>
                                             <th>End Date</th>
+                                            <? if ($dev == 1) { ?>
+                                                <th>Total Products</th>
+                                                <th>Inserted Products</th>
+                                            <? } ?>
                                             <th>Status</th>
                                         </tr>
                                     </thead>
@@ -118,16 +122,22 @@
                                                 </td>
                                                 <td>
                                                     <?
-                                                    $newdate = new DateTime($data->start_time);
+                                                    if (!empty($data->start_time))
+                                                        $newdate = new DateTime($data->start_time);
                                                     echo $newdate->format('M j, Y, g:i a');   #d-m-Y  // March 10, 2001, 5:16 pm
                                                     ?>
                                                 </td>
                                                 <td>
                                                     <?
-                                                    $newdate = new DateTime($data->end_time);
+                                                    if (!empty($data->end_time))
+                                                        $newdate = new DateTime($data->end_time);
                                                     echo $newdate->format('M j, Y, g:i a');   #d-m-Y  // March 10, 2001, 5:16 pm
                                                     ?>
                                                 </td>
+                                                <? if ($dev == 1) { ?>
+                                                    <td><?=$data->total_products?></td>
+                                                    <td><?=$data->inserted_products?></td>
+                                                <? } ?>
                                                 <td><?php if ($data->status == 0) { ?>
                                                         <p class="label bg-red">Pending</p>
 
