@@ -464,7 +464,7 @@ class Category extends CI_finecontrol
 
 
             $data_insert_cr = array(
-              "cat_id" => $last_id,
+              "cat_id" => $idw,
               "subcat_id" => $sub_id,
               "mincat_id1" => $min_id,
               "mincat_id2" => $min2_id,
