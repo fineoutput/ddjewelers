@@ -417,9 +417,9 @@ class Products extends CI_finecontrol
             'short_description' => $prod->ShortDescription,
             'Description' => $prod->Description,
             'config_model_id' => $prod->ConfigurationModelId,
-            'full_set_images' => !empty($prod->FullySetImages)?json_encode($prod->FullySetImages):'',
-            'images' => !empty($prod->Images)?json_encode($prod->Images):'',
-            'group_images' => !empty($prod->GroupImages)?json_encode($prod->GroupImages):'',
+            'full_set_images' => !empty($prod->FullySetImages) ? json_encode($prod->FullySetImages) : '',
+            'images' => !empty($prod->Images) ? json_encode($prod->Images) : '',
+            'group_images' => !empty($prod->GroupImages) ? json_encode($prod->GroupImages) : '',
             'group_id' => $prod->DescriptiveElementGroup->GroupId,
             'series_id' => $prod->DescriptiveElementGroup->DescriptiveElements[0]->Value,
             'price' => $prod->Price->Value,
@@ -429,9 +429,10 @@ class Products extends CI_finecontrol
             'ring_size_data' => !empty($prod->ConfigurationModel->RingSizeOptions) ? json_encode($prod->ConfigurationModel->RingSizeOptions) : '',
             'ring_size' => !empty($prod->RingSize) ? json_encode($prod->RingSize) : '',
             'stone' => !empty($prod->CenterStoneShape) ? $prod->CenterStoneShape : '',
-            'quality' => $prod->QualityCatalogValue,
+            'quality' => !empty($prod->QualityCatalogValue) ? $prod->QualityCatalogValue : '',
             'can_be_set' => !empty($prod->CanBeSetWith) ? json_encode($prod->CanBeSetWith) : "",
             'specification' => !empty($prod->Specifications) ? json_encode($prod->Specifications) : '',
+            'setting_options' => !empty($prod->ConfigurationModel->SettingOptions) ? json_encode($prod->ConfigurationModel->SettingOptions) : '',
             'on_hand' => $prod->OnHand,
             'lead_time' => $prod->LeadTime,
             'status' => $prod->Status,
@@ -574,5 +575,58 @@ class Products extends CI_finecontrol
         }
     }
     //============================= END GET AJAX MINOR 2 CATEGORY ==========================
+    //============================= START GET AJAX STONE FAMILY ==========================
+    public function GetStoneFamily()
+    {
+        $this->load->helper(array('form', 'url'));
+        $this->load->library('form_validation');
+        $this->load->helper('security');
+        if ($this->input->post()) {
+            $this->form_validation->set_rules('modelID', 'modelID', 'required|xss_clean|trim');
+            $this->form_validation->set_rules('groupName', 'groupName', 'required|xss_clean|trim');
+            if ($this->form_validation->run() == true) {
+                $modelID = $this->input->post('modelID');
+                $groupName = $this->input->post('groupName');
+                $curl = curl_init();
+                curl_setopt_array($curl, array(
+                    CURLOPT_URL => 'https://api.stuller.com/v2/products/stonefamilies',
+                    CURLOPT_RETURNTRANSFER => true,
+                    CURLOPT_ENCODING => '',
+                    CURLOPT_MAXREDIRS => 10,
+                    CURLOPT_TIMEOUT => 0,
+                    CURLOPT_FOLLOWLOCATION => true,
+                    CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                    CURLOPT_CUSTOMREQUEST => 'POST',
+                    CURLOPT_POSTFIELDS => '{"ConfigurationModelId":' . $modelID . ',"StoneGroups":["' . $groupName . '"]}',
+                    CURLOPT_HTTPHEADER => array(
+                        'Authorization: Basic ZGV2amV3ZWw6Q29kaW5nMjA9',
+                        'Content-Type: application/json',
+                        'Host: api.stuller.com',
+                    ),
+                ));
 
+                $response = curl_exec($curl);
+                curl_close($curl);
+                echo $response;
+                $res = json_decode($response);
+                $html = '<div class="row mt-3">';
+                foreach ($res as $item) {
+                    print_r($item);
+                }
+            } else {
+                $res = array(
+                    'message' => validation_errors(),
+                    'status' => 201
+                );
+                echo json_encode($res);
+            }
+        } else {
+            $res = array(
+                'message' => 'Please insert some data, No data available',
+                'status' => 201
+            );
+            echo json_encode($res);
+        }
+    }
+    //============================= START GET AJAX STONE FAMILY ==========================
 }

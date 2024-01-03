@@ -304,7 +304,7 @@ transform: rotate(90deg); */
         font-size: 26px;
     }
     .payiconn {
-        width: 28%;
+        /* width: 28%; */
         /* height: 73px; */
         margin-left: 10px;
     }
@@ -389,7 +389,7 @@ transform: rotate(90deg); */
     }
 
     .payiconn {
-        width: 30%;
+        /* width: 30%; */
         /* height: 80px; */
         margin-left: 10px;
     }

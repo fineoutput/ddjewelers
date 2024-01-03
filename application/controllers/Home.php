@@ -1381,6 +1381,85 @@ class Home extends CI_Controller
         $this->load->view('product_detail_new');
         $this->load->view('common/footer');
     }
+    public function build($series_id, $pro_id)
+    {
+        $group_id = $_GET['groupId'];
+        $data['products'] = $this->db->get_where('tbl_products', array('pro_id' => $pro_id))->row();
+        $data['stone_data']  = $this->db->select("id,pro_id,stone")->group_by('stone')->get_where('tbl_products', array('series_id' => $series_id, 'group_id' => $group_id))->result();
+        $product_data  = $this->db->group_by('pro_id')->get_where('tbl_products', array('series_id' => $series_id, 'group_id' => $group_id, 'stone' => $data['products']->stone, ''))->result();
+        $data['more_products'] = $this->db->where('series_id !=', $data['products']->series_id)->group_by('series_id')->limit(15)->order_by('rand()')->get_where('tbl_products', array('category_id' => $data['products']->category_id))->result();
+        $data['suggested_products'] = $this->db->where('series_id !=', $data['products']->series_id)->group_by('series_id')->limit(15)->order_by('rand()')->get_where('tbl_products', array())->result();
+        $options = [];
+        // $pro_elements = json_decode($data['products']->elements);
+        $DescriptiveElements = json_decode($data['products']->elements);
+        $searchedValues = [];
+        foreach ($product_data as $product) {
+            $jsonData = json_decode($product->elements, true);
+            foreach ($jsonData as $index => $element) {
+                $key = $element['Name'];
+                $value = $element['DisplayValue'];
+                // Collect unique options for each key
+                if (!isset($options[$key])) {
+                    $options[$key] = [];
+                }
+                // // Check if the value is not already in the options for the key
+                $existingValues = array_column($options[$key], 'DisplayValue');
+                if (!in_array($value, $existingValues)) {
+                    // if ($value == $data['products']) {
+                    if ($DescriptiveElements[$index]->Name == $key && $DescriptiveElements[$index]->DisplayValue == $value) {
+                        $selected = "selected";
+                        $searchedValues[]  = $value;
+                    } else {
+                        $selected = "";
+                    }
+                    $options[$key][] = [
+                        'DisplayValue' => $value,
+                        'selected' => $selected,
+                        'value' => $element['Value'],
+                    ];
+                }
+            }
+        }
+        // Sort options in ascending order
+        foreach ($options as &$option) {
+            usort($option, function ($a, $b) {
+                return strcmp($a['DisplayValue'], $b['DisplayValue']);
+            });
+        }
+        //---- CALCULATE PRICE -------
+        $pr_data = $this->db->get_where('tbl_price_rule', array())->row();
+        $multiplier = $pr_data->multiplier;
+        $cost_price = $data['products']->price;
+        $retail = $cost_price * $multiplier;
+        $now_price = $cost_price;
+        if ($cost_price <= 500) {
+            $cost_price2 = $cost_price * $cost_price;
+            $number = round($cost_price * ($pr_data->cost_price1 * $cost_price2 + $pr_data->cost_price2 * $cost_price + $pr_data->cost_price3), 2);
+            $unit = 5;
+            $remainder = $number % $unit;
+            $mround = ($remainder < $unit / 2) ? $number - $remainder : $number + ($unit - $remainder);
+            $now_price = round($mround) - 1 + 0.95;
+        } else if ($cost_price > 500) {
+            $number = round($cost_price * ($pr_data->cost_price4 * $cost_price / $multiplier + $pr_data->cost_price5));
+            $unit = 5;
+            $remainder = $number % $unit;
+            $mround = ($remainder < $unit / 2) ? $number - $remainder : $number + ($unit - $remainder);
+            $now_price = round($mround) - 1 + 0.95;
+        }
+        $saved = round($retail - $now_price);
+        $dis_percent = $saved / $retail * 100;
+
+        $data['now_price'] = $now_price;
+        $data['saved'] = $saved;
+        $data['dis_percent'] = $dis_percent;
+        $data['retail'] = $retail;
+        $data['options'] = $options;
+        $data['product_data'] = $product_data;
+        $data['searchedValues'] = $searchedValues;
+        $this->load->view('common/header', $data);
+        $this->load->view('build_product');
+        $this->load->view('common/footer');
+    }
     public  function GetProductId()
     {
         $this->load->helper(array('form', 'url'));
