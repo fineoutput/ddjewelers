@@ -370,7 +370,16 @@
     </div>
   </div>
   <?
-  $images = json_decode($products->full_set_images);
+  $full_images = json_decode($products->full_set_images);
+  $images = json_decode($products->images);
+  $group_images = json_decode($products->group_images);
+  if (!empty($full_images)) {
+    $all_images = $full_images;
+  } else if (!empty($images)) {
+    $all_images = $images;
+  } else if (!empty($group_images)) {
+    $all_images = $group_images;
+  }
   $elements = json_decode($products->elements);
   $ring_size = json_decode($products->ring_size_data);
   $can_be_set = json_decode($products->can_be_set);
@@ -391,7 +400,7 @@
                   </video> </a>
                 <!-- =============== video end =============== -->
               <? } ?>
-              <?php foreach ($images as $img) :
+              <?php foreach ($all_images as $img) :
               ?>
                 <a data-fancybox="gallery" href="<?= $img->ZoomUrl ?>"><img src="<?= $img->FullUrl ?>" class="img-fluid2"></a>
               <?php endforeach; ?>
@@ -403,7 +412,7 @@
                 <li><img src="<?= base_url() ?>assets/frontend/play.png"></li>
               <? } ?>
               <!-- =============== video end =============== -->
-              <?php foreach ($images as $img) :
+              <?php foreach ($all_images as $img) :
               ?>
                 <li><img src="<?= $img->ThumbnailUrl ?>"></li>
               <?php endforeach; ?>
@@ -700,12 +709,21 @@
           <div class="swiper-wrapper text-center">
             <?php
             foreach ($more_products as $data) {
-              $images = json_decode($data->full_set_images);
+              $full_images = json_decode($data->full_set_images);
+              $images = json_decode($data->images);
+              $group_images = json_decode($data->group_images);
+              if (!empty($full_images)) {
+                $all_images = $full_images;
+              } else if (!empty($images)) {
+                $all_images = $images;
+              } else if (!empty($group_images)) {
+                $all_images = $group_images;
+              }
             ?>
               <div class="swiper-slide" style="margin-top:3rem;">
                 <p><b><?= $data->series_id ?></b></p>
                 <a href="<?= base_url() ?>Home/product_details/<?= $data->series_id ?>/<?= $data->pro_id ?>?groupId=<?= $data->group_id ?>">
-                  <img src="<?= $images[0]->FullUrl ?>" class="img-responsive small_mob" style="margin-bottom: 1rem;">
+                  <img src="<?= $all_images[0]->FullUrl ?>" class="img-responsive small_mob" style="margin-bottom: 1rem;">
                   <p><?= $data->description ?></p>
                 </a>
               </div>
@@ -730,12 +748,21 @@
           <div class="swiper-wrapper text-center">
             <?php
             foreach ($suggested_products as $data) {
-              $images = json_decode($data->full_set_images);
+              $full_images = json_decode($data->full_set_images);
+              $images = json_decode($data->images);
+              $group_images = json_decode($data->group_images);
+              if (!empty($full_images)) {
+                $all_images = $full_images;
+              } else if (!empty($images)) {
+                $all_images = $images;
+              } else if (!empty($group_images)) {
+                $all_images = $group_images;
+              }
             ?>
               <div class="swiper-slide" style="margin-top:3rem;">
                 <p><b><?= $data->series_id ?></b></p>
                 <a href="<?= base_url() ?>Home/product_details/<?= $data->series_id ?>/<?= $data->pro_id ?>?groupId=<?= $data->group_id ?>">
-                  <img src="<?= $images[0]->FullUrl ?>" class="img-responsive small_mob" style="margin-bottom: 1rem;">
+                  <img src="<?= $all_images[0]->FullUrl ?>" class="img-responsive small_mob" style="margin-bottom: 1rem;">
                   <p><?= $data->description ?></p>
                 </a>
               </div>

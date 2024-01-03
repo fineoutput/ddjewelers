@@ -20,11 +20,13 @@
   .searchColumn {
     margin-bottom: 3.5rem;
   }
+
   li.page-item.active.page-link {
     color: #ffffff;
     background: #547f9e;
-}
-.page-link {
+  }
+
+  .page-link {
     position: relative;
     display: block;
     padding: 0.5rem 0.75rem;
@@ -33,8 +35,7 @@
     color: black;
     background-color: #fff;
     border: 1px solid #dee2e6;
-}
-
+  }
 </style>
 <section>
   <div class="container pl-5 pr-5 pt-3 pb-5">
@@ -204,18 +205,36 @@
             <?php $i = 1;
             if (!empty($products_data)) {
               foreach ($products_data as $data) {
-                $images = json_decode($data->full_set_images);
+                $full_images = json_decode($data->full_set_images);
+                $images = json_decode($data->images);
+                $group_images = json_decode($data->group_images);
                 $image1 = '';
                 $image2 = '';
-                // if (count($images) > 1) {
-                if (!empty($images[1]) && $images[1]->FullUrl) {
-                  $image1 = $images[0]->FullUrl;
-                  $image2 = $images[1]->FullUrl;
-                } else {
-                  $image1 = $images[0]->FullUrl;
-                  $image2 = $images[0]->FullUrl;
+                if (!empty($full_images)) {
+                  if (!empty($full_images[1]) && $full_images[1]->FullUrl) {
+                    $image1 = $full_images[0]->FullUrl;
+                    $image2 = $full_images[1]->FullUrl;
+                  } else {
+                    $image1 = $full_images[0]->FullUrl;
+                    $image2 = $full_images[0]->FullUrl;
+                  }
+                } else if (!empty($images)) {
+                  if (!empty($images[1]) && $images[1]->FullUrl) {
+                    $image1 = $images[0]->FullUrl;
+                    $image2 = $images[1]->FullUrl;
+                  } else {
+                    $image1 = $images[0]->FullUrl;
+                    $image2 = $images[0]->FullUrl;
+                  }
+                } else if (!empty($group_images)) {
+                  if (!empty($group_images[1]) && $group_images[1]->FullUrl) {
+                    $image1 = $group_images[0]->FullUrl;
+                    $image2 = $group_images[1]->FullUrl;
+                  } else {
+                    $image1 = $group_images[0]->FullUrl;
+                    $image2 = $group_images[0]->FullUrl;
+                  }
                 }
-                // }
             ?>
                 <div class="col-md-3 col-4 searchColumn">
                   <p class="text-center"><i><?= $data->series_id ?></i></p>
@@ -269,7 +288,7 @@
               } ?>
             <? } else { ?>
               <div class="text-center">
-                <img src="<?= base_url() ?>/assets/frontend/no_data.jpg"  style="    max-width: 45%;
+                <img src="<?= base_url() ?>/assets/frontend/no_data.jpg" style="    max-width: 45%;
     height: auto;">
                 <h5 class="mt-2">Opps! No Data Found...</h5>
               </div>
