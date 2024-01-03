@@ -1378,7 +1378,7 @@ class Home extends CI_Controller
         $data['product_data'] = $product_data;
         $data['searchedValues'] = $searchedValues;
         $this->load->view('common/header', $data);
-        $this->load->view('product_detail_new');
+        $this->load->view('build_product');
         $this->load->view('common/footer');
     }
     public function build($series_id, $pro_id)

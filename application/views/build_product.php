@@ -851,12 +851,13 @@
       </div>
       <!-- Modal body -->
       <div class="modal-body" id="StoneLocation">
+        <div class="loader" style="position: absolute;left: 0;right: 0;top: 0; bottom: 0;margin: auto;display:none" id='modelLoader'></div>
         <div class="row">
           <div class="col-md-4">
             <img src="<?= $location_images[0]->ZoomUrl ?>" class="img-fluid2">
           </div>
           <div class="col-md-8">
-            <table style=" width: 100%;">
+            <table style=" width: 100%;" id="StonesTable">
               <?php
               $groupCounts = [];
               // Iterate over the data to count each group
@@ -879,29 +880,18 @@
                     <? } ?>
                   </td>
                   <td style="text-align: left;padding: 8px;"><? if ($count == 1) {
-                                                                echo $groupItems[0]->SizeMM;
+                                                                echo $size = $groupItems[0]->SizeMM;
                                                               } else {
                                                                 // If there are multiple unique SizeMM values, print "Varying Sizes"
-                                                                echo count($uniqueSizes) > 1 ? "Varying Sizes" : $groupItems[0]->SizeMM;
+                                                                echo $size = count($uniqueSizes) > 1 ? "Varying Sizes" : $groupItems[0]->SizeMM;
                                                               } ?></td>
-                  <td style="text-align: left;padding: 8px;"><button class="add-btn" onclick="fetchStoneFamily(this)" data-modelID="<?= $products->config_model_id ?>" data-location="<?= $groupItems[0]->LocationNumber ?>" data-groupName="<?= $groupName ?>">Select</button></td>
+                  <td style="text-align: left;padding: 8px;"><button class="add-btn" onclick="fetchStoneFamily(this)" data-modelID="<?= $products->config_model_id ?>" data-size="<?= $size ?>" data-count="<?= $count ?>" data-groupName="<?= $groupName ?>">Select</button></td>
                 </tr>
               <?php
               endforeach; ?>
             </table>
             <!-- --------------- START SELECT STONE -------- -->
             <div id="stonesList">
-              <div class="row mt-3">
-                <div class="col-md-3">
-                  <p>Diamond</p>
-                </div>
-                <div class="col-md-3">
-                  <p>Diamond1</p>
-                </div>
-                <div class="col-md-3">
-                  <p>Diamond2</p>
-                </div>
-              </div>
             </div>
             <!-- --------------- END SELECT STONE -------- -->
           </div>
@@ -998,31 +988,65 @@
         },
         'slow');
     });
-
   });
+
+  function stonesListBtn() {
+    $("#stonesList").hide();
+    $('#StonesTable').show();
+  };
+
   //------------- START SET STONE -------------------------
   function fetchStoneFamily(obj) {
+    $('#modelLoader').show();
     var modelID = obj.getAttribute('data-modelId');
     var groupName = obj.getAttribute('data-groupName');
+    var size = obj.getAttribute('data-size');
+    var count = obj.getAttribute('data-count');
     $.ajax({
       url: "<?= base_url() ?>dcadmin/Products/GetStoneFamily",
       method: "POST",
       data: {
         modelID: modelID,
         groupName: groupName,
+        size: size,
+        count: count,
       },
       dataType: 'json',
       success: function(response) {
-        // if (response.status == 200) {
-        //   location.href = '<?= base_url() ?>Home/product_details/<?= $products->series_id ?>/' + response.message + '?groupId=<?= $products->group_id ?>';
-        // } else {
-        //   alert(response.message)
-        //   location.reload(true);
-        // }
+        if (response.status == 200) {
+          $('#StonesTable').hide();
+          $('#stonesList').html(response.data)
+          $("#stonesList").show();
+          $('#modelLoader').hide();
+        } else {
+          alert(response.message)
+          location.reload(true);
+        }
       }
     })
   }
   //------------- END SET STONE -------------------------
+  //------------- START SHOW STONE TYPES -------------------------
+  function showStoneType(obj) {
+    var categories = JSON.parse(obj.getAttribute('data-category'));
+    var h6Element = document.createElement('h6');
+    h6Element.className = 'mt-2';
+    h6Element.textContent = 'Please select type';
+    var rowDiv = document.createElement('div');
+    rowDiv.className = 'row';
+    categories.map(function(category) {
+      var colDiv = document.createElement('div');
+      colDiv.className = 'col-md-3';
+      var buttonElement = document.createElement('button');
+      buttonElement.className = 'btn btn-light';
+      buttonElement.textContent = category;
+      colDiv.appendChild(buttonElement);
+      rowDiv.appendChild(colDiv);
+    });
+    $('#stonesList').append(rowDiv);
+
+  }
+  //------------- END SHOW STONE TYPES -------------------------
   //------ qty-----------
   var input = document.querySelector('#qty');
   var btnminus = document.querySelector('.qtyminus');

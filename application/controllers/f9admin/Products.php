@@ -584,9 +584,13 @@ class Products extends CI_finecontrol
         if ($this->input->post()) {
             $this->form_validation->set_rules('modelID', 'modelID', 'required|xss_clean|trim');
             $this->form_validation->set_rules('groupName', 'groupName', 'required|xss_clean|trim');
+            $this->form_validation->set_rules('size', 'size', 'required|xss_clean|trim');
+            $this->form_validation->set_rules('count', 'count', 'xss_clean|trim');
             if ($this->form_validation->run() == true) {
                 $modelID = $this->input->post('modelID');
                 $groupName = $this->input->post('groupName');
+                $size = $this->input->post('size');
+                $count = $this->input->post('count');
                 $curl = curl_init();
                 curl_setopt_array($curl, array(
                     CURLOPT_URL => 'https://api.stuller.com/v2/products/stonefamilies',
@@ -607,12 +611,19 @@ class Products extends CI_finecontrol
 
                 $response = curl_exec($curl);
                 curl_close($curl);
-                echo $response;
                 $res = json_decode($response);
-                $html = '<div class="row mt-3">';
-                foreach ($res as $item) {
-                    print_r($item);
+                $html = "<div class='w-100 text-right'><button onclick='stonesListBtn()' class='btn' style='border-color: #797979;'>Back</button></div>";
+                if ($count > 1) {
+                    $html .= '<h6 class="mt-3">' . $groupName . ' ' . $size . ' <span style="font-size:13px">(' . $count . ' stones)</span></h6>';
+                } else {
+                    $html .= '<h6 class="mt-3">' . $groupName . ' ' . $size . '</h6>';
                 }
+                $html .= '<div class="row mt-3">';
+                foreach ($res->StoneFamilies as $item) {
+                    $html .= '<div class="col-md-3"><p onclick="showStoneType(this)" data-category=\''.json_encode($item->Categories).'\'>' . $item->Name . '</p></div>';
+                }
+                $html .= '</div>';
+                echo json_encode(['status' => 200, 'data' => $html]);
             } else {
                 $res = array(
                     'message' => validation_errors(),
