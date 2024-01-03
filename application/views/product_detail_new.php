@@ -438,24 +438,24 @@
             <div class=" swiper-container swiper-containericon">
               <div class="swiper-wrapper text-center">
                 <?php foreach ($stone_data as $st) :
-                  if ($st->stone == 'ROUND') {
-                    $img = $products->stone == 'ROUND' ? 'round_3.png' : 'round_1.png';
-                  } else if ($st->stone == 'CUSHION') {
-                    $img = $products->stone == 'CUSHION' ? 'cushion_3.png' : 'cushion_1.png';
-                  } else if ($st->stone == 'OVAL') {
-                    $img = $products->stone == 'OVAL' ? 'oval_3.png' : 'oval_1.png';
-                  } else if ($st->stone == 'EMERALD') {
-                    $img = $products->stone == 'EMERALD' ? 'emerald_3.png' : 'emerald_1.png';
-                  } else if ($st->stone == 'SQUARE') {
-                    $img = $products->stone == 'SQUARE' ? 'square_3.png' : 'square_1.png';
-                  } else if ($st->stone == 'PEAR SHAPE') {
-                    $img = $products->stone == 'PEAR SHAPE' ? 'pear_3.png' : 'pear_1.png';
-                  } else if ($st->stone == 'ASSCHER') {
-                    $img = $products->stone == 'ASSCHER' ? 'asscher_3.png' : 'asscher_1.png';
-                  } else if ($st->stone == 'MARQUISE') {
-                    $img = $products->stone == 'MARQUISE' ? 'marquise_3.png' : 'marquise_1.png';
-                  } else if ($st->stone == 'HEART SHAPE') {
-                    $img = $products->stone == 'HEART SHAPE' ? 'heart_3.png' : 'heart_1.png';
+                  if (strtolower($st->stone) == strtolower('ROUND')) {
+                    $img = strtolower($products->stone) == strtolower('ROUND') ? 'round_3.png' : 'round_1.png';
+                  } else if (strtolower($st->stone) == strtolower('CUSHION')) {
+                    $img = strtolower($products->stone) == strtolower('CUSHION') ? 'cushion_3.png' : 'cushion_1.png';
+                  } else if (strtolower($st->stone) == strtolower('OVAL')) {
+                    $img = strtolower($products->stone) == strtolower('OVAL') ? 'oval_3.png' : 'oval_1.png';
+                  } else if (strtolower($st->stone) == strtolower('EMERALD')) {
+                    $img = strtolower($products->stone) == strtolower('EMERALD') ? 'emerald_3.png' : 'emerald_1.png';
+                  } else if (strtolower($st->stone) == strtolower('SQUARE')) {
+                    $img = strtolower($products->stone) == strtolower('SQUARE') ? 'square_3.png' : 'square_1.png';
+                  } else if (strtolower($st->stone) == strtolower('PEAR SHAPE')) {
+                    $img = strtolower($products->stone) == strtolower('PEAR SHAPE') ? 'pear_3.png' : 'pear_1.png';
+                  } else if (strtolower($st->stone) == strtolower('ASSCHER')) {
+                    $img = strtolower($products->stone) == strtolower('ASSCHER') ? 'asscher_3.png' : 'asscher_1.png';
+                  } else if (strtolower($st->stone) == strtolower('MARQUISE')) {
+                    $img = strtolower($products->stone) == strtolower('MARQUISE') ? 'marquise_3.png' : 'marquise_1.png';
+                  } else if (strtolower($st->stone) == strtolower('HEART SHAPE')) {
+                    $img = strtolower($products->stone) == strtolower('HEART SHAPE') ? 'heart_3.png' : 'heart_1.png';
                   } else {
                     $img = "";
                   }
