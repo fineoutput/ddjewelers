@@ -465,9 +465,9 @@ class Products extends CI_finecontrol
             date_default_timezone_set("Asia/Calcutta");
             $end_data = date("Y-m-d H:i:s");
             //------ update cron job status to completed --------
-            $data_insert = array('status' => 2, 'end_time' => $end_data, 'total_products' => $res['total_products'], 'inserted_products' => $res['inserted_products']);
+            $data_insert2 = array('status' => 2, 'end_time' => $end_data, 'total_products' => $res['total_products'], 'inserted_products' => $res['inserted_products']);
             $this->db->where('id', $cron_jobs->id);
-            $last_id2 = $this->db->update('tbl_cron_jobs', $data_insert);
+            $last_id2 = $this->db->update('tbl_cron_jobs', $data_insert2);
             $rep = array(
                 'status' => 200,
                 'message' => 'Data inserted successfully'
@@ -584,11 +584,13 @@ class Products extends CI_finecontrol
         if ($this->input->post()) {
             $this->form_validation->set_rules('modelID', 'modelID', 'required|xss_clean|trim');
             $this->form_validation->set_rules('groupName', 'groupName', 'required|xss_clean|trim');
+            $this->form_validation->set_rules('LocationNumber', 'LocationNumber', 'required|xss_clean|trim');
             $this->form_validation->set_rules('size', 'size', 'required|xss_clean|trim');
             $this->form_validation->set_rules('count', 'count', 'xss_clean|trim');
             if ($this->form_validation->run() == true) {
                 $modelID = $this->input->post('modelID');
                 $groupName = $this->input->post('groupName');
+                $LocationNumber = $this->input->post('LocationNumber');
                 $size = $this->input->post('size');
                 $count = $this->input->post('count');
                 $curl = curl_init();
@@ -620,7 +622,8 @@ class Products extends CI_finecontrol
                 }
                 $html .= '<div class="row mt-3">';
                 foreach ($res->StoneFamilies as $item) {
-                    $html .= '<div class="col-md-3"><p onclick="showStoneType(this)" data-category=\''.json_encode($item->Categories).'\'>' . $item->Name . '</p></div>';
+                    $img = base_url() . 'assets/jewel/img/gemstone/' . strtolower($item->Name) . '.jpg';
+                    $html .= '<div class="col-md-3" onclick="showStoneType(this)" data-modelID="' . $modelID . '" data-groupName="' . $groupName . '" data-size="' . $size . '" data-name="' . $item->Name . '" data-image="' . $img . '" data-LocationNumber="' . $LocationNumber . '" data-category=\'' . json_encode($item->Categories) . '\'><div class="text-center" style="cursor: pointer;"><img src="' . $img . '" style="width:60px;height:60px"><p>' . $item->Name . '</p></div></div>';
                 }
                 $html .= '</div>';
                 echo json_encode(['status' => 200, 'data' => $html]);
@@ -640,4 +643,91 @@ class Products extends CI_finecontrol
         }
     }
     //============================= START GET AJAX STONE FAMILY ==========================
+    //============================= START GET AJAX SEARCH STONE ==========================
+    public function SearchStone()
+    {
+        $this->load->helper(array('form', 'url'));
+        $this->load->library('form_validation');
+        $this->load->helper('security');
+        if ($this->input->post()) {
+            $this->form_validation->set_rules('modelID', 'modelID', 'required|xss_clean|trim');
+            $this->form_validation->set_rules('LocationNumber', 'LocationNumber', 'required|xss_clean|trim');
+            $this->form_validation->set_rules('StoneFamilyName', 'StoneFamilyName', 'required|xss_clean|trim');
+            $this->form_validation->set_rules('stoneCategory', 'stoneCategory', 'required|xss_clean|trim');
+            if ($this->form_validation->run() == true) {
+                $modelID = $this->input->post('modelID');
+                $LocationNumber = $this->input->post('LocationNumber');
+                $StoneFamilyName = $this->input->post('StoneFamilyName');
+                $stoneCategory = $this->input->post('stoneCategory');
+                $curl = curl_init();
+                curl_setopt_array($curl, array(
+                    CURLOPT_URL => 'https://api.stuller.com/v2/products/searchstones',
+                    CURLOPT_RETURNTRANSFER => true,
+                    CURLOPT_ENCODING => '',
+                    CURLOPT_MAXREDIRS => 10,
+                    CURLOPT_TIMEOUT => 0,
+                    CURLOPT_FOLLOWLOCATION => true,
+                    CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                    CURLOPT_CUSTOMREQUEST => 'POST',
+                    CURLOPT_POSTFIELDS => '{"ConfigurationModelId":' . $modelID . ',"LocationNumbers":[' . $LocationNumber . '],"StoneFamilyName":"' . $StoneFamilyName . '","StoneCategories":["' . $stoneCategory . '"]}',
+                    CURLOPT_HTTPHEADER => array(
+                        'Authorization: Basic ZGV2amV3ZWw6Q29kaW5nMjA9',
+                        'Content-Type: application/json',
+                        'Host: api.stuller.com',
+                    ),
+                ));
+
+                $response = curl_exec($curl);
+                curl_close($curl);
+                $res = json_decode($response);
+                $data = $res->ConfiguredStones;
+                $count = count($data);
+                $html = "<div class='w-100 text-right'><button onclick='setStonesTableBtn()' class='btn' style='border-color: #797979;'>Back</button></div>";
+                $html .= '<h6 class="mt-3">Results - ' . $stoneCategory . ' ('.$count.')</h6>';
+
+                $html .= '<div class="row mt-3">';
+                $html .= '<div class="table-responsive" style="height: 400px !important;
+                overflow: scroll;">';
+                $html .= '<table class="table table-hover table-sm">';
+                if (!empty($data)) {
+                    $html .= '<thead style="position:sticky;top: 0;background-color:white"><tr>';
+                    $headings = $data[0]->Product->DescriptiveElementGroup->DescriptiveElements;
+                    foreach ($headings as $head) {
+                        $html .= '<th scope="col">' . $head->Name . '</th>';
+                    }
+                    $html .= '<th scope="col"></th>';
+                    $html .= '</tr></thead>';
+                    $html .= '<tbody>';
+                    foreach ($data as $item) {
+                        $html .= '<tr> ';
+                        $values = $item->Product->DescriptiveElementGroup->DescriptiveElements;
+                        foreach ($values as $v) {
+                            $html .= '<td>' . $v->DisplayValue . '</td>';
+                        }
+
+                        $html .= '<td><button type="button" class="btn btn-info" >Set</button></td>';
+                        $html .= '</tr>';
+                    }
+                    $html .= '</tbody>';
+                }
+                $html .= ' </table>';
+                $html .= '</div>';
+                $html .= '</div>';
+                echo json_encode(['status' => 200, 'data' => $html]);
+            } else {
+                $res = array(
+                    'message' => validation_errors(),
+                    'status' => 201
+                );
+                echo json_encode($res);
+            }
+        } else {
+            $res = array(
+                'message' => 'Please insert some data, No data available',
+                'status' => 201
+            );
+            echo json_encode($res);
+        }
+    }
+    //============================= START GET AJAX AJAX SEARCH STONE ==========================
 }
