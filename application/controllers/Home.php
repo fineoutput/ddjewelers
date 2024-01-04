@@ -1377,8 +1377,13 @@ class Home extends CI_Controller
         $data['options'] = $options;
         $data['product_data'] = $product_data;
         $data['searchedValues'] = $searchedValues;
+        $setting_options = json_decode($data['products']->setting_options);
         $this->load->view('common/header', $data);
-        $this->load->view('build_product');
+        if (!empty($setting_options)) {
+            $this->load->view('build_product');
+        } else {
+            $this->load->view('product_detail_new');
+        }
         $this->load->view('common/footer');
     }
     public function build($series_id, $pro_id)
