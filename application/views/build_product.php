@@ -930,6 +930,7 @@ $minor2Data = $this->db->get_where('tbl_minisubcategory2', array('id' => $produc
 <!-- ====================== END STONE LOCATION MODEL ============================== -->
 
 <input name="ring_size" id="r_size" type="hidden" value="<?= $products->ring_size ?>">
+<input name="proId" id="proId" type="hidden" value="<?= $products->pro_id ?>">
 <script>
   jQuery(document).ready(function() {
     //----------- DROPDOWN CHANGE ---------------
@@ -1168,6 +1169,36 @@ $minor2Data = $this->db->get_where('tbl_minisubcategory2', array('id' => $produc
     })
   }
   //------------- END SEARCH FAMILY STONES -------------------------
+  //------------- START SET STONES -------------------------
+  function configureProduct(obj) {
+    // console.log(obj);return;
+    $('#modelLoader').show();
+    var ProductId = $('#stoneId').val();
+    var StoneProductId = obj.getAttribute('data-stoneId');
+    var RingSize = $('#r_size').val();
+    $.ajax({
+      url: "<?= base_url() ?>dcadmin/Products/configureProduct",
+      method: "POST",
+      data: {
+        ProductId: ProductId,
+        StoneProductId: StoneProductId,
+        RingSize: RingSize,
+      },
+      dataType: 'json',
+      success: function(response) {
+        if (response.status == 200) {
+          $('#modelLoader').hide();
+          $('#stonesTypes').hide();
+          $('#setStonesTable').html(response.data)
+          $("#setStonesTable").show();
+        } else {
+          alert(response.message)
+          location.reload(true);
+        }
+      }
+    })
+  }
+  //------------- END SET STONES  -------------------------
   //------ qty-----------
   var input = document.querySelector('#qty');
   var btnminus = document.querySelector('.qtyminus');

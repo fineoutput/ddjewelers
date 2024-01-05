@@ -683,12 +683,12 @@ class Products extends CI_finecontrol
                 $data = $res->ConfiguredStones;
                 $count = count($data);
                 $html = "<div class='w-100 text-right'><button onclick='setStonesTableBtn()' class='btn' style='border-color: #797979;'>Back</button></div>";
-                $html .= '<h6 class="mt-3">Results - ' . $stoneCategory . ' ('.$count.')</h6>';
+                $html .= '<h6 class="mt-3">Results - ' . $stoneCategory . ' (' . $count . ')</h6>';
 
                 $html .= '<div class="row mt-3">';
                 $html .= '<div class="table-responsive" style="height: 400px !important;
                 overflow: scroll;">';
-                $html .= '<table class="table table-hover table-sm">';
+                $html .= '<table class="table table-hover table-sm" id="stoneDataTable">';
                 if (!empty($data)) {
                     $html .= '<thead style="position:sticky;top: 0;background-color:white"><tr>';
                     $headings = $data[0]->Product->DescriptiveElementGroup->DescriptiveElements;
@@ -705,7 +705,7 @@ class Products extends CI_finecontrol
                             $html .= '<td>' . $v->DisplayValue . '</td>';
                         }
 
-                        $html .= '<td><button type="button" class="btn btn-info" >Set</button></td>';
+                        $html .= '<td><button type="button" data-stoneId="'.$item->Product->Id.'" class="btn btn-info" >Set</button></td>';
                         $html .= '</tr>';
                     }
                     $html .= '</tbody>';
@@ -713,6 +713,12 @@ class Products extends CI_finecontrol
                 $html .= ' </table>';
                 $html .= '</div>';
                 $html .= '</div>';
+                $html .= '<script>
+                jQuery.noConflict();
+    $(document).ready(function() {
+        $("#stoneDataTable").DataTable();
+    });
+</script>';
                 echo json_encode(['status' => 200, 'data' => $html]);
             } else {
                 $res = array(
@@ -730,4 +736,56 @@ class Products extends CI_finecontrol
         }
     }
     //============================= START GET AJAX AJAX SEARCH STONE ==========================
+    //============================= START GET AJAX SET STONE ==========================
+    public function configureProduct()
+    {
+        $this->load->helper(array('form', 'url'));
+        $this->load->library('form_validation');
+        $this->load->helper('security');
+        if ($this->input->post()) {
+            $this->form_validation->set_rules('ProductId', 'modelID', 'required|xss_clean|trim');
+            $this->form_validation->set_rules('StoneProductId', 'groupName', 'required|xss_clean|trim');
+            $this->form_validation->set_rules('RingSize', 'LocationNumber', 'required|xss_clean|trim');
+            if ($this->form_validation->run() == true) {
+                $ProductId = $this->input->post('ProductId');
+                $StoneProductId = $this->input->post('StoneProductId');
+                $RingSize = $this->input->post('RingSize');
+                $curl = curl_init();
+                curl_setopt_array($curl, array(
+                    CURLOPT_URL => 'https://api.stuller.com/v2/products/configureproduct',
+                    CURLOPT_RETURNTRANSFER => true,
+                    CURLOPT_ENCODING => '',
+                    CURLOPT_MAXREDIRS => 10,
+                    CURLOPT_TIMEOUT => 0,
+                    CURLOPT_FOLLOWLOCATION => true,
+                    CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                    CURLOPT_CUSTOMREQUEST => 'POST',
+                    CURLOPT_POSTFIELDS => '{"ProductId":' . $ProductId . ',"Quantity":1,"Stones":[{"LocationNumber":' . $StoneProductId . ',"StoneProductId":' . $RingSize . '}],"RingSize":7.0}}',
+                    CURLOPT_HTTPHEADER => array(
+                        'Authorization: Basic ZGV2amV3ZWw6Q29kaW5nMjA9',
+                        'Content-Type: application/json',
+                        'Host: api.stuller.com',
+                    ),
+                ));
+
+                $response = curl_exec($curl);
+                curl_close($curl);
+                $res = json_decode($response);
+                echo $response;
+            } else {
+                $res = array(
+                    'message' => validation_errors(),
+                    'status' => 201
+                );
+                echo json_encode($res);
+            }
+        } else {
+            $res = array(
+                'message' => 'Please insert some data, No data available',
+                'status' => 201
+            );
+            echo json_encode($res);
+        }
+    }
+    //============================= START SET STONE ==========================
 }

@@ -1,4 +1,3 @@
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 
 <style>
   .vodiapicker {
@@ -870,6 +869,7 @@ $minor2Data = $this->db->get_where('tbl_minisubcategory2', array('id' => $produc
 
 
 <input name="ring_size" id="r_size" type="hidden" value="<?= $products->ring_size ?>">
+
 <script>
   jQuery(document).ready(function() {
     //----------- DROPDOWN CHANGE ---------------
