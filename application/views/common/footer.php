@@ -180,7 +180,7 @@
       infinite: true,
       arrows: true,
       fade: true,
-      autoplay: true,
+      autoplay: false,
       autoplaySpeed: 4000,
       speed: 300,
       lazyLoad: 'ondemand',

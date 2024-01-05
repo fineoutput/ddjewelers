@@ -282,7 +282,8 @@
 
 
                                         </button></a>
-                                    <P class="mt-1" style="font-size:12px"> <a href='https://www.affirm.com/how-it-works' target='_blank' rel='noopener noreferrer'>Affirm How is Works</a></P>
+                                        <p class="affirm-as-low-as mt-1" data-page-type="cart" data-amount="<?=round($order1_data[0]->final_amount,2)*100?>"></p>
+                                    <P class="" style="font-size:12px"> <a href='https://www.affirm.com/how-it-works' target='_blank' rel='noopener noreferrer'>Affirm How is Works</a></P>
                                     <!-- </form> -->
                                 </div>
                                 <div class=" mb-3 text-center ">

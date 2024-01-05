@@ -336,12 +336,23 @@
     display: none !important;
   }
 </style>
+<?
+$catData = $this->db->get_where('tbl_category', array('id' => $products->category_id))->row();
+$subCatData = $this->db->get_where('tbl_sub_category', array('id' => $products->subcategory_id))->row();
+$minor1Data = $this->db->get_where('tbl_minisubcategory', array('id' => $products->minor_category_id))->row();
+$minor2Data = $this->db->get_where('tbl_minisubcategory2', array('id' => $products->minor2_category_id))->row();
 
+?>
 
 <div class="container-fluid mt-3 ">
   <div class="row">
     <div class="col-md-12 page_span">
-      <?= $products->description ?></span></p>
+      <p>
+        <?= $catData ? $catData->name  : '' ?>
+        <?= $subCatData ? ' > ' . $subCatData->name : '' ?>
+        <?= $minor1Data ? ' > ' . $minor1Data->name  : '' ?>
+        <?= $minor2Data ? ' > ' . $minor2Data->name : '' ?>
+      </p>
     </div>
     <div class="col-md-12">
       <h1 id="p_title" class="r-title" style="font-weight:600;"><?= $products->description ?></h1>
@@ -824,7 +835,7 @@
         <table class="table table-bordered">
           <thead>
             <tr style="background-color: #f5f5f5;">
-              <th>Quantitity</th>
+              <th>Quantity</th>
               <th>Stone</th>
               <th>Size</th>
               <th>Setting Type</th>

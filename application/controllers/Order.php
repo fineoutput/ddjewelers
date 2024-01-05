@@ -63,7 +63,7 @@ class Order extends CI_Controller
                                 $now_price = round($m_round) - 1 + 0.95;
                             }
                             $pro_qty_price = $quantity * $now_price;
-                            $total_cart_amount1 = $total_cart_amount + $pro_qty_price;
+                            $total_cart_amount += $pro_qty_price;
                         } else {
                             $this->session->set_flashdata('emessage', 'Some error occurred.');
                             redirect($_SERVER['HTTP_REFERER']);
@@ -81,7 +81,7 @@ class Order extends CI_Controller
                             //---------------- Order1 entry ------
                             $data_insert_order1 = array(
                                 'user_id' => $user_id,
-                                'total_amount' => $total_cart_amount1,
+                                'total_amount' => $total_cart_amount,
                                 'address_id' => $address_id,
                                 'payment_type' => 0,
                                 'payment_status' => 0,
@@ -116,12 +116,12 @@ class Order extends CI_Controller
                     $address_data = $this->db->get_where('tbl_user_address', array('is_active' => 1, 'id' => $address_id))->row();
                     $state_data = $this->db->get_where('tbl_state_detail', array('is_active' => 1, 'zip_code' => $address_data->zipcode))->row();
                     if (!empty($state_data) && $state_data->Percentage != 0) {
-                        $delivery_charge = round($total_cart_amount1 * $state_data->Percentage / 100, 2);
+                        $delivery_charge = round($total_cart_amount * $state_data->Percentage / 100, 2);
                     } else {
                         $delivery_charge = 0;
                     }
                     $data_insert_order11 = array(
-                        'total_amount' => $total_cart_amount1,
+                        'total_amount' => $total_cart_amount,
                         'delivery_charge' => $delivery_charge,
                     );
                     $this->db->where('id', $last_order_id);
@@ -138,7 +138,7 @@ class Order extends CI_Controller
                 redirect($_SERVER['HTTP_REFERER']);
             }
         } else {
-            $this->session->set_flashdata('emessage', 'Some error occured.Post data not found.');
+            $this->session->set_flashdata('emessage', 'Some error occurred.Post data not found.');
             redirect($_SERVER['HTTP_REFERER']);
         }
     }
