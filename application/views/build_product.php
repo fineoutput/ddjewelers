@@ -5,11 +5,128 @@
     display: none;
   }
 
+
+  .dizzy-gillespie {
+    filter: saturate(3);
+    width: 0.1px;
+    height: 0.1px;
+    border: 40px solid transparent;
+    border-radius: 5px;
+    -webkit-animation: loader 3s ease-in infinite, spin 1s linear infinite;
+    animation: loader 3s ease-in infinite, spin 1s linear infinite;
+  }
+
+
+  .dizzy-gillespie::before {
+    filter: saturate(0.3);
+    display: block;
+    position: absolute;
+    z-index: -1;
+    margin-left: -40px;
+    margin-top: -40px;
+    content: "";
+    height: 0.1;
+    width: 0.1;
+    border: 40px solid transparent;
+    border-radius: 5px;
+    animation: loader 2s ease-in infinite reverse, spin 0.8s linear infinite reverse;
+  }
+
+  .dizzy-gillespie::after {
+    display: block;
+    position: absolute;
+    z-index: 2;
+    margin-left: -10px;
+    margin-top: -10px;
+    content: "";
+    height: 20px;
+    width: 20px;
+    border-radius: 20px;
+    background-color: white;
+  }
+
+  @-webkit-keyframes loader {
+    0% {
+      border-bottom-color: transparent;
+      border-top-color: #114357;
+    }
+
+    25% {
+      border-left-color: transparent;
+      border-right-color: #2a3f4f;
+    }
+
+    50% {
+      border-top-color: transparent;
+      border-bottom-color: #516a7b;
+    }
+
+    75% {
+      border-right-color: transparent;
+      border-left-color: #2a3f4f;
+    }
+
+    100% {
+      border-bottom-color: transparent;
+      border-top-color: #114357;
+    }
+  }
+
+  @keyframes loader {
+    0% {
+      border-bottom-color: transparent;
+      border-top-color: #114357;
+    }
+
+    25% {
+      border-left-color: transparent;
+      border-right-color: #2a3f4f;
+    }
+
+    50% {
+      border-top-color: transparent;
+      border-bottom-color: #516a7b;
+    }
+
+    75% {
+      border-right-color: transparent;
+      border-left-color: #2a3f4f;
+    }
+
+    100% {
+      border-bottom-color: transparent;
+      border-top-color: #114357;
+    }
+  }
+
+  @-webkit-keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+
+    100% {
+      transform: rotate(-360deg);
+    }
+  }
+
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+
+    100% {
+      transform: rotate(-360deg);
+    }
+  }
+
   #a {
     padding-left: 0px;
   }
 
 
+  .arrow-1 {
+    top: 24%;
+  }
 
   #a img,
   .btn-select img {
@@ -470,8 +587,8 @@ $minor2Data = $this->db->get_where('tbl_minisubcategory2', array('id' => $produc
                   </div>
                 <?php endforeach; ?>
               </div>
-              <div class="swiper-button-next"></div>
-              <div class="swiper-button-prev"></div>
+              <div class="swiper-button-next "></div>
+              <div class="swiper-button-prev "></div>
             </div>
           </div>
         </div>
@@ -766,8 +883,8 @@ $minor2Data = $this->db->get_where('tbl_minisubcategory2', array('id' => $produc
               </div>
             <?php }   ?>
           </div>
-          <div class="swiper-button-next"></div>
-          <div class="swiper-button-prev"></div>
+          <div class="swiper-button-next arrow-1"></div>
+          <div class="swiper-button-prev arrow-1"></div>
         </div>
       </div>
     </div>
@@ -855,6 +972,7 @@ $minor2Data = $this->db->get_where('tbl_minisubcategory2', array('id' => $produc
 </div> <!-- Container end -->
 <!-- ====================== START STONE LOCATION MODEL ============================== -->
 <div class="modal fade" id="myModal">
+  <div class="dizzy-gillespie" style="position: absolute;left: 0;right: 0;top: 0; bottom: 0;margin:  auto;display:none;z-index: 99999;     background: #125965;" id='modelLoader'></div>
   <div class="modal-dialog modal-xl">
     <div class="modal-content">
       <!-- Modal Header -->
@@ -862,9 +980,11 @@ $minor2Data = $this->db->get_where('tbl_minisubcategory2', array('id' => $produc
         <h4 class="modal-title">Stone Locations</h4>
         <button type="button" class="close" data-dismiss="modal">&times;</button>
       </div>
+
+
       <!-- Modal body -->
       <div class="modal-body" id="StoneLocation">
-        <div class="loader" style="position: absolute;left: 0;right: 0;top: 0; bottom: 0;margin: auto;display:none" id='modelLoader'></div>
+
         <div class="row">
           <div class="col-md-4">
             <img src="<?= $location_images ? $location_images[0]->ZoomUrl : null ?>" class="img-fluid2" id="preview_src">
@@ -890,17 +1010,17 @@ $minor2Data = $this->db->get_where('tbl_minisubcategory2', array('id' => $produc
                       if ($groupName == 'Center') {
                     ?>
                         <tr>
-                          <td style="text-align: left;padding: 8px;"><?= $groupName ?>
+                          <td style="text-align: left;padding: 8px; vertical-align: -webkit-baseline-middle;"><?= $groupName ?>
                             <? if ($count > 1) { ?>
                               <br><span style="color: #998b7d;font-size: 11px;"><b><?= $count . ' stones'; ?></b></span>
                             <? } ?>
                           </td>
-                          <td><? if ($count == 1) {
-                                echo $size = $groupItems[0]->SizeMM.'mm';
-                              } else {
-                                // If there are multiple unique SizeMM values, print "Varying Sizes"
-                                echo $size = count($uniqueSizes) > 1 ? "Varying Sizes" : $groupItems[0]->SizeMM.'mm';
-                              } ?></td>
+                          <td style="vertical-align: -webkit-baseline-middle;"><? if ($count == 1) {
+                                                                                  echo $size = $groupItems[0]->SizeMM . 'mm';
+                                                                                } else {
+                                                                                  // If there are multiple unique SizeMM values, print "Varying Sizes"
+                                                                                  echo $size = count($uniqueSizes) > 1 ? "Varying Sizes" : $groupItems[0]->SizeMM . 'mm';
+                                                                                } ?></td>
                           <td><button class="add-btn" onclick="fetchStoneFamily(this)" data-modelID="<?= $products->config_model_id ?>" data-size="<?= $size ?>" data-count="<?= $count ?>" data-groupName="<?= $groupName ?>" data-LocationNumber="<?= $groupItems[0]->LocationNumber ?>">Select</button></td>
                         </tr>
                     <?php
@@ -1032,6 +1152,7 @@ $minor2Data = $this->db->get_where('tbl_minisubcategory2', array('id' => $produc
   //------------- START SET STONE -------------------------
   function fetchStoneFamily(obj) {
     $('#modelLoader').show();
+    $('#StoneLocation').css('opacity', '30%');
     var modelID = obj.getAttribute('data-modelId');
     var groupName = obj.getAttribute('data-groupName');
     var size = obj.getAttribute('data-size');
@@ -1054,6 +1175,7 @@ $minor2Data = $this->db->get_where('tbl_minisubcategory2', array('id' => $produc
           $('#stonesList').html(response.data)
           $("#stonesList").show();
           $('#modelLoader').hide();
+          $('#StoneLocation').css('opacity', '100%');
           $("#stonesTypes").html();
         } else {
           alert(response.message)
@@ -1081,7 +1203,7 @@ $minor2Data = $this->db->get_where('tbl_minisubcategory2', array('id' => $produc
     //----- back button
     var buttonElement1 = document.createElement('button');
     buttonElement1.className = 'btn';
-    buttonElement1.textContent = 'Back';
+    buttonElement1.textContent = 'Back ';
     buttonElement1.style.borderColor = '#797979';
     buttonElement1.addEventListener('click', function() {
       $("#stonesTypes").hide();
@@ -1093,11 +1215,13 @@ $minor2Data = $this->db->get_where('tbl_minisubcategory2', array('id' => $produc
     var h6Element = document.createElement('h6');
     h6Element.className = 'mt-2';
     h6Element.style.borderBottom = '1px solid grey';
+    h6Element.style.padding = '10px 0px';
     h6Element.textContent = groupName + ' ' + size;
     MainDiv.appendChild(h6Element);
     //----- row
     var rowDiv = document.createElement('div');
     rowDiv.className = 'row mt-3';
+    rowDiv.style.alignItems = 'baseline';
     //----- stone 
     var stoneDiv = document.createElement('div');
     stoneDiv.className = 'col-md-2';
@@ -1123,6 +1247,7 @@ $minor2Data = $this->db->get_where('tbl_minisubcategory2', array('id' => $produc
       var buttonElement = document.createElement('button');
       buttonElement.className = 'btn btn-light';
       buttonElement.textContent = category;
+      buttonElement.style.width = '100%';
       buttonElement.setAttribute('data-modelId', modelId);
       buttonElement.setAttribute('data-Location', LocationNumber);
       buttonElement.setAttribute('data-StoneFamily', name);
@@ -1143,6 +1268,7 @@ $minor2Data = $this->db->get_where('tbl_minisubcategory2', array('id' => $produc
   function fetchFamilyStoneList(obj) {
     // console.log(obj);return;
     $('#modelLoader').show();
+    $('#StoneLocation').css('opacity', '30%');
     var modelID = obj.getAttribute('data-modelId');
     var LocationNumber = obj.getAttribute('data-location');
     var StoneFamilyName = obj.getAttribute('data-stoneFamily');
@@ -1160,6 +1286,7 @@ $minor2Data = $this->db->get_where('tbl_minisubcategory2', array('id' => $produc
       success: function(response) {
         if (response.status == 200) {
           $('#modelLoader').hide();
+          $('#StoneLocation').css('opacity', '100%');
           $('#stonesTypes').hide();
           $('#setStonesTable').html(response.data)
           $("#setStonesTable").show();
@@ -1175,6 +1302,7 @@ $minor2Data = $this->db->get_where('tbl_minisubcategory2', array('id' => $produc
   function configureProduct(obj) {
     // console.log(obj);return;
     $('#modelLoader').show();
+    $('#StoneLocation').css('opacity', '30%');
     var ProductId = $('#proId').val();
     var StoneProductId = obj.getAttribute('data-stoneId');
     var StoneFamilyName = obj.getAttribute('data-StoneFamilyName');
@@ -1197,6 +1325,8 @@ $minor2Data = $this->db->get_where('tbl_minisubcategory2', array('id' => $produc
         if (response.status == 200) {
           $('#preview_src').attr("src", response.data);
           $('#modelLoader').hide();
+          $('#StoneLocation').css('opacity', '100%');
+
           // $('#stonesTypes').hide();
           // $('#setStonesTable').html(response.data)
           // $("#setStonesTable").show();

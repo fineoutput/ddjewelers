@@ -84,6 +84,10 @@
 
 
 
+  .arrow-1{
+    top: 24%;
+  }
+
 
 
 
@@ -486,8 +490,8 @@ $minor2Data = $this->db->get_where('tbl_minisubcategory2', array('id' => $produc
                   </div>
                 <?php endforeach; ?>
               </div>
-              <div class="swiper-button-next"></div>
-              <div class="swiper-button-prev"></div>
+              <div class="swiper-button-next arrow-1"></div>
+              <div class="swiper-button-prev arrow-1"></div>
             </div>
           </div>
         </div>
