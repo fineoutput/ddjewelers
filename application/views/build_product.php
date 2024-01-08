@@ -867,7 +867,7 @@ $minor2Data = $this->db->get_where('tbl_minisubcategory2', array('id' => $produc
         <div class="loader" style="position: absolute;left: 0;right: 0;top: 0; bottom: 0;margin: auto;display:none" id='modelLoader'></div>
         <div class="row">
           <div class="col-md-4">
-            <img src="<?= $location_images ? $location_images[0]->ZoomUrl : null ?>" class="img-fluid2">
+            <img src="<?= $location_images ? $location_images[0]->ZoomUrl : null ?>" class="img-fluid2" id="preview_src">
           </div>
           <div class="col-md-8">
             <div class="table-responsive-sm">
@@ -887,23 +887,24 @@ $minor2Data = $this->db->get_where('tbl_minisubcategory2', array('id' => $produc
                       });
                       $groupItems = array_values($groupItems);
                       $uniqueSizes = array_unique(array_column($groupItems, 'SizeMM'));
-
+                      if ($groupName == 'Center') {
                     ?>
-                      <tr>
-                        <td style="text-align: left;padding: 8px;"><?= $groupName ?>
-                          <? if ($count > 1) { ?>
-                            <br><span style="color: #998b7d;font-size: 11px;"><b><?= $count . ' stones'; ?></b></span>
-                          <? } ?>
-                        </td>
-                        <td><? if ($count == 1) {
-                              echo $size = $groupItems[0]->SizeMM;
-                            } else {
-                              // If there are multiple unique SizeMM values, print "Varying Sizes"
-                              echo $size = count($uniqueSizes) > 1 ? "Varying Sizes" : $groupItems[0]->SizeMM;
-                            } ?></td>
-                        <td><button class="add-btn" onclick="fetchStoneFamily(this)" data-modelID="<?= $products->config_model_id ?>" data-size="<?= $size ?>" data-count="<?= $count ?>" data-groupName="<?= $groupName ?>" data-LocationNumber="<?= $groupItems[0]->LocationNumber ?>">Select</button></td>
-                      </tr>
+                        <tr>
+                          <td style="text-align: left;padding: 8px;"><?= $groupName ?>
+                            <? if ($count > 1) { ?>
+                              <br><span style="color: #998b7d;font-size: 11px;"><b><?= $count . ' stones'; ?></b></span>
+                            <? } ?>
+                          </td>
+                          <td><? if ($count == 1) {
+                                echo $size = $groupItems[0]->SizeMM.'mm';
+                              } else {
+                                // If there are multiple unique SizeMM values, print "Varying Sizes"
+                                echo $size = count($uniqueSizes) > 1 ? "Varying Sizes" : $groupItems[0]->SizeMM.'mm';
+                              } ?></td>
+                          <td><button class="add-btn" onclick="fetchStoneFamily(this)" data-modelID="<?= $products->config_model_id ?>" data-size="<?= $size ?>" data-count="<?= $count ?>" data-groupName="<?= $groupName ?>" data-LocationNumber="<?= $groupItems[0]->LocationNumber ?>">Select</button></td>
+                        </tr>
                     <?php
+                      }
                     endforeach; ?>
                   </tbody>
                 </table>
@@ -1091,6 +1092,7 @@ $minor2Data = $this->db->get_where('tbl_minisubcategory2', array('id' => $produc
     //----- h6
     var h6Element = document.createElement('h6');
     h6Element.className = 'mt-2';
+    h6Element.style.borderBottom = '1px solid grey';
     h6Element.textContent = groupName + ' ' + size;
     MainDiv.appendChild(h6Element);
     //----- row
@@ -1173,8 +1175,11 @@ $minor2Data = $this->db->get_where('tbl_minisubcategory2', array('id' => $produc
   function configureProduct(obj) {
     // console.log(obj);return;
     $('#modelLoader').show();
-    var ProductId = $('#stoneId').val();
+    var ProductId = $('#proId').val();
     var StoneProductId = obj.getAttribute('data-stoneId');
+    var StoneFamilyName = obj.getAttribute('data-StoneFamilyName');
+    var stoneCategory = obj.getAttribute('data-stoneCategory');
+    var LocationNumber = obj.getAttribute('data-LocationNumber');
     var RingSize = $('#r_size').val();
     $.ajax({
       url: "<?= base_url() ?>dcadmin/Products/configureProduct",
@@ -1182,15 +1187,19 @@ $minor2Data = $this->db->get_where('tbl_minisubcategory2', array('id' => $produc
       data: {
         ProductId: ProductId,
         StoneProductId: StoneProductId,
+        StoneFamilyName: StoneFamilyName,
+        stoneCategory: stoneCategory,
+        LocationNumber: LocationNumber,
         RingSize: RingSize,
       },
       dataType: 'json',
       success: function(response) {
         if (response.status == 200) {
+          $('#preview_src').attr("src", response.data);
           $('#modelLoader').hide();
-          $('#stonesTypes').hide();
-          $('#setStonesTable').html(response.data)
-          $("#setStonesTable").show();
+          // $('#stonesTypes').hide();
+          // $('#setStonesTable').html(response.data)
+          // $("#setStonesTable").show();
         } else {
           alert(response.message)
           location.reload(true);

@@ -616,9 +616,9 @@ class Products extends CI_finecontrol
                 $res = json_decode($response);
                 $html = "<div class='w-100 text-right'><button onclick='stonesListBtn()' class='btn' style='border-color: #797979;'>Back</button></div>";
                 if ($count > 1) {
-                    $html .= '<h6 class="mt-3">' . $groupName . ' ' . $size . ' <span style="font-size:13px">(' . $count . ' stones)</span></h6>';
+                    $html .= '<h6 class="mt-3" style="border-bottom:1px solid grey">' . $groupName . ' ' . $size . '  <span style="font-size:13px">(' . $count . ' stones)</span></h6>';
                 } else {
-                    $html .= '<h6 class="mt-3">' . $groupName . ' ' . $size . '</h6>';
+                    $html .= '<h6 class="mt-3" style="border-bottom:1px solid grey">' . $groupName . ' ' . $size . '</h6>';
                 }
                 $html .= '<div class="row mt-3">';
                 foreach ($res->StoneFamilies as $item) {
@@ -705,7 +705,7 @@ class Products extends CI_finecontrol
                             $html .= '<td>' . $v->DisplayValue . '</td>';
                         }
 
-                        $html .= '<td><button type="button" data-stoneId="'.$item->Product->Id.'" class="btn btn-info" >Set</button></td>';
+                        $html .= '<td><button type="button" data-stoneId="' . $item->Product->Id . '" data-StoneFamilyName="' . $StoneFamilyName . '" data-stoneCategory="' . $stoneCategory . '" data-LocationNumber="' . $LocationNumber . '" class="btn btn-info" onClick="configureProduct(this)">Set</button></td>';
                         $html .= '</tr>';
                     }
                     $html .= '</tbody>';
@@ -743,13 +743,53 @@ class Products extends CI_finecontrol
         $this->load->library('form_validation');
         $this->load->helper('security');
         if ($this->input->post()) {
-            $this->form_validation->set_rules('ProductId', 'modelID', 'required|xss_clean|trim');
-            $this->form_validation->set_rules('StoneProductId', 'groupName', 'required|xss_clean|trim');
-            $this->form_validation->set_rules('RingSize', 'LocationNumber', 'required|xss_clean|trim');
+            $this->form_validation->set_rules('ProductId', 'ProductId', 'required|xss_clean|trim');
+            $this->form_validation->set_rules('StoneProductId', 'StoneProductId', 'required|xss_clean|trim');
+            $this->form_validation->set_rules('RingSize', 'RingSize', 'required|xss_clean|trim');
+            $this->form_validation->set_rules('StoneFamilyName', 'StoneFamilyName', 'required|xss_clean|trim');
+            $this->form_validation->set_rules('stoneCategory', 'stoneCategory', 'required|xss_clean|trim');
+            $this->form_validation->set_rules('LocationNumber', 'LocationNumber', 'required|xss_clean|trim');
             if ($this->form_validation->run() == true) {
                 $ProductId = $this->input->post('ProductId');
                 $StoneProductId = $this->input->post('StoneProductId');
                 $RingSize = $this->input->post('RingSize');
+                $StoneFamilyName = $this->input->post('StoneFamilyName');
+                $stoneCategory = $this->input->post('stoneCategory');
+                $LocationNumber = $this->input->post('LocationNumber');
+                //----------------- Get all location of the product--------
+                $pro_data = $this->db->get_where('tbl_products', array('pro_id' => $ProductId))->row();
+                $final_arr = [];
+                $setting_options = json_decode($pro_data->setting_options);
+                foreach ($setting_options as $st) {
+                    $curl = curl_init();
+                    curl_setopt_array($curl, array(
+                        CURLOPT_URL => 'https://api.stuller.com/v2/products/searchstones',
+                        CURLOPT_RETURNTRANSFER => true,
+                        CURLOPT_ENCODING => '',
+                        CURLOPT_MAXREDIRS => 10,
+                        CURLOPT_TIMEOUT => 0,
+                        CURLOPT_FOLLOWLOCATION => true,
+                        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                        CURLOPT_CUSTOMREQUEST => 'POST',
+                        CURLOPT_POSTFIELDS => '{"ConfigurationModelId":' . $pro_data->config_model_id . ',"LocationNumbers":[' . $st->LocationNumber . '],"StoneFamilyName":"' . $StoneFamilyName . '","StoneCategories":["' . $stoneCategory . '"]}',
+                        CURLOPT_HTTPHEADER => array(
+                            'Authorization: Basic ZGV2amV3ZWw6Q29kaW5nMjA9',
+                            'Content-Type: application/json',
+                            'Host: api.stuller.com',
+                        ),
+                    ));
+
+                    $response = curl_exec($curl);
+                    curl_close($curl);
+                    $res = json_decode($response);
+                    $SP = $res->ConfiguredStones[0]->Product->Id;
+                    if ($st->LocationNumber != $LocationNumber) {
+                        $final_arr[] = ['LocationNumber' => $st->LocationNumber, 'StoneProductId' => $SP];
+                    } else {
+                        $final_arr[] = ['LocationNumber' => $LocationNumber, 'StoneProductId' => $StoneProductId];
+                    }
+                }
+                $final_arr = json_encode($final_arr);
                 $curl = curl_init();
                 curl_setopt_array($curl, array(
                     CURLOPT_URL => 'https://api.stuller.com/v2/products/configureproduct',
@@ -760,7 +800,7 @@ class Products extends CI_finecontrol
                     CURLOPT_FOLLOWLOCATION => true,
                     CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
                     CURLOPT_CUSTOMREQUEST => 'POST',
-                    CURLOPT_POSTFIELDS => '{"ProductId":' . $ProductId . ',"Quantity":1,"Stones":[{"LocationNumber":' . $StoneProductId . ',"StoneProductId":' . $RingSize . '}],"RingSize":7.0}}',
+                    CURLOPT_POSTFIELDS => '{"ProductId":' . $ProductId . ',"Quantity":1,"Stones":'.$final_arr.',"RingSize":7.0}}',
                     CURLOPT_HTTPHEADER => array(
                         'Authorization: Basic ZGV2amV3ZWw6Q29kaW5nMjA9',
                         'Content-Type: application/json',
@@ -771,7 +811,7 @@ class Products extends CI_finecontrol
                 $response = curl_exec($curl);
                 curl_close($curl);
                 $res = json_decode($response);
-                echo $response;
+                echo json_encode(['status' => 200, 'data' => $res->Images[0]->ZoomUrl]);
             } else {
                 $res = array(
                     'message' => validation_errors(),
