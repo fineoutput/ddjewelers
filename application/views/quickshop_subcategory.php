@@ -164,7 +164,7 @@
                       </div>
                       <div class="row m-4">
                         <?php
-                        $this->db->select('id,full_set_images,images,group_images,series_id,group_id,description');
+                        $this->db->select('id,full_set_images,images,group_images,series_id,group_id,description,pro_id');
                         $this->db->from('tbl_products');
                         $this->db->where('minor2_category_id', $quick_mini_subcate2->id);
                         $this->db->where('is_quick', 1);

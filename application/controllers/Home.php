@@ -1216,7 +1216,7 @@ class Home extends CI_Controller
         $config['num_tag_open'] = '<li class="page-item page-link page-link">';
         $config['num_tag_close'] = '</li>';
         if ($type == 1) {
-            $data['productCount'] = $this->db->group_by(array("series_id"))->get_where('tbl_products', array('minor_category_id' => $idd))->num_rows();
+            $data['productCount'] = $this->db->group_by(array("series_id"))->get_where('tbl_products', array('minor_category_id' => $idd,'is_quick'=>null))->num_rows();
             //--------- pagination config ----------------------
             $config['total_rows'] = $data['productCount'];
             $this->pagination->initialize($config);
@@ -1231,7 +1231,7 @@ class Home extends CI_Controller
                 $page_index = 0;
                 $start = 0;
             }
-            $data['products_data'] = $this->db->limit($config["per_page"], $start)->group_by(array("series_id"))->get_where('tbl_products', array('minor_category_id' => $idd))->result();
+            $data['products_data'] = $this->db->limit($config["per_page"], $start)->group_by(array("series_id"))->get_where('tbl_products', array('minor_category_id' => $idd,'is_quick'=>null))->result();
             $mini_data = $this->db->get_where('tbl_minisubcategory', array('is_active' => 1, 'id' => $idd))->row();
             $subcat_data = $this->db->get_where('tbl_sub_category', array('is_active' => 1, 'id' => $mini_data->subcategory))->row();
             $cat_data = $this->db->get_where('tbl_category', array('is_active' => 1, 'id' => $mini_data->category))->row();
@@ -1243,7 +1243,7 @@ class Home extends CI_Controller
             $data['banner'] = $mini_data->banner;
             $data['heading'] = $mini_data->name;
         } else if ($type == 3) {
-            $data['productCount'] = $this->db->group_by(array("series_id"))->get_where('tbl_products', array('category_id' => $idd))->num_rows();
+            $data['productCount'] = $this->db->group_by(array("series_id"))->get_where('tbl_products', array('category_id' => $idd,'is_quick'=>null))->num_rows();
             //--------- pagination config ----------------------
             $config['total_rows'] = $data['productCount'];
             $this->pagination->initialize($config);
@@ -1258,7 +1258,7 @@ class Home extends CI_Controller
                 $page_index = 0;
                 $start = 0;
             }
-            $data['products_data'] = $this->db->limit($config["per_page"], $start)->group_by(array("series_id"))->get_where('tbl_products', array('category_id' => $idd))->result();
+            $data['products_data'] = $this->db->limit($config["per_page"], $start)->group_by(array("series_id"))->get_where('tbl_products', array('category_id' => $idd,'is_quick'=>null))->result();
             $cat_data = $this->db->get_where('tbl_category', array('is_active' => 1, 'id' => $idd))->row();
             $data['category_name'] = $cat_data->name;
             $data['category_id'] = $cat_data->id;
@@ -1268,7 +1268,7 @@ class Home extends CI_Controller
             $data['banner'] = $cat_data->banner;
             $data['heading'] = $cat_data->name;
         } else {
-            $data['productCount'] = $this->db->group_by(array("series_id"))->get_where('tbl_products', array('subcategory_id' => $idd))->num_rows();
+            $data['productCount'] = $this->db->group_by(array("series_id"))->get_where('tbl_products', array('subcategory_id' => $idd,'is_quick'=>null))->num_rows();
             //--------- pagination config ----------------------
             $config['total_rows'] = $data['productCount'];
             $this->pagination->initialize($config);
@@ -1283,7 +1283,7 @@ class Home extends CI_Controller
                 $page_index = 0;
                 $start = 0;
             }
-            $data['products_data'] = $this->db->limit($config["per_page"], $start)->group_by(array("series_id"))->get_where('tbl_products', array('subcategory_id' => $idd))->result();
+            $data['products_data'] = $this->db->limit($config["per_page"], $start)->group_by(array("series_id"))->get_where('tbl_products', array('subcategory_id' => $idd,'is_quick'=>null))->result();
             $subcat_data = $this->db->get_where('tbl_sub_category', array('is_active' => 1, 'id' => $idd))->row();
             $cat_data = $this->db->get_where('tbl_category', array('is_active' => 1, 'id' => $subcat_data->category))->row();
             $data['category_name'] = $cat_data->name;
