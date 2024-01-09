@@ -164,15 +164,11 @@
                       </div>
                       <div class="row m-4">
                         <?php
-                        $this->db->select('id,full_set_images,images,group_images,series_id,group_id,description,pro_id');
-                        $this->db->from('tbl_products');
-                        $this->db->where('minor2_category_id', $quick_mini_subcate2->id);
-                        $this->db->where('is_quick', 1);
-                        $this->db->group_by("series_id");
-                        $product_da = $this->db->get();
+                        $product_da = $this->db->select('id,full_set_images,images,group_images,series_id,group_id,description,pro_id')->group_by(array("series_id"))->get_where('tbl_products', array('minor2_category_id' => $quick_mini_subcate2->id, 'is_quick' => 1))->result();
+
                         // $product_da = [];
                         if (!empty($product_da)) {
-                          foreach ($product_da->result() as $data) {
+                          foreach ($product_da as $data) {
                             $full_images = json_decode($data->full_set_images);
                             $images = json_decode($data->images);
                             $group_images = json_decode($data->group_images);

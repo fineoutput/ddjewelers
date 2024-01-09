@@ -41,11 +41,11 @@
                                                             // echo $sc;
                                                             // exit;
                                                             $this->db->select('*');
-                                                            $this->db->from('tbl_category');
+                                                            $this->db->from('tbl_quickshop_category');
                                                             $this->db->where('id', $c);
                                                             $data3 = $this->db->get()->row();
                                                             $this->db->select('*');
-                                                            $this->db->from('tbl_sub_category');
+                                                            $this->db->from('tbl_quickshop_subcategory');
                                                             $this->db->where('id', $sc);
                                                             $data2 = $this->db->get()->row();
 
@@ -56,7 +56,7 @@
                                                             }
 
                                                             $this->db->select('*');
-                                                            $this->db->from('tbl_minisubcategory');
+                                                            $this->db->from('tbl_quickshop_minisubcategory');
                                                             $this->db->where('id', $scc);
                                                             $data4 = $this->db->get()->row();
 
@@ -67,7 +67,7 @@
                                                             }
 
                                                             $this->db->select('*');
-                                                            $this->db->from('tbl_minisubcategory2');
+                                                            $this->db->from('tbl_quickshop_minisubcategory2');
                                                             $this->db->where('id', $scc2);
                                                             $data5 = $this->db->get()->row();
 
