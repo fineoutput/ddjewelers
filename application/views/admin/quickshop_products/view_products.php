@@ -35,90 +35,40 @@
                     <tr>
                       <th>#</th>
                       <th>Product name</th>
-                      <th>SKU #</th>
+                      <th>Product Id</th>
                       <th>Price</th>
-                      <th>Currency</th>
                       <th>Total Weight</th>
                       <th>Image1</th>
-                      <th>Status</th>
                       <th>Action</th>
                     </tr>
                   </thead>
                   <tbody>
                     <?php $i = 1;
-                    foreach ($products_data->result() as $data) { ?>
+                    foreach ($products_data->result() as $data) {
+                      $images = json_decode($data->full_set_images);
+                    ?>
                       <tr>
                         <td><?php echo $i ?> </td>
                         <td><?php echo $data->description ?></td>
-                        <td><?php echo $data->sku ?></td>
-                        <td><?php echo $data->price ?></td>
-                        <td><?php echo $data->currency ?></td>
-                        <td><?php echo $data->totalweight ?></td>
+                        <td><?php echo $data->pro_id ?></td>
+                        <td>$<?php echo $data->price ?></td>
+                        <td><?php echo $data->weight ?></td>
                         <td>
-                          <?php if ($data->image1 != "") { ?>
-                            <img id="slide_img_path" height=50 width=100 src="<?php echo $data->image1
+                          <?php if ($images[0]->FullUrl != "") { ?>
+                            <img id="slide_img_path" height=50 width=100 src="<?php echo  $images[0]->FullUrl
                                                                               ?>">
                           <?php } else { ?>
                             Sorry No File Found
                           <?php } ?>
                         </td>
-                        <!-- <td>
-        <?php if ($data->image2 != "") { ?>
-        <img id="slide_img_path" height=50 width=100 src="<?php echo $data->image2
-                                                          ?>" >
-        <?php } else { ?>
-        Sorry No File Found
-        <?php } ?>
-        </td>
-        <td>
-        <?php if ($data->image3 != "") { ?>
-        <img id="slide_img_path" height=50 width=100 src="<?php echo base_url() . $data->image3
-                                                          ?>" >
-        <?php } else { ?>
-        Sorry No File Found
-        <?php } ?>
-        </td>
-        <td>
-        <?php if ($data->image4 != "") { ?>
-        <img id="slide_img_path" height=50 width=100 src="<?php echo base_url() . $data->image4
-                                                          ?>" >
-        <?php } else { ?>
-        Sorry No File Found
-        <?php } ?>
-        </td>
-        <td>
-        <?php if ($data->image5 != "") { ?>
-        <img id="slide_img_path" height=50 width=100 src="<?php echo base_url() . $data->image5
-                                                          ?>" >
-        <?php } else { ?>
-        Sorry No File Found
-        <?php } ?>
-        </td>
- -->
-                        <td><?php if ($data->is_active == 1) { ?>
-                            <p class="label bg-green">Active</p>
-                          <?php } else { ?>
-                            <p class="label bg-yellow">Inactive</p>
-                          <?php } ?>
-                        </td>
+
                         <td>
                           <div class="btn-group" id="btns<?php echo $i ?>">
                             <div class="btn-group">
                               <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
                                 Action <span class="caret"></span></button>
                               <ul class="dropdown-menu" role="menu">
-                                <!-- <?php if ($data->is_active == 1) { ?>
-        <li><a href="<?php echo base_url() ?>dcadmin/QuickshopProducts/updateproductsStatus/<?php echo
-                                                                                            base64_encode($data->id) ?>/inactive">Inactive</a></li>
-        <?php } else { ?>
-        <li><a href="<?php echo base_url() ?>dcadmin/QuickshopProducts/updateproductsStatus/<?php echo
-                                                                                            base64_encode($data->id) ?>/active">Active</a></li>
-        <?php } ?> -->
-                                <!-- <li><a href="<?php echo base_url() ?>dcadmin/QuickshopProducts/update_productss/<?php echo
-                                                                                                                      base64_encode($data->id) ?>">Edit</a></li> -->
-                                <li><a href="<?php echo base_url() ?>dcadmin/QuickshopProducts/product_details/<?php echo
-                                                                                                                base64_encode($data->id) ?>">Product Details</a></li>
-                                <li><a href="javascript:;" class="dCnf" mydata="<?php echo $i ?>">Delete</a></li>
+                                <li><a href="<?php echo base_url() ?>dcadmin/QuickshopProducts/product_details/<?php echo                                                          base64_encode($data->id) ?>">Product Details</a></li>
                               </ul>
                             </div>
                           </div>

@@ -286,6 +286,7 @@
                 </div>
               <?php $i++;
               } ?>
+              <?= $links ?>
             <? } else { ?>
               <div class="text-center">
                 <img src="<?= base_url() ?>/assets/frontend/no_data.jpg" style="    max-width: 45%;
@@ -294,7 +295,6 @@
               </div>
             <? } ?>
           </div>
-          <?= $links ?>
         </div>
       </div>
     </div>
@@ -302,4 +302,3 @@
   </div>
   <input type="hidden" value="<?= $level_id; ?>" id="level_id">
 </section>
-<script>

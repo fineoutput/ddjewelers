@@ -148,7 +148,7 @@
                 </div>
                 <div class="col-md-12 collapse" id="collapseExample_<?= $quick_mini_subcate->id; ?>">
                   <?php
-                  $this->db->select('*');
+                  $this->db->select('id,name');
                   $this->db->from('tbl_quickshop_minisubcategory2');
                   $this->db->where('minorsubcategory', $quick_mini_subcate->id);
                   $this->db->where('is_active', 1);
@@ -164,46 +164,31 @@
                       </div>
                       <div class="row m-4">
                         <?php
-                        // $this->db->select('*');
-                        // $this->db->from('tbl_products');
-                        // $this->db->group_by(array("sku_series", "sku_series_type1"));
-                        // $this->db->where('minisub_category2', $quick_mini_subcate2->id);
-                        // $this->db->where('is_active', 1);
-                        // $this->db->where('is_quick', 1);
-                        // $product_da = $this->db->get();
-                        // $this->db->select('*');
-                        // $this->db->from('tbl_products');
-                        // $this->db->where('minisub_category2', $quick_mini_subcate2->id);
-                        // $this->db->where('is_active', 1);
-                        // $this->db->where('is_quick', 1);
-                        // // $this->db->where("sku_series_type1 = (SELECT MAX(sku_series_type1) FROM tbl_products WHERE sku_series = tbl_products.sku_series)", NULL, FALSE);
-                        // $this->db->where('sku_series IN (SELECT sku_series FROM tbl_products GROUP BY sku_series HAVING COUNT(*) = 1)');
-                        // $product_da = $this->db->get();
-                        $this->db->select('*');
+                        $this->db->select('id,full_set_images,images,group_images,series_id,group_id,description');
                         $this->db->from('tbl_products');
-                        $this->db->where('minisub_category2', $quick_mini_subcate2->id);
-                        $this->db->where('is_active', 1);
+                        $this->db->where('minor2_category_id', $quick_mini_subcate2->id);
                         $this->db->where('is_quick', 1);
-                        $this->db->group_by('sku_series');
-                        // $this->db->having('COUNT(sku_series)', 1);
+                        $this->db->group_by("series_id");
                         $product_da = $this->db->get();
-
-                        // $result = $query->result();
-                        // print_r($result);
-                        // die();
-                        // echo $product_da= $this->db->count_all_results(); die();
-                        if (!empty($product_da->row())) {
-                          foreach ($product_da->result() as $prod) {
-                            if (!empty($prod->image1)) {
-                              $image1 = $prod->image1;
-                            } else {
-                              $image1 = "";
+                        // $product_da = [];
+                        if (!empty($product_da)) {
+                          foreach ($product_da->result() as $data) {
+                            $full_images = json_decode($data->full_set_images);
+                            $images = json_decode($data->images);
+                            $group_images = json_decode($data->group_images);
+                            $image1 = '';
+                            if (!empty($full_images)) {
+                              $image1 = $full_images[0]->FullUrl;
+                            } else if (!empty($images)) {
+                              $image1 = $images[0]->FullUrl;
+                            } else if (!empty($group_images)) {
+                              $image1 = $group_images[0]->FullUrl;
                             }
                         ?>
-                            <a href="<?= base_url() ?>QuickShops/quickshops_product_detail/<?= $prod->sku; ?>">
+                            <a href="<?= base_url() ?>Home/product_details/<?= $data->series_id ?>/<?= $data->pro_id ?>?groupId=<?= $data->group_id ?>">
                               <div class="col-md-dd">
                                 <img src="<?= $image1; ?>">
-                                <P><?= $prod->description; ?></P>
+                                <P><?= $data->description; ?></P>
                               </div>
                             </a>
                         <?php

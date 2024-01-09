@@ -75,6 +75,7 @@ class QuickShops extends CI_Controller
 		$this->load->view('quickshop_subcategory');
 		$this->load->view('common/footer');
 	}
+	
 	//get quickshop product detail page on header category quickshop option
 	public function quickshops_product_detail($idd)
 	{

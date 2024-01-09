@@ -436,10 +436,17 @@
 </style>
 
 <?
-$catData = $this->db->get_where('tbl_category', array('id' => $products->category_id))->row();
-$subCatData = $this->db->get_where('tbl_sub_category', array('id' => $products->subcategory_id))->row();
-$minor1Data = $this->db->get_where('tbl_minisubcategory', array('id' => $products->minor_category_id))->row();
-$minor2Data = $this->db->get_where('tbl_minisubcategory2', array('id' => $products->minor2_category_id))->row();
+if ($products->is_quick == 1) {
+  $catData = $this->db->get_where('tbl_quickshop_category', array('id' => $products->category_id))->row();
+  $subCatData = $this->db->get_where('tbl_quickshop_subcategory', array('id' => $products->subcategory_id))->row();
+  $minor1Data = $this->db->get_where('tbl_quickshop_minisubcategory', array('id' => $products->minor_category_id))->row();
+  $minor2Data = $this->db->get_where('tbl_quickshop_minisubcategory2', array('id' => $products->minor2_category_id))->row();
+} else {
+  $catData = $this->db->get_where('tbl_category', array('id' => $products->category_id))->row();
+  $subCatData = $this->db->get_where('tbl_sub_category', array('id' => $products->subcategory_id))->row();
+  $minor1Data = $this->db->get_where('tbl_minisubcategory', array('id' => $products->minor_category_id))->row();
+  $minor2Data = $this->db->get_where('tbl_minisubcategory2', array('id' => $products->minor2_category_id))->row();
+}
 
 ?>
 <div class="container-fluid mt-3 ">
@@ -999,7 +1006,11 @@ $minor2Data = $this->db->get_where('tbl_minisubcategory2', array('id' => $produc
                     // Iterate over the data to count each group
                     foreach ($setting_options as $st) {
                       $groupName = $st->GroupName;
-                      $groupCounts[$groupName] = ($groupCounts[$groupName] ?? 0) + 1;
+                      if (!empty($groupCounts)) {
+                        $groupCounts[$groupName] = ($groupCounts[$groupName] ?? 0) + 1;
+                      } else {
+                        $groupCounts[$groupName] = 0;
+                      }
                     }
                     foreach ($groupCounts as $groupName => $count) :
                       $groupItems = array_filter($setting_options, function ($item) use ($groupName) {
