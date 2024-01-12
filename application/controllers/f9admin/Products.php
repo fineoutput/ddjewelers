@@ -761,6 +761,11 @@ class Products extends CI_finecontrol
                 $final_arr = [];
                 $setting_options = json_decode($pro_data->setting_options);
                 foreach ($setting_options as $st) {
+                    if ($st->LocationNumber != $LocationNumber) {
+                        $SF='Diamond';
+                    } else {
+                        $SF=$StoneFamilyName;
+                    }
                     $curl = curl_init();
                     curl_setopt_array($curl, array(
                         CURLOPT_URL => 'https://api.stuller.com/v2/products/searchstones',
@@ -771,7 +776,7 @@ class Products extends CI_finecontrol
                         CURLOPT_FOLLOWLOCATION => true,
                         CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
                         CURLOPT_CUSTOMREQUEST => 'POST',
-                        CURLOPT_POSTFIELDS => '{"ConfigurationModelId":' . $pro_data->config_model_id . ',"LocationNumbers":[' . $st->LocationNumber . '],"StoneFamilyName":"' . $StoneFamilyName . '","StoneCategories":["' . $stoneCategory . '"]}',
+                        CURLOPT_POSTFIELDS => '{"ConfigurationModelId":' . $pro_data->config_model_id . ',"LocationNumbers":[' . $st->LocationNumber . '],"StoneFamilyName":"' . $SF . '","StoneCategories":["' . $stoneCategory . '"]}',
                         CURLOPT_HTTPHEADER => array(
                             'Authorization: Basic ZGV2amV3ZWw6Q29kaW5nMjA9',
                             'Content-Type: application/json',

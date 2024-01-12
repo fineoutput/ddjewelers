@@ -1027,10 +1027,10 @@ if ($products->is_quick == 1) {
                             <? } ?>
                           </td>
                           <td style="vertical-align: -webkit-baseline-middle;"><? if ($count == 1) {
-                                                                                  echo $size = $groupItems[0]->SizeMM . 'mm';
+                                                                                  echo $size = $groupItems[0]->Dimension1 . 'mm x '.$groupItems[0]->Dimension2 . 'mm';
                                                                                 } else {
                                                                                   // If there are multiple unique SizeMM values, print "Varying Sizes"
-                                                                                  echo $size = count($uniqueSizes) > 1 ? "Varying Sizes" : $groupItems[0]->SizeMM . 'mm';
+                                                                                  echo $size = count($uniqueSizes) > 1 ? "Varying Sizes" : $groupItems[0]->Dimension1 . 'mm x '.$groupItems[0]->Dimension2 . 'mm';
                                                                                 } ?></td>
                           <td><button class="add-btn" onclick="fetchStoneFamily(this)" data-modelID="<?= $products->config_model_id ?>" data-size="<?= $size ?>" data-count="<?= $count ?>" data-groupName="<?= $groupName ?>" data-LocationNumber="<?= $groupItems[0]->LocationNumber ?>">Select</button></td>
                         </tr>
