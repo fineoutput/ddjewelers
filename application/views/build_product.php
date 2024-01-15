@@ -605,6 +605,15 @@ if ($products->is_quick == 1) {
           <p><?= $stone_data[0]->stone ?></p>
         </div>
       <? } ?>
+      <? if (!empty($setting_options)) { ?>
+
+        <div class="d-flex jus_cont">
+          <p><b>Set Stone</b></p>
+          <button type="button" class="btn add-btn" data-toggle="modal" data-target="#myModal">
+            Set Stone
+          </button>
+        </div>
+      <? } ?>
       <?php
       $index = 0;
       foreach ($options as  $key => $uniqueOptions) :
@@ -778,11 +787,7 @@ if ($products->is_quick == 1) {
                                     echo "0";
                                   } ?>
       </p>
-      <? if (!empty($setting_options)) { ?>
-        <button type="button" class="btn add-btn" data-toggle="modal" data-target="#myModal">
-          Set Stone
-        </button>
-      <? } ?>
+
       <?php if (empty($this->session->userdata('user_id'))) { ?>
         <input type="submit" class="mt-3 add-btn" value=" Add to cart" onclick="addToCart(this);" quantity="" id="addToCartBtn" data-pro-id="<?= $products->pro_id; ?>" data-ring_size="<?= $products->ring_size ?>" data-ring_price="">
       <?php } else { ?>
@@ -1018,7 +1023,7 @@ if ($products->is_quick == 1) {
                       });
                       $groupItems = array_values($groupItems);
                       $uniqueSizes = array_unique(array_column($groupItems, 'SizeMM'));
-                      if ($groupName == 'Center') { 
+                      if ($groupName == 'Center') {
                     ?>
                         <tr>
                           <td style="text-align: left;padding: 8px; vertical-align: -webkit-baseline-middle;"><?= $groupName ?>
@@ -1027,10 +1032,10 @@ if ($products->is_quick == 1) {
                             <? } ?>
                           </td>
                           <td style="vertical-align: -webkit-baseline-middle;"><? if ($count == 1) {
-                                                                                  echo $size = $groupItems[0]->Dimension1 . 'mm x '.$groupItems[0]->Dimension2 . 'mm';
+                                                                                  echo $size = $groupItems[0]->Dimension1 . 'mm x ' . $groupItems[0]->Dimension2 . 'mm';
                                                                                 } else {
                                                                                   // If there are multiple unique SizeMM values, print "Varying Sizes"
-                                                                                  echo $size = count($uniqueSizes) > 1 ? "Varying Sizes" : $groupItems[0]->Dimension1 . 'mm x '.$groupItems[0]->Dimension2 . 'mm';
+                                                                                  echo $size = count($uniqueSizes) > 1 ? "Varying Sizes" : $groupItems[0]->Dimension1 . 'mm x ' . $groupItems[0]->Dimension2 . 'mm';
                                                                                 } ?></td>
                           <td><button class="add-btn" onclick="fetchStoneFamily(this)" data-modelID="<?= $products->config_model_id ?>" data-size="<?= $size ?>" data-count="<?= $count ?>" data-groupName="<?= $groupName ?>" data-LocationNumber="<?= $groupItems[0]->LocationNumber ?>">Select</button></td>
                         </tr>
@@ -1257,24 +1262,24 @@ if ($products->is_quick == 1) {
     // rowDiv.appendChild(stoneDiv);
     //---- types
     categories.map(function(category) {
-      if(category!='Imitation' && category!='Natural'){
-      var colDiv = document.createElement('div');
-      colDiv.className = 'col-md-3';
-      var buttonElement = document.createElement('button');
-      buttonElement.className = 'btn btn-light';
-      buttonElement.textContent = category;
-      buttonElement.style.width = '100%';
-      buttonElement.style.borderColor = '#797979';
-      buttonElement.setAttribute('data-modelId', modelId);
-      buttonElement.setAttribute('data-Location', LocationNumber);
-      buttonElement.setAttribute('data-StoneFamily', name);
-      buttonElement.setAttribute('data-stoneCategory', category);
-      buttonElement.addEventListener('click', function() {
-        fetchFamilyStoneList(this)
-      })
-      colDiv.appendChild(buttonElement);
-      rowDiv.appendChild(colDiv);
-    }
+      if (category != 'Imitation' && category != 'Natural') {
+        var colDiv = document.createElement('div');
+        colDiv.className = 'col-md-3';
+        var buttonElement = document.createElement('button');
+        buttonElement.className = 'btn btn-light';
+        buttonElement.textContent = category;
+        buttonElement.style.width = '100%';
+        buttonElement.style.borderColor = '#797979';
+        buttonElement.setAttribute('data-modelId', modelId);
+        buttonElement.setAttribute('data-Location', LocationNumber);
+        buttonElement.setAttribute('data-StoneFamily', name);
+        buttonElement.setAttribute('data-stoneCategory', category);
+        buttonElement.addEventListener('click', function() {
+          fetchFamilyStoneList(this)
+        })
+        colDiv.appendChild(buttonElement);
+        rowDiv.appendChild(colDiv);
+      }
     });
     MainDiv.appendChild(rowDiv);
     $("#stonesList").hide();
