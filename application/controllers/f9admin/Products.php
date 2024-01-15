@@ -204,6 +204,7 @@ class Products extends CI_finecontrol
                         'subcategory_id' => $subcategory_id,
                         'minor_category_id' => $minor_category_id,
                         'minor2_category_id' => $minor2_category_id,
+                        'is_quick' => '',
                     ];
                     $this->fetch_product($send);
                     $this->session->set_flashdata('smessage', 'Data inserted successfully');
@@ -229,6 +230,7 @@ class Products extends CI_finecontrol
         $subcategory_id = $received['subcategory_id'];
         $minor_category_id = $received['minor_category_id'];
         $minor2_category_id = $received['minor2_category_id'];
+        $is_quick = $received['is_quick'];
         $api_id = '';
         $type = '';
         $finished = '';
@@ -236,8 +238,9 @@ class Products extends CI_finecontrol
         $include_sku = '';
         $exclude_series = '';
         $exclude_sku = '';
-        if ($minor2_category_id != 0) {
-            $minor2_data = $this->db->select('id,api_id,type,finshed,include_series,include_sku,exlude_series,exlude_sku')->get_where('tbl_minisubcategory2', array('id' => $minor2_category_id))->row();
+        if (!empty($is_quick)) {
+            //-------------- quick shop products -----------------
+            $minor2_data = $this->db->select('id,api_id,type,finshed,include_series,include_sku,exlude_series,exlude_sku')->get_where('tbl_quickshop_minisubcategory2', array('id' => $minor2_category_id))->row();
             if (!empty($minor2_data)) {
                 $api_id = $minor2_data->api_id;
                 $type = $minor2_data->type;
@@ -249,58 +252,75 @@ class Products extends CI_finecontrol
             }
             //------ Deleting existing data -----------
             $delete = $this->db->delete('tbl_products', array('category_id' => $category_id, 'subcategory_id' => $subcategory_id, 'minor_category_id' => $minor_category_id, 'minor2_category_id' => $minor2_category_id));
-        } else if ($minor_category_id != 0) {
-            $minor_data = $this->db->select('id,api_id,type,finshed,include_series,include_sku,exlude_series,exlude_sku')->get_where('tbl_minisubcategory', array('id' => $minor_category_id))->row();
-            if (!empty($minor_data)) {
-                $api_id = $minor_data->api_id;
-                $type = $minor_data->type;
-                $finished = $minor_data->finshed;
-                $include_series = $minor_data->include_series;
-                $include_sku = $minor_data->include_sku;
-                $exclude_series = $minor_data->exlude_series;
-                $exclude_sku = $minor_data->exlude_sku;
-            }
-            //------ Deleting existing data -----------
-            $delete = $this->db->delete('tbl_products', array('category_id' => $category_id, 'subcategory_id' => $subcategory_id, 'minor_category_id' => $minor_category_id,));
-        } else if ($subcategory_id != 0) {
-            $sub_data = $this->db->select('id,api_id,type,finshed,include_series,include_sku,exlude_series,exlude_sku')->get_where('tbl_sub_category', array('id' => $subcategory_id))->row();
-            if (!empty($sub_data)) {
-                $api_id = $sub_data->api_id;
-                $type = $sub_data->type;
-                $finished = $sub_data->finshed;
-                $include_series = $sub_data->include_series;
-                $include_sku = $sub_data->include_sku;
-                $exclude_series = $sub_data->exlude_series;
-                $exclude_sku = $sub_data->exlude_sku;
-            }
-            //------ Deleting existing data -----------
-            $delete = $this->db->delete('tbl_products', array('category_id' => $category_id, 'subcategory_id' => $subcategory_id));
-        } else {
-            $cate_data = $this->db->select('id,api_id,type,finshed,include_series,include_sku,exlude_series,exlude_sku')->get_where('tbl_category', array('id' => $category_id))->row();
-            if (!empty($cate_data)) {
-                $api_id = $cate_data->api_id;
-                $type = $cate_data->type;
-                $finished = $cate_data->finshed;
-                $include_series = $cate_data->include_series;
-                $include_sku = $cate_data->include_sku;
-                $exclude_series = $cate_data->exlude_series;
-                $exclude_sku = $cate_data->exlude_sku;
-            }
-            //------ Deleting existing data -----------
-            $delete = $this->db->delete('tbl_products', array('category_id' => $category_id));
         }
-        $minimum_cost = $this->db->get_where('tbl_minimum_cost', array())->row();
-        if ($finished) {
-            $filter = json_encode(["Orderable", "OnPriceList", "Finished"]);
-        } else {
-            $filter = json_encode(["Orderable", "OnPriceList"]);
-        }
-        if ($type == 1) {
-            $key = 'CategoryIds';
-        } else if ($type == 2) {
-            $key = 'Series';
-        } else {
-            $key = 'SKU';
+        //-------------- normal products -----------------
+        else {
+            if ($minor2_category_id != 0) {
+                $minor2_data = $this->db->select('id,api_id,type,finshed,include_series,include_sku,exlude_series,exlude_sku')->get_where('tbl_minisubcategory2', array('id' => $minor2_category_id))->row();
+                if (!empty($minor2_data)) {
+                    $api_id = $minor2_data->api_id;
+                    $type = $minor2_data->type;
+                    $finished = $minor2_data->finshed;
+                    $include_series = $minor2_data->include_series;
+                    $include_sku = $minor2_data->include_sku;
+                    $exclude_series = $minor2_data->exlude_series;
+                    $exclude_sku = $minor2_data->exlude_sku;
+                }
+                //------ Deleting existing data -----------
+                $delete = $this->db->delete('tbl_products', array('category_id' => $category_id, 'subcategory_id' => $subcategory_id, 'minor_category_id' => $minor_category_id, 'minor2_category_id' => $minor2_category_id));
+            } else if ($minor_category_id != 0) {
+                $minor_data = $this->db->select('id,api_id,type,finshed,include_series,include_sku,exlude_series,exlude_sku')->get_where('tbl_minisubcategory', array('id' => $minor_category_id))->row();
+                if (!empty($minor_data)) {
+                    $api_id = $minor_data->api_id;
+                    $type = $minor_data->type;
+                    $finished = $minor_data->finshed;
+                    $include_series = $minor_data->include_series;
+                    $include_sku = $minor_data->include_sku;
+                    $exclude_series = $minor_data->exlude_series;
+                    $exclude_sku = $minor_data->exlude_sku;
+                }
+                //------ Deleting existing data -----------
+                $delete = $this->db->delete('tbl_products', array('category_id' => $category_id, 'subcategory_id' => $subcategory_id, 'minor_category_id' => $minor_category_id,));
+            } else if ($subcategory_id != 0) {
+                $sub_data = $this->db->select('id,api_id,type,finshed,include_series,include_sku,exlude_series,exlude_sku')->get_where('tbl_sub_category', array('id' => $subcategory_id))->row();
+                if (!empty($sub_data)) {
+                    $api_id = $sub_data->api_id;
+                    $type = $sub_data->type;
+                    $finished = $sub_data->finshed;
+                    $include_series = $sub_data->include_series;
+                    $include_sku = $sub_data->include_sku;
+                    $exclude_series = $sub_data->exlude_series;
+                    $exclude_sku = $sub_data->exlude_sku;
+                }
+                //------ Deleting existing data -----------
+                $delete = $this->db->delete('tbl_products', array('category_id' => $category_id, 'subcategory_id' => $subcategory_id));
+            } else {
+                $cate_data = $this->db->select('id,api_id,type,finshed,include_series,include_sku,exlude_series,exlude_sku')->get_where('tbl_category', array('id' => $category_id))->row();
+                if (!empty($cate_data)) {
+                    $api_id = $cate_data->api_id;
+                    $type = $cate_data->type;
+                    $finished = $cate_data->finshed;
+                    $include_series = $cate_data->include_series;
+                    $include_sku = $cate_data->include_sku;
+                    $exclude_series = $cate_data->exlude_series;
+                    $exclude_sku = $cate_data->exlude_sku;
+                }
+                //------ Deleting existing data -----------
+                $delete = $this->db->delete('tbl_products', array('category_id' => $category_id));
+            }
+            $minimum_cost = $this->db->get_where('tbl_minimum_cost', array())->row();
+            if ($finished) {
+                $filter = json_encode(["Orderable", "OnPriceList", "Finished"]);
+            } else {
+                $filter = json_encode(["Orderable", "OnPriceList"]);
+            }
+            if ($type == 1) {
+                $key = 'CategoryIds';
+            } else if ($type == 2) {
+                $key = 'Series';
+            } else {
+                $key = 'SKU';
+            }
         }
         $send = [
             'category_id' => $category_id,
@@ -315,6 +335,7 @@ class Products extends CI_finecontrol
             'exclude_sku' => $exclude_sku,
             'minimum_cost' => $minimum_cost->cost,
             'key' => $key,
+            'is_quick' => $is_quick,
         ];
         $res = $this->fetchApiData($send);
         return $res;
@@ -412,6 +433,7 @@ class Products extends CI_finecontrol
             'subcategory_id' => $receive['subcategory_id'],
             'minor_category_id' => $receive['minor_category_id'],
             'minor2_category_id' => $receive['minor2_category_id'],
+            'is_quick' => $receive['is_quick'] ? $receive['is_quick'] : null,
             'pro_id' => $prod->Id,
             'sku' => $prod->SKU,
             'short_description' => $prod->ShortDescription,
@@ -460,6 +482,7 @@ class Products extends CI_finecontrol
                 'subcategory_id' => $cron_jobs->subcat_id,
                 'minor_category_id' => $cron_jobs->mincat_id1,
                 'minor2_category_id' => $cron_jobs->mincat_id2,
+                'is_quick' => $cron_jobs->is_quick,
             ];
             $res = $this->fetch_product($send);
             date_default_timezone_set("Asia/Calcutta");
@@ -622,9 +645,9 @@ class Products extends CI_finecontrol
                 }
                 $html .= '<div class="row mt-3">';
                 foreach ($res->StoneFamilies as $item) {
-                    if(strtolower($item->Name)=='diamond' || strtolower($item->Name)=='ruby'){
-                    $img = base_url() . 'assets/jewel/img/gemstone/' . strtolower($item->Name) . '.jpg';
-                    $html .= '<div class="col-md-3" onclick="showStoneType(this)" data-modelID="' . $modelID . '" data-groupName="' . $groupName . '" data-size="' . $size . '" data-name="' . $item->Name . '" data-image="' . $img . '" data-LocationNumber="' . $LocationNumber . '" data-category=\'' . json_encode($item->Categories) . '\'><div class="text-center" style="cursor: pointer;"><img src="' . $img . '" style="width:60px;height:60px"><p>' . $item->Name . '</p></div></div>';
+                    if (strtolower($item->Name) == 'diamond' || strtolower($item->Name) == 'ruby') {
+                        $img = base_url() . 'assets/jewel/img/gemstone/' . strtolower($item->Name) . '.jpg';
+                        $html .= '<div class="col-md-3" onclick="showStoneType(this)" data-modelID="' . $modelID . '" data-groupName="' . $groupName . '" data-size="' . $size . '" data-name="' . $item->Name . '" data-image="' . $img . '" data-LocationNumber="' . $LocationNumber . '" data-category=\'' . json_encode($item->Categories) . '\'><div class="text-center" style="cursor: pointer;"><img src="' . $img . '" style="width:60px;height:60px"><p>' . $item->Name . '</p></div></div>';
                     }
                 }
                 $html .= '</div>';
@@ -764,9 +787,9 @@ class Products extends CI_finecontrol
                 $setting_options = json_decode($pro_data->setting_options);
                 foreach ($setting_options as $st) {
                     if ($st->LocationNumber != $LocationNumber) {
-                        $SF='Diamond';
+                        $SF = 'Diamond';
                     } else {
-                        $SF=$StoneFamilyName;
+                        $SF = $StoneFamilyName;
                     }
                     $curl = curl_init();
                     curl_setopt_array($curl, array(
@@ -807,7 +830,7 @@ class Products extends CI_finecontrol
                     CURLOPT_FOLLOWLOCATION => true,
                     CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
                     CURLOPT_CUSTOMREQUEST => 'POST',
-                    CURLOPT_POSTFIELDS => '{"ProductId":' . $ProductId . ',"Quantity":1,"Stones":'.$final_arr.',"RingSize":7.0}}',
+                    CURLOPT_POSTFIELDS => '{"ProductId":' . $ProductId . ',"Quantity":1,"Stones":' . $final_arr . ',"RingSize":7.0}}',
                     CURLOPT_HTTPHEADER => array(
                         'Authorization: Basic ZGV2amV3ZWw6Q29kaW5nMjA9',
                         'Content-Type: application/json',
@@ -818,6 +841,8 @@ class Products extends CI_finecontrol
                 $response = curl_exec($curl);
                 curl_close($curl);
                 $res = json_decode($response);
+                $html = "<div class='w-100 text-right'><button onclick='setStonesTableBtn()' class='btn' style='border-color: #797979;'>Back</button></div>";
+                $html .= '<div class="row mt-3">';
                 echo json_encode(['status' => 200, 'data' => $res->Images[0]->ZoomUrl]);
             } else {
                 $res = array(

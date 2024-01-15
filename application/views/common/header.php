@@ -24,19 +24,15 @@
   <link rel="stylesheet" type="text/css" href="<?= base_url(); ?>assets/jewel/css/style.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.css" />
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-  <link href="https://vjs.zencdn.net/7.18.1/video-js.css" rel="stylesheet" />
-  <link href="https://unpkg.com/video.js@7/dist/video-js.min.css" rel="stylesheet" />
   <script src="https://js.braintreegateway.com/web/dropin/1.34.0/js/dropin.min.js"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
-  <!-- City -->
-  <link href="https://unpkg.com/@videojs/themes@1/dist/city/index.css" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.3.5/jquery.fancybox.min.css">
-  <link rel="stylesheet" href="https://www.insightindia.com/mcss/icon-font.css">
+  <!-- <link rel="stylesheet" href="https://www.insightindia.com/mcss/icon-font.css"> -->
 <!-- Add these links in your HTML head section -->
-<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.6/css/jquery.dataTables.min.css">
-<script src="https://cdn.datatables.net/1.11.6/js/jquery.dataTables.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
+<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
 
 </head>
 <style>
@@ -114,7 +110,7 @@
     <div class="loader"></div>
   </div>
   <!-- header start -->
-  <script defer src="https://use.fontawesome.com/releases/v5.0.8/js/all.js" integrity="sha384-SlE991lGASHoBfWbelyBPLsUlwY1GwNDJo3jSJO04KZ33K2bwfV9YBauFfnzvynJ" crossorigin="anonymous"></script>
+
   <style media="screen">
     @media (max-width:992px) {
       .cart-value {

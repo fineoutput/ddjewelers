@@ -513,7 +513,7 @@ if ($products->is_quick == 1) {
               <? if (!empty($videos[0]->DownloadUrl)) { ?>
                 <!-- =============== video =============== -->
                 <a data-fancybox="gallery" href="<?= $videos[0]->DownloadUrl ?>">
-                  <video width="400" height="375" loop autoplay muted>
+                  <video width="100%" height="100%" loop autoplay muted>
                     <source type="video/mp4" src="<?= $videos[0]->DownloadUrl ?>" class="img-fluid gc-zoom">
                   </video> </a>
                 <!-- =============== video end =============== -->
@@ -1053,6 +1053,10 @@ if ($products->is_quick == 1) {
             <div id="setStonesTable">
             </div>
             <!-- --------------- END SET STONE TABLE-------- -->
+            <!-- --------------- START SET FINAL  -------- -->
+            <div id="setFinal">
+            </div>
+            <!-- --------------- END SET FINAL-------- -->
           </div>
         </div>
       </div>
@@ -1248,11 +1252,12 @@ if ($products->is_quick == 1) {
     pTag.style.marginBottom = '0px';
     pTag.textContent = name;
     imgDiv.appendChild(pTag);
-    imgDiv.appendChild(h6Element);
     MainDiv.appendChild(imgDiv);
+    MainDiv.appendChild(h6Element);
     // rowDiv.appendChild(stoneDiv);
     //---- types
     categories.map(function(category) {
+      if(category!='Imitation' && category!='Natural'){
       var colDiv = document.createElement('div');
       colDiv.className = 'col-md-3';
       var buttonElement = document.createElement('button');
@@ -1269,6 +1274,7 @@ if ($products->is_quick == 1) {
       })
       colDiv.appendChild(buttonElement);
       rowDiv.appendChild(colDiv);
+    }
     });
     MainDiv.appendChild(rowDiv);
     $("#stonesList").hide();
@@ -1336,6 +1342,9 @@ if ($products->is_quick == 1) {
       success: function(response) {
         if (response.status == 200) {
           $('#preview_src').attr("src", response.data);
+          // $('#setStonesTable').hide();
+          // $('#setFinal').html(response.data)
+          // $("#setFinal").show();
           $('#modelLoader').hide();
           $('#StoneLocation').css('opacity', '100%');
 

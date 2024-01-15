@@ -409,7 +409,7 @@ $minor2Data = $this->db->get_where('tbl_minisubcategory2', array('id' => $produc
               <? if (!empty($videos[0]->DownloadUrl)) { ?>
                 <!-- =============== video =============== -->
                 <a data-fancybox="gallery" href="<?= $videos[0]->DownloadUrl ?>">
-                  <video width="400" height="375" loop autoplay muted>
+                  <video width="100%" height="100%" loop autoplay muted>
                     <source type="video/mp4" src="<?= $videos[0]->DownloadUrl ?>" class="img-fluid gc-zoom">
                   </video> </a>
                 <!-- =============== video end =============== -->

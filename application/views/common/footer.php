@@ -160,17 +160,18 @@
 </section>
 <!-- footer end -->
 </body>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script> -->
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="<?= base_url(); ?>assets/jewel/js/script.js"></script>
 <script src="<?php echo base_url() ?>assets/frontend/js/bootstrap-notify.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.js"></script>
-<script src="<?= base_url(); ?>assets/jewel/js/jquery.zoom.js"></script>
+<!-- <script src="<?= base_url(); ?>assets/jewel/js/jquery.zoom.js"></script> -->
 <!-- //----------- PRODUCT DETAILS SLIDER CND ------------ -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-migrate/3.0.1/jquery-migrate.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/popper.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.3.5/jquery.fancybox.min.js"></script>
+  <script defer src="https://use.fontawesome.com/releases/v5.0.8/js/all.js" integrity="sha384-SlE991lGASHoBfWbelyBPLsUlwY1GwNDJo3jSJO04KZ33K2bwfV9YBauFfnzvynJ" crossorigin="anonymous"></script>
 <script>
   $(document).ready(function() {
     //===================== START PRODUCT DETAILS MAIN SLIDER ====================
