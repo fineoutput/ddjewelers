@@ -622,8 +622,10 @@ class Products extends CI_finecontrol
                 }
                 $html .= '<div class="row mt-3">';
                 foreach ($res->StoneFamilies as $item) {
+                    if(strtolower($item->Name)=='diamond' || strtolower($item->Name)=='ruby'){
                     $img = base_url() . 'assets/jewel/img/gemstone/' . strtolower($item->Name) . '.jpg';
                     $html .= '<div class="col-md-3" onclick="showStoneType(this)" data-modelID="' . $modelID . '" data-groupName="' . $groupName . '" data-size="' . $size . '" data-name="' . $item->Name . '" data-image="' . $img . '" data-LocationNumber="' . $LocationNumber . '" data-category=\'' . json_encode($item->Categories) . '\'><div class="text-center" style="cursor: pointer;"><img src="' . $img . '" style="width:60px;height:60px"><p>' . $item->Name . '</p></div></div>';
+                    }
                 }
                 $html .= '</div>';
                 echo json_encode(['status' => 200, 'data' => $html]);

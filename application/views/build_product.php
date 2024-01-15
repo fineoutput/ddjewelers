@@ -1018,7 +1018,7 @@ if ($products->is_quick == 1) {
                       });
                       $groupItems = array_values($groupItems);
                       $uniqueSizes = array_unique(array_column($groupItems, 'SizeMM'));
-                      if ($groupName == 'Center') {
+                      if ($groupName == 'Center') { 
                     ?>
                         <tr>
                           <td style="text-align: left;padding: 8px; vertical-align: -webkit-baseline-middle;"><?= $groupName ?>
@@ -1214,7 +1214,7 @@ if ($products->is_quick == 1) {
     //----- back button
     var buttonElement1 = document.createElement('button');
     buttonElement1.className = 'btn';
-    buttonElement1.textContent = 'Back ';
+    buttonElement1.textContent = 'Back';
     buttonElement1.style.borderColor = '#797979';
     buttonElement1.addEventListener('click', function() {
       $("#stonesTypes").hide();
@@ -1224,22 +1224,20 @@ if ($products->is_quick == 1) {
     MainDiv.appendChild(BackDiv);
     //----- h6
     var h6Element = document.createElement('h6');
-    h6Element.className = 'mt-2';
+    // h6Element.className = 'mt-2';
     h6Element.style.borderBottom = '1px solid grey';
-    h6Element.style.padding = '10px 0px';
+    h6Element.style.paddingBottom = '10px';
     h6Element.textContent = groupName + ' ' + size;
-    MainDiv.appendChild(h6Element);
     //----- row
     var rowDiv = document.createElement('div');
     rowDiv.className = 'row mt-3';
     rowDiv.style.alignItems = 'baseline';
     //----- stone 
-    var stoneDiv = document.createElement('div');
-    stoneDiv.className = 'col-md-2';
+    // var stoneDiv = document.createElement('div');
+    // stoneDiv.className = 'col-md-2';
     //----- img div 
     var imgDiv = document.createElement('div');
-    imgDiv.className = 'text-center';
-    imgDiv.style.cursor = 'pointer';
+    imgDiv.className = 'row';
     //----- img  
     var imgTag = document.createElement('img');
     imgTag.style.width = '60px';
@@ -1247,10 +1245,12 @@ if ($products->is_quick == 1) {
     imgTag.src = image;
     imgDiv.appendChild(imgTag);
     var pTag = document.createElement('p');
+    pTag.style.marginBottom = '0px';
     pTag.textContent = name;
     imgDiv.appendChild(pTag);
-    stoneDiv.appendChild(imgDiv);
-    rowDiv.appendChild(stoneDiv);
+    imgDiv.appendChild(h6Element);
+    MainDiv.appendChild(imgDiv);
+    // rowDiv.appendChild(stoneDiv);
     //---- types
     categories.map(function(category) {
       var colDiv = document.createElement('div');
@@ -1259,6 +1259,7 @@ if ($products->is_quick == 1) {
       buttonElement.className = 'btn btn-light';
       buttonElement.textContent = category;
       buttonElement.style.width = '100%';
+      buttonElement.style.borderColor = '#797979';
       buttonElement.setAttribute('data-modelId', modelId);
       buttonElement.setAttribute('data-Location', LocationNumber);
       buttonElement.setAttribute('data-StoneFamily', name);
