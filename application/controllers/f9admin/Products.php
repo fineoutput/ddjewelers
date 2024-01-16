@@ -850,7 +850,7 @@ class Products extends CI_finecontrol
                     CURLOPT_FOLLOWLOCATION => true,
                     CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
                     CURLOPT_CUSTOMREQUEST => 'POST',
-                    CURLOPT_POSTFIELDS => '{"ProductId":' . $ProductId . ',"Quantity":1,"Stones":' . $final_arr . ',"RingSize":7.0}}',
+                    CURLOPT_POSTFIELDS => '{"ProductId":' . $ProductId . ',"Quantity":1,"Stones":' . $final_arr . ',"RingSize":' . $RingSize . '}}',
                     CURLOPT_HTTPHEADER => array(
                         'Authorization: Basic ZGV2amV3ZWw6Q29kaW5nMjA9',
                         'Content-Type: application/json',
@@ -909,8 +909,13 @@ class Products extends CI_finecontrol
                 <div class="price-item">
                     <span class="item-label">Now Price:</span>
                     <span class="item-value">$' . $final_price . '</span>
-                </div>
-            </div>';
+                </div>';
+                if (empty($this->session->userdata('user_id'))) {
+                    $html .= '<input type="submit" class="mt-3 add-btn" value=" Add to cart" onclick="addToCart(this);" quantity="1" id="addToCartBtnGem" data-pro-id="' . $ProductId . '" data-ring_size="' . $RingSize . '" data-ring_price="">';
+                } else {
+                    $html .= '<input type="submit" class="mt-3 add-btn" value=" Add to cart" onclick="addToCart(this);" quantity="1" id="addToCartBtnGem" data-pro-id="' . $ProductId . '" data-ring_size="' . $RingSize . '"  data-ring_price="">';
+                }
+                $html .= '</div>';
 
                 echo json_encode(['status' => 200, 'data' => $res->Images[0]->ZoomUrl, 'html' => $html]);
             } else {

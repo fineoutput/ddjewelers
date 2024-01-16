@@ -388,12 +388,12 @@
     }
   });
 </script>
-<!-- header serach a product js end  -->
+<!-- header sea a product js end  -->
 <script>
   function addToCart(obj) {
     var pro_id = $(obj).attr("data-pro-id");
-    var ring_size = $(obj).attr("data-ring_size");
-    var ring_price = $(obj).attr("data-ringp_rice");
+    var ring_size = $('#r_size').val();
+    var ring_price = $(obj).attr("data-ring_price");
     var quantity = $(obj).attr("quantity");
     var btn = $(obj).attr("btn")
     if (quantity == "") {
