@@ -2351,3 +2351,24 @@ hr {
 div#zoid-paypal-button-bc23181b7a {
     height: 53px !important;
 }
+.price-summary {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.price-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.item-label {
+    font-weight: bold;
+}
+
+.item-value {
+    color: #000000; /* Green color for the price values */
+}

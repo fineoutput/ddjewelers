@@ -608,7 +608,7 @@ if ($products->is_quick == 1) {
       <? if (!empty($setting_options)) { ?>
 
         <div class="d-flex jus_cont">
-          <p><b>Set Stone</b></p>
+          <p><b>Gem Stone</b></p>
           <button type="button" class="btn add-btn" data-toggle="modal" data-target="#myModal">
             Set Stone
           </button>
@@ -636,6 +636,7 @@ if ($products->is_quick == 1) {
             <select class="w-100 " id="<?php echo $key; ?>" name="<?php echo $key; ?>">
               <?php
               $quality = '';
+              $stone = '';
               foreach ($uniqueOptions as $option) :
                 if ($key == 'Quality' && $option['selected'] == 'selected') {
                   $quality  = $option['DisplayValue'];
@@ -1050,6 +1051,10 @@ if ($products->is_quick == 1) {
             <div id="stonesList">
             </div>
             <!-- --------------- END SELECT STONE -------- -->
+            <!-- --------------- START SELECT STONE -------- -->
+            <div id="sideStonesList">
+            </div>
+            <!-- --------------- END SELECT STONE -------- -->
             <!-- --------------- START SELECT STONE TYPES -------- -->
             <div id="stonesTypes">
             </div>
@@ -1070,6 +1075,7 @@ if ($products->is_quick == 1) {
 </div>
 <!-- ====================== END STONE LOCATION MODEL ============================== -->
 
+<input name="temp_data" id="temp_data" type="hidden" value="">
 <input name="ring_size" id="r_size" type="hidden" value="<?= $products->ring_size ?>">
 <input name="proId" id="proId" type="hidden" value="<?= $products->pro_id ?>">
 <script>
@@ -1164,9 +1170,20 @@ if ($products->is_quick == 1) {
     $('#StonesTable').show();
   };
 
+  function sideStonesListBtn() {
+    $("#sideStonesList").hide();
+    $('#setStonesTable').show();
+  };
+
   function setStonesTableBtn() {
     $("#setStonesTable").hide();
     $('#stonesTypes').show();
+  };
+
+  function ResetStone() {
+    $("#StoneLocation").load(window.location.href + " #StoneLocation > *");
+    $("#setFinal").hide();
+    $('#StonesTable').show();
   };
 
   //------------- START SET STONE -------------------------
@@ -1193,6 +1210,8 @@ if ($products->is_quick == 1) {
         if (response.status == 200) {
           $('#StonesTable').hide();
           $('#stonesList').html(response.data)
+          $('#sideStonesList').html(response.html2)
+          $('#sideStonesList').hide();
           $("#stonesList").show();
           $('#modelLoader').hide();
           $('#StoneLocation').css('opacity', '100%');
@@ -1321,35 +1340,57 @@ if ($products->is_quick == 1) {
     })
   }
   //------------- END SEARCH FAMILY STONES -------------------------
+  //------------- START ASK SIDE STONE -------------------------
+  function AskSideStone(obj) {
+    var StoneProductId = obj.getAttribute('data-stoneId');
+    var StoneFamilyName = obj.getAttribute('data-StoneFamilyName');
+    var stoneCategory = obj.getAttribute('data-stoneCategory');
+    var LocationNumber = obj.getAttribute('data-LocationNumber');
+    var data = {
+      StoneProductId: StoneProductId,
+      StoneFamilyName: StoneFamilyName,
+      stoneCategory: stoneCategory,
+      LocationNumber: LocationNumber,
+    };
+    $('#temp_data').val(JSON.stringify(data));
+    $('#setStonesTable').hide();
+    $('#sideStonesList').show();
+
+
+  }
+  //------------- END ASK SIDE STONE -------------------------
   //------------- START SET STONES -------------------------
   function configureProduct(obj) {
     // console.log(obj);return;
     $('#modelLoader').show();
     $('#StoneLocation').css('opacity', '30%');
     var ProductId = $('#proId').val();
-    var StoneProductId = obj.getAttribute('data-stoneId');
-    var StoneFamilyName = obj.getAttribute('data-StoneFamilyName');
-    var stoneCategory = obj.getAttribute('data-stoneCategory');
-    var LocationNumber = obj.getAttribute('data-LocationNumber');
+    var temp_data = JSON.parse($('#temp_data').val());
+    var sideName = obj.getAttribute('data-name');
+    // var StoneProductId = obj.getAttribute('data-stoneId');
+    // var StoneFamilyName = obj.getAttribute('data-StoneFamilyName');
+    // var stoneCategory = obj.getAttribute('data-stoneCategory');
+    // var LocationNumber = obj.getAttribute('data-LocationNumber');
     var RingSize = $('#r_size').val();
     $.ajax({
       url: "<?= base_url() ?>dcadmin/Products/configureProduct",
       method: "POST",
       data: {
         ProductId: ProductId,
-        StoneProductId: StoneProductId,
-        StoneFamilyName: StoneFamilyName,
-        stoneCategory: stoneCategory,
-        LocationNumber: LocationNumber,
+        StoneProductId: temp_data.StoneProductId,
+        StoneFamilyName: temp_data.StoneFamilyName,
+        stoneCategory: temp_data.stoneCategory,
+        LocationNumber: temp_data.LocationNumber,
         RingSize: RingSize,
+        sideName: sideName,
       },
       dataType: 'json',
       success: function(response) {
         if (response.status == 200) {
           $('#preview_src').attr("src", response.data);
-          // $('#setStonesTable').hide();
-          // $('#setFinal').html(response.data)
-          // $("#setFinal").show();
+          $('#sideStonesList').hide();
+          $('#setFinal').html(response.html)
+          $("#setFinal").show();
           $('#modelLoader').hide();
           $('#StoneLocation').css('opacity', '100%');
 

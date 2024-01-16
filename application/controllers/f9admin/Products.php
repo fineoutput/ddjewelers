@@ -645,13 +645,28 @@ class Products extends CI_finecontrol
                 }
                 $html .= '<div class="row mt-3">';
                 foreach ($res->StoneFamilies as $item) {
-                    if (strtolower($item->Name) == 'diamond' || strtolower($item->Name) == 'ruby') {
+                    $categoriesToRemove = ["Imitation", "Natural"];
+                    $filteredCategories = array_diff($item->Categories, $categoriesToRemove);
+                    if (count($filteredCategories) > 0) {
                         $img = base_url() . 'assets/jewel/img/gemstone/' . strtolower($item->Name) . '.jpg';
                         $html .= '<div class="col-md-3" onclick="showStoneType(this)" data-modelID="' . $modelID . '" data-groupName="' . $groupName . '" data-size="' . $size . '" data-name="' . $item->Name . '" data-image="' . $img . '" data-LocationNumber="' . $LocationNumber . '" data-category=\'' . json_encode($item->Categories) . '\'><div class="text-center" style="cursor: pointer;"><img src="' . $img . '" style="width:60px;height:60px"><p>' . $item->Name . '</p></div></div>';
                     }
                 }
                 $html .= '</div>';
-                echo json_encode(['status' => 200, 'data' => $html]);
+
+                $html2 = "<div class='w-100 text-right'><button onclick='sideStonesListBtn()' class='btn' style='border-color: #797979;'>Back</button></div>";
+                $html2 .= '<h6 class="mt-3" style="border-bottom:1px solid grey">For Side Stone</h6>';
+                $html2 .= '<div class="row mt-3">';
+                foreach ($res->StoneFamilies as $item) {
+                    $categoriesToRemove = ["Imitation", "Natural"];
+                    $filteredCategories = array_diff($item->Categories, $categoriesToRemove);
+                    if (count($filteredCategories) > 0) {
+                        $img = base_url() . 'assets/jewel/img/gemstone/' . strtolower($item->Name) . '.jpg';
+                        $html2 .= '<div class="col-md-3" onclick="configureProduct(this)" data-modelID="' . $modelID . '" data-groupName="' . $groupName . '" data-size="' . $size . '" data-name="' . $item->Name . '" data-image="' . $img . '" data-LocationNumber="' . $LocationNumber . '" data-category=\'' . json_encode($item->Categories) . '\'><div class="text-center" style="cursor: pointer;"><img src="' . $img . '" style="width:60px;height:60px"><p>' . $item->Name . '</p></div></div>';
+                    }
+                }
+                $html2 .= '</div>';
+                echo json_encode(['status' => 200, 'data' => $html, 'html2' => $html2]);
             } else {
                 $res = array(
                     'message' => validation_errors(),
@@ -730,7 +745,7 @@ class Products extends CI_finecontrol
                             $html .= '<td>' . $v->DisplayValue . '</td>';
                         }
 
-                        $html .= '<td><button type="button" data-stoneId="' . $item->Product->Id . '" data-StoneFamilyName="' . $StoneFamilyName . '" data-stoneCategory="' . $stoneCategory . '" data-LocationNumber="' . $LocationNumber . '" class="btn btn-info" onClick="configureProduct(this)">Set</button></td>';
+                        $html .= '<td><button type="button" data-stoneId="' . $item->Product->Id . '" data-StoneFamilyName="' . $StoneFamilyName . '" data-stoneCategory="' . $stoneCategory . '" data-LocationNumber="' . $LocationNumber . '" class="btn btn-info" onClick="AskSideStone(this)">Set</button></td>';
                         $html .= '</tr>';
                     }
                     $html .= '</tbody>';
@@ -740,10 +755,10 @@ class Products extends CI_finecontrol
                 $html .= '</div>';
                 $html .= '<script>
                 jQuery.noConflict();
-    $(document).ready(function() {
-        $("#stoneDataTable").DataTable();
-    });
-</script>';
+                $(document).ready(function() {
+                    $("#stoneDataTable").DataTable();
+                });
+                </script>';
                 echo json_encode(['status' => 200, 'data' => $html]);
             } else {
                 $res = array(
@@ -774,6 +789,7 @@ class Products extends CI_finecontrol
             $this->form_validation->set_rules('StoneFamilyName', 'StoneFamilyName', 'required|xss_clean|trim');
             $this->form_validation->set_rules('stoneCategory', 'stoneCategory', 'required|xss_clean|trim');
             $this->form_validation->set_rules('LocationNumber', 'LocationNumber', 'required|xss_clean|trim');
+            $this->form_validation->set_rules('sideName', 'sideName', 'required|xss_clean|trim');
             if ($this->form_validation->run() == true) {
                 $ProductId = $this->input->post('ProductId');
                 $StoneProductId = $this->input->post('StoneProductId');
@@ -781,13 +797,14 @@ class Products extends CI_finecontrol
                 $StoneFamilyName = $this->input->post('StoneFamilyName');
                 $stoneCategory = $this->input->post('stoneCategory');
                 $LocationNumber = $this->input->post('LocationNumber');
+                $sideName = $this->input->post('sideName');
                 //----------------- Get all location of the product--------
                 $pro_data = $this->db->get_where('tbl_products', array('pro_id' => $ProductId))->row();
                 $final_arr = [];
                 $setting_options = json_decode($pro_data->setting_options);
                 foreach ($setting_options as $st) {
                     if ($st->LocationNumber != $LocationNumber) {
-                        $SF = 'Diamond';
+                        $SF = $sideName;
                     } else {
                         $SF = $StoneFamilyName;
                     }
@@ -841,9 +858,58 @@ class Products extends CI_finecontrol
                 $response = curl_exec($curl);
                 curl_close($curl);
                 $res = json_decode($response);
-                $html = "<div class='w-100 text-right'><button onclick='setStonesTableBtn()' class='btn' style='border-color: #797979;'>Back</button></div>";
-                $html .= '<div class="row mt-3">';
-                echo json_encode(['status' => 200, 'data' => $res->Images[0]->ZoomUrl]);
+                $html = '<h6 class="mt-3">' . $res->Product->GroupDescription . '</h6>';
+                $html .= '<div class="table-responsive-sm">';
+                $html .= '<table class="table table-hover"><tbody>';
+                $html .= '<tr>';
+                $html .= '<td style="text-align: left;padding: 8px; vertical-align: -webkit-baseline-middle;">' . $res->Product->CenterStoneShape . '</td>';
+                $html .= '<td style="text-align: left;padding: 8px; vertical-align: -webkit-baseline-middle;">' . $res->Product->CenterStoneSize . '</td>';
+                $html .= '<td style="text-align: left;padding: 8px; vertical-align: -webkit-baseline-middle;"><button class="btn btn-danger" onClick="ResetStone()">Reset</button></td>';
+                $html .= '</tr></tbody></table></div>';
+                //---------- Calculate pricing ----------
+                // $pro_price = $res->Product->ShowcasePrice->Value + $res->RingSizingShowcasePrice->Value + $res->PolishingShowcasePrice->Value;
+                // $stone_price = 0;
+                // foreach ($res->Stones as $st) {
+                //     $stone_price += ($st->TotalShowcasePrice->Value + $st->ShowcaseLabor->Value);
+                // }
+                $pr_data = $this->db->get_where('tbl_price_rule', array())->row();
+                $multiplier = $pr_data->multiplier;
+                $cost_price = $res->TotalShowcasePrice->Value;
+                $retail =  round($cost_price * $multiplier,2);
+                $final_price = $cost_price;
+                if ($cost_price <= 500) {
+                    $cost_price2 = $cost_price * $cost_price;
+                    $number = round($cost_price * ($pr_data->cost_price1 * $cost_price2 + $pr_data->cost_price2 * $cost_price + $pr_data->cost_price3), 2);
+                    $unit = 5;
+                    $remainder = $number % $unit;
+                    $mround = ($remainder < $unit / 2) ? $number - $remainder : $number + ($unit - $remainder);
+                    $final_price = round($mround) - 1 + 0.95;
+                } else if ($cost_price > 500) {
+                    $number = round($cost_price * ($pr_data->cost_price4 * $cost_price / $multiplier + $pr_data->cost_price5));
+                    $unit = 5;
+                    $remainder = $number % $unit;
+                    $mround = ($remainder < $unit / 2) ? $number - $remainder : $number + ($unit - $remainder);
+                    $final_price = round($mround) - 1 + 0.95;
+                }
+                $saved = round($retail - $final_price,2);
+                // $dis_percent = round($saved / $retail * 100,2);
+
+                $html .= '<div class="price-summary col-md-8 float-right">
+                <div class="price-item">
+                    <span class="item-label">Retail Price:</span>
+                    <span class="item-value">$' . $retail . '</span>
+                </div>
+                <div class="price-item">
+                    <span class="item-label">You Saved:</span>
+                    <span class="item-value" style="color:green">$' . $saved.'</span>
+                </div>
+                <div class="price-item">
+                    <span class="item-label">Now Price:</span>
+                    <span class="item-value">$' . $final_price . '</span>
+                </div>
+            </div>';
+
+                echo json_encode(['status' => 200, 'data' => $res->Images[0]->ZoomUrl, 'html' => $html]);
             } else {
                 $res = array(
                     'message' => validation_errors(),
