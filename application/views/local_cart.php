@@ -14,9 +14,15 @@ if (!empty($cart_data)) {
   $total_cart_amount = 0;
   $i = 1;
   foreach ($cart_data as $data) {
+    $gem_data = json_decode($data['gem_data']);
     $pro_data = $this->db->get_where('tbl_products', array('pro_id' => $data['pro_id']))->row();
     if (!empty($pro_data)) {
+      if (empty($data['img'])) {
       $images = json_decode($pro_data->full_set_images);
+      $img = $images[0]->FullUrl;
+      }else{
+        $img = $data['img'];
+      }
       $elements = json_decode($pro_data->elements);
 ?>
       <section>
@@ -35,7 +41,7 @@ if (!empty($cart_data)) {
           <div class="row border_cart">
             <div class="col-md-2 p-0">
               <div>
-                <img src="<?= $images[0]->FullUrl ?>">
+                <img src="<?= $img ?>">
               </div>
             </div>
             <div class="col-md-5">
@@ -47,10 +53,18 @@ if (!empty($cart_data)) {
                 <div class="col-md-12">
                   <p><?= $pro_data->short_description ?></p>
                 </div>
+                <? if (!empty($gem_data)) { ?>
+                  <div class="col-md-12">
+                    <span><b>Stones : </b></span>
+                    <? foreach ($gem_data as  $gem) { ?>
+                      <span><?= $gem->Product->Description ?> <b>|</b> </span>
+                    <? } ?>
+                  </div>
+                <? } ?>
               </div>
             </div>
             <div class="col-md-2">
-              <form action="<?php echo base_url() ?>Cart/UpdateCartOffline/<?= $data['pro_id'] ?>" method="Get"  enctype="multipart/form-data">
+              <form action="<?php echo base_url() ?>Cart/UpdateCartOffline/<?= $data['pro_id'] ?>" method="Get" enctype="multipart/form-data">
                 <input type="hidden" name="ring_size" value="<?= $data['ring_size'] ?>">
                 <div class="d-flex">
                   <input type="number" onkeydown="if(event.key==='.'){event.preventDefault();}" oninput="event.target.value = event.target.value.replace(/[^0-9]*/g,'');" name="quantity" class="w-73" value="<?= $data['quantity'] ?>" min="1">
@@ -60,28 +74,32 @@ if (!empty($cart_data)) {
             </div>
             <div class="col-md-3 text-right">
               <?php
-              $pr_data = $this->db->get_where('tbl_price_rule', array())->row();
-              $multiplier = $pr_data->multiplier;
-              $cost_price = $pro_data->price;
-              $retail = $cost_price * $multiplier;
-              $now_price = $cost_price;
-              if ($cost_price <= 500) {
-                $cost_price2 = $cost_price * $cost_price;
-                $number = round($cost_price * ($pr_data->cost_price1 * $cost_price2 + $pr_data->cost_price2 * $cost_price + $pr_data->cost_price3), 2);
-                $unit = 5;
-                $remainder = $number % $unit;
-                $m_round = ($remainder < $unit / 2) ? $number - $remainder : $number + ($unit - $remainder);
-                $now_price = round($m_round) - 1 + 0.95;
-                $price_with_quantity = $now_price * $data['quantity'];
-              } else  if ($cost_price > 500) {
-                $number = round($cost_price * ($pr_data->cost_price4 * $cost_price / $multiplier + $pr_data->cost_price5));
-                $unit = 5;
-                $remainder = $number % $unit;
-                $m_round = ($remainder < $unit / 2) ? $number - $remainder : $number + ($unit - $remainder);
-                $now_price = round($m_round) - 1 + 0.95;
-                $price_with_quantity = $now_price * $data['quantity'];
+              if (empty($gem_data)) {
+                $pr_data = $this->db->get_where('tbl_price_rule', array())->row();
+                $multiplier = $pr_data->multiplier;
+                $cost_price = $pro_data->price;
+                $retail = $cost_price * $multiplier;
+                $now_price = $cost_price;
+                if ($cost_price <= 500) {
+                  $cost_price2 = $cost_price * $cost_price;
+                  $number = round($cost_price * ($pr_data->cost_price1 * $cost_price2 + $pr_data->cost_price2 * $cost_price + $pr_data->cost_price3), 2);
+                  $unit = 5;
+                  $remainder = $number % $unit;
+                  $m_round = ($remainder < $unit / 2) ? $number - $remainder : $number + ($unit - $remainder);
+                  $now_price = round($m_round) - 1 + 0.95;
+                  $price_with_quantity = $now_price * $data['quantity'];
+                } else  if ($cost_price > 500) {
+                  $number = round($cost_price * ($pr_data->cost_price4 * $cost_price / $multiplier + $pr_data->cost_price5));
+                  $unit = 5;
+                  $remainder = $number % $unit;
+                  $m_round = ($remainder < $unit / 2) ? $number - $remainder : $number + ($unit - $remainder);
+                  $now_price = round($m_round) - 1 + 0.95;
+                  $price_with_quantity = $now_price * $data['quantity'];
+                }
+              } else {
+                $now_price = $data['price'];
+                $price_with_quantity = $data['price'] * $data['quantity'];
               }
-
               ?>
               <p class="green_text"><a>$<?= number_format((float)$price_with_quantity, 2, '.', ''); ?></a></p>
             </div>

@@ -43,24 +43,28 @@ class Order extends CI_Controller
                         $pro_da = $this->db->get_where('tbl_products', array('pro_id' => $data->pro_id))->row();
                         if (!empty($pro_da)) {
                             $sku = $pro_da->sku;
-                            $pr_data = $this->db->get_where('tbl_price_rule', array())->row();
-                            $multiplier = $pr_data->multiplier;
-                            $cost_price = $pro_da->price;
-                            $retail = $cost_price * $multiplier;
-                            $now_price = $cost_price;
-                            if ($cost_price <= 500) {
-                                $cost_price2 = $cost_price * $cost_price;
-                                $number = round($cost_price * ($pr_data->cost_price1 * $cost_price2 + $pr_data->cost_price2 * $cost_price + $pr_data->cost_price3), 2);
-                                $unit = 5;
-                                $remainder = $number % $unit;
-                                $m_round = ($remainder < $unit / 2) ? $number - $remainder : $number + ($unit - $remainder);
-                                $now_price = round($m_round) - 1 + 0.95;
-                            } else  if ($cost_price > 500) {
-                                $number = round($cost_price * ($pr_data->cost_price4 * $cost_price / $multiplier + $pr_data->cost_price5));
-                                $unit = 5;
-                                $remainder = $number % $unit;
-                                $m_round = ($remainder < $unit / 2) ? $number - $remainder : $number + ($unit - $remainder);
-                                $now_price = round($m_round) - 1 + 0.95;
+                            if (empty($data->price)) {
+                                $pr_data = $this->db->get_where('tbl_price_rule', array())->row();
+                                $multiplier = $pr_data->multiplier;
+                                $cost_price = $pro_da->price;
+                                $retail = $cost_price * $multiplier;
+                                $now_price = $cost_price;
+                                if ($cost_price <= 500) {
+                                    $cost_price2 = $cost_price * $cost_price;
+                                    $number = round($cost_price * ($pr_data->cost_price1 * $cost_price2 + $pr_data->cost_price2 * $cost_price + $pr_data->cost_price3), 2);
+                                    $unit = 5;
+                                    $remainder = $number % $unit;
+                                    $m_round = ($remainder < $unit / 2) ? $number - $remainder : $number + ($unit - $remainder);
+                                    $now_price = round($m_round) - 1 + 0.95;
+                                } else  if ($cost_price > 500) {
+                                    $number = round($cost_price * ($pr_data->cost_price4 * $cost_price / $multiplier + $pr_data->cost_price5));
+                                    $unit = 5;
+                                    $remainder = $number % $unit;
+                                    $m_round = ($remainder < $unit / 2) ? $number - $remainder : $number + ($unit - $remainder);
+                                    $now_price = round($m_round) - 1 + 0.95;
+                                }
+                            } else {
+                                $now_price = $data->price;
                             }
                             $pro_qty_price = $quantity * $now_price;
                             $total_cart_amount += $pro_qty_price;
@@ -106,6 +110,8 @@ class Order extends CI_Controller
                             'unit_price' => $now_price,
                             'series_id' => $pro_da->series_id,
                             'category_id' => $pro_da->category_id,
+                            'gem_data' => $data->gem_data,
+                            'img' => $data->img,
                             'date' => $cur_date
                         );
                         $last_id = $this->base_model->insert_table("tbl_order2", $data_insert, 1);

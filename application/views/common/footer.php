@@ -395,6 +395,10 @@
     var ring_size = $('#r_size').val();
     var ring_price = $(obj).attr("data-ring_price");
     var quantity = $(obj).attr("quantity");
+    var gem_data = $(obj).attr("data-gem-data");
+    var price = $(obj).attr("data-price");
+    var img = $(obj).attr("data-img");
+
     var btn = $(obj).attr("btn")
     if (quantity == "") {
       quantity = $('#qty').val().trim();
@@ -410,15 +414,20 @@
         pro_id: pro_id,
         quantity: quantity,
         ring_size: ring_size,
-        ring_price: ring_price
+        ring_price: ring_price,
+        gem_data: gem_data,
+        price: price,
+        img: img,
       },
       dataType: 'json',
       success: function(response) {
         if (response.status == true) {
+          $('#myModal').modal('hide');
           loadSuccessNotify('Item Successfully added to your cart');
           window.location.reload();
         }
         if (response.status == false) {
+          $('#myModal').modal('hide');
           loadErrorNotify(response.message);
         }
       },

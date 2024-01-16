@@ -33,17 +33,26 @@ class Cart extends CI_Controller
 			$this->form_validation->set_rules('quantity', 'quantity', 'required|xss_clean|trim');
 			$this->form_validation->set_rules('ring_size', 'ring_size', 'xss_clean|trim');
 			$this->form_validation->set_rules('ring_price', 'ring_price', 'xss_clean|trim');
+			$this->form_validation->set_rules('gem_data', 'gem_data', 'xss_clean|trim');
+			$this->form_validation->set_rules('price', 'price', 'xss_clean|trim');
+			$this->form_validation->set_rules('img', 'img', 'xss_clean|trim');
 
 			if ($this->form_validation->run() == true) {
 				$pro_id = $this->input->post('pro_id');
 				$quantity = $this->input->post('quantity');
 				$ring_size = $this->input->post('ring_size');
 				$ring_price = $this->input->post('ring_price');
+				$gem_data = $this->input->post('gem_data');
+				$price = $this->input->post('price');
+				$img = $this->input->post('img');
 				$send = [
 					'pro_id' => $pro_id,
 					'quantity' => $quantity,
 					'ring_size' => $ring_size,
 					'ring_price' => $ring_price,
+					'gem_data' => $gem_data,
+					'price' => $price,
+					'img' => $img,
 				];
 				//----- check inventory ----------------
 				$invRes = $this->check_Inventory($pro_id, $quantity);
@@ -135,6 +144,9 @@ class Cart extends CI_Controller
 			'quantity' => $receive['quantity'],
 			'ring_size' => $receive['ring_size'],
 			'ring_price' => $receive['ring_price'],
+			'gem_data' => $receive['gem_data'],
+			'price' => $receive['price'],
+			'img' => $receive['img'],
 			'ip' => $ip,
 			'date' => $cur_date
 		);
@@ -254,6 +266,9 @@ class Cart extends CI_Controller
 					'quantity' => $receive['quantity'],
 					'ring_size' => $receive['ring_size'],
 					'ring_price' => $receive['ring_price'],
+					'gem_data' => $receive['gem_data'],
+					'price' => $receive['price'],
+					'img' => $receive['img'],
 					'date' => $cur_date
 				);
 				$last_id = $this->base_model->insert_table("tbl_cart", $cart_insert, 1);
