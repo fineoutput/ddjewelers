@@ -236,19 +236,20 @@ class Products extends CI_finecontrol
         $finished = '';
         $include_series = '';
         $include_sku = '';
+
         $exclude_series = '';
         $exclude_sku = '';
         if (!empty($is_quick)) {
             //-------------- quick shop products -----------------
-            $minor2_data = $this->db->select('id,api_id,type,finshed,include_series,include_sku,exlude_series,exlude_sku')->get_where('tbl_quickshop_minisubcategory2', array('id' => $minor2_category_id))->row();
+            $minor2_data = $this->db->select('id,api_id')->get_where('tbl_quickshop_minisubcategory2', array('id' => $minor2_category_id))->row();
             if (!empty($minor2_data)) {
                 $api_id = $minor2_data->api_id;
-                $type = $minor2_data->type;
-                $finished = $minor2_data->finshed;
-                $include_series = $minor2_data->include_series;
-                $include_sku = $minor2_data->include_sku;
-                $exclude_series = $minor2_data->exlude_series;
-                $exclude_sku = $minor2_data->exlude_sku;
+                $type = 2;
+                $finished = '';
+                $include_series = '';
+                $include_sku = '';
+                $exclude_series = '';
+                $exclude_sku = '';
             }
             //------ Deleting existing data -----------
             $delete = $this->db->delete('tbl_products', array('category_id' => $category_id, 'subcategory_id' => $subcategory_id, 'minor_category_id' => $minor_category_id, 'minor2_category_id' => $minor2_category_id));
@@ -308,20 +309,21 @@ class Products extends CI_finecontrol
                 //------ Deleting existing data -----------
                 $delete = $this->db->delete('tbl_products', array('category_id' => $category_id));
             }
-            $minimum_cost = $this->db->get_where('tbl_minimum_cost', array())->row();
-            if ($finished) {
-                $filter = json_encode(["Orderable", "OnPriceList", "Finished"]);
-            } else {
-                $filter = json_encode(["Orderable", "OnPriceList"]);
-            }
-            if ($type == 1) {
-                $key = 'CategoryIds';
-            } else if ($type == 2) {
-                $key = 'Series';
-            } else {
-                $key = 'SKU';
-            }
         }
+        $minimum_cost = $this->db->get_where('tbl_minimum_cost', array())->row();
+        if ($finished) {
+            $filter = json_encode(["Orderable", "OnPriceList", "Finished"]);
+        } else {
+            $filter = json_encode(["Orderable", "OnPriceList"]);
+        }
+        if ($type == 1) {
+            $key = 'CategoryIds';
+        } else if ($type == 2) {
+            $key = 'Series';
+        } else {
+            $key = 'SKU';
+        }
+
         $send = [
             'category_id' => $category_id,
             'subcategory_id' => $subcategory_id,
@@ -368,6 +370,7 @@ class Products extends CI_finecontrol
             $total_products = $result_da->TotalNumberOfProducts;
             $total_pages = round($result_da->TotalNumberOfProducts / 500) + 1;
         }
+
         $NextPage = "";
         for ($i = 0; $i < $total_pages; $i++) {
             if (empty($NextPage)) {
@@ -875,7 +878,7 @@ class Products extends CI_finecontrol
                 $pr_data = $this->db->get_where('tbl_price_rule', array())->row();
                 $multiplier = $pr_data->multiplier;
                 $cost_price = $res->TotalShowcasePrice->Value;
-                $retail =  round($cost_price * $multiplier,2);
+                $retail =  round($cost_price * $multiplier, 2);
                 $final_price = $cost_price;
                 if ($cost_price <= 500) {
                     $cost_price2 = $cost_price * $cost_price;
@@ -891,7 +894,7 @@ class Products extends CI_finecontrol
                     $mround = ($remainder < $unit / 2) ? $number - $remainder : $number + ($unit - $remainder);
                     $final_price = round($mround) - 1 + 0.95;
                 }
-                $saved = round($retail - $final_price,2);
+                $saved = round($retail - $final_price, 2);
                 // $dis_percent = round($saved / $retail * 100,2);
 
                 $html .= '<div class="price-summary col-md-8 float-right">
@@ -901,7 +904,7 @@ class Products extends CI_finecontrol
                 </div>
                 <div class="price-item">
                     <span class="item-label">You Saved:</span>
-                    <span class="item-value" style="color:green">$' . $saved.'</span>
+                    <span class="item-value" style="color:green">$' . $saved . '</span>
                 </div>
                 <div class="price-item">
                     <span class="item-label">Now Price:</span>

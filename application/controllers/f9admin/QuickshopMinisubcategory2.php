@@ -137,7 +137,7 @@ class QuickshopMinisubcategory2 extends CI_finecontrol
         $this->form_validation->set_rules('name', 'name', 'required|xss_clean|trim');
         $this->form_validation->set_rules('description', 'description', 'xss_clean|trim');
         $this->form_validation->set_rules('seq', 'sequence number', 'xss_clean|trim');
-
+        $this->form_validation->set_rules('api_id', 'api_id', 'required|xss_clean|trim');
 
 
 
@@ -149,12 +149,14 @@ class QuickshopMinisubcategory2 extends CI_finecontrol
           $name = $this->input->post('name');
           $description = $this->input->post('description');
           $seq = $this->input->post('seq');
-
+          $api_id1 = $this->input->post('api_id');
+          $cleanedString = str_replace(' ', '', $api_id1);
           $ip = $this->input->ip_address();
           date_default_timezone_set("Asia/Calcutta");
           $cur_date = date("Y-m-d H:i:s");
           $addedby = $this->session->userdata('admin_id');
-
+          $api_id = explode(",", $cleanedString);
+          $api_id = json_encode($api_id);
           $typ = base64_decode($t);
           $last_id = 0;
           if ($typ == 1) {
@@ -211,7 +213,7 @@ class QuickshopMinisubcategory2 extends CI_finecontrol
               'image' => $nnnn2,
               'description' => $description,
               'seq' => $seq,
-
+              'api_id' => $api_id,
               'ip' => $ip,
               'added_by' => $addedby,
               'is_active' => 1,
@@ -230,7 +232,7 @@ class QuickshopMinisubcategory2 extends CI_finecontrol
               'ip' => $ip,
               'date' => $cur_date
             );
-            // $last_idd = $this->base_model->insert_table("tbl_cron_jobs", $data_insert_cr, 1);
+            $last_idd = $this->base_model->insert_table("tbl_cron_jobs", $data_insert_cr, 1);
             //===============add data in tbl_cron_job End===================//
           }
           if ($typ == 2) {
@@ -303,6 +305,7 @@ class QuickshopMinisubcategory2 extends CI_finecontrol
               'category' => $category,
               'subcategory' => $subcategory,
               'minorsubcategory' => $minorsubcategory,
+              'api_id' => $api_id,
               'name' => $name,
               'image' => $nnnn2,
               'description' => $description,
@@ -321,7 +324,7 @@ class QuickshopMinisubcategory2 extends CI_finecontrol
               'ip' => $ip,
               'date' => $cur_date
             );
-            // $last_idd = $this->base_model->insert_table("tbl_cron_jobs", $data_insert_cr, 1);
+            $last_idd = $this->base_model->insert_table("tbl_cron_jobs", $data_insert_cr, 1);
             //===============add data in tbl_cron_job End===================//
 
 
