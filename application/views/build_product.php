@@ -520,7 +520,7 @@ if ($products->is_quick == 1) {
               <? } ?>
               <?php foreach ($all_images as $img) :
               ?>
-                <a data-fancybox="gallery" href="<?= $img->ZoomUrl ?>"><img src="<?= $img->FullUrl ?>" class="img-fluid2"></a>
+                <a data-fancybox="gallery" href="<?= $img->ZoomUrl ?>"><img src="<?= $img->ZoomUrl ?>" class="img-fluid2"></a>
               <?php endforeach; ?>
             </div>
             <!-- Begin product thumb nav -->

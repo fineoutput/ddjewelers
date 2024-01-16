@@ -416,7 +416,7 @@ $minor2Data = $this->db->get_where('tbl_minisubcategory2', array('id' => $produc
               <? } ?>
               <?php foreach ($all_images as $img) :
               ?>
-                <a data-fancybox="gallery" href="<?= $img->ZoomUrl ?>"><img src="<?= $img->FullUrl ?>" class="img-fluid2"></a>
+                <a data-fancybox="gallery" href="<?= $img->ZoomUrl ?>"><img src="<?= $img->ZoomUrl ?>" class="img-fluid2"></a>
               <?php endforeach; ?>
             </div>
             <!-- Begin product thumb nav -->
