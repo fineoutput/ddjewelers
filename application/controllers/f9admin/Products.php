@@ -829,6 +829,7 @@ class Products extends CI_finecontrol
                         $SF = $StoneFamilyName;
                     }
                     if (!empty($groupName) && $groupName != $st->GroupName) {
+                        //------- for new group location-------
                         $curl = curl_init();
                         curl_setopt_array($curl, array(
                             CURLOPT_URL => 'https://api.stuller.com/v2/products/searchstones',
@@ -855,9 +856,38 @@ class Products extends CI_finecontrol
                             $groupName = $st->GroupName;
                             $stone_id = $SP;
                         } else {
-                            $SP = '';
-                            $groupName = '';
-                            $stone_id = '';
+                            $SF = 'Diamond';
+                            //------- set default stone diamond-------
+                            $curl = curl_init();
+                            curl_setopt_array($curl, array(
+                                CURLOPT_URL => 'https://api.stuller.com/v2/products/searchstones',
+                                CURLOPT_RETURNTRANSFER => true,
+                                CURLOPT_ENCODING => '',
+                                CURLOPT_MAXREDIRS => 10,
+                                CURLOPT_TIMEOUT => 0,
+                                CURLOPT_FOLLOWLOCATION => true,
+                                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                                CURLOPT_CUSTOMREQUEST => 'POST',
+                                CURLOPT_POSTFIELDS => '{"ConfigurationModelId":' . $pro_data->config_model_id . ',"LocationNumbers":[' . $st->LocationNumber . '],"StoneFamilyName":"' . $SF . '","StoneCategories":["' . $stoneCategory . '"]}',
+                                CURLOPT_HTTPHEADER => array(
+                                    'Authorization: Basic ZGV2amV3ZWw6Q29kaW5nMjA9',
+                                    'Content-Type: application/json',
+                                    'Host: api.stuller.com',
+                                ),
+                            ));
+
+                            $response = curl_exec($curl);
+                            curl_close($curl);
+                            $res = json_decode($response);
+                            if (!empty($res->ConfiguredStones)) {
+                                $SP = $res->ConfiguredStones[0]->Product->Id;
+                                $groupName = $st->GroupName;
+                                $stone_id = $SP;
+                            } else {
+                                $SP = '';
+                                $groupName = '';
+                                $stone_id = '';
+                            }
                         }
                     } else {
                         $SP = $stone_id;
