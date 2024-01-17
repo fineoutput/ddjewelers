@@ -1,4 +1,3 @@
-
 <style>
   .vodiapicker {
     display: none;
@@ -84,7 +83,7 @@
 
 
 
-  .arrow-1{
+  .arrow-1 {
     top: 24%;
   }
 
@@ -961,32 +960,32 @@ $minor2Data = $this->db->get_where('tbl_minisubcategory2', array('id' => $produc
 
   });
   //------ qty-----------
+  document.addEventListener("DOMContentLoaded", function() {
+    var input = document.querySelector('#qty');
+    var btnminus = document.querySelector('.qtyminus');
+    var btnplus = document.querySelector('.qtyplus');
 
-  var input = document.querySelector('#qty');
-  var btnminus = document.querySelector('.qtyminus');
-  var btnplus = document.querySelector('.qtyplus');
+    if (input !== null && btnminus !== null && btnplus !== null) {
+      var min = Number(input.getAttribute('min')) || 0;
+      var max = Number(input.getAttribute('max')) || Infinity;
+      var step = Number(input.getAttribute('step')) || 1;
 
-  if (input !== undefined && btnminus !== undefined && btnplus !== undefined && input !== null && btnminus !== null && btnplus !== null) {
+      function qtyminus() {
+        var current = Number(input.value);
+        var newVal = Math.max(min, current - step);
+        input.value = newVal;
+      }
 
-    var min = Number(input.getAttribute('min'));
-    var max = Number(input.getAttribute('max'));
-    var step = Number(input.getAttribute('step'));
+      function qtyplus() {
+        var current = Number(input.value);
+        var newVal = Math.min(max, current + step);
+        input.value = newVal;
+      }
 
-    function qtyminus(e) {
-      var current = Number(input.value);
-      var newVal = (current - step);
-      input.value = Number(newVal);
-      $("#qty").val(newVal)
+      btnminus.addEventListener('click', qtyminus);
+      btnplus.addEventListener('click', qtyplus);
     }
-
-    function qtyplus(e) {
-      var current = Number(input.value);
-      var newVal = (current + step);
-      if (newVal > max) newVal = max;
-      input.value = Number(newVal);
-      $("#qty").val(newVal)
-    }
-  }
+  });
 </script>
 <script>
   //test for getting url value from attr
@@ -1034,7 +1033,6 @@ $minor2Data = $this->db->get_where('tbl_minisubcategory2', array('id' => $produc
     $('.btn-select').attr('value', sessionLang);
   } else {
     var langIndex = langArray.indexOf('ch');
-    console.log(langIndex);
     $('.btn-select').html(langArray[langIndex]);
     //$('.btn-select').attr('value', 'en');
   }
