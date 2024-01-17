@@ -1024,7 +1024,7 @@ if ($products->is_quick == 1) {
                       });
                       $groupItems = array_values($groupItems);
                       $uniqueSizes = array_unique(array_column($groupItems, 'SizeMM'));
-                      if ($groupName == 'Center') {
+                      if (count($groupCounts) == 1 || $groupName == 'Center') {
                     ?>
                         <tr>
                           <td style="text-align: left;padding: 8px; vertical-align: -webkit-baseline-middle;"><?= $groupName ?>
@@ -1038,7 +1038,7 @@ if ($products->is_quick == 1) {
                                                                                   // If there are multiple unique SizeMM values, print "Varying Sizes"
                                                                                   echo $size = count($uniqueSizes) > 1 ? "Varying Sizes" : $groupItems[0]->Dimension1 . 'mm x ' . $groupItems[0]->Dimension2 . 'mm';
                                                                                 } ?></td>
-                          <td><button class="add-btn" onclick="fetchStoneFamily(this)" data-modelID="<?= $products->config_model_id ?>" data-size="<?= $size ?>" data-count="<?= $count ?>" data-groupName="<?= $groupName ?>" data-LocationNumber="<?= $groupItems[0]->LocationNumber ?>">Select</button></td>
+                          <td><button class="add-btn" onclick="fetchStoneFamily(this)" data-modelID="<?= $products->config_model_id ?>" data-size="<?= $size ?>" data-count="<?= $count ?>" data-groupName="<?= $groupName ?>" data-LocationNumber="<?= $groupItems[0]->LocationNumber ?>" data-group-count="<?= count($groupCounts) ?>">Select</button></td>
                         </tr>
                     <?php
                       }
@@ -1194,6 +1194,7 @@ if ($products->is_quick == 1) {
     var groupName = obj.getAttribute('data-groupName');
     var size = obj.getAttribute('data-size');
     var count = obj.getAttribute('data-count');
+    var group_count = obj.getAttribute('data-group-count');
     var LocationNumber = obj.getAttribute('data-LocationNumber');
     $.ajax({
       url: "<?= base_url() ?>dcadmin/Products/GetStoneFamily",
@@ -1203,7 +1204,8 @@ if ($products->is_quick == 1) {
         groupName: groupName,
         size: size,
         count: count,
-        LocationNumber,
+        LocationNumber: LocationNumber,
+        group_count: group_count,
       },
       dataType: 'json',
       success: function(response) {
@@ -1233,6 +1235,7 @@ if ($products->is_quick == 1) {
     var image = obj.getAttribute('data-image');
     var modelId = obj.getAttribute('data-modelId');
     var LocationNumber = obj.getAttribute('data-LocationNumber');
+    var group_count = obj.getAttribute('data-group-count');
     //----- main
     var MainDiv = document.createElement('div');
     MainDiv.className = 'col-md-12';
@@ -1293,6 +1296,7 @@ if ($products->is_quick == 1) {
         buttonElement.setAttribute('data-Location', LocationNumber);
         buttonElement.setAttribute('data-StoneFamily', name);
         buttonElement.setAttribute('data-stoneCategory', category);
+        buttonElement.setAttribute('data-group-count', group_count);
         buttonElement.addEventListener('click', function() {
           fetchFamilyStoneList(this)
         })
@@ -1315,6 +1319,7 @@ if ($products->is_quick == 1) {
     var LocationNumber = obj.getAttribute('data-location');
     var StoneFamilyName = obj.getAttribute('data-stoneFamily');
     var stoneCategory = obj.getAttribute('data-stoneCategory');
+    var group_count = obj.getAttribute('data-group-count');
     $.ajax({
       url: "<?= base_url() ?>dcadmin/Products/SearchStone",
       method: "POST",
@@ -1323,6 +1328,7 @@ if ($products->is_quick == 1) {
         LocationNumber: LocationNumber,
         StoneFamilyName: StoneFamilyName,
         stoneCategory: stoneCategory,
+        group_count: group_count,
       },
       dataType: 'json',
       success: function(response) {
@@ -1365,22 +1371,30 @@ if ($products->is_quick == 1) {
     $('#modelLoader').show();
     $('#StoneLocation').css('opacity', '30%');
     var ProductId = $('#proId').val();
-    var temp_data = JSON.parse($('#temp_data').val());
+    var temp_data = $('#temp_data').val();
     var sideName = obj.getAttribute('data-name');
-    // var StoneProductId = obj.getAttribute('data-stoneId');
-    // var StoneFamilyName = obj.getAttribute('data-StoneFamilyName');
-    // var stoneCategory = obj.getAttribute('data-stoneCategory');
-    // var LocationNumber = obj.getAttribute('data-LocationNumber');
+    if (temp_data) {
+      temp_data = JSON.parse(temp_data);
+      var StoneProductId = temp_data.StoneProductId;
+      var StoneFamilyName = temp_data.StoneProductId;
+      var stoneCategory = temp_data.stoneCategory;
+      var LocationNumber = temp_data.LocationNumber;
+    } else {
+      var StoneProductId = obj.getAttribute('data-stoneId');
+      var StoneFamilyName = obj.getAttribute('data-StoneFamilyName');
+      var stoneCategory = obj.getAttribute('data-stoneCategory');
+      var LocationNumber = obj.getAttribute('data-LocationNumber');
+    }
     var RingSize = $('#r_size').val();
     $.ajax({
       url: "<?= base_url() ?>dcadmin/Products/configureProduct",
       method: "POST",
       data: {
         ProductId: ProductId,
-        StoneProductId: temp_data.StoneProductId,
-        StoneFamilyName: temp_data.StoneFamilyName,
-        stoneCategory: temp_data.stoneCategory,
-        LocationNumber: temp_data.LocationNumber,
+        StoneProductId: StoneProductId,
+        StoneFamilyName: StoneProductId,
+        stoneCategory: stoneCategory,
+        LocationNumber: LocationNumber,
         RingSize: RingSize,
         sideName: sideName,
       },
@@ -1391,6 +1405,7 @@ if ($products->is_quick == 1) {
           $('#sideStonesList').hide();
           $('#setFinal').html(response.html)
           $("#setFinal").show();
+          $('#setStonesTable').hide();
           $('#modelLoader').hide();
           $('#StoneLocation').css('opacity', '100%');
 
