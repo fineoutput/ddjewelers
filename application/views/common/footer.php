@@ -144,8 +144,8 @@
           <img class="payicon" style="" src="<?= base_url() ?>assets\jewel\img\paydiscover.png" />
           <img class="payicon" style="width: 97px; height: auto;" src="<?= base_url() ?>assets\jewel\img\paypal.png" />
           <img class="payicon" style="" src="<?= base_url() ?>assets\jewel\img\google-pay.png" />
-          
-          <a href='https://www.affirm.com/how-it-works' target='_blank' rel='noopener noreferrer'>  <img class="payiconn" style="" src="<?= base_url() ?>assets\jewel\img\pay3.png" /> </a>
+
+          <a href='https://www.affirm.com/how-it-works' target='_blank' rel='noopener noreferrer'> <img class="payiconn" style="" src="<?= base_url() ?>assets\jewel\img\pay3.png" /> </a>
           <!-- <i class="fab fa-cc-amex"></i> -->
         </div>
       </div>
@@ -171,7 +171,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/popper.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.3.5/jquery.fancybox.min.js"></script>
-  <script defer src="https://use.fontawesome.com/releases/v5.0.8/js/all.js" integrity="sha384-SlE991lGASHoBfWbelyBPLsUlwY1GwNDJo3jSJO04KZ33K2bwfV9YBauFfnzvynJ" crossorigin="anonymous"></script>
+<script defer src="https://use.fontawesome.com/releases/v5.0.8/js/all.js" integrity="sha384-SlE991lGASHoBfWbelyBPLsUlwY1GwNDJo3jSJO04KZ33K2bwfV9YBauFfnzvynJ" crossorigin="anonymous"></script>
 <script>
   $(document).ready(function() {
     //===================== START PRODUCT DETAILS MAIN SLIDER ====================
@@ -391,50 +391,57 @@
 <!-- header sea a product js end  -->
 <script>
   function addToCart(obj) {
-    var pro_id = $(obj).attr("data-pro-id");
-    var ring_size = $('#r_size').val();
-    var ring_price = $(obj).attr("data-ring_price");
-    var quantity = $(obj).attr("quantity");
-    var gem_data = $(obj).attr("data-gem-data");
-    var price = $(obj).attr("data-price");
-    var img = $(obj).attr("data-img");
-
-    var btn = $(obj).attr("btn")
-    if (quantity == "") {
-      quantity = $('#qty').val().trim();
-    }
-    if (quantity == 0) {
-      loadErrorNotify('Please Select Quantity Greater Than 1. ');
-    }
-    var base_url = '<?= base_url(); ?>';
-    $.ajax({
-      url: base_url + 'Cart/addToCart',
-      method: 'post',
-      data: {
-        pro_id: pro_id,
-        quantity: quantity,
-        ring_size: ring_size,
-        ring_price: ring_price,
-        gem_data: gem_data,
-        price: price,
-        img: img,
-      },
-      dataType: 'json',
-      success: function(response) {
-        if (response.status == true) {
-          $('#myModal').modal('hide');
-          loadSuccessNotify('Item Successfully added to your cart');
-          window.location.reload();
-        }
-        if (response.status == false) {
-          $('#myModal').modal('hide');
-          loadErrorNotify(response.message);
-        }
-      },
-      error: function(error) {
-        console.log(error);
+    (function($) {
+      var pro_id = $(obj).attr("data-pro-id");
+      var ring_size = $('#r_size').val();
+      var ring_price = $(obj).attr("data-ring_price");
+      var quantity = $(obj).attr("quantity");
+      var gem_data = $(obj).attr("data-gem-data");
+      var price = $(obj).attr("data-price");
+      var img = $(obj).attr("data-img");
+      var btn = $(obj).attr("btn")
+      if (quantity == "") {
+        quantity = $('#qty').val().trim();
       }
-    });
+      if (quantity == 0) {
+        loadErrorNotify('Please Select Quantity Greater Than 1. ');
+      }
+      $("#loader").css("display", 'block');
+      $("#addToCartBtn").css("display", 'none');
+      var base_url = '<?= base_url(); ?>';
+      $.ajax({
+        url: base_url + 'Cart/addToCart',
+        method: 'post',
+        data: {
+          pro_id: pro_id,
+          quantity: quantity,
+          ring_size: ring_size,
+          ring_price: ring_price,
+          gem_data: gem_data,
+          price: price,
+          img: img,
+        },
+        dataType: 'json',
+        success: function(response) {
+          if (response.status == true) {
+            jQuery.noConflict();
+            // $('#myModal').modal('hide');
+            loadSuccessNotify('Item Successfully added to your cart');
+            window.location.reload();
+          }
+          if (response.status == false) {
+            jQuery.noConflict();
+            // $('#myModal').modal('hide');
+            loadErrorNotify(response.message);
+            $("#loader").css("display", 'none');
+            $("#addToCartBtn").css("display", 'block');
+          }
+        },
+        error: function(error) {
+          console.log(error);
+        }
+      });
+    })(jQuery);
   }
 </script>
 <script>
@@ -455,100 +462,106 @@
   });
 
   function loadSuccessNotify(succ_message) {
-    $.notify({
-      icon: '',
-      // title: 'Success!',
-      message: succ_message
-    }, {
-      element: 'body',
-      position: null,
-      type: "success",
-      allow_dismiss: true,
-      newest_on_top: false,
-      showProgressbar: true,
-      placement: {
-        from: "top",
-        align: "right"
-      },
-      offset: 20,
-      spacing: 10,
-      z_index: 1031,
-      delay: 5000,
-      animate: {
-        enter: 'animated fadeInDown',
-        exit: 'animated fadeOutUp'
-      },
-      icon_type: 'class',
-      template: '<div data-notify="container" class="col-xs-11 col-sm-3 alert alert-{0}" role="alert">' +
-        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">&times;</button>' +
-        '<span data-notify="icon"></span> ' +
-        '<span data-notify="title">{1}</span> ' +
-        '<span data-notify="message">{2}</span>' +
-        '<a href="{3}" target="{4}" data-notify="url"></a>' +
-        '</div>'
-    });
+    (function($) {
+      $.notify({
+        icon: '',
+        // title: 'Success!',
+        message: succ_message
+      }, {
+        element: 'body',
+        position: null,
+        type: "success",
+        allow_dismiss: true,
+        newest_on_top: false,
+        showProgressbar: true,
+        placement: {
+          from: "top",
+          align: "right"
+        },
+        offset: 20,
+        spacing: 10,
+        z_index: 9999,
+        delay: 5000,
+        animate: {
+          enter: 'animated fadeInDown',
+          exit: 'animated fadeOutUp'
+        },
+        icon_type: 'class',
+        template: '<div data-notify="container" class="col-xs-11 col-sm-3 alert alert-{0}" role="alert">' +
+          '<button type="button" class="close" data-dismiss="alert" aria-label="Close">&times;</button>' +
+          '<span data-notify="icon"></span> ' +
+          '<span data-notify="title">{1}</span> ' +
+          '<span data-notify="message">{2}</span>' +
+          '<a href="{3}" target="{4}" data-notify="url"></a>' +
+          '</div>'
+      });
+    })(jQuery)
   }
 
   function loadErrorNotify(message) {
-    $.notify({
-      icon: '',
-      title: '',
-      message: message
-    }, {
-      element: 'body',
-      position: null,
-      type: "danger",
-      allow_dismiss: true,
-      newest_on_top: false,
-      showProgressbar: true,
-      placement: {
-        from: "top",
-        align: "right"
-      },
-      offset: 20,
-      spacing: 10,
-      z_index: 1031,
-      delay: 5000,
-      animate: {
-        enter: 'animated fadeInDown',
-        exit: 'animated fadeOutUp'
-      },
-      icon_type: 'class',
-      template: '<div data-notify="container" class="col-xs-11 col-sm-3 alert alert-{0}" role="alert">' +
-        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">&times;</button>' +
-        '<span data-notify="icon"></span> ' +
-        '<span data-notify="title">{1}</span> ' +
-        '<span data-notify="message">{2}</span>' +
-        '<a href="{3}" target="{4}" data-notify="url"></a>' +
-        '</div>'
-    });
+    (function($) {
+      $.notify({
+        icon: '',
+        title: '',
+        message: message
+      }, {
+        element: 'body',
+        position: null,
+        type: "danger",
+        allow_dismiss: true,
+        newest_on_top: false,
+        showProgressbar: true,
+        placement: {
+          from: "top",
+          align: "right"
+        },
+        offset: 20,
+        spacing: 10,
+        z_index: 9999,
+        delay: 5000,
+        animate: {
+          enter: 'animated fadeInDown',
+          exit: 'animated fadeOutUp'
+        },
+        icon_type: 'class',
+        template: '<div data-notify="container" class="col-xs-11 col-sm-3 alert alert-{0}" role="alert">' +
+          '<button type="button" class="close" data-dismiss="alert" aria-label="Close">&times;</button>' +
+          '<span data-notify="icon"></span> ' +
+          '<span data-notify="title">{1}</span> ' +
+          '<span data-notify="message">{2}</span>' +
+          '<a href="{3}" target="{4}" data-notify="url"></a>' +
+          '</div>'
+      });
+    })(jQuery)
   }
   //---------------wishlist----------
   function wishlist(obj) {
-    var pro_id = $(obj).attr("data-pro-id");
-    var status = $(obj).attr("status");
-    $.ajax({
-      url: '<?= base_url(); ?>Cart/wishlist',
-      method: 'post',
-      data: {
-        pro_id: pro_id,
-        status: status,
-      },
-      dataType: 'json',
-      success: function(response) {
-        if (response.data == true) {
-          loadSuccessNotify(response.data_message);
-          $("#WishlistData").load(window.location.href + " #WishlistData > *");
-          $("#totalwishlistItemsM").load(window.location.href + " #totalwishlistItemsM > *");
-          $("#totalCartItemsW").load(window.location.href + " #totalCartItemsW > *");
-        } else if (response.data == false) {
-          loadErrorNotify(response.data_message);
-          $("#count").load(window.location.href + " #count > *");
-          $("#wish").load(window.location.href + " #wish > *");
-          $("#w_count").load(window.location.href + " #w_count > *");
+    (function($) {
+      var pro_id = $(obj).attr("data-pro-id");
+      var status = $(obj).attr("status");
+      $.ajax({
+        url: '<?= base_url(); ?>Cart/wishlist',
+        method: 'post',
+        data: {
+          pro_id: pro_id,
+          status: status,
+        },
+        dataType: 'json',
+        success: function(response) {
+          if (response.data == true) {
+            loadSuccessNotify(response.data_message);
+            $("#WishlistData").load(window.location.href + " #WishlistData > *");
+            $("#totalwishlistItemsM").load(window.location.href + " #totalwishlistItemsM > *");
+            $("#totalCartItemsW").load(window.location.href + " #totalCartItemsW > *");
+          } else if (response.data == false) {
+            loadErrorNotify(response.data_message);
+            $("#count").load(window.location.href + " #count > *");
+            $("#wish").load(window.location.href + " #wish > *");
+            $("#w_count").load(window.location.href + " #w_count > *");
+          }
         }
-      }
-    });
+      });
+    })(jQuery)
   }
 </script>
 <script src="<?= base_url() ?>assets/frontend/js/bootstrap-notify.min.js"></script>

@@ -676,12 +676,6 @@ if ($products->is_quick == 1) {
                                   } ?>
       </p>
 
-      <!-- <?php if (empty($this->session->userdata('user_id'))) { ?>
-        <input type="submit" class="mt-3 add-btn" value=" Add to cart" onclick="addToCart(this);" quantity="" id="addToCartBtn" data-pro-id="<?= $products->pro_id; ?>" data-ring_size="<?= $products->ring_size ?>" data-ring_price="">
-      <?php } else { ?>
-        <input type="submit" class="mt-3 add-btn" value=" Add to cart" onclick="addToCart(this);" quantity="" id="addToCartBtn" data-pro-id="<?= $products->pro_id; ?>" data-ring_size="<?= $products->ring_size ?>" data-ring_price="">
-
-      <?php } ?> -->
 
       <?php if (!empty($this->session->userdata('user_id'))) { ?>
         <input type="submit" class="mt-3 add-btn" value="Add to wishlist" onclick="wishlist(this)" data-pro-id="<?= $products->pro_id; ?>" status="add">
@@ -1307,32 +1301,6 @@ if ($products->is_quick == 1) {
     })
   }
   //------------- END SET STONES  -------------------------
-  //------ qty-----------
-  var input = document.querySelector('#qty');
-  var btnminus = document.querySelector('.qtyminus');
-  var btnplus = document.querySelector('.qtyplus');
-
-  if (input !== undefined && btnminus !== undefined && btnplus !== undefined && input !== null && btnminus !== null && btnplus !== null) {
-
-    var min = Number(input.getAttribute('min'));
-    var max = Number(input.getAttribute('max'));
-    var step = Number(input.getAttribute('step'));
-
-    function qtyminus(e) {
-      var current = Number(input.value);
-      var newVal = (current - step);
-      input.value = Number(newVal);
-      $("#qty").val(newVal)
-    }
-
-    function qtyplus(e) {
-      var current = Number(input.value);
-      var newVal = (current + step);
-      if (newVal > max) newVal = max;
-      input.value = Number(newVal);
-      $("#qty").val(newVal)
-    }
-  }
 </script>
 <script>
   var langArray = [];

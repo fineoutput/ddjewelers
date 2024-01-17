@@ -982,11 +982,14 @@ class Products extends CI_finecontrol
                     <span class="item-value">$' . $final_price . '</span>
                 </div>';
                 if (empty($this->session->userdata('user_id'))) {
-                    $html .= '<input type="submit" class="mt-3 add-btn" value=" Add to cart" onclick="addToCart(this);" quantity="1" id="addToCartBtnGem" data-pro-id="' . $ProductId . '" data-ring_size="' . $RingSize . '" data-ring_price="" data-gem-data=\'' . json_encode($res->Stones) . '\' data-price="' . $final_price . '" data-img="' . $res->Images[0]->ZoomUrl . '">';
+                    $html .= '<input type="submit" class="mt-3 add-btn" value=" Add to cart" onclick="addToCart(this);" quantity="1" id="addToCartBtn" data-pro-id="' . $ProductId . '" data-ring_size="' . $RingSize . '" data-ring_price="" data-gem-data=\'' . json_encode($res->Stones) . '\' data-price="' . $final_price . '" data-img="' . $res->Images[0]->ZoomUrl . '">';
                 } else {
-                    $html .= '<input type="submit" class="mt-3 add-btn" value=" Add to cart" onclick="addToCart(this);" quantity="1" id="addToCartBtnGem" data-pro-id="' . $ProductId . '" data-ring_size="' . $RingSize . '"  data-ring_price="" 
+                    $html .= '<input type="submit" class="mt-3 add-btn" value=" Add to cart" onclick="addToCart(this);" quantity="1" id="addToCartBtn" data-pro-id="' . $ProductId . '" data-ring_size="' . $RingSize . '"  data-ring_price="" 
                     data-gem-data=\'' . json_encode($res->Stones) . '\'  data-price="' . $final_price . '" data-img="' . $res->Images[0]->ZoomUrl . '">';
                 }
+                $html .=  '<button class="mt-3 add-btn" id="loader" disabled style="display:none">
+                <i class="fa fa-spinner fa-spin"></i> Loading...
+              </button>';
                 $html .= '</div>';
 
                 echo json_encode(['status' => 200, 'data' => $res->Images[0]->ZoomUrl, 'html' => $html]);

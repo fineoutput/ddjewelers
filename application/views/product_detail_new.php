@@ -680,6 +680,9 @@ $minor2Data = $this->db->get_where('tbl_minisubcategory2', array('id' => $produc
         <input type="submit" class="mt-3 add-btn" value=" Add to cart" onclick="addToCart(this);" quantity="" id="addToCartBtn" data-pro-id="<?= $products->pro_id; ?>" data-ring_size="<?= $products->ring_size ?>" data-ring_price="">
 
       <?php } ?>
+      <button class="mt-3 add-btn" id="loader" disabled style="display:none">
+        <i class="fa fa-spinner fa-spin"></i> Loading...
+      </button>
 
       <?php if (!empty($this->session->userdata('user_id'))) { ?>
         <input type="submit" class="mt-3 add-btn" value="Add to wishlist" onclick="wishlist(this)" data-pro-id="<?= $products->pro_id; ?>" status="add">
