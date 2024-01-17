@@ -215,8 +215,7 @@
                   ->where('group_id', $data->group_id)
                   ->where('series_id', $data->series_id)
                   ->where("JSON_SEARCH(catalog_values, 'one', 'Set') IS NOT NULL", null, false)
-                  ->get()
-                  ->row();
+                  ->get()->row();
                   if (!empty($data2)) {
                     $data = $data2;
                   }
