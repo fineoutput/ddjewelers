@@ -6,119 +6,6 @@
   }
 
 
-  .dizzy-gillespie {
-    filter: saturate(3);
-    width: 0.1px;
-    height: 0.1px;
-    border: 40px solid transparent;
-    border-radius: 5px;
-    -webkit-animation: loader 3s ease-in infinite, spin 1s linear infinite;
-    animation: loader 3s ease-in infinite, spin 1s linear infinite;
-  }
-
-
-  .dizzy-gillespie::before {
-    filter: saturate(0.3);
-    display: block;
-    position: absolute;
-    z-index: -1;
-    margin-left: -40px;
-    margin-top: -40px;
-    content: "";
-    height: 0.1;
-    width: 0.1;
-    border: 40px solid transparent;
-    border-radius: 5px;
-    animation: loader 2s ease-in infinite reverse, spin 0.8s linear infinite reverse;
-  }
-
-  .dizzy-gillespie::after {
-    display: block;
-    position: absolute;
-    z-index: 2;
-    margin-left: -10px;
-    margin-top: -10px;
-    content: "";
-    height: 20px;
-    width: 20px;
-    border-radius: 20px;
-    background-color: white;
-  }
-
-  @-webkit-keyframes loader {
-    0% {
-      border-bottom-color: transparent;
-      border-top-color: #114357;
-    }
-
-    25% {
-      border-left-color: transparent;
-      border-right-color: #2a3f4f;
-    }
-
-    50% {
-      border-top-color: transparent;
-      border-bottom-color: #516a7b;
-    }
-
-    75% {
-      border-right-color: transparent;
-      border-left-color: #2a3f4f;
-    }
-
-    100% {
-      border-bottom-color: transparent;
-      border-top-color: #114357;
-    }
-  }
-
-  @keyframes loader {
-    0% {
-      border-bottom-color: transparent;
-      border-top-color: #114357;
-    }
-
-    25% {
-      border-left-color: transparent;
-      border-right-color: #2a3f4f;
-    }
-
-    50% {
-      border-top-color: transparent;
-      border-bottom-color: #516a7b;
-    }
-
-    75% {
-      border-right-color: transparent;
-      border-left-color: #2a3f4f;
-    }
-
-    100% {
-      border-bottom-color: transparent;
-      border-top-color: #114357;
-    }
-  }
-
-  @-webkit-keyframes spin {
-    0% {
-      transform: rotate(0deg);
-    }
-
-    100% {
-      transform: rotate(-360deg);
-    }
-  }
-
-  @keyframes spin {
-    0% {
-      transform: rotate(0deg);
-    }
-
-    100% {
-      transform: rotate(-360deg);
-    }
-  }
-
   #a {
     padding-left: 0px;
   }
@@ -748,12 +635,12 @@ if ($products->is_quick == 1) {
       <?php } ?>
 
 
-      <sup class="float-right">QTY</sup>
+      <!-- <sup class="float-right">QTY</sup>
       <div class="align-right d-flex  justify-content-end">
         <button class="qtyminus" aria-hidden="true">&minus;</button>
         <input type="number" readonly name="qty" id="qty" min="1" max="20" step="1" value="1" style="text-align:center;margin-top:1rem;width:auto;font-size:0.9rem;">
         <button class="qtyplus" aria-hidden="true">&plus;</button>
-      </div>
+      </div> -->
       <? if (!empty($products->lead_time)) {
         $dd = round($products->lead_time) - 1;
         $NewDate = Date('l, F d', strtotime('+' . $dd . ' days'));
@@ -789,12 +676,12 @@ if ($products->is_quick == 1) {
                                   } ?>
       </p>
 
-      <?php if (empty($this->session->userdata('user_id'))) { ?>
+      <!-- <?php if (empty($this->session->userdata('user_id'))) { ?>
         <input type="submit" class="mt-3 add-btn" value=" Add to cart" onclick="addToCart(this);" quantity="" id="addToCartBtn" data-pro-id="<?= $products->pro_id; ?>" data-ring_size="<?= $products->ring_size ?>" data-ring_price="">
       <?php } else { ?>
         <input type="submit" class="mt-3 add-btn" value=" Add to cart" onclick="addToCart(this);" quantity="" id="addToCartBtn" data-pro-id="<?= $products->pro_id; ?>" data-ring_size="<?= $products->ring_size ?>" data-ring_price="">
 
-      <?php } ?>
+      <?php } ?> -->
 
       <?php if (!empty($this->session->userdata('user_id'))) { ?>
         <input type="submit" class="mt-3 add-btn" value="Add to wishlist" onclick="wishlist(this)" data-pro-id="<?= $products->pro_id; ?>" status="add">

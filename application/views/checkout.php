@@ -36,6 +36,7 @@
         font-size: 15px;
     }
 </style>
+
 <section>
     <div class="container-fluid pl-5 pr-5 pt-3 pb-5 responsive-padding-mobile">
         <div class="row">
@@ -407,6 +408,7 @@ $return_url = site_url() . 'Home/callback/' . $ordr_id_enc;
         onAuthorize: function(data, actions) {
             return actions.payment.execute()
                 .then(function() {
+                    $('.center').show();
                     window.location = "<?php echo $return_url; ?>?paymentID=" + data.paymentID + "&payerID=" + data.payerID + "&token=" + data.paymentToken + "&pid=<?php echo $merchant_order_id; ?>";
                 });
         }
@@ -453,6 +455,7 @@ $return_url = site_url() . 'Home/callback/' . $ordr_id_enc;
     (window, affirm_config, "affirm", "checkout", "ui", "script", "ready", "jsReady");
 
     function affirm_open() {
+        $('.center').show();
         affirm.checkout({
             "merchant": {
                 "user_confirmation_url": "https://merchantsite.com/confirm",
@@ -527,11 +530,12 @@ $return_url = site_url() . 'Home/callback/' . $ordr_id_enc;
             "tax_amount": 0,
             "total": "<?= round($order1_data[0]->final_amount * 100) ?>"
         })
-        affirm.checkout.open({
+        affirm.checkout.open({            
             onFail: (error) => {
                 window.open(base_url + 'Home/order_failed', "_self");
             },
             onSuccess: (data) => {
+                $('.center').show();
                 var base_url = "<?= base_url() ?>";
                 $.ajax({
                     url: base_url + 'Order/affirm_success',
@@ -551,6 +555,7 @@ $return_url = site_url() . 'Home/callback/' . $ordr_id_enc;
                 });
             }
         })
+
     }
 </script>
 <!-- //------- gpay ------- -->
@@ -632,6 +637,7 @@ $return_url = site_url() . 'Home/callback/' . $ordr_id_enc;
                                 // alert("hi")
                                 // return;
                                 var base_url = "<?= base_url() ?>";
+                                $('.center').show();
                                 $.ajax({
                                     url: base_url + 'Order/googlePay_verify',
                                     method: 'post',
