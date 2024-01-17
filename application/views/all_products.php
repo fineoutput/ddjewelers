@@ -207,9 +207,9 @@
               foreach ($products_data as $data) {
                 $catalogValues = json_decode($data->catalog_values);
                 if (in_array("Unset", $catalogValues)) {
-                  $index = array_search("Unset", $catalogValues);
-                  $array[$index] = "Set";
-                  $data2 = $this->db->select('full_set_images,images,group_images,series_id,pro_id,group_id,description,price,catalog_values')->like('catalog_values', json_encode($catalogValues))->get_where('tbl_products', array('group_id' => $data->group_id, 'series_id' => $data->series_id))->row();
+                  // $index = array_search("Unset", $catalogValues);
+                  // $array[$index] = "Set";
+                  $data2 = $this->db->select('full_set_images,images,group_images,series_id,pro_id,group_id,description,price,catalog_values')->where("JSON_SEARCH(catalog_values, 'one', 'Set') IS NULL", null, false)->get_where('tbl_products', array('group_id' => $data->group_id, 'series_id' => $data->series_id))->row();
                   if (!empty($data2)) {
                     $data = $data2;
                   }
