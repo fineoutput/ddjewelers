@@ -1306,7 +1306,7 @@ class Home extends CI_Controller
     {
         $group_id = $_GET['groupId'];
         $data['products'] = $this->db->get_where('tbl_products', array('pro_id' => $pro_id))->row();
-        $data['stone_data']  = $this->db->select("id,pro_id,stone")->group_by('stone')->get_where('tbl_products', array('series_id' => $series_id, 'group_id' => $group_id, 'is_quick' => $data['products']->is_quick))->result();
+        $data['stone_data']  = $this->db->select("id,pro_id,stone")->order_by('stone','desc')->group_by('stone')->get_where('tbl_products', array('series_id' => $series_id, 'group_id' => $group_id, 'is_quick' => $data['products']->is_quick))->result();
         $product_data  = $this->db->select('elements')->group_by('pro_id')->get_where('tbl_products', array('series_id' => $series_id, 'group_id' => $group_id, 'stone' => $data['products']->stone, 'is_quick' => $data['products']->is_quick))->result();
         $data['more_products'] = $this->db->select('series_id, full_set_images,images,group_images, group_id,description,pro_id')->where('series_id !=', $data['products']->series_id)->group_by('series_id')->limit(15)->get_where('tbl_products', array('category_id' => $data['products']->category_id, 'is_quick' => $data['products']->is_quick))->result();
         $data['suggested_products'] = $this->db->select('series_id, full_set_images,images,group_images, group_id,description,pro_id')->where('series_id !=', $data['products']->series_id)->group_by('series_id')->limit(15)->get_where('tbl_products', array('is_quick' => $data['products']->is_quick))->result();

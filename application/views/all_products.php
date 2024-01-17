@@ -208,16 +208,22 @@
 
                 $catalogValues = json_decode($data->catalog_values);
                 if (in_array("Unset", $catalogValues)) {
-                  // $index = array_search("Unset", $catalogValues);
-                  // $array[$index] = "Set";
-                  $data2 = $this->db->select('pro_id, full_set_images, images, group_images, series_id, group_id, description, price, catalog_values')
-                  ->from('tbl_products')
-                  ->where('group_id', $data->group_id)
-                  ->where('series_id', $data->series_id)
-                  ->where("JSON_SEARCH(catalog_values, 'one', 'Set') IS NOT NULL", null, false)
-                  ->get()->row();
-                  if (!empty($data2)) {
-                    $data = $data2;
+                  $set_data = $this->db->select('pro_id, full_set_images, images, group_images, series_id, group_id, description, price, catalog_values')
+                    ->where(['group_id' => $data->group_id, 'series_id' => $data->series_id])
+                    ->where("JSON_SEARCH(catalog_values, 'one', 'Set') IS NOT NULL", null, false)
+                    ->get('tbl_products')
+                    ->row();
+                  if (!empty($set_data)) {
+                    $data = $set_data;
+                  } else {
+                    $semi_set_data = $this->db->select('pro_id, full_set_images, images, group_images, series_id, group_id, description, price, catalog_values')
+                      ->where(['group_id' => $data->group_id, 'series_id' => $data->series_id])
+                      ->where("JSON_SEARCH(catalog_values, 'one', 'Semi-Set') IS NOT NULL", null, false)
+                      ->get('tbl_products')
+                      ->row();
+                    if (!empty($semi_set_data)) {
+                      $data = $semi_set_data;
+                    }
                   }
                 }
                 $full_images = json_decode($data->full_set_images);
