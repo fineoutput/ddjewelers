@@ -539,6 +539,8 @@
     (function($) {
       var pro_id = $(obj).attr("data-pro-id");
       var status = $(obj).attr("status");
+      $("#loader").css("display", 'block');
+      $("#wishBtn").css("display", 'none');
       $.ajax({
         url: '<?= base_url(); ?>Cart/wishlist',
         method: 'post',
@@ -553,11 +555,15 @@
             $("#WishlistData").load(window.location.href + " #WishlistData > *");
             $("#totalwishlistItemsM").load(window.location.href + " #totalwishlistItemsM > *");
             $("#totalCartItemsW").load(window.location.href + " #totalCartItemsW > *");
+            $("#loader").css("display", 'none');
+            $("#wishBtn").css("display", 'block');
           } else if (response.data == false) {
             loadErrorNotify(response.data_message);
             $("#count").load(window.location.href + " #count > *");
             $("#wish").load(window.location.href + " #wish > *");
             $("#w_count").load(window.location.href + " #w_count > *");
+            $("#loader").css("display", 'none');
+            $("#wishBtn").css("display", 'block');
           }
         }
       });

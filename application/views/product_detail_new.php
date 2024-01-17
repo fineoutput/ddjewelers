@@ -685,7 +685,7 @@ $minor2Data = $this->db->get_where('tbl_minisubcategory2', array('id' => $produc
       </button>
 
       <?php if (!empty($this->session->userdata('user_id'))) { ?>
-        <input type="submit" class="mt-3 add-btn" value="Add to wishlist" onclick="wishlist(this)" data-pro-id="<?= $products->pro_id; ?>" status="add">
+        <input type="submit" class="mt-3 add-btn" id="wishBtn" value="Add to wishlist" onclick="wishlist(this)" data-pro-id="<?= $products->pro_id; ?>" status="add">
       <?php } ?>
       <div class="d-flex justify-content-between p-2 pb-4">
         <div>
