@@ -1231,7 +1231,7 @@ class Home extends CI_Controller
                 $page_index = 0;
                 $start = 0;
             }
-            $data['products_data'] = $this->db->select('full_set_images,images,group_images,series_id,pro_id,group_id,description,price')->limit($config["per_page"], $start)->group_by(array("series_id"))->get_where('tbl_products', array('minor_category_id' => $idd, 'is_quick' => null))->result();
+            $data['products_data'] = $this->db->select('full_set_images,images,group_images,series_id,pro_id,group_id,description,price,catalog_values')->limit($config["per_page"], $start)->group_by(array("series_id"))->get_where('tbl_products', array('minor_category_id' => $idd, 'is_quick' => null))->result();
             $mini_data = $this->db->get_where('tbl_minisubcategory', array('is_active' => 1, 'id' => $idd))->row();
             $subcat_data = $this->db->get_where('tbl_sub_category', array('is_active' => 1, 'id' => $mini_data->subcategory))->row();
             $cat_data = $this->db->get_where('tbl_category', array('is_active' => 1, 'id' => $mini_data->category))->row();
@@ -1258,7 +1258,7 @@ class Home extends CI_Controller
                 $page_index = 0;
                 $start = 0;
             }
-            $data['products_data'] = $this->db->select('full_set_images,images,group_images,series_id,pro_id,group_id,description,price')->limit($config["per_page"], $start)->group_by(array("series_id"))->get_where('tbl_products', array('category_id' => $idd, 'is_quick' => null))->result();
+            $data['products_data'] = $this->db->select('full_set_images,images,group_images,series_id,pro_id,group_id,description,price,catalog_values')->limit($config["per_page"], $start)->group_by(array("series_id"))->get_where('tbl_products', array('category_id' => $idd, 'is_quick' => null))->result();
             $cat_data = $this->db->get_where('tbl_category', array('is_active' => 1, 'id' => $idd))->row();
             $data['category_name'] = $cat_data->name;
             $data['category_id'] = $cat_data->id;
@@ -1283,7 +1283,7 @@ class Home extends CI_Controller
                 $page_index = 0;
                 $start = 0;
             }
-            $data['products_data'] = $this->db->select('full_set_images,images,group_images,series_id,pro_id,group_id,description,price')->limit($config["per_page"], $start)->group_by(array("series_id"))->get_where('tbl_products', array('subcategory_id' => $idd, 'is_quick' => null))->result();
+            $data['products_data'] = $this->db->select('full_set_images,images,group_images,series_id,pro_id,group_id,description,price,catalog_values')->limit($config["per_page"], $start)->group_by(array("series_id"))->get_where('tbl_products', array('subcategory_id' => $idd, 'is_quick' => null))->result();
             $subcat_data = $this->db->get_where('tbl_sub_category', array('is_active' => 1, 'id' => $idd))->row();
             $cat_data = $this->db->get_where('tbl_category', array('is_active' => 1, 'id' => $subcat_data->category))->row();
             $data['category_name'] = $cat_data->name;

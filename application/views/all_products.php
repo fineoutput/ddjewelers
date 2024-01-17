@@ -205,6 +205,15 @@
             <?php $i = 1;
             if (!empty($products_data)) {
               foreach ($products_data as $data) {
+                $catalogValues = json_decode($data->catalog_values);
+                if (in_array("Unset", $catalogValues)) {
+                  $index = array_search("Unset", $catalogValues);
+                  $array[$index] = "Set";
+                  $data2 = $this->db->select('full_set_images,images,group_images,series_id,pro_id,group_id,description,price,catalog_values')->like('catalog_values', json_encode($catalogValues))->get_where('tbl_products', array('group_id' => $data->group_id, 'series_id' => $data->series_id))->row();
+                  if (!empty($data2)) {
+                    $data = $data2;
+                  }
+                }
                 $full_images = json_decode($data->full_set_images);
                 $images = json_decode($data->images);
                 $group_images = json_decode($data->group_images);
