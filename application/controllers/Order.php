@@ -42,6 +42,16 @@ class Order extends CI_Controller
                         $status = "";
                         $pro_da = $this->db->get_where('tbl_products', array('pro_id' => $data->pro_id))->row();
                         if (!empty($pro_da)) {
+                            $full_images = json_decode($pro_da->full_set_images);
+                            $images = json_decode($pro_da->images);
+                            $group_images = json_decode($pro_da->group_images);
+                            if (!empty($full_images)) {
+                                $all_images = $full_images;
+                              } else if (!empty($images)) {
+                                $all_images = $images;
+                              } else if (!empty($group_images)) {
+                                $all_images = $group_images;
+                              }
                             $sku = $pro_da->sku;
                             if (empty($data->price)) {
                                 $pr_data = $this->db->get_where('tbl_price_rule', array())->row();
@@ -111,7 +121,8 @@ class Order extends CI_Controller
                             'series_id' => $pro_da->series_id,
                             'category_id' => $pro_da->category_id,
                             'gem_data' => $data->gem_data,
-                            'img' => $data->img,
+                            'img' => $data->img?$data->img:$all_images[0]->ZoomUrl ,
+                            'sku' => $pro_da->sku,
                             'date' => $cur_date
                         );
                         $last_id = $this->base_model->insert_table("tbl_order2", $data_insert, 1);
@@ -287,8 +298,7 @@ class Order extends CI_Controller
                     }
                 }
             }
-            // print_r($shipping_costs);
-            // die();
+            $temp_array = array_values($temp_array);
             //-------- updating shipping data ---------
             if (!empty($shipping_costs)) {
                 if (empty($order_data[0]->shipping_id)) {

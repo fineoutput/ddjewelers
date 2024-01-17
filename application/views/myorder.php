@@ -46,7 +46,7 @@
                             <div class="row">
                                 <div class="col-6 d-flex align-items-center mb-4 two_btn">
                                     <button class="float-left order_small mr-4">order
-                                        <a href="#">#<?= $data_order1->id; ?></a>
+                                        #<?= $data_order1->id; ?>
                                     </button>
                                     <span class="sp_od_web">Order Placed <a href="#">
                                             <?php
@@ -61,12 +61,10 @@
                                 <div class="col-12 sp_od_mob mb-3 d-none">
                                     <center>
                                         <span class="">Order Placed
-                                            <a href="#">
                                                 <?php
                                                 $newdate = new DateTime($data_order1->date);
                                                 echo $newdate->format('j F, Y, g:i a');   #d-m-Y  // March 10, 2001, 5:16 pm
                                                 ?>
-                                            </a>
                                         </span>
                                     </center>
                                 </div>
@@ -79,19 +77,10 @@
                         $d1 = $this->db->get();
                         if (!empty($d1)) {
                             foreach ($d1->result() as $dd1) {
-                                $this->db->select('*');
-                                $this->db->from('tbl_products');
-                                $this->db->where('id', $dd1->product_id);
-                                $this->db->where('is_active', 1);
-                                $op_da = $this->db->get()->row();
-                                if (!empty($op_da)) {
-                                    $o_product_name = $op_da->description;
-                                    $o_product_sku = $op_da->sku;
-                                    $o_product_image = $op_da->image1;
-                                } else {
-                                    $o_product_name = "Product Not Found!";
-                                    $o_product_image = "";
-                                }
+                                $gem_data = json_decode($dd1->gem_data);
+                                $o_product_name = $dd1->description;
+                                $o_product_sku = $dd1->sku;
+                                $o_product_image = $dd1->img;
                         ?>
                                 <div class="col-12 mt-3 pt-3" style="border-top: 1px solid lightgrey;">
                                     <div class="row">
@@ -100,21 +89,15 @@
                                         </div>
                                         <div class="col-10">
                                             <h4><?= $o_product_name; ?></h4>
-                                            <p>SKU: <a href="#"> <?= $o_product_sku; ?></a></p>
-                                            <?php if (!empty($dd1->desc_e_name2)) { ?>
-                                                <p><?= $dd1->desc_e_name2; ?>: <a href="#"> <?= $dd1->desc_e_value2 ?></a></p>
-                                            <?php } ?>
-                                            <?php if (!empty($dd1->desc_e_name3)) { ?>
-                                                <p><?= $dd1->desc_e_name3; ?>: <a href="#"> <?= $dd1->desc_e_value3 ?></a></p>
-                                            <?php } ?>
-                                            <?php if (!empty($dd1->desc_e_name4)) { ?>
-                                                <p><?= $dd1->desc_e_name4; ?>: <a href="#"> <?= $dd1->desc_e_value4 ?></a></p>
-                                            <?php } ?>
-                                            <?php if (!empty($dd1->desc_e_name5)) { ?>
-                                                <p><?= $dd1->desc_e_name5; ?>: <a href="#"> <?= $dd1->desc_e_value5 ?></a></p>
-                                            <?php } ?>
-                                            <p>Quantity: <a href="#"> <?= $dd1->quantity; ?></a></p>
-                                            <p>Price: <a href="#">$<?= $dd1->amount; ?></a></p>
+                                            <? if (!empty($gem_data)) { ?>
+                                                <p><b>Stones:</b> <? foreach ($gem_data as  $gem) { ?>
+                                                        <span><?= $gem->Product->Description ?> <b>|</b> </span>
+                                                <? }
+                                                                } ?>
+                                                </p>
+                                                <p><b>SKU:</b> <?= $o_product_sku; ?></p>
+                                                <p><b>Quantity: </b> <?= $dd1->quantity; ?></p>
+                                                <p><b>Price:</b> $<?= $dd1->amount; ?></p>
                                         </div>
                                     </div>
                                 </div>
@@ -138,11 +121,11 @@
               </button> -->
                                 </div>
                                 <div class="col-12 col-sm-10 col-md-10 col-lg-10 d-flex align-items-center ab_p_h" style="justify-content: space-between;">
-                                    <p class="mb-0">Payment Method : <a href="#"> <?= $data_order1->payment_type ?></a></p>
-                                    <p class="mb-0 ml-2">Subtotal $<a href="#"><?= $data_order1->total_amount; ?></a></p>
-                                    <?if(!empty($data_order1->shipping)){?><p class="mb-0">Shipping $<a href="#"><?= $data_order1->shipping; ?></a></p><?}?>
-                                    <?if(!empty($data_order1->p_discount)){?><p class="mb-0">Coupon Discount $<a href="#"><?= $data_order1->p_discount; ?></a></p><?}?>
-                                    <p class="mb-0">Total Amount $<a href="#"><?= $data_order1->final_amount; ?></a></p>
+                                    <p class="mb-0"><b>Payment Method :</b>  <?= $data_order1->payment_type ?></p>
+                                    <p class="mb-0 ml-2"><b>Subtotal:</b> $<?= $data_order1->total_amount; ?></p>
+                                    <? if (!empty($data_order1->shipping)) { ?><p class="mb-0"><b>Shipping:</b>$<?= $data_order1->shipping; ?></p><? } ?>
+                                    <? if (!empty($data_order1->p_discount)) { ?><p class="mb-0"><b>Coupon Discount:</b> $<?= $data_order1->p_discount; ?></p><? } ?>
+                                    <p class="mb-0"><b>Total Amount:</b> $<?= $data_order1->final_amount; ?></p>
                                 </div>
                             </div>
                         </div>

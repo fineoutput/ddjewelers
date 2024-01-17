@@ -133,39 +133,27 @@
                         $total_cart_amount = 0;
                         if (!empty($order2_data)) {
                             foreach ($order2_data as $cart) {
+                                $gem_data = json_decode($cart->gem_data);
                                 $product_id = $cart->pro_id;
                                 $pro_da = $this->db->get_where('tbl_products', array('pro_id' => $cart->pro_id))->row();
                                 if (!empty($pro_da)) {
-                                    $pr_data = $this->db->get_where('tbl_price_rule', array())->row();
-                                    $multiplier = $pr_data->multiplier;
-                                    $cost_price = $pro_da->price;
-                                    $retail = $cost_price * $multiplier;
-                                    $now_price = $cost_price;
-                                    if ($cost_price <= 500) {
-                                        $cost_price2 = $cost_price * $cost_price;
-                                        $number = round($cost_price * ($pr_data->cost_price1 * $cost_price2 + $pr_data->cost_price2 * $cost_price + $pr_data->cost_price3), 2);
-                                        $unit = 5;
-                                        $remainder = $number % $unit;
-                                        $m_round = ($remainder < $unit / 2) ? $number - $remainder : $number + ($unit - $remainder);
-                                        $now_price = round($m_round) - 1 + 0.95;
-                                    } else  if ($cost_price > 500) {
-                                        $number = round($cost_price * ($pr_data->cost_price4 * $cost_price / $multiplier + $pr_data->cost_price5));
-                                        $unit = 5;
-                                        $remainder = $number % $unit;
-                                        $m_round = ($remainder < $unit / 2) ? $number - $remainder : $number + ($unit - $remainder);
-                                        $now_price = round($m_round) - 1 + 0.95;
-                                    }
-                                    $pro_qty_price = $cart->quantity * $now_price;
+                                    $pro_qty_price = $cart->quantity * $cart->amount;
                                     $total_cart_amount = $total_cart_amount + $pro_qty_price;
                         ?>
                                     <div class=" pt-3 border_new table-font-size ">
                                         <div class="col-12">
                                             <div class="row ">
                                                 <div class="col-5  " style="    padding-left: 11px;">
-                                                    <p><?= $pro_da->description; ?></p>
+                                                    <p><?= $cart->description; ?></p>
+                                                    <? if (!empty($gem_data)) { ?>
+                                                        <span><b>Stones : </b></span>
+                                                        <? foreach ($gem_data as  $gem) { ?>
+                                                            <span><?= $gem->Product->Description ?> <b>|</b> </span>
+                                                    <? }
+                                                    } ?>
                                                 </div>
                                                 <div class="col-3 p-0">
-                                                    <p class="qut-price1"><?= "SLR-" . $pro_da->sku; ?></p>
+                                                    <p class="qut-price1"><?= "SLR-" . $cart->sku; ?></p>
                                                 </div>
                                                 <div class="col-2 p-0">
                                                     <p class="qut-price2"><?= $cart->quantity; ?></p>
@@ -282,7 +270,7 @@
 
 
                                         </button></a>
-                                        <p class="affirm-as-low-as mt-1" data-page-type="cart" data-amount="<?=round($order1_data[0]->final_amount,2)*100?>"></p>
+                                    <p class="affirm-as-low-as mt-1" data-page-type="cart" data-amount="<?= round($order1_data[0]->final_amount, 2) * 100 ?>"></p>
                                     <P class="" style="font-size:12px"> <a href='https://www.affirm.com/how-it-works' target='_blank' rel='noopener noreferrer'>Affirm How is Works</a></P>
                                     <!-- </form> -->
                                 </div>

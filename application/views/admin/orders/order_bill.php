@@ -78,11 +78,11 @@
                             }
                             if (!empty($addr_da->state_id)) {
                                 $state_data = $this->db->get_where('tbl_state', array('id' => $addr_da->state_id))->result();
-                                if(!empty($state_data)){
-                
+                                if (!empty($state_data)) {
+
                                     $state_name = $state_data[0]->name;
-                                }else{
-                                    $state_name='';
+                                } else {
+                                    $state_name = '';
                                 }
                             } else {
                                 $state_name = '';
@@ -182,9 +182,6 @@
                     <tr>
                         <th>SNo.</th>
                         <th>Product</th>
-                        <!-- <th>HSN Code</th> -->
-                        <th>Type</th>
-                        <!-- <th>Sample</th> -->
                         <th>Selling price</th>
                         <th>QTY</th>
 
@@ -198,54 +195,22 @@
                     $total_gst_pricee = 0;
                     if (!empty($order2_data)) {
                         $i = 1;
-                        foreach ($order2_data->result() as $data) { ?>
+                        foreach ($order2_data->result() as $data) {
+                            $gem_data = json_decode($data->gem_data);
+                    ?>
                             <tr class="product_table2">
                                 <td><?php echo $i; ?></td>
-                                <td>
-                                    <?php $this->db->select('*');
-                                    $this->db->from('tbl_products');
-                                    $this->db->where('id', $data->product_id);
-                                    $pro_dsa = $this->db->get()->row();;
-                                    if (!empty($pro_dsa)) { ?>
-
-                                        <?= $pro_dsa->description ?>
-                                    <?php  } else {
-                                        echo "No product name";
-                                    }
-                                    ?></td>
-
-
-
-
-                                <td>
-
-                                    <?php if (!empty($data->desc_e_name2)) { ?>
-
-                                        <p><?= $data->desc_e_name2; ?>: <?= $data->desc_e_value2 ?></p>
-
-
-                                    <?php } else if (!empty($data->desc_e_name3)) { ?>
-
-                                        <p><?= $data->desc_e_name3; ?>: <?= $data->desc_e_value3 ?></p>
-
-
-                                    <?php } else if (!empty($data->desc_e_name4)) { ?>
-
-                                        <p><?= $data->desc_e_name4; ?>: <?= $data->desc_e_value4 ?></p>
-
-
-                                    <?php }else if (!empty($data->desc_e_name5)) { ?>
-
-                                        <p><?= $data->desc_e_name5; ?>: <?= $data->desc_e_value5 ?></p>
-
-                                    <?php } else{ ?>
-                                        <p>NA</p>
-                                        <?}?>
-
+                                <td><?= $data->description ?>
+                                    <? if (!empty($gem_data)) { ?>
+                                        </br><span><b>Stones : </b></span>
+                                        <? foreach ($gem_data as  $gem) { ?>
+                                            <span><?= $gem->Product->Description ?> <b>|</b> </span>
+                                    <? }
+                                    } ?>
                                 </td>
-                                <td><?php echo "$" .$data->unit_price; ?></td>
+                                <td><?php echo "$" . $data->unit_price; ?></td>
                                 <td><?php echo $data->quantity; ?></td>
-                                <td><?php echo "$" .$data->amount ?></td>
+                                <td><?php echo "$" . $data->amount ?></td>
                                 <!-- <td><?php echo "$" . $data->total_amount; ?></td> -->
                             </tr>
                     <?php $i++;
@@ -260,7 +225,7 @@
                         <th class="product_table"><?php if (!empty($order1_data)) {
                                                         echo "";
                                                     } ?></th>
-                        <th class="product_table" colspan="3"><?php if (!empty($order1_data)) {
+                        <th class="product_table" colspan="2"><?php if (!empty($order1_data)) {
                                                                     echo "";
                                                                 } ?></th>
 
@@ -274,7 +239,7 @@
                         <th class="product_table"><?php if (!empty($order1_data)) {
                                                         echo "";
                                                     } ?></th>
-                        <th class="product_table" colspan="3"><?php if (!empty($order1_data)) {
+                        <th class="product_table" colspan="2"><?php if (!empty($order1_data)) {
                                                                     echo "";
                                                                 } ?></th>
 
@@ -288,7 +253,7 @@
                         <th class="product_table"><?php if (!empty($order1_data)) {
                                                         echo "";
                                                     } ?></th>
-                        <th class="product_table" colspan="3"><?php if (!empty($order1_data)) {
+                        <th class="product_table" colspan="2"><?php if (!empty($order1_data)) {
                                                                     echo "";
                                                                 } ?></th>
 
@@ -302,15 +267,15 @@
                         <th class="product_table"><?php if (!empty($order1_data)) {
                                                         echo "";
                                                     } ?></th>
-                        <th class="product_table" colspan="3"><?php if (!empty($order1_data)) {
+                        <th class="product_table" colspan="2"><?php if (!empty($order1_data)) {
                                                                     echo "";
                                                                 } ?></th>
 
                         <th class="product_table"><?php if (!empty($order1_data->p_discount)) {
-                                                            echo "-$ " . $order1_data->p_discount;
-                                                        }else{
-                                                            echo "-$0";
-                                                        } ?></th>
+                                                        echo "-$ " . $order1_data->p_discount;
+                                                    } else {
+                                                        echo "-$0";
+                                                    } ?></th>
                     </tr>
 
                     <tr>
@@ -319,10 +284,10 @@
                     </tr>
 
                     <tr>
-                        <th colspan="5">SubTotal</th>
+                        <th colspan="4">SubTotal</th>
                         <th class="product_table">$<?php if (!empty($order1_data)) {
-                                                            echo  $order1_data->final_amount;
-                                                        } ?></th>
+                                                        echo  $order1_data->final_amount;
+                                                    } ?></th>
 
                     </tr>
 

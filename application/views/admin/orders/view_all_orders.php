@@ -48,9 +48,9 @@
 
                       <th>User Address</th>
                       <th>Address Name</th>
-                    
+
                       <th>User Email</th>
-                      <th>Payment Type</th>
+                      <th>Payment From</th>
 
                       <th>Order Status</th>
                       <!-- <th>Order Track Id</th> -->
@@ -67,47 +67,46 @@
 
                   <tbody>
                     <?php $i = 1;
-                    foreach ($orders_data->result() as $data) { 
+                    foreach ($orders_data->result() as $data) {
                       $this->db->select('*');
-      $this->db->from('tbl_user_address');
-      $this->db->where('id',$data->address_id);
-      $addr_da= $this->db->get()->row();
+                      $this->db->from('tbl_user_address');
+                      $this->db->where('id', $data->address_id);
+                      $addr_da = $this->db->get()->row();
 
-      if(!empty($addr_da)){
-        $address = $addr_da->address;
-        if (!empty($addr_da->country_id)) {
-            $country_data1 = $this->db->get_where('tbl_country', array('id' => $addr_da->country_id))->result();
-            $country = $country_data1[0]->name;
-        } else {
-            $country = '';
-        }
-        if (!empty($addr_da->state_id)) {
-            $state_data = $this->db->get_where('tbl_state', array('id' => $addr_da->state_id))->result();
-            if(!empty($state_data)){
+                      if (!empty($addr_da)) {
+                        $address = $addr_da->address;
+                        if (!empty($addr_da->country_id)) {
+                          $country_data1 = $this->db->get_where('tbl_country', array('id' => $addr_da->country_id))->result();
+                          $country = $country_data1[0]->name;
+                        } else {
+                          $country = '';
+                        }
+                        if (!empty($addr_da->state_id)) {
+                          $state_data = $this->db->get_where('tbl_state', array('id' => $addr_da->state_id))->result();
+                          if (!empty($state_data)) {
 
-                $state_name = $state_data[0]->name;
-            }else{
-                $state_name='';
-            }
-        } else {
-            $state_name = '';
-        }
-        $uname = $addr_da->first_name . ' ' . $addr_da->last_name;
-        $state = $state_name;
-        $city = $addr_da->city;
-        $zip = $addr_da->zipcode;
-      }
-    else {
-      $uname = '';
-      $address = "";
-      $state = "";
-      $city = "";
-      $zip = "";
-      $country = "";
-      $notes = '';
-  }
+                            $state_name = $state_data[0]->name;
+                          } else {
+                            $state_name = '';
+                          }
+                        } else {
+                          $state_name = '';
+                        }
+                        $uname = $addr_da->first_name . ' ' . $addr_da->last_name;
+                        $state = $state_name;
+                        $city = $addr_da->city;
+                        $zip = $addr_da->zipcode;
+                      } else {
+                        $uname = '';
+                        $address = "";
+                        $state = "";
+                        $city = "";
+                        $zip = "";
+                        $country = "";
+                        $notes = '';
+                      }
 
-                      ?>
+                    ?>
                       <tr>
                         <td><?php echo $i ?> </td>
 
@@ -126,7 +125,7 @@
                             $email = "N/A";
                           }
                           ?></td>
-                        <td><?php
+                        <td>$<?php
                             echo $data->final_amount;
                             // echo $data->sub_total;
 
@@ -193,12 +192,12 @@
     </td> -->
 
                         <td><?php
-                          echo $address.','. $state.','. $city.','. $zip.','. $country;
+                            echo $address . ',' . $state . ',' . $city . ',' . $zip . ',' . $country;
                             ?></td>
 
 
-<td><? echo $uname;?></td>
-<td>
+                        <td><? echo $uname; ?></td>
+                        <td>
                           <?php $this->db->select('*');
                           $this->db->from('tbl_users');
                           $this->db->where('id', $data->user_id);
@@ -216,29 +215,19 @@
 
 
 
-                       
 
 
-                       
 
-                        <td><?php
 
-                            if ($data->payment_type == 0) {
-                              echo "None";
-                            }
-                            if ($data->payment_type == 1) {
-                              echo "Cash On Delivery";
-                            }
-                            if ($data->payment_type == 2) {
-                              echo "Online Payment";
-                            } ?></td>
+
+                        <td><?=$data->payment_type?></td>
                         <!-- <td><?php if ($data->payment_status == 0) {
                                   ?><span class="label label-warning" style="font-size:13px;">Pending</span><?php
-                                                                              }
-                                                                              if ($data->payment_status == 1) {
-                                                                                ?><span class="label label-success" style="font-size:13px;">Succeed</span><?php
-                                                                              }
-                                                                                ?></td> -->
+                                                                                                          }
+                                                                                                          if ($data->payment_status == 1) {
+                                                                                                            ?><span class="label label-success" style="font-size:13px;">Succeed</span><?php
+                                                                                                                                                        }
+                                                                                                                                                          ?></td> -->
 
                         <!-- <td>
        <?
@@ -250,22 +239,22 @@
                         <td><?php
                             if ($data->order_status == 1) {
                             ?><span class="label label-primary" style="font-size:13px;">New Order</span><?php
-                                                                            }
-                                                                            if ($data->order_status == 2) {
-                                                                              ?><span class="label label-success" style="font-size:13px;">Accepted</span><?php
-                                                                            }
-                                                                            if ($data->order_status == 3) {
-                                                                              ?>
+                                                                                                      }
+                                                                                                      if ($data->order_status == 2) {
+                                                                                                        ?><span class="label label-success" style="font-size:13px;">Accepted</span><?php
+                                                                                                                                                        }
+                                                                                                                                                        if ($data->order_status == 3) {
+                                                                                                                                                          ?>
                             <span class="label label-info" style="font-size:13px;">Dispatched</span>
                           <?php
-                                                                            }
-                                                                            if ($data->order_status == 4) {
+                                                                                                                                                        }
+                                                                                                                                                        if ($data->order_status == 4) {
                           ?><span class="label label-success" style="font-size:13px;">Delivered</span><?php
-                                                                            }
-                                                                            if ($data->order_status == 5) {
-                                                                              ?><span class="label label-danger" style="font-size:13px;">Rejected</span><?php
-                                                                            }
-                                                                            ?>
+                                                                                                                                                        }
+                                                                                                                                                        if ($data->order_status == 5) {
+                                                                                                      ?><span class="label label-danger" style="font-size:13px;">Rejected</span><?php
+                                                                                                                                                        }
+                                                                                                                                                        ?>
                         </td>
 
 

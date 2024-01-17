@@ -128,20 +128,16 @@
             ?>
             <? $count = 0;
             foreach ($order2->result() as $ord) {
-                $this->db->select('*');
-                $this->db->from('tbl_products');
-                $this->db->where('id', $ord->product_id);
-                $product = $this->db->get()->row();
             ?>
                 <div class="Italian_section ">
                     <div class="row">
                         <div class="col-lg-4 ">
-                            <img src="<?= $product->FullySetImage1 ?>" alt="D&D" class="img-fluid">
+                            <img src="<?= $ord->img ?>" alt="D&D" class="img-fluid">
                         </div>
                         <div class="col-lg-8 Italian_sec">
-                            <h3><?= $product->description ?></h3>
+                            <h3><?= $ord->description ?></h3>
                             <p><?= 'QTY : ' . $ord->quantity ?></p>
-                            <p><?= 'Sku Id : ' . $product->sku ?></p>
+                            <p><?= 'Sku Id : ' . $ord->sku ?></p>
                             <h3><?= '$' . $ord->amount ?></h3>
                         </div>
                     </div>
