@@ -295,15 +295,15 @@
                 </div>
               <?php $i++;
               } ?>
-              <?= $links ?>
-            <? } else { ?>
-              <div class="text-center">
-                <img src="<?= base_url() ?>/assets/frontend/no_data.jpg" style="    max-width: 45%;
-    height: auto;">
-                <h5 class="mt-2">Opps! No Data Found...</h5>
-              </div>
-            <? } ?>
           </div>
+          <?= $links ?>
+        <? } else { ?>
+          <div class="text-center">
+            <img src="<?= base_url() ?>/assets/frontend/no_data.jpg" style="    max-width: 45%;
+height: auto;">
+            <h5 class="mt-2">Opps! No Data Found...</h5>
+          </div>
+        <? } ?>
         </div>
       </div>
     </div>
