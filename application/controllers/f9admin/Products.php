@@ -847,7 +847,8 @@ class Products extends CI_finecontrol
                                 'Host: api.stuller.com',
                             ),
                         ));
-
+                            // echo json_encode(['status' => 200, 'data' => '', 'html' => '', 'test' => json_encode('{"ConfigurationModelId":' . $pro_data->config_model_id . ',"LocationNumbers":[' . $st->LocationNumber . '],"StoneFamilyName":"' . $SF . '","StoneCategories":["' . $stoneCategory . '"]}')]);
+                            // return;
                         $response = curl_exec($curl);
                         curl_close($curl);
                         $res = json_decode($response);
