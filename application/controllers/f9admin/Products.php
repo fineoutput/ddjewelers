@@ -398,8 +398,10 @@ class Products extends CI_finecontrol
                 if (!empty($result_da->NextPage)) {
                     $NextPage = $result_da->NextPage;
                 }
-                $exclude_series = json_decode($receive['exclude_series'], true);
-                $exclude_sku = json_decode($receive['exclude_sku'], true);
+                $cleanedSeries = str_replace(' ', '', $receive['exclude_series']);
+                $exclude_series = explode(",", $cleanedSeries);
+                $cleanedSku = str_replace(' ', '', $receive['exclude_sku']);
+                $exclude_sku = explode(",", $cleanedSku);
                 foreach ($result_da->Products as $prod) {
                     //----- exclude series ------ 
                     if (!empty($exclude_series) && in_array($prod->DescriptiveElementGroup->DescriptiveElements[0]->Value, $exclude_series)) {
@@ -621,6 +623,7 @@ class Products extends CI_finecontrol
                 $size = $this->input->post('size');
                 $count = $this->input->post('count');
                 $group_count = $this->input->post('group_count');
+                //-------- Start get stone family curl ------------
                 $curl = curl_init();
                 curl_setopt_array($curl, array(
                     CURLOPT_URL => 'https://api.stuller.com/v2/products/stonefamilies',
@@ -642,7 +645,9 @@ class Products extends CI_finecontrol
                 $response = curl_exec($curl);
                 curl_close($curl);
                 $res = json_decode($response);
-                $html = "<div class='w-100 text-right'><button onclick='stonesListBtn()' class='btn' style='border-color: #797979;'>Back</button></div>";
+                //-------- End get stone family curl ------------
+                //---------------- START CREATING CENTER STONE HTML ----------
+                $html = "<div class='w-100 text-right'><button onclick='stonesListBtn()' class='btn' style='border-color: #797979;'>Back</button></div>"; //--- Back Button
                 if ($count > 1) {
                     $html .= '<h6 class="mt-3" style="border-bottom:1px solid grey">' . $groupName . ' ' . $size . '  <span style="font-size:13px">(' . $count . ' stones)</span></h6>';
                 } else {
@@ -651,17 +656,18 @@ class Products extends CI_finecontrol
                 $html .= '<div class="row mt-3">';
                 foreach ($res->StoneFamilies as $item) {
                     $categoriesToRemove = ["Imitation", "Natural"];
+                    //------- start removing categoriesToRemove and and duplicate category name -------
                     $categoriesWithSerializedIndicator = $item->CategoriesWithSerializedIndicator;
-
                     $filteredCategories = array_values(array_filter(array_map(function ($name) use ($categoriesWithSerializedIndicator, $categoriesToRemove) {
                         $filtered = array_values(array_filter($categoriesWithSerializedIndicator, function ($category) use ($name, $categoriesToRemove) {
                             return $category->CategoryName === $name && !in_array($name, $categoriesToRemove);
                         }));
                         return $filtered ? $filtered[0] : null;
                     }, array_unique(array_column($categoriesWithSerializedIndicator, 'CategoryName')))));
-
+                    //------- end removing categoriesToRemove and and duplicate category name -------
                     if (count($filteredCategories) > 0) {
                         $img = base_url() . 'assets/jewel/img/gemstone/' . strtolower($item->Name) . '.jpg';
+                        //---- if stone image not found set empty image -----
                         if (!@getimagesize($img)) {
                             $img = base_url() . 'assets/jewel/img/gemstone/empty.jpg';
                         }
@@ -669,12 +675,14 @@ class Products extends CI_finecontrol
                     }
                 }
                 $html .= '</div>';
-
+                //---------------- END CREATING CENTER STONE HTML ----------
+                //---------------- START CREATING SIDE STONE HTML ----------
                 $html2 = "<div class='w-100 text-right'><button onclick='sideStonesListBtn()' class='btn' style='border-color: #797979;'>Back</button></div>";
                 $html2 .= '<h6 class="mt-3" style="border-bottom:1px solid grey">For Side Stone</h6>';
                 $html2 .= '<div class="row mt-3">';
                 foreach ($res->StoneFamilies as $item) {
                     $categoriesToRemove = ["Imitation", "Natural"];
+                    //------- start removing categoriesToRemove and and duplicate category name -------
                     $categoriesWithSerializedIndicator = $item->CategoriesWithSerializedIndicator;
                     $filteredCategories = array_values(array_filter(array_map(function ($name) use ($categoriesWithSerializedIndicator, $categoriesToRemove) {
                         $filtered = array_values(array_filter($categoriesWithSerializedIndicator, function ($category) use ($name, $categoriesToRemove) {
@@ -682,8 +690,10 @@ class Products extends CI_finecontrol
                         }));
                         return $filtered ? $filtered[0] : null;
                     }, array_unique(array_column($categoriesWithSerializedIndicator, 'CategoryName')))));
+                    //------- end removing categoriesToRemove and and duplicate category name -------
                     if (count($filteredCategories) > 0) {
                         $img = base_url() . 'assets/jewel/img/gemstone/' . strtolower($item->Name) . '.jpg';
+                        //---- if stone image not found set empty image -----
                         if (!@getimagesize($img)) {
                             $img = base_url() . 'assets/jewel/img/gemstone/empty.jpg';
                         }
@@ -691,6 +701,7 @@ class Products extends CI_finecontrol
                     }
                 }
                 $html2 .= '</div>';
+                //---------------- END CREATING SIDE STONE HTML ----------
                 echo json_encode(['status' => 200, 'data' => $html, 'html2' => $html2]);
             } else {
                 $res = array(
@@ -728,6 +739,7 @@ class Products extends CI_finecontrol
                 $stoneCategory = $this->input->post('stoneCategory');
                 $group_count = $this->input->post('group_count');
                 $is_serialized = $this->input->post('is_serialized');
+                //-------- Start get search stone  curl ------------
                 $curl = curl_init();
                 curl_setopt_array($curl, array(
                     CURLOPT_URL => 'https://api.stuller.com/v2/products/searchstones',
@@ -750,21 +762,27 @@ class Products extends CI_finecontrol
                 curl_close($curl);
                 $res = json_decode($response);
                 $data = $res->ConfiguredStones;
+                //-------- End get search stone  curl ------------
+                //-------- START CREATING STONE LIST TABLE ------------
                 $count = count($data);
-                $html = "<div class='w-100 text-right'><button onclick='setStonesTableBtn()' class='btn' style='border-color: #797979;'>Back</button></div>";
+                $html = "<div class='w-100 text-right'><button onclick='setStonesTableBtn()' class='btn' style='border-color: #797979;'>Back</button></div>"; //--back button
                 $html .= '<h6 class="mt-3">Results - ' . $stoneCategory . ' (' . $count . ')</h6>';
                 $html .= '<div class="row mt-3">';
                 $html .= '<div class="table-responsive" style="height: 400px !important;
                 overflow: scroll;">';
                 $html .= '<table class="table table-hover table-sm" id="stoneDataTable">';
                 if (!empty($data)) {
+                    //------------- START CREATING TABLE HEAD ------------
                     $html .= '<thead style="position:sticky;top: 0;background-color:white"><tr>';
+                    //------ if product is non-serialized -----
                     if ($is_serialized == false && !empty($data[0]->Product)) {
                         $headings = $data[0]->Product->DescriptiveElementGroup->DescriptiveElements;
                         foreach ($headings as $head) {
                             $html .= '<th scope="col">' . $head->Name . '</th>';
                         }
-                    } else {
+                    }
+                    //------ if product is serialized -----
+                    else {
                         $html .= '<th scope="col">Series</th>';
                         $html .= '<th scope="col">Shape</th>';
                         $html .= '<th scope="col">Type</th>';
@@ -775,13 +793,16 @@ class Products extends CI_finecontrol
                     }
                     $html .= '<th scope="col"></th>';
                     $html .= '</tr></thead>';
+                    //------------- END CREATING TABLE HEAD ------------
                     $html .= '<tbody>';
-                    if ($group_count == 1) {
+                    if ($group_count == 1) { //---- if have single stone location----
                         $fun = 'configureProduct(this)';
                     } else {
-                        $fun = 'AskSideStone(this)';
+                        $fun = 'AskSideStone(this)'; //---- if have more then one stone location----
                     }
+                    //------------- START CREATING TABLE LIST ------------
                     foreach ($data as $item) {
+                        //------ if product is non-serialized -----
                         if ($is_serialized == false && !empty($item->Product)) {
                             $html .= '<tr> ';
                             $values = $item->Product->DescriptiveElementGroup->DescriptiveElements;
@@ -791,6 +812,7 @@ class Products extends CI_finecontrol
                             $StoneProductId = $item->Product->Id;
                             $SerialNumber = '';
                         } else {
+                            //------ if product is serialized -----
                             if (!empty($item->Diamond)) {
                                 $html .= '<tr> ';
                                 $v = $item->Diamond;
@@ -801,6 +823,7 @@ class Products extends CI_finecontrol
                                 $html .= '<tr> ';
                                 $v = $item->LabGrownDiamond;
                             }
+                            //------ if product is serialized but have non-serialized data-----
                             if (!empty($item->Product)) {
                                 $values = $item->Product->DescriptiveElementGroup->DescriptiveElements;
                                 $shapeIndex = array_search("SHAPE", array_column($values, "Name"));
@@ -820,7 +843,7 @@ class Products extends CI_finecontrol
                                 $StoneProductId = $item->Product->Id;
                                 $SerialNumber = '';
                             } else {
-
+                                //------ if product is serialized and have serialized data-----
                                 $html .= '<td>' . $v->SerialNumber . '</td>';
                                 $html .= '<td>' . $v->Shape . '</td>';
                                 $html .= '<td>' . $v->StoneType . '</td>';
@@ -836,6 +859,7 @@ class Products extends CI_finecontrol
                         $html .= '<td><button type="button" data-StoneProductId="' . $StoneProductId . '" data-SerialNumber="' . $SerialNumber . '" data-StoneFamilyName="' . $StoneFamilyName . '" data-stoneCategory="' . $stoneCategory . '" data-LocationNumber="' . $LocationNumber . '" data-is_serialized="' . $is_serialized . '" class="btn btn-info" data-name="" onClick="' . $fun . '">Set</button></td>';
                         $html .= '</tr>';
                     }
+                    //------------- END CREATING TABLE LIST ------------
                     $html .= '</tbody>';
                 }
                 $html .= ' </table>';
@@ -846,7 +870,8 @@ class Products extends CI_finecontrol
                 $(document).ready(function() {
                     $("#stoneDataTable").DataTable();
                 });
-                </script>';
+                </script>'; //---- reinitialize data table
+                //-------- END CREATING STONE LIST TABLE ------------
                 echo json_encode(['status' => 200, 'data' => $html]);
             } else {
                 $res = array(
@@ -898,18 +923,20 @@ class Products extends CI_finecontrol
                 $stone_pro_id = '';
                 $stone_series_no = '';
                 foreach ($setting_options as $st) {
-                    if (!empty($sideName) && $st->LocationNumber != $LocationNumber) {
+                    if (!empty($sideName) && $st->LocationNumber != $LocationNumber) { //--- if have one stone location
                         $SF = $sideName;
                     } else {
-                        $SF = $StoneFamilyName;
+                        $SF = $StoneFamilyName; //--- if have more then one stone location
                     }
+                    //--------- Start for side stone or more then one stone data fetching ----------------
                     if (!empty($groupName) && $groupName != $st->GroupName) {
-                        if ($stoneCategory == 'Diamonds with Grading Report' || $stoneCategory == 'Lab-Grown with Grading Report'|| $stoneCategory == 'Notable Gems'){
+                        //--- Replacing stone category name (side stone don't have below stone category)------
+                        if ($stoneCategory == 'Diamonds with Grading Report' || $stoneCategory == 'Lab-Grown with Grading Report' || $stoneCategory == 'Notable Gems') {
                             $sc = 'Lab-Grown';
                         } else {
                             $sc = $stoneCategory;
                         }
-                        //------- for new group location-------
+                        //------- start for new group location curl-------
                         $curl = curl_init();
                         curl_setopt_array($curl, array(
                             CURLOPT_URL => 'https://api.stuller.com/v2/products/searchstones',
@@ -932,11 +959,14 @@ class Products extends CI_finecontrol
                         $response = curl_exec($curl);
                         curl_close($curl);
                         $res = json_decode($response);
-                        if (!empty($res->ConfiguredStones)) {
+                        //------- end for new group location curl-------
+                        if (!empty($res->ConfiguredStones)) { // if data found from the api
                             $data = $res->ConfiguredStones[0];
+                            //------ if product is non-serialized -----
                             if ($is_serialized == false && !empty($data[0]->Product)) {
                                 $stone_pro_id = $res->ConfiguredStones[0]->Product->Id;
                             } else {
+                                //------ if product is serialized -----
                                 if ($data->Product) {
                                     $stone_pro_id = $data->Product->Id;
                                 } else if (!empty($data->Diamond)) {
@@ -949,8 +979,9 @@ class Products extends CI_finecontrol
                             }
                             $groupName = $st->GroupName;
                         } else {
+                            //------- if data not found in above curt set default stone diamond-------
                             $SF = 'Diamond';
-                            //------- set default stone diamond-------
+                            //------- start for new group location curl-------
                             $curl = curl_init();
                             curl_setopt_array($curl, array(
                                 CURLOPT_URL => 'https://api.stuller.com/v2/products/searchstones',
@@ -972,6 +1003,7 @@ class Products extends CI_finecontrol
                             $response = curl_exec($curl);
                             curl_close($curl);
                             $res = json_decode($response);
+                            //------- end for new group location curl-------
                             if (!empty($res->ConfiguredStones)) {
                                 $SP = $res->ConfiguredStones[0]->Product->Id;
                                 $groupName = $st->GroupName;
@@ -984,32 +1016,31 @@ class Products extends CI_finecontrol
                                 $stone_series_no = '';
                             }
                         }
-                    } else {
-                        // echo "yes1".$stone_pro_id;
-                        // echo "yes2".$stone_series_no;
                     }
-
-                    if ($st->LocationNumber != $LocationNumber) {
-                        if (!empty($stone_pro_id)) {
+                    //--------- End for side stone or more then one stone data fetching ----------------
+                    if ($st->LocationNumber != $LocationNumber) { // for side stone
+                        if (!empty($stone_pro_id)) { //------ if product is non-serialized -----
                             $final_arr[] = ['LocationNumber' => $st->LocationNumber, 'StoneProductId' => $stone_pro_id];
-                        } else {
+                        } else { //------ if product is serialized -----
                             $final_arr[] = ['LocationNumber' => $st->LocationNumber, 'SerialNumber' => $stone_series_no];
                         }
-                    } else {
-                        if (!empty($StoneProductId)) {
-                            $final_arr[] = ['LocationNumber' => $LocationNumber, 'StoneProductId' => $StoneProductId];
-                            $stone_pro_id = $StoneProductId;
-                        } else {
-                            $final_arr[] = ['LocationNumber' => $LocationNumber, 'SerialNumber' => $SerialNumber];
-                            $stone_series_no = $SerialNumber;
+                    } else { { // for center stone
+                            if (!empty($StoneProductId)) { //------ if product is non-serialized -----
+                                $final_arr[] = ['LocationNumber' => $LocationNumber, 'StoneProductId' => $StoneProductId];
+                                $stone_pro_id = $StoneProductId;
+                            } else { //------ if product is serialized -----
+                                $final_arr[] = ['LocationNumber' => $LocationNumber, 'SerialNumber' => $SerialNumber];
+                                $stone_series_no = $SerialNumber;
+                            }
+                            $groupName = $st->GroupName;
                         }
-
-                        $groupName = $st->GroupName;
                     }
-                }
+                } //------end foreach 
                 $final_arr = json_encode($final_arr);
                 // echo json_encode(['status' => 200, 'data' => '', 'html' => '', 'test' => $final_arr]);
                 // return;
+
+                //------- start configure product curl-------
                 $curl = curl_init();
                 curl_setopt_array($curl, array(
                     CURLOPT_URL => 'https://api.stuller.com/v2/products/configureproduct',
@@ -1027,12 +1058,14 @@ class Products extends CI_finecontrol
                         'Host: api.stuller.com',
                     ),
                 ));
-
                 $response = curl_exec($curl);
                 curl_close($curl);
                 $res = json_decode($response);
+                //------- end configure product curl-------
                 // echo json_encode(['status' => 200, 'data' => '', 'html' => '', 'test' => json_encode('{"ProductId":' . $ProductId . ',"Quantity":1,"Stones":' . $final_arr . ',"RingSize":' . $RingSize . '}')]);
                 // return;
+
+                //------- Start creating final html response -------
                 if (!empty($res->Product->CenterStoneSize)) {
                     $value = $res->Product->CenterStoneSize;
                 } else {
@@ -1097,7 +1130,7 @@ class Products extends CI_finecontrol
                 <i class="fa fa-spinner fa-spin"></i> Loading...
               </button>';
                 $html .= '</div>';
-
+                //------- End creating final html response -------
                 echo json_encode(['status' => 200, 'data' => $res->Images[0]->ZoomUrl, 'html' => $html]);
             } else {
                 $res = array(
@@ -1114,5 +1147,6 @@ class Products extends CI_finecontrol
             echo json_encode($res);
         }
     }
-    //============================= START SET STONE ==========================
+    //============================= END GET AJAX SET STONE ==========================
+
 }
