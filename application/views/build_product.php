@@ -1165,25 +1165,26 @@ if ($products->is_quick == 1) {
     // rowDiv.appendChild(stoneDiv);
     //---- types
     categories.map(function(category) {
-      if (category != 'Imitation' && category != 'Natural') {
-        var colDiv = document.createElement('div');
-        colDiv.className = 'col-md-3';
-        var buttonElement = document.createElement('button');
-        buttonElement.className = 'btn btn-light';
-        buttonElement.textContent = category;
-        buttonElement.style.width = '100%';
-        buttonElement.style.borderColor = '#797979';
-        buttonElement.setAttribute('data-modelId', modelId);
-        buttonElement.setAttribute('data-Location', LocationNumber);
-        buttonElement.setAttribute('data-StoneFamily', name);
-        buttonElement.setAttribute('data-stoneCategory', category);
-        buttonElement.setAttribute('data-group-count', group_count);
-        buttonElement.addEventListener('click', function() {
-          fetchFamilyStoneList(this)
-        })
-        colDiv.appendChild(buttonElement);
-        rowDiv.appendChild(colDiv);
-      }
+      // if (category.CategoryName != 'Imitation' && category.CategoryName != 'Natural') {
+      var colDiv = document.createElement('div');
+      colDiv.className = 'col-md-3';
+      var buttonElement = document.createElement('button');
+      buttonElement.className = 'btn btn-light';
+      buttonElement.textContent = category.CategoryName;
+      buttonElement.style.width = '100%';
+      buttonElement.style.borderColor = '#797979';
+      buttonElement.setAttribute('data-modelId', modelId);
+      buttonElement.setAttribute('data-Location', LocationNumber);
+      buttonElement.setAttribute('data-StoneFamily', name);
+      buttonElement.setAttribute('data-stoneCategory', category.CategoryName);
+      buttonElement.setAttribute('data-IsSerialized', category.IsSerialized);
+      buttonElement.setAttribute('data-group-count', group_count);
+      buttonElement.addEventListener('click', function() {
+        fetchFamilyStoneList(this)
+      })
+      colDiv.appendChild(buttonElement);
+      rowDiv.appendChild(colDiv);
+      // }
     });
     MainDiv.appendChild(rowDiv);
     $("#stonesList").hide();
@@ -1201,6 +1202,7 @@ if ($products->is_quick == 1) {
     var StoneFamilyName = obj.getAttribute('data-stoneFamily');
     var stoneCategory = obj.getAttribute('data-stoneCategory');
     var group_count = obj.getAttribute('data-group-count');
+    var is_serialized = obj.getAttribute('data-IsSerialized');
     $.ajax({
       url: "<?= base_url() ?>dcadmin/Products/SearchStone",
       method: "POST",
@@ -1210,6 +1212,7 @@ if ($products->is_quick == 1) {
         StoneFamilyName: StoneFamilyName,
         stoneCategory: stoneCategory,
         group_count: group_count,
+        is_serialized: is_serialized,
       },
       dataType: 'json',
       success: function(response) {
@@ -1229,15 +1232,19 @@ if ($products->is_quick == 1) {
   //------------- END SEARCH FAMILY STONES -------------------------
   //------------- START ASK SIDE STONE -------------------------
   function AskSideStone(obj) {
-    var StoneProductId = obj.getAttribute('data-stoneId');
+    var StoneProductId = obj.getAttribute('data-StoneProductId');
+    var SerialNumber = obj.getAttribute('data-SerialNumber');
     var StoneFamilyName = obj.getAttribute('data-StoneFamilyName');
     var stoneCategory = obj.getAttribute('data-stoneCategory');
     var LocationNumber = obj.getAttribute('data-LocationNumber');
+    var is_serialized = obj.getAttribute('data-is_serialized');
     var data = {
       StoneProductId: StoneProductId,
+      SerialNumber: SerialNumber,
       StoneFamilyName: StoneFamilyName,
       stoneCategory: stoneCategory,
       LocationNumber: LocationNumber,
+      is_serialized: is_serialized,
     };
     $('#temp_data').val(JSON.stringify(data));
     $('#setStonesTable').hide();
@@ -1257,14 +1264,18 @@ if ($products->is_quick == 1) {
     if (temp_data) {
       temp_data = JSON.parse(temp_data);
       var StoneProductId = temp_data.StoneProductId;
-      var StoneFamilyName = temp_data.StoneProductId;
+      var SerialNumber = temp_data.SerialNumber;
+      var StoneFamilyName = temp_data.StoneFamilyName;
       var stoneCategory = temp_data.stoneCategory;
       var LocationNumber = temp_data.LocationNumber;
+      var is_serialized = temp_data.is_serialized;
     } else {
-      var StoneProductId = obj.getAttribute('data-stoneId');
+      var StoneProductId = obj.getAttribute('data-StoneProductId');
+      var SerialNumber = obj.getAttribute('data-SerialNumber');
       var StoneFamilyName = obj.getAttribute('data-StoneFamilyName');
       var stoneCategory = obj.getAttribute('data-stoneCategory');
       var LocationNumber = obj.getAttribute('data-LocationNumber');
+      var is_serialized = obj.getAttribute('data-is_serialized');
     }
     var RingSize = $('#r_size').val();
     $.ajax({
@@ -1273,9 +1284,11 @@ if ($products->is_quick == 1) {
       data: {
         ProductId: ProductId,
         StoneProductId: StoneProductId,
-        StoneFamilyName: StoneProductId,
+        SerialNumber: SerialNumber,
+        StoneFamilyName: StoneFamilyName,
         stoneCategory: stoneCategory,
         LocationNumber: LocationNumber,
+        is_serialized: is_serialized,
         RingSize: RingSize,
         sideName: sideName,
       },

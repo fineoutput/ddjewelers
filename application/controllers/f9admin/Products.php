@@ -651,13 +651,21 @@ class Products extends CI_finecontrol
                 $html .= '<div class="row mt-3">';
                 foreach ($res->StoneFamilies as $item) {
                     $categoriesToRemove = ["Imitation", "Natural"];
-                    $filteredCategories = array_diff($item->Categories, $categoriesToRemove);
+                    $categoriesWithSerializedIndicator = $item->CategoriesWithSerializedIndicator;
+
+                    $filteredCategories = array_values(array_filter(array_map(function ($name) use ($categoriesWithSerializedIndicator, $categoriesToRemove) {
+                        $filtered = array_values(array_filter($categoriesWithSerializedIndicator, function ($category) use ($name, $categoriesToRemove) {
+                            return $category->CategoryName === $name && !in_array($name, $categoriesToRemove);
+                        }));
+                        return $filtered ? $filtered[0] : null;
+                    }, array_unique(array_column($categoriesWithSerializedIndicator, 'CategoryName')))));
+
                     if (count($filteredCategories) > 0) {
                         $img = base_url() . 'assets/jewel/img/gemstone/' . strtolower($item->Name) . '.jpg';
                         if (!@getimagesize($img)) {
                             $img = base_url() . 'assets/jewel/img/gemstone/empty.jpg';
                         }
-                        $html .= '<div class="col-md-3" onclick="showStoneType(this)" data-modelID="' . $modelID . '" data-groupName="' . $groupName . '" data-size="' . $size . '"data-group-count="' . $group_count . '" data-name="' . $item->Name . '" data-image="' . $img . '" data-LocationNumber="' . $LocationNumber . '" data-category=\'' . json_encode($item->Categories) . '\'><div class="text-center" style="cursor: pointer;"><img src="' . $img . '" style="width:60px;height:60px"><p>' . $item->Name . '</p></div></div>';
+                        $html .= '<div class="col-md-3" onclick="showStoneType(this)" data-modelID="' . $modelID . '" data-groupName="' . $groupName . '" data-size="' . $size . '"data-group-count="' . $group_count . '" data-name="' . $item->Name . '" data-image="' . $img . '" data-LocationNumber="' . $LocationNumber . '" data-category=\'' . json_encode($filteredCategories) . '\'><div class="text-center" style="cursor: pointer;"><img src="' . $img . '" style="width:60px;height:60px"><p>' . $item->Name . '</p></div></div>';
                     }
                 }
                 $html .= '</div>';
@@ -667,13 +675,19 @@ class Products extends CI_finecontrol
                 $html2 .= '<div class="row mt-3">';
                 foreach ($res->StoneFamilies as $item) {
                     $categoriesToRemove = ["Imitation", "Natural"];
-                    $filteredCategories = array_diff($item->Categories, $categoriesToRemove);
+                    $categoriesWithSerializedIndicator = $item->CategoriesWithSerializedIndicator;
+                    $filteredCategories = array_values(array_filter(array_map(function ($name) use ($categoriesWithSerializedIndicator, $categoriesToRemove) {
+                        $filtered = array_values(array_filter($categoriesWithSerializedIndicator, function ($category) use ($name, $categoriesToRemove) {
+                            return $category->CategoryName === $name && !in_array($name, $categoriesToRemove);
+                        }));
+                        return $filtered ? $filtered[0] : null;
+                    }, array_unique(array_column($categoriesWithSerializedIndicator, 'CategoryName')))));
                     if (count($filteredCategories) > 0) {
                         $img = base_url() . 'assets/jewel/img/gemstone/' . strtolower($item->Name) . '.jpg';
                         if (!@getimagesize($img)) {
                             $img = base_url() . 'assets/jewel/img/gemstone/empty.jpg';
                         }
-                        $html2 .= '<div class="col-md-3" onclick="configureProduct(this)" data-modelID="' . $modelID . '" data-groupName="' . $groupName . '" data-size="' . $size . '" data-name="' . $item->Name . '" data-image="' . $img . '" data-LocationNumber="' . $LocationNumber . '" data-category=\'' . json_encode($item->Categories) . '\'><div class="text-center" style="cursor: pointer;"><img src="' . $img . '" style="width:60px;height:60px"><p>' . $item->Name . '</p></div></div>';
+                        $html2 .= '<div class="col-md-3" onclick="configureProduct(this)" data-modelID="' . $modelID . '" data-groupName="' . $groupName . '" data-size="' . $size . '" data-name="' . $item->Name . '" data-image="' . $img . '" data-LocationNumber="' . $LocationNumber . '" data-category=\'' . json_encode($filteredCategories) . '\'><div class="text-center" style="cursor: pointer;"><img src="' . $img . '" style="width:60px;height:60px"><p>' . $item->Name . '</p></div></div>';
                     }
                 }
                 $html2 .= '</div>';
@@ -706,12 +720,14 @@ class Products extends CI_finecontrol
             $this->form_validation->set_rules('StoneFamilyName', 'StoneFamilyName', 'required|xss_clean|trim');
             $this->form_validation->set_rules('stoneCategory', 'stoneCategory', 'required|xss_clean|trim');
             $this->form_validation->set_rules('group_count', 'group_count', 'required|xss_clean|trim');
+            $this->form_validation->set_rules('is_serialized', 'is_serialized', 'required|xss_clean|trim');
             if ($this->form_validation->run() == true) {
                 $modelID = $this->input->post('modelID');
                 $LocationNumber = $this->input->post('LocationNumber');
                 $StoneFamilyName = $this->input->post('StoneFamilyName');
                 $stoneCategory = $this->input->post('stoneCategory');
                 $group_count = $this->input->post('group_count');
+                $is_serialized = $this->input->post('is_serialized');
                 $curl = curl_init();
                 curl_setopt_array($curl, array(
                     CURLOPT_URL => 'https://api.stuller.com/v2/products/searchstones',
@@ -722,7 +738,7 @@ class Products extends CI_finecontrol
                     CURLOPT_FOLLOWLOCATION => true,
                     CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
                     CURLOPT_CUSTOMREQUEST => 'POST',
-                    CURLOPT_POSTFIELDS => '{"ConfigurationModelId":' . $modelID . ',"LocationNumbers":[' . $LocationNumber . '],"StoneFamilyName":"' . $StoneFamilyName . '","StoneCategories":["' . $stoneCategory . '"]}',
+                    CURLOPT_POSTFIELDS => '{"ConfigurationModelId":' . $modelID . ',"LocationNumbers":[' . $LocationNumber . '],"StoneFamilyName":"' . $StoneFamilyName . '","StoneCategories":["' . $stoneCategory . '"],"IncludeSerializedProduct":' . $is_serialized . '}',
                     CURLOPT_HTTPHEADER => array(
                         'Authorization: Basic ZGV2amV3ZWw6Q29kaW5nMjA9',
                         'Content-Type: application/json',
@@ -737,16 +753,25 @@ class Products extends CI_finecontrol
                 $count = count($data);
                 $html = "<div class='w-100 text-right'><button onclick='setStonesTableBtn()' class='btn' style='border-color: #797979;'>Back</button></div>";
                 $html .= '<h6 class="mt-3">Results - ' . $stoneCategory . ' (' . $count . ')</h6>';
-
                 $html .= '<div class="row mt-3">';
                 $html .= '<div class="table-responsive" style="height: 400px !important;
                 overflow: scroll;">';
                 $html .= '<table class="table table-hover table-sm" id="stoneDataTable">';
                 if (!empty($data)) {
                     $html .= '<thead style="position:sticky;top: 0;background-color:white"><tr>';
-                    $headings = $data[0]->Product->DescriptiveElementGroup->DescriptiveElements;
-                    foreach ($headings as $head) {
-                        $html .= '<th scope="col">' . $head->Name . '</th>';
+                    if ($is_serialized == false && !empty($data[0]->Product)) {
+                        $headings = $data[0]->Product->DescriptiveElementGroup->DescriptiveElements;
+                        foreach ($headings as $head) {
+                            $html .= '<th scope="col">' . $head->Name . '</th>';
+                        }
+                    } else {
+                        $html .= '<th scope="col">Series</th>';
+                        $html .= '<th scope="col">Shape</th>';
+                        $html .= '<th scope="col">Type</th>';
+                        $html .= '<th scope="col">Cut</th>';
+                        $html .= '<th scope="col">Color</th>';
+                        $html .= '<th scope="col">Size</th>';
+                        $html .= '<th scope="col">Weight</th>';
                     }
                     $html .= '<th scope="col"></th>';
                     $html .= '</tr></thead>';
@@ -757,13 +782,58 @@ class Products extends CI_finecontrol
                         $fun = 'AskSideStone(this)';
                     }
                     foreach ($data as $item) {
-                        $html .= '<tr> ';
-                        $values = $item->Product->DescriptiveElementGroup->DescriptiveElements;
-                        foreach ($values as $v) {
-                            $html .= '<td>' . $v->DisplayValue . '</td>';
+                        if ($is_serialized == false && !empty($item->Product)) {
+                            $html .= '<tr> ';
+                            $values = $item->Product->DescriptiveElementGroup->DescriptiveElements;
+                            foreach ($values as $v) {
+                                $html .= '<td>' . $v->DisplayValue . '</td>';
+                            }
+                            $StoneProductId = $item->Product->Id;
+                            $SerialNumber = '';
+                        } else {
+                            if (!empty($item->Diamond)) {
+                                $html .= '<tr> ';
+                                $v = $item->Diamond;
+                            } else if (!empty($item->GemStone)) {
+                                $html .= '<tr> ';
+                                $v = $item->GemStone;
+                            } else if (!empty($item->LabGrownDiamond)) {
+                                $html .= '<tr> ';
+                                $v = $item->LabGrownDiamond;
+                            }
+                            if (!empty($item->Product)) {
+                                $values = $item->Product->DescriptiveElementGroup->DescriptiveElements;
+                                $shapeIndex = array_search("SHAPE", array_column($values, "Name"));
+                                $typeIndex = array_search("SERIES", array_column($values, "Name"));
+                                $cutIndex = array_search("SIZE CT", array_column($values, "Name"));
+                                $colorIndex = array_search("COLOR", array_column($values, "Name"));
+                                $sizeIndex = array_search("SIZE MM", array_column($values, "Name"));
+                                $ctIndex = array_search("SIZE CT", array_column($values, "Name"));
+                                $html .= '<td>' . $item->Product->Id . '</td>';
+                                $html .= '<td>' . $values[$shapeIndex]->DisplayValue . '</td>';
+                                $html .= '<td>' . $values[$typeIndex]->DisplayValue . '</td>';
+                                $html .= '<td>' . $values[$cutIndex]->DisplayValue . '</td>';
+                                $html .= '<td>' . $values[$colorIndex]->DisplayValue . '</td>';
+                                $html .= '<td>' . $values[$sizeIndex]->DisplayValue . '</td>';
+                                $html .= '<td>' . $values[$ctIndex]->DisplayValue . '</td>';
+
+                                $StoneProductId = $item->Product->Id;
+                                $SerialNumber = '';
+                            } else {
+
+                                $html .= '<td>' . $v->SerialNumber . '</td>';
+                                $html .= '<td>' . $v->Shape . '</td>';
+                                $html .= '<td>' . $v->StoneType . '</td>';
+                                $html .= '<td>' . $v->Cut . '</td>';
+                                $html .= '<td>' . $v->ColorDescription . '</td>';
+                                $html .= '<td>' . $v->Measurements . '</td>';
+                                $html .= '<td>' . $v->CaratWeight . '</td>';
+                                $StoneProductId = '';
+                                $SerialNumber = $v->SerialNumber;
+                            }
                         }
 
-                        $html .= '<td><button type="button" data-stoneId="' . $item->Product->Id . '" data-StoneFamilyName="' . $StoneFamilyName . '" data-stoneCategory="' . $stoneCategory . '" data-LocationNumber="' . $LocationNumber . '" class="btn btn-info" data-name="" onClick="' . $fun . '">Set</button></td>';
+                        $html .= '<td><button type="button" data-StoneProductId="' . $StoneProductId . '" data-SerialNumber="' . $SerialNumber . '" data-StoneFamilyName="' . $StoneFamilyName . '" data-stoneCategory="' . $stoneCategory . '" data-LocationNumber="' . $LocationNumber . '" data-is_serialized="' . $is_serialized . '" class="btn btn-info" data-name="" onClick="' . $fun . '">Set</button></td>';
                         $html .= '</tr>';
                     }
                     $html .= '</tbody>';
@@ -802,26 +872,31 @@ class Products extends CI_finecontrol
         $this->load->helper('security');
         if ($this->input->post()) {
             $this->form_validation->set_rules('ProductId', 'ProductId', 'required|xss_clean|trim');
-            $this->form_validation->set_rules('StoneProductId', 'StoneProductId', 'required|xss_clean|trim');
+            $this->form_validation->set_rules('StoneProductId', 'StoneProductId', 'xss_clean|trim');
+            $this->form_validation->set_rules('SerialNumber', 'SerialNumber', 'xss_clean|trim');
             $this->form_validation->set_rules('RingSize', 'RingSize', 'required|xss_clean|trim');
             $this->form_validation->set_rules('StoneFamilyName', 'StoneFamilyName', 'required|xss_clean|trim');
             $this->form_validation->set_rules('stoneCategory', 'stoneCategory', 'required|xss_clean|trim');
             $this->form_validation->set_rules('LocationNumber', 'LocationNumber', 'required|xss_clean|trim');
             $this->form_validation->set_rules('sideName', 'sideName', 'xss_clean|trim');
+            $this->form_validation->set_rules('is_serialized', 'is_serialized', 'xss_clean|trim');
             if ($this->form_validation->run() == true) {
                 $ProductId = $this->input->post('ProductId');
                 $StoneProductId = $this->input->post('StoneProductId');
+                $SerialNumber = $this->input->post('SerialNumber');
                 $RingSize = $this->input->post('RingSize');
                 $StoneFamilyName = $this->input->post('StoneFamilyName');
                 $stoneCategory = $this->input->post('stoneCategory');
                 $LocationNumber = $this->input->post('LocationNumber');
                 $sideName = $this->input->post('sideName');
+                $is_serialized = $this->input->post('is_serialized');
                 //----------------- Get all location of the product--------
                 $pro_data = $this->db->get_where('tbl_products', array('pro_id' => $ProductId))->row();
                 $final_arr = [];
                 $setting_options = json_decode($pro_data->setting_options);
                 $groupName = '';
-                $stone_id = '';
+                $stone_pro_id = '';
+                $stone_series_no = '';
                 foreach ($setting_options as $st) {
                     if (!empty($sideName) && $st->LocationNumber != $LocationNumber) {
                         $SF = $sideName;
@@ -829,6 +904,11 @@ class Products extends CI_finecontrol
                         $SF = $StoneFamilyName;
                     }
                     if (!empty($groupName) && $groupName != $st->GroupName) {
+                        if ($stoneCategory == 'Diamonds with Grading Report' || $stoneCategory == 'Lab-Grown with Grading Report'|| $stoneCategory == 'Notable Gems'){
+                            $sc = 'Lab-Grown';
+                        } else {
+                            $sc = $stoneCategory;
+                        }
                         //------- for new group location-------
                         $curl = curl_init();
                         curl_setopt_array($curl, array(
@@ -840,22 +920,34 @@ class Products extends CI_finecontrol
                             CURLOPT_FOLLOWLOCATION => true,
                             CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
                             CURLOPT_CUSTOMREQUEST => 'POST',
-                            CURLOPT_POSTFIELDS => '{"ConfigurationModelId":' . $pro_data->config_model_id . ',"LocationNumbers":[' . $st->LocationNumber . '],"StoneFamilyName":"' . $SF . '","StoneCategories":["' . $stoneCategory . '"]}',
+                            CURLOPT_POSTFIELDS => '{"ConfigurationModelId":' . $pro_data->config_model_id . ',"LocationNumbers":[' . $st->LocationNumber . '],"StoneFamilyName":"' . $SF . '","StoneCategories":["' . $sc . '"],"IncludeSerializedProduct":' . $is_serialized . '}',
                             CURLOPT_HTTPHEADER => array(
                                 'Authorization: Basic ZGV2amV3ZWw6Q29kaW5nMjA9',
                                 'Content-Type: application/json',
                                 'Host: api.stuller.com',
                             ),
                         ));
-                            // echo json_encode(['status' => 200, 'data' => '', 'html' => '', 'test' => json_encode('{"ConfigurationModelId":' . $pro_data->config_model_id . ',"LocationNumbers":[' . $st->LocationNumber . '],"StoneFamilyName":"' . $SF . '","StoneCategories":["' . $stoneCategory . '"]}')]);
-                            // return;
+                        // echo json_encode(['status' => 200, 'data' => '', 'html' => '', 'test' => json_encode('{"ConfigurationModelId":' . $pro_data->config_model_id . ',"LocationNumbers":[' . $st->LocationNumber . '],"StoneFamilyName":"' . $SF . '","StoneCategories":["' . $stoneCategory . '"]"IncludeSerializedProduct":' . $is_serialized . '}')]);
+                        // return;
                         $response = curl_exec($curl);
                         curl_close($curl);
                         $res = json_decode($response);
                         if (!empty($res->ConfiguredStones)) {
-                            $SP = $res->ConfiguredStones[0]->Product->Id;
+                            $data = $res->ConfiguredStones[0];
+                            if ($is_serialized == false && !empty($data[0]->Product)) {
+                                $stone_pro_id = $res->ConfiguredStones[0]->Product->Id;
+                            } else {
+                                if ($data->Product) {
+                                    $stone_pro_id = $data->Product->Id;
+                                } else if (!empty($data->Diamond)) {
+                                    $stone_series_no = $data->Diamond->SerialNumber;
+                                } else if (!empty($data->GemStone)) {
+                                    $stone_series_no = $data->GemStone->SerialNumber;
+                                } else if (!empty($data->LabGrownDiamond)) {
+                                    $stone_series_no = $data->LabGrownDiamond->SerialNumber;
+                                }
+                            }
                             $groupName = $st->GroupName;
-                            $stone_id = $SP;
                         } else {
                             $SF = 'Diamond';
                             //------- set default stone diamond-------
@@ -869,7 +961,7 @@ class Products extends CI_finecontrol
                                 CURLOPT_FOLLOWLOCATION => true,
                                 CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
                                 CURLOPT_CUSTOMREQUEST => 'POST',
-                                CURLOPT_POSTFIELDS => '{"ConfigurationModelId":' . $pro_data->config_model_id . ',"LocationNumbers":[' . $st->LocationNumber . '],"StoneFamilyName":"' . $SF . '","StoneCategories":["' . $stoneCategory . '"]}',
+                                CURLOPT_POSTFIELDS => '{"ConfigurationModelId":' . $pro_data->config_model_id . ',"LocationNumbers":[' . $st->LocationNumber . '],"StoneFamilyName":"' . $SF . '","StoneCategories":["Lab-Grown"]}',
                                 CURLOPT_HTTPHEADER => array(
                                     'Authorization: Basic ZGV2amV3ZWw6Q29kaW5nMjA9',
                                     'Content-Type: application/json',
@@ -883,23 +975,36 @@ class Products extends CI_finecontrol
                             if (!empty($res->ConfiguredStones)) {
                                 $SP = $res->ConfiguredStones[0]->Product->Id;
                                 $groupName = $st->GroupName;
-                                $stone_id = $SP;
+                                $stone_pro_id = $SP;
+                                $stone_series_no = '';
                             } else {
                                 $SP = '';
                                 $groupName = '';
-                                $stone_id = '';
+                                $stone_pro_id = '';
+                                $stone_series_no = '';
                             }
                         }
                     } else {
-                        $SP = $stone_id;
+                        // echo "yes1".$stone_pro_id;
+                        // echo "yes2".$stone_series_no;
                     }
 
                     if ($st->LocationNumber != $LocationNumber) {
-                        $final_arr[] = ['LocationNumber' => $st->LocationNumber, 'StoneProductId' => $SP];
+                        if (!empty($stone_pro_id)) {
+                            $final_arr[] = ['LocationNumber' => $st->LocationNumber, 'StoneProductId' => $stone_pro_id];
+                        } else {
+                            $final_arr[] = ['LocationNumber' => $st->LocationNumber, 'SerialNumber' => $stone_series_no];
+                        }
                     } else {
-                        $final_arr[] = ['LocationNumber' => $LocationNumber, 'StoneProductId' => $StoneProductId];
+                        if (!empty($StoneProductId)) {
+                            $final_arr[] = ['LocationNumber' => $LocationNumber, 'StoneProductId' => $StoneProductId];
+                            $stone_pro_id = $StoneProductId;
+                        } else {
+                            $final_arr[] = ['LocationNumber' => $LocationNumber, 'SerialNumber' => $SerialNumber];
+                            $stone_series_no = $SerialNumber;
+                        }
+
                         $groupName = $st->GroupName;
-                        $stone_id = $StoneProductId;
                     }
                 }
                 $final_arr = json_encode($final_arr);
