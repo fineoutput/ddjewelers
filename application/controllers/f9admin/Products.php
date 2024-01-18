@@ -236,7 +236,6 @@ class Products extends CI_finecontrol
         $finished = '';
         $include_series = '';
         $include_sku = '';
-
         $exclude_series = '';
         $exclude_sku = '';
         if (!empty($is_quick)) {
@@ -323,7 +322,6 @@ class Products extends CI_finecontrol
         } else {
             $key = 'SKU';
         }
-
         $send = [
             'category_id' => $category_id,
             'subcategory_id' => $subcategory_id,
@@ -331,8 +329,6 @@ class Products extends CI_finecontrol
             'minor2_category_id' => $minor2_category_id,
             'api_id' => $api_id,
             'filter' => $filter,
-            'include_series' => $include_series,
-            'include_sku' => $include_sku,
             'exclude_series' => $exclude_series,
             'exclude_sku' => $exclude_sku,
             'minimum_cost' => $minimum_cost->cost,
@@ -340,6 +336,44 @@ class Products extends CI_finecontrol
             'is_quick' => $is_quick,
         ];
         $res = $this->fetchApiData($send);
+        //------ if category have include series -----
+        if (!empty($include_series)) {
+            $cleanedString = str_replace(' ', '', $include_series);
+            $api_id = explode(",", $cleanedString);
+            $send = [
+                'category_id' => $category_id,
+                'subcategory_id' => $subcategory_id,
+                'minor_category_id' => $minor_category_id,
+                'minor2_category_id' => $minor2_category_id,
+                'api_id' => json_encode($api_id),
+                'filter' => $filter,
+                'exclude_series' => $exclude_series,
+                'exclude_sku' => $exclude_sku,
+                'minimum_cost' => $minimum_cost->cost,
+                'key' => 'Series',
+                'is_quick' => $is_quick,
+            ];
+            $res = $this->fetchApiData($send);
+        }
+        //------ if category have include sku -----
+        else if (!empty($include_sku)) {
+            $cleanedString = str_replace(' ', '', $include_sku);
+            $api_id = explode(",", $cleanedString);
+            $send = [
+                'category_id' => $category_id,
+                'subcategory_id' => $subcategory_id,
+                'minor_category_id' => $minor_category_id,
+                'minor2_category_id' => $minor2_category_id,
+                'api_id' => json_encode($api_id),
+                'filter' => $filter,
+                'exclude_series' => $exclude_series,
+                'exclude_sku' => $exclude_sku,
+                'minimum_cost' => $minimum_cost->cost,
+                'key' => 'SKU',
+                'is_quick' => $is_quick,
+            ];
+            $res = $this->fetchApiData($send);
+        }
         return $res;
     }
     //============================= END FETCH DATA  ==========================
