@@ -5,6 +5,32 @@
     display: none;
   }
 
+  .sorting {
+    font-size: 12px !important;
+  }
+
+  table.dataTable tbody th,
+  table.dataTable tbody td {
+    padding: 5px 5px !important;
+    font-size: 12px !important;
+  }
+
+  .btn-info {
+    font-size: 14px !important;
+    padding: 5px 15px !important;
+  }
+
+  .paginate_button {
+    font-size: 12px !important;
+  }
+
+  .dataTables_wrapper .dataTables_filter input {
+    padding: 0px !important;
+  }
+  .dataTables_wrapper .dataTables_length select {
+    padding: 0px !important;
+
+  }
 
   #a {
     padding-left: 0px;
