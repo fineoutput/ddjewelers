@@ -734,7 +734,7 @@ if ($products->is_quick == 1) {
   </div>
   <!-- ===================== START MORE FOR YOU =========================== -->
   <? if (!empty($more_products)) { ?>
-    <div class=" container-fluid row " style="margin-top: 5.5rem!important;">
+    <div class=" container-fluid row " style="margin-top: 2.5rem!important;">
       <div class="col-md-12 txt">
         <h2>More Items to Consider</h2>
         <hr>
@@ -773,7 +773,7 @@ if ($products->is_quick == 1) {
   <!-- ===================== END MORE FOR YOU =========================== -->
   <!-- ===================== START SUGGESTED FOR YOU =========================== -->
   <? if (!empty($suggested_products)) { ?>
-    <div class="row container-fluid" style="margin-top: 5.5rem!important;">
+    <div class="row container-fluid" style="margin-top: 2.5rem!important;">
       <div class="col-md-12 txt">
         <h2>Suggested for you</h2>
         <hr>

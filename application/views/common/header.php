@@ -44,7 +44,12 @@
   #menu ul:hover {
     display: block !important;
   }
-
+.swiper-backface-hidden .swiper-slide{
+    margin-right: 20px !important;
+  }
+  .swiper-backface-hidden .swiper-slide a p.h6 {
+    font-size: 13px;
+}
   .center {
     display: flex;
     justify-content: center;
@@ -56,7 +61,14 @@
     background-color: #fff;
     z-index: 9999;
   }
-
+  .swiper-slide a img.img-responsive.small_mob {
+    width: 54%;
+}
+@media(max-width:767px){
+  .swiper-slide a img.img-responsive.small_mob {
+    width: 100%;
+}
+}
   .loader {
     border: 16px solid #f3f3f3;
     border-top: 16px solid #1A2F64;

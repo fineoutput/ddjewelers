@@ -1904,7 +1904,7 @@ input[type=number].mobilenumbers {
   </style>
 
   <?if(!empty($more)){?>
-  <div class="row " style="margin-top: 5.5rem!important;">
+  <div class="row " style="margin-top: 2.5rem!important;">
   <div class="col-md-12 txt">
     <h2>More Items to Consider</h2>
     <hr>
@@ -1944,7 +1944,7 @@ input[type=number].mobilenumbers {
 <?}?>
 <?
 if(!empty($random)){?>
- <div class="row " style="margin-top: 5.5rem!important;">
+ <div class="row " style="margin-top: 2.5rem!important;">
   <div class="col-md-12 txt">
     <h2>Suggested for you</h2>
     <hr>

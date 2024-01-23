@@ -715,7 +715,7 @@ $minor2Data = $this->db->get_where('tbl_minisubcategory2', array('id' => $produc
   </div>
   <!-- ===================== START MORE FOR YOU =========================== -->
   <? if (!empty($more_products)) { ?>
-    <div class=" container-fluid row " style="margin-top: 5.5rem!important;">
+    <div class=" container-fluid row " style="margin-top: 2.5rem!important;">
       <div class="col-md-12 txt">
         <h2>More Items to Consider</h2>
         <hr>
@@ -754,7 +754,7 @@ $minor2Data = $this->db->get_where('tbl_minisubcategory2', array('id' => $produc
   <!-- ===================== END MORE FOR YOU =========================== -->
   <!-- ===================== START SUGGESTED FOR YOU =========================== -->
   <? if (!empty($suggested_products)) { ?>
-    <div class="row container-fluid" style="margin-top: 5.5rem!important;">
+    <div class="row container-fluid" style="margin-top: 2.5rem!important;">
       <div class="col-md-12 txt">
         <h2>Suggested for you</h2>
         <hr>
