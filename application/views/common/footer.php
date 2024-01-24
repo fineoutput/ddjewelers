@@ -344,7 +344,7 @@
             var data;
             $("#serc").html("");
             $.each(response.result_da, function(index, itemData) {
-              data = '<a href="<?php echo base_url(); ?>Home/search_sub_products/' + btoa(itemData.id) + '"><li style="background-color: white;">' + itemData.name + '</li></a>';
+              data = '<a href="<?php echo base_url(); ?>Home/all_products/' + itemData.id + '/' + btoa(0) + '"><li style="background-color: white;">' + itemData.name + '</li></a>';
               $("#serc").append(data);
             });
           }
@@ -379,7 +379,7 @@
             var data;
             $("#serch").html("");
             $.each(response.result_da, function(index, itemData) {
-              data = '<a href="<?php echo base_url(); ?>Home/search_sub_products/' + btoa(itemData.id) + '"><li style="background-color: white;">' + itemData.name + '</li></a>';
+              data = '<a href="<?php echo base_url(); ?>Home/all_products/' + itemData.id + '/' + btoa(0) + '"><li style="background-color: white;">' + itemData.name + '</li></a>';
               $("#serch").append(data);
             });
           }

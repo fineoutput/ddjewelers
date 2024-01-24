@@ -833,14 +833,18 @@ class Home extends CI_Controller
                 $string_main = $this->input->post('search_input');
                 $product_data = $this->db->select('id,pro_id,series_id,group_id,search_values')
                     ->from('tbl_products')
+                    ->limit(1)
                     ->where("JSON_SEARCH(search_values, 'one', '$string_main') IS NOT NULL", null, false)
                     ->get()->row();
                 $data['search_string'] = $string_main;
                 if (!empty($product_data)) {
                     redirect('Home/product_details/' . $product_data->series_id . '/' . $product_data->pro_id . '?groupId=' . $product_data->group_id . '');
                 } else {
-                    $this->session->set_flashdata('emessage', 'No Product found!');
-                    redirect($_SERVER['HTTP_REFERER']);
+                    $this->load->view('common/header', $data);
+                    $this->load->view('empty_result');
+                    $this->load->view('common/footer');
+                    // $this->session->set_flashdata('emessage', 'No Product found!');
+                    // redirect($_SERVER['HTTP_REFERER']);
                 }
             } else {
                 $this->session->set_flashdata('emessage', validation_errors());
@@ -965,107 +969,40 @@ class Home extends CI_Controller
     public function search_results()
     {
         $data['data'] = '';
-        // if(!empty($this->session->userdata('user_data'))){
         $string = $this->input->post('string');
-        $user_id = $this->session->userdata('usersid');
-        //new search code start
-        $ss = [];
         $string1 = explode(" ", $string);
-        $st_count = count($string1);
-        // print_r($string1);
-        $det1 = "";
-        $det2 = "";
-        $det3 = "";
-        $det4 = "";
-        $det5 = "";
-        $det6 = "";
-        if ($st_count >= 1) {
-            $a = $string1[0];
-            // $det1="->where('name','LIKE', '%{$a}%' )";
-            $det1 = " name LIKE '%" . $a . "%' ";
+        $ss = [];
+        $det = "";
+
+        for ($i = 0; $i < min(count($string1), 6); $i++) {
+            $det .= "AND name LIKE '%" . $string1[$i] . "%' ";
         }
-        if ($st_count >= 2) {
-            $b = $string1[1];
-            // $det2="->where('name','LIKE', '%{$a}%' )";
-            $det2 = "AND name LIKE '%{" . $b . "}%' ";
-        }
-        if ($st_count >= 3) {
-            $c = $string1[2];
-            // $det3="->where('name','LIKE', '%{$a}%' )";
-            $det3 = "AND name LIKE '%" . $c . "%' ";
-        }
-        if ($st_count >= 4) {
-            $d = $string1[3];
-            // $det4="->where('name','LIKE', '%{$a}%' )";
-            $det4 = "AND name LIKE '%" . $d . "%' ";
-        }
-        if ($st_count >= 5) {
-            $e = $string1[4];
-            // $det4="->where('name','LIKE', '%{$a}%' )";
-            $det5 = "AND name LIKE '%" . $e . "%' ";
-        }
-        if ($st_count >= 6) {
-            $f = $string1[5];
-            // $det4="->where('name','LIKE', '%{$a}%' )";
-            $det6 = "AND name LIKE '%" . $f . "%' ";
-        }
+
         $isactiveProductCondition = "AND is_active = 1";
-        // $isCatDeleteProductCondition = "AND is_cat_delete = 0";
-        // $isSubCatDeleteProductCondition = "AND is_subcat_delete = 0";
-        // $deleteAtProductCondition = "AND deleted_at IS NULL";
-        // $details= "SELECT * FROM `tbl_products` WHERE name LIKE '%silver%' AND name LIKE '%gemstone%' AND name LIKE '%chain%'";
-        $native_query = "SELECT * FROM tbl_sub_category WHERE " . $det1 . "  " . $det2 . "  " . $det3 . "  " . $det4 . "  " . $det5 . "  " . $det6 . "  " . $isactiveProductCondition;
-        // echo $native_query; die();
-        // $details = DB::select($native_query);
+        $native_query = "SELECT * FROM tbl_sub_category WHERE 1 " . $det . $isactiveProductCondition;
         $details = $this->db->query($native_query);
-        // echo "<pre>";	print_r($details->result()); die();
-        // SELECT * FROM tbl_products WHERE name LIKE '%lapis%' AND name LIKE '%tyre%' AND name LIKE '%beads%' AND is_active = 1 AND is_cat_delete = 0 AND is_subcat_delete = 0
-        // print_r($details); echo count($details); die();
+
         if (!empty($details)) {
             foreach ($details->result() as $dt) {
-                // code...
-                $ss[] = array('id' => $dt->id, 'category' => $dt->category, 'api_id' => $dt->api_id, 'name' => $dt->name, 'image' => $dt->image, 'seq' => $dt->seq,  'ip' => $dt->ip,  'date' => $dt->date,  'added_by' => $dt->added_by,  'is_active' => $dt->is_active);
+                $ss[] = array(
+                    'id' => $dt->id, 'category' => $dt->category, 'api_id' => $dt->api_id,
+                    'name' => $dt->name, 'image' => $dt->image, 'seq' => $dt->seq,
+                    'ip' => $dt->ip, 'date' => $dt->date, 'added_by' => $dt->added_by,
+                    'is_active' => $dt->is_active
+                );
             }
         } else {
             $ss = [];
         }
+
         $detail_name = $ss;
-        // $detail_sku = Product::wherenull('deleted_at')->where('is_active', 1)->where('is_cat_delete', 0)->where('is_subcat_delete', 0)
-        // ->where('sku_id','LIKE', "%{$string}%" )->get()->toArray();
-        // $detail_tag = Product::wherenull('deleted_at')->where('is_active', 1)->where('is_cat_delete', 0)->where('is_subcat_delete', 0)
-        // ->where('tag','LIKE', "%{$string}%" )->get()->toArray();
-        // 						$this->db->select('*');
-        // $this->db->from('tbl_products');
-        // $this->db->where("sku LIKE '%$string%'");
-        // $this->db->where('is_active', 1);
-        // $detail_sku= $this->db->get()->result_array();
         $detail_sku = [];
-        // $detail_tag=[];
-        // print_r($detail_tag);
-        // echo "df";
         $detail = array_merge($detail_name, $detail_sku);
-        // print_r($detail); die();
-        //duplicate objects will be removed
         $detail = array_map("unserialize", array_unique(array_map("serialize", $detail)));
-        //array is sorted on the bases of id
         sort($detail);
-        //new search code end
+
         $data['data'] = true;
         $data['result_da'] = $detail;
-        // $this->db->select('*');
-        // $this->db->from('tbl_ecom_products');
-        // $this->db->where('category_id',$catid);
-        // $this->db->where("is_active", 1);
-        // $this->db->where("is_cat_delete", 0);
-        // $data['ecom_product_data']= $this->db->get();
-        // $this->load->view('layout/withoutheader');
-        // $this->load->view('view_wishlist',$data);
-        // $this->load->view('layout/footer');
-        // }else{
-        // // redirect("home","refresh");
-        // $data['data']=false;
-        //
-        // }
         echo json_encode($data);
     }
     public function new_arrivals()
