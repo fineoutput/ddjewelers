@@ -308,7 +308,13 @@
               <?php $i++;
               } ?>
           </div>
-          <?= $links ?>
+          <div class="row justify-content-center w-100">
+            <?= $links ?>
+            <div class="pagination-dropdown row align-items-center">
+              <label for="page-select">Go to page:</label>
+              <?= form_dropdown('page-select', $page_options, $current_page, 'class="form-control " style="width: auto;" onchange="window.location.href=\'' . base_url("Home/all_products/{$idd}/{$t}/") . '\' + this.value"') ?>
+            </div>
+          </div>
         <? } else { ?>
           <div class="text-center">
             <img src="<?= base_url() ?>/assets/frontend/no_data.jpg" style="    max-width: 45%;

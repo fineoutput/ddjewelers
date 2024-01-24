@@ -1128,6 +1128,7 @@ class Home extends CI_Controller
     }
     public function all_products($idd, $t, $page_index = "1")
     {
+        $this->load->helper('form');
         $type = base64_decode($t);
         $config['base_url'] = base_url() . 'Home/all_products/' . $idd . '/' . $t;
         $per_page = 28;
@@ -1152,11 +1153,27 @@ class Home extends CI_Controller
         $config['cur_tag_close'] = '</a></li>';
         $config['num_tag_open'] = '<li class="page-item page-link page-link">';
         $config['num_tag_close'] = '</li>';
+
+
         if ($type == 1) {
             $data['productCount'] = $this->db->select('id')->group_by(array("series_id"))->get_where('tbl_products', array('minor_category_id' => $idd, 'is_quick' => null))->num_rows();
             //--------- pagination config ----------------------
-            $config['total_rows'] = $data['productCount'];
+            $total_rows = $data['productCount'];
+            // Calculate the total number of pages
+            $total_pages = ceil($total_rows / $per_page);
+
+            // Get the current page number
+            $current_page = ($this->uri->segment(4)) ? $this->uri->segment(4) : 1;
+            $config['total_rows'] = $total_rows;
+
+            // Initialize the pagination
             $this->pagination->initialize($config);
+
+            // Create an array for the page dropdown options
+            $page_options = array();
+            for ($i = 1; $i <= $total_pages; $i++) {
+                $page_options[$i] = $i;
+            }
             if (!empty($page_index)) {
                 if (is_numeric($page_index)) {
                     $start = ($page_index - 1) * $config['per_page'];
@@ -1182,8 +1199,22 @@ class Home extends CI_Controller
         } else if ($type == 3) {
             $data['productCount'] = $this->db->select('id')->group_by(array("series_id"))->get_where('tbl_products', array('category_id' => $idd, 'is_quick' => null))->num_rows();
             //--------- pagination config ----------------------
-            $config['total_rows'] = $data['productCount'];
+            $total_rows = $data['productCount'];
+            // Calculate the total number of pages
+            $total_pages = ceil($total_rows / $per_page);
+
+            // Get the current page number
+            $current_page = ($this->uri->segment(4)) ? $this->uri->segment(4) : 1;
+            $config['total_rows'] = $total_rows;
+
+            // Initialize the pagination
             $this->pagination->initialize($config);
+
+            // Create an array for the page dropdown options
+            $page_options = array();
+            for ($i = 1; $i <= $total_pages; $i++) {
+                $page_options[$i] = $i;
+            }
             if (!empty($page_index)) {
                 if (is_numeric($page_index)) {
                     $start = ($page_index - 1) * $config['per_page'];
@@ -1207,8 +1238,22 @@ class Home extends CI_Controller
         } else {
             $data['productCount'] = $this->db->select('id')->group_by(array("series_id"))->get_where('tbl_products', array('subcategory_id' => $idd, 'is_quick' => null))->num_rows();
             //--------- pagination config ----------------------
-            $config['total_rows'] = $data['productCount'];
+            $total_rows = $data['productCount'];
+            // Calculate the total number of pages
+            $total_pages = ceil($total_rows / $per_page);
+
+            // Get the current page number
+            $current_page = ($this->uri->segment(4)) ? $this->uri->segment(4) : 1;
+            $config['total_rows'] = $total_rows;
+
+            // Initialize the pagination
             $this->pagination->initialize($config);
+
+            // Create an array for the page dropdown options
+            $page_options = array();
+            for ($i = 1; $i <= $total_pages; $i++) {
+                $page_options[$i] = $i;
+            }
             if (!empty($page_index)) {
                 if (is_numeric($page_index)) {
                     $start = ($page_index - 1) * $config['per_page'];
@@ -1234,6 +1279,11 @@ class Home extends CI_Controller
         $data['sort_type'] = '';
         $data['level_id'] = $idd;
         $data['links'] = $links;
+        $data['current_page'] = $current_page;
+        $data['total_pages'] = $total_pages;
+        $data['page_options'] = $page_options;
+        $data['idd'] = $idd;
+        $data['t'] = $t;
 
         $this->load->view('common/header', $data);
         $this->load->view('all_products');
