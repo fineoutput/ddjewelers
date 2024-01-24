@@ -919,19 +919,31 @@ if ($products->is_quick == 1) {
                     $groupCounts = [];
                     // Iterate over the data to count each group
                     foreach ($setting_options as $st) {
-                      $groupName = $st->GroupName;
+                      if (!empty($st->GroupName)) {
+                        $groupName = $st->GroupName;
+                      } else {
+                        $groupName = $st->Shape;
+                      }
                       if (!empty($groupCounts)) {
                         $groupCounts[$groupName] = ($groupCounts[$groupName] ?? 0) + 1;
                       } else {
                         $groupCounts[$groupName] = 0;
+                        if (stripos($groupName, "stone") !== false) {
+                          break;
+                        }
                       }
                     }
                     foreach ($groupCounts as $groupName => $count) :
                       $groupItems = array_filter($setting_options, function ($item) use ($groupName) {
-                        return $item->GroupName == $groupName;
+                        if (!empty($item->GroupName)) {
+                          return $item->GroupName == $groupName;
+                        } else {
+                          return $item->Shape == $groupName;
+                        }
                       });
                       $groupItems = array_values($groupItems);
                       $uniqueSizes = array_unique(array_column($groupItems, 'SizeMM'));
+                      // echo $count;
                       if (count($groupCounts) == 1 || $groupName == 'Center') {
                     ?>
                         <tr>
