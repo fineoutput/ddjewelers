@@ -27,6 +27,7 @@
   .dataTables_wrapper .dataTables_filter input {
     padding: 0px !important;
   }
+
   .dataTables_wrapper .dataTables_length select {
     padding: 0px !important;
 
@@ -582,24 +583,24 @@ if ($products->is_quick == 1) {
             </div> -->
           </div>
           <?
-          if (strpos($quality, 'Forever') == true) {
+          if (stripos($quality, 'X1') !== false) {
             $extra = ' (This is a special "Extreme White" grade gold from a new family of karat white gold casting grain that is formulated to achieve a superior white color whithout the need for rhodium plating)';
-          } else if (strpos($quality, 'Palladium') == true) {
+          } else if (stripos($quality, 'Palladium') !== false) {
             $extra = '(Palladium has a white color that lasts. 950 Palladium is a Platinum Group Metal and is enhanced 95% palladium alloy. Palladium is hypoallergenic and lead-free. It achieves the look and benefits of platinum at half the weight and at a more affordable price. This strong alloy will not tarnish and requires no rhodium plating to retain its bright white color. It will never lose metal weight when poished and is formulated to have the hardness of 14K Gold)';
-          } else if (strpos($quality, 'Platinum') == true) {
+          } else if (stripos($quality, 'Platinum') !== false) {
             $extra = 'Considered the noblest element. Platinum is 30 times more rare than gold, making it the most precious metal. Platinum is also hypoallergenic.)';
-          } else if (strpos($quality, 'Continuum') == true) {
+          } else if (stripos($quality, 'Continuum') !== false) {
             $extra = "(Continuum Sterling Silver is a bright white metal(no rhodium plating required) with more than 95% precious metal content. This patented sterling silver's superior oxidation and tarnish resistance  grade allows for a longer lasting finish.)";
           } else {
             $extra = '';
           }
           if (!empty($extra)) {
           ?>
-            <!-- <div class="d-flex jus_cont">
+            <div class="d-flex jus_cont" style="margin-top:-25px">
               <p>
               </p>
               <p style="color: #547f9e; font-size: 0.8rem;"><?= $extra ?></p>
-            </div> -->
+            </div>
           <? } ?>
         <? } else { ?>
           <div class="d-flex jus_cont">
@@ -628,9 +629,9 @@ if ($products->is_quick == 1) {
             <?php
             foreach ($ring_size as $ring) :
             ?>
-              <option value="<?= $ring->Size; ?>" <? if ($ring->Size == $products->ring_size) {
-                                                    echo 'selected';
-                                                  } ?>><?= $ring->Size; ?></option>e
+              <option value="<?= $ring->Size; ?>" data-price="<?= $ring->Price->Value ?>" <? if ($ring->Size == $products->ring_size) {
+                                                                                            echo 'selected';
+                                                                                          } ?>><?= $ring->Size; ?></option>e
             <?php endforeach; ?>
           </select>
         </div>
@@ -648,11 +649,11 @@ if ($products->is_quick == 1) {
       if (!empty($now_price)) {
       ?>
         <div id="price_div">
-          <h6 id="p_retail" class="text-right">Retail Price: $<?= number_format($retail, 2); ?></h6>
+          <h6 class="text-right">Retail Price: $<span id="r_price"><?= number_format($retail, 2); ?></span></h6>
           <? if ($saved > 0) { ?>
-            <p id="p_saved" class="text-right mb-2" style="color:red;">You Saved: $<?= number_format($saved); ?>(<?= round($dis_percent) ?>%)</p>
+            <p class="text-right mb-2" style="color:red;">You Saved: $<span id="s_price"><?= number_format($saved); ?></span>(<span id="d_price"><?= round($dis_percent) ?></span>%)</p>
           <? } ?>
-          <h2 class="text-right mb-3" id="p_price" style="color:red; font-weight: 100;font-size:1.7rem;">Now: $<?= number_format($now_price, 2); ?></h2>
+          <h2 class="text-right mb-3" style="color:red; font-weight: 100;font-size:1.7rem;">Now: $<span id="p_price"><?= number_format($now_price, 2); ?></span></h2>
         </div>
       <?php } else { ?>
         <a id="no_price" href="<?= base_url(); ?>Home/contact_us">
@@ -940,10 +941,18 @@ if ($products->is_quick == 1) {
                             <? } ?>
                           </td>
                           <td style="vertical-align: -webkit-baseline-middle;"><? if ($count == 1) {
-                                                                                  echo $size = $groupItems[0]->Dimension1 . 'mm x ' . $groupItems[0]->Dimension2 . 'mm';
+                                                                                  if ($groupItems[0]->Dimension2 != 0) {
+                                                                                    echo $size = $groupItems[0]->Dimension1 . 'mm x ' . $groupItems[0]->Dimension2 . 'mm';
+                                                                                  } else {
+                                                                                    echo $size = $groupItems[0]->Dimension1 . 'mm';
+                                                                                  }
                                                                                 } else {
                                                                                   // If there are multiple unique SizeMM values, print "Varying Sizes"
-                                                                                  echo $size = count($uniqueSizes) > 1 ? "Varying Sizes" : $groupItems[0]->Dimension1 . 'mm x ' . $groupItems[0]->Dimension2 . 'mm';
+                                                                                  if ($groupItems[0]->Dimension2 != 0) {
+                                                                                    echo $size = count($uniqueSizes) > 1 ? "Varying Sizes" : $groupItems[0]->Dimension1 . 'mm x ' . $groupItems[0]->Dimension2 . 'mm';
+                                                                                  } else {
+                                                                                    echo $size = $groupItems[0]->Dimension1 . 'mm';
+                                                                                  }
                                                                                 } ?></td>
                           <td><button class="add-btn" onclick="fetchStoneFamily(this)" data-modelID="<?= $products->config_model_id ?>" data-size="<?= $size ?>" data-count="<?= $count ?>" data-groupName="<?= $groupName ?>" data-LocationNumber="<?= $groupItems[0]->LocationNumber ?>" data-group-count="<?= count($groupCounts) ?>">Select</button></td>
                         </tr>
@@ -984,13 +993,38 @@ if ($products->is_quick == 1) {
 
 <input name="temp_data" id="temp_data" type="hidden" value="">
 <input name="ring_size" id="r_size" type="hidden" value="<?= $products->ring_size ?>">
+<input name="r_price" id="r_price" type="hidden" value="<?= $sizePrice ?>">
 <input name="proId" id="proId" type="hidden" value="<?= $products->pro_id ?>">
 <script>
   jQuery(document).ready(function() {
     //----------- DROPDOWN CHANGE ---------------
     $('select').on('change', function() {
       if (this.name == "Ring_Size") {
+        var selectedOption = this.options[this.selectedIndex];
+        var dataKeyValue = selectedOption.getAttribute('data-price');
         $('#r_size').val(this.value);
+        $('#r_price').val(dataKeyValue);
+        //------ calculate updated price -----
+        $.ajax({
+          url: "<?= base_url() ?>Home/UpdatePrice",
+          method: "POST",
+          data: {
+            pro_id: '<?= $products->pro_id ?>',
+            price: dataKeyValue,
+          },
+          dataType: 'json',
+          success: function(response) {
+            if (response.status == 200) {
+              $("#r_price").html(response.data.retail);
+              $("#s_price").html(response.data.saved);
+              $("#d_price").html(response.data.dis_percent);
+              $("#p_price").html(response.data.now_price);
+            } else {
+              // alert(response.message)
+              // location.reload(true);
+            }
+          }
+        })
         return
       }
       var selectedOption = this.options[this.selectedIndex];

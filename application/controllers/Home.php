@@ -1306,7 +1306,7 @@ class Home extends CI_Controller
     {
         $group_id = $_GET['groupId'];
         $data['products'] = $this->db->get_where('tbl_products', array('pro_id' => $pro_id))->row();
-        $data['stone_data']  = $this->db->select("id,pro_id,stone")->order_by('stone','desc')->group_by('stone')->get_where('tbl_products', array('series_id' => $series_id, 'group_id' => $group_id, 'is_quick' => $data['products']->is_quick))->result();
+        $data['stone_data']  = $this->db->select("id,pro_id,stone")->order_by('stone', 'desc')->group_by('stone')->get_where('tbl_products', array('series_id' => $series_id, 'group_id' => $group_id, 'is_quick' => $data['products']->is_quick))->result();
         $product_data  = $this->db->select('elements')->group_by('pro_id')->get_where('tbl_products', array('series_id' => $series_id, 'group_id' => $group_id, 'stone' => $data['products']->stone, 'is_quick' => $data['products']->is_quick))->result();
         $data['more_products'] = $this->db->select('series_id, full_set_images,images,group_images, group_id,description,pro_id')->where('series_id !=', $data['products']->series_id)->group_by('series_id')->limit(15)->get_where('tbl_products', array('category_id' => $data['products']->category_id, 'is_quick' => $data['products']->is_quick))->result();
         $data['suggested_products'] = $this->db->select('series_id, full_set_images,images,group_images, group_id,description,pro_id')->where('series_id !=', $data['products']->series_id)->group_by('series_id')->limit(15)->get_where('tbl_products', array('is_quick' => $data['products']->is_quick))->result();
@@ -1352,9 +1352,16 @@ class Home extends CI_Controller
             });
         }
         //---- CALCULATE PRICE -------
+        $r_data = json_decode($data['products']->ring_size_data, true);
+        $sizePrice = 0;
+        if (!empty($r_data)) {
+            $sizePriceDa = array_values(array_filter($r_data, fn ($item) => $item['Size'] == $data['products']->ring_size))[0] ?? null;
+            $sizePrice = $sizePriceDa['Price']['Value'];
+        }
         $pr_data = $this->db->get_where('tbl_price_rule', array())->row();
+        $data['sizePrice'] = $sizePrice;
         $multiplier = $pr_data->multiplier;
-        $cost_price = $data['products']->price;
+        $cost_price = $data['products']->price + $sizePrice;
         $retail = $cost_price * $multiplier;
         $now_price = $cost_price;
         if ($cost_price <= 500) {
@@ -1418,6 +1425,76 @@ class Home extends CI_Controller
                     $res = array(
                         'message' => $new_pro_data->pro_id,
                         'status' => 200
+                    );
+                    echo json_encode($res);
+                } else {
+                    $res = array(
+                        'message' => 'No combination found!',
+                        'status' => 201
+                    );
+                    echo json_encode($res);
+                }
+            } else {
+                $res = array(
+                    'message' => validation_errors(),
+                    'status' => 201
+                );
+                echo json_encode($res);
+            }
+        } else {
+            $res = array(
+                'message' => 'Please insert some data, No data available',
+                'status' => 201
+            );
+            echo json_encode($res);
+        }
+    }
+
+    //--- Update Product Price ---------
+    public  function UpdatePrice()
+    {
+        $this->load->helper(array('form', 'url'));
+        $this->load->library('form_validation');
+        $this->load->helper('security');
+        if ($this->input->post()) {
+            $this->form_validation->set_rules('pro_id', 'pro_id', 'required|xss_clean|trim');
+            $this->form_validation->set_rules('price', 'price', 'required|xss_clean|trim');
+            if ($this->form_validation->run() == true) {
+                $pro_id = $this->input->post('pro_id');
+                $price = $this->input->post('price');
+                $pro_data = $this->db->get_where('tbl_products', array('pro_id' => $pro_id))->row();
+                if (!empty($pro_data)) {
+                    $pr_data = $this->db->get_where('tbl_price_rule', array())->row();
+                    $multiplier = $pr_data->multiplier;
+                    $cost_price = $pro_data->price + $price;
+                    $retail = $cost_price * $multiplier;
+                    $now_price = $cost_price;
+                    if ($cost_price <= 500) {
+                        $cost_price2 = $cost_price * $cost_price;
+                        $number = round($cost_price * ($pr_data->cost_price1 * $cost_price2 + $pr_data->cost_price2 * $cost_price + $pr_data->cost_price3), 2);
+                        $unit = 5;
+                        $remainder = $number % $unit;
+                        $mround = ($remainder < $unit / 2) ? $number - $remainder : $number + ($unit - $remainder);
+                        $now_price = round($mround) - 1 + 0.95;
+                    } else if ($cost_price > 500) {
+                        $number = round($cost_price * ($pr_data->cost_price4 * $cost_price / $multiplier + $pr_data->cost_price5));
+                        $unit = 5;
+                        $remainder = $number % $unit;
+                        $mround = ($remainder < $unit / 2) ? $number - $remainder : $number + ($unit - $remainder);
+                        $now_price = round($mround) - 1 + 0.95;
+                    }
+                    $saved = round($retail - $now_price);
+                    $dis_percent = $saved / $retail * 100;
+
+                    $data['now_price'] = number_format($now_price, 2);
+                    $data['saved'] = number_format($saved, 2);
+                    $data['dis_percent'] = number_format($dis_percent, 2);
+                    $data['retail'] = number_format($retail, 2);
+
+                    $res = array(
+                        'message' => 'success',
+                        'status' => 200,
+                        'data' => $data
                     );
                     echo json_encode($res);
                 } else {

@@ -376,9 +376,9 @@
               $user_id = $this->session->userdata('user_id');
               $ctd = $this->db->get_where('tbl_cart', array('user_id' => $this->session->userdata('user_id')))->result();
               foreach ($ctd as $cc) {
-                $pp_data = $this->db->get_where('tbl_products', array('id' => $cc->product_id))->row();
+                $pp_data = $this->db->get_where('tbl_products', array('pro_id' => $cc->pro_id))->row();
                 if (empty($pp_data)) {
-                  $delete = $this->db->delete('tbl_cart', array('product_id', $cc->product_id));
+                  $delete = $this->db->delete('tbl_cart', array('pro_id', $cc->pro_id));
                 }
               }
               $this->db->select('*');
