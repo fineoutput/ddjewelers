@@ -311,8 +311,8 @@
           <div class="row justify-content-center w-100">
             <?= $links ?>
             <div class="pagination-dropdown row align-items-center">
-              <label for="page-select">Go to page:</label>
-              <?= form_dropdown('page-select', $page_options, $current_page, 'class="form-control " style="width: auto;" onchange="window.location.href=\'' . base_url("Home/all_products/{$idd}/{$t}/") . '\' + this.value"') ?>
+              <label for="page-select">Go to page: </label>
+              <?= form_dropdown('page-select', $page_options, $current_page, 'class="form-control ml-2 " style="width: auto;" onchange="window.location.href=\'' . base_url("Home/all_products/{$idd}/{$t}/") . '\' + this.value"') ?>
             </div>
           </div>
         <? } else { ?>

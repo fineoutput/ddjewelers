@@ -1164,7 +1164,7 @@ class Home extends CI_Controller
             $total_pages = ceil($total_rows / $per_page);
 
             // Get the current page number
-            $current_page = ($this->uri->segment(4)) ? $this->uri->segment(4) : 1;
+            $current_page = $page_index;
             $config['total_rows'] = $total_rows;
 
             // Initialize the pagination
@@ -1205,7 +1205,7 @@ class Home extends CI_Controller
             $total_pages = ceil($total_rows / $per_page);
 
             // Get the current page number
-            $current_page = ($this->uri->segment(4)) ? $this->uri->segment(4) : 1;
+            $current_page = $page_index;
             $config['total_rows'] = $total_rows;
 
             // Initialize the pagination
@@ -1244,7 +1244,7 @@ class Home extends CI_Controller
             $total_pages = ceil($total_rows / $per_page);
 
             // Get the current page number
-            $current_page = ($this->uri->segment(4)) ? $this->uri->segment(4) : 1;
+            $current_page = $page_index;
             $config['total_rows'] = $total_rows;
 
             // Initialize the pagination

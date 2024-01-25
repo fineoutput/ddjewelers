@@ -35,6 +35,7 @@
                                     <thead>
                                         <tr>
                                             <th>#</th>
+                                            <th>Type</th>
                                             <th>CAT Level 1</th>
                                             <th>SUBCAT Level 2</th>
                                             <th>SUBCAT Level 3</th>
@@ -51,68 +52,30 @@
                                     </thead>
                                     <tbody>
                                         <?php $i = 1;
-                                        foreach ($cron_jobs->result() as $data) { ?>
+                                        foreach ($cron_jobs->result() as $data) {
+                                            if ($data->is_quick == 1) {
+                                                $cat_data = $this->db->get_where('tbl_quickshop_category', array('id' => $data->cat_id))->row();
+                                                $sub_cat_data = $this->db->get_where('tbl_quickshop_subcategory', array('id' => $data->subcat_id))->row();
+                                                $minor_cat_data = $this->db->get_where('tbl_quickshop_minisubcategory', array('id' => $data->mincat_id1))->row();
+                                                $minor_cat_data2 = $this->db->get_where('tbl_quickshop_minisubcategory2', array('id' => $data->mincat_id1))->row();
+                                            } else {
+                                                $cat_data = $this->db->get_where('tbl_category', array('id' => $data->cat_id))->row();
+                                                $sub_cat_data = $this->db->get_where('tbl_sub_category', array('id' => $data->subcat_id))->row();
+                                                $minor_cat_data = $this->db->get_where('tbl_minisubcategory', array('id' => $data->mincat_id1))->row();
+                                                $minor_cat_data2 = $this->db->get_where('tbl_minisubcategory2', array('id' => $data->mincat_id1))->row();
+                                            }
+                                        ?>
                                             <tr>
                                                 <td><?php echo $i ?> </td>
-                                                <td><?php
-                                                    $this->db->select('*');
-                                                    $this->db->from('tbl_category');
-                                                    $this->db->where('id', $data->cat_id);
-                                                    $this->db->where('is_active', 1);
-                                                    $category = $this->db->get()->row();
-
-                                                    if (!empty($category)) {
-                                                        echo $category->name;
+                                                <td><b><? if ($data->is_quick == 1) {
+                                                        echo "QuickShops";
                                                     } else {
-                                                        echo "-";
-                                                    }
-                                                    ?></td>
-                                                <td><?php
-
-                                                    $this->db->select('*');
-                                                    $this->db->from('tbl_sub_category');
-                                                    $this->db->where('id', $data->subcat_id);
-                                                    $this->db->where('is_active', 1);
-                                                    $subcategory = $this->db->get()->row();
-
-                                                    if (!empty($subcategory)) {
-                                                        echo $subcategory->name;
-                                                    } else {
-                                                        echo "-";
-                                                    }
-
-                                                    ?></td>
-
-                                                <td><?php
-
-                                                    $this->db->select('*');
-                                                    $this->db->from('tbl_minisubcategory');
-                                                    $this->db->where('id', $data->mincat_id1);
-                                                    $this->db->where('is_active', 1);
-                                                    $minorsubcategory = $this->db->get()->row();
-
-                                                    if (!empty($minorsubcategory)) {
-                                                        echo $minorsubcategory->name;
-                                                    } else {
-                                                        echo "-";
-                                                    }
-
-                                                    ?></td>
-                                                <td><?php
-
-                                                    $this->db->select('*');
-                                                    $this->db->from('tbl_minisubcategory2');
-                                                    $this->db->where('id', $data->mincat_id2);
-                                                    $this->db->where('is_active', 1);
-                                                    $minorsubcategory2 = $this->db->get()->row();
-
-                                                    if (!empty($minorsubcategory2)) {
-                                                        echo $minorsubcategory2->name;
-                                                    } else {
-                                                        echo "-";
-                                                    }
-
-                                                    ?></td>
+                                                        echo "Normal";
+                                                    } ?></b></td>
+                                                <td><?= $cat_data ? $cat_data->name : '-' ?></td>
+                                                <td><?= $sub_cat_data ? $sub_cat_data->name : '-' ?></td>
+                                                <td><?= $minor_cat_data ? $minor_cat_data->name : '-' ?></td>
+                                                <td><?= $minor_cat_data2 ? $minor_cat_data2->name : '-' ?></td>
 
                                                 <td>
                                                     <?
@@ -135,8 +98,8 @@
                                                     ?>
                                                 </td>
                                                 <? if ($dev == 1) { ?>
-                                                    <td><?=$data->total_products?></td>
-                                                    <td><?=$data->inserted_products?></td>
+                                                    <td><?= $data->total_products ?></td>
+                                                    <td><?= $data->inserted_products ?></td>
                                                 <? } ?>
                                                 <td><?php if ($data->status == 0) { ?>
                                                         <p class="label bg-red">Pending</p>
