@@ -825,14 +825,14 @@ class Products extends CI_finecontrol
                     }
                     //------ if product is serialized -----
                     else {
-                        $html .= '<th scope="col">Series</th>';
-                        $html .= '<th scope="col">Shape</th>';
                         $html .= '<th scope="col">Type</th>';
+                        $html .= '<th scope="col">Shape</th>';
                         $html .= '<th scope="col">Size Ct.</th>';
                         $html .= '<th scope="col">Color</th>';
                         $html .= '<th scope="col">Size</th>';
                         $html .= '<th scope="col">Weight</th>';
                         $html .= '<th scope="col">Price</th>';
+                        // $html .= '<th scope="col">Series</th>';
                     }
                     $html .= '<th scope="col"></th>';
                     $html .= '</tr></thead>';
@@ -876,27 +876,27 @@ class Products extends CI_finecontrol
                                 $cutIndex = array_search("SIZE CT", array_column($values, "Name"));
                                 $colorIndex = array_search("COLOR", array_column($values, "Name"));
                                 $sizeIndex = array_search("SIZE MM", array_column($values, "Name"));
-                                $ctIndex = array_search("SIZE CT", array_column($values, "Name"));
-                                $html .= '<td>' . $item->Product->Id . '</td>';
-                                $html .= '<td>' . $values[$shapeIndex]->DisplayValue . '</td>';
+                                $ctIndex = array_search("CUT", array_column($values, "Name"));
                                 $html .= '<td>' . $values[$typeIndex]->DisplayValue . '</td>';
-                                $html .= '<td>' . $values[$cutIndex]->DisplayValue . '</td>';
+                                $html .= '<td>' . $values[$shapeIndex]->DisplayValue . '</td>';
+                                $html .= '<td>' . $values[$ctIndex]->DisplayValue . '</td>';
                                 $html .= '<td>' . $values[$colorIndex]->DisplayValue . '</td>';
                                 $html .= '<td>' . $values[$sizeIndex]->DisplayValue . '</td>';
-                                $html .= '<td>' . $values[$ctIndex]->DisplayValue . '</td>';
+                                $html .= '<td>' . $item->Product->Weight . '</td>';
                                 $html .= '<td>$' . $item->Product->ShowcasePrice->Value . '</td>';
+                                // $html .= '<td>' . $item->Product->Id . '</td>';
                                 $StoneProductId = $item->Product->Id;
                                 $SerialNumber = '';
                             } else {
                                 //------ if product is serialized and have serialized data-----
-                                $html .= '<td>' . $v->SerialNumber . '</td>';
-                                $html .= '<td>' . $v->Shape . '</td>';
                                 $html .= '<td>' . $v->StoneType . '</td>';
+                                $html .= '<td>' . $v->Shape . '</td>';
                                 $html .= '<td>' . $v->Cut . '</td>';
                                 $html .= '<td>' . $v->ColorDescription . '</td>';
                                 $html .= '<td>' . $v->Measurements . '</td>';
                                 $html .= '<td>' . $v->CaratWeight . '</td>';
                                 $html .= '<td>$' . $item->TotalPrice->Value . '</td>';
+                                // $html .= '<td>' . $v->SerialNumber . '</td>';
                                 $StoneProductId = '';
                                 $SerialNumber = $v->SerialNumber;
                             }
