@@ -814,18 +814,25 @@ class Products extends CI_finecontrol
                     if ($is_serialized == false && !empty($data[0]->Product)) {
                         $headings = $data[0]->Product->DescriptiveElementGroup->DescriptiveElements;
                         foreach ($headings as $head) {
-                            $html .= '<th scope="col">' . $head->Name . '</th>';
+                            if ($head->Name == 'Quality') {
+                                $name = 'Clarity';
+                            } else {
+                                $name = $head->Name;
+                            }
+                            $html .= '<th scope="col">' . $name . '</th>';
                         }
+                        $html .= '<th scope="col">Price</th>';
                     }
                     //------ if product is serialized -----
                     else {
                         $html .= '<th scope="col">Series</th>';
                         $html .= '<th scope="col">Shape</th>';
                         $html .= '<th scope="col">Type</th>';
-                        $html .= '<th scope="col">Cut</th>';
+                        $html .= '<th scope="col">Size Ct.</th>';
                         $html .= '<th scope="col">Color</th>';
                         $html .= '<th scope="col">Size</th>';
                         $html .= '<th scope="col">Weight</th>';
+                        $html .= '<th scope="col">Price</th>';
                     }
                     $html .= '<th scope="col"></th>';
                     $html .= '</tr></thead>';
@@ -838,6 +845,7 @@ class Products extends CI_finecontrol
                     }
                     //------------- START CREATING TABLE LIST ------------
                     foreach ($data as $item) {
+                        // print_r($item);die();
                         //------ if product is non-serialized -----
                         if ($is_serialized == false && !empty($item->Product)) {
                             $html .= '<tr> ';
@@ -845,6 +853,7 @@ class Products extends CI_finecontrol
                             foreach ($values as $v) {
                                 $html .= '<td>' . $v->DisplayValue . '</td>';
                             }
+                            $html .= '<td>$' . $item->TotalPrice->Value . '</td>';
                             $StoneProductId = $item->Product->Id;
                             $SerialNumber = '';
                         } else {
@@ -875,7 +884,7 @@ class Products extends CI_finecontrol
                                 $html .= '<td>' . $values[$colorIndex]->DisplayValue . '</td>';
                                 $html .= '<td>' . $values[$sizeIndex]->DisplayValue . '</td>';
                                 $html .= '<td>' . $values[$ctIndex]->DisplayValue . '</td>';
-
+                                $html .= '<td>$' . $item->Product->ShowcasePrice->Value . '</td>';
                                 $StoneProductId = $item->Product->Id;
                                 $SerialNumber = '';
                             } else {
@@ -887,6 +896,7 @@ class Products extends CI_finecontrol
                                 $html .= '<td>' . $v->ColorDescription . '</td>';
                                 $html .= '<td>' . $v->Measurements . '</td>';
                                 $html .= '<td>' . $v->CaratWeight . '</td>';
+                                $html .= '<td>$' . $item->TotalPrice->Value . '</td>';
                                 $StoneProductId = '';
                                 $SerialNumber = $v->SerialNumber;
                             }
