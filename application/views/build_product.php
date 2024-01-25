@@ -424,7 +424,7 @@ if ($products->is_quick == 1) {
         <div class="col-md-8 mx-auto">
           <div class="product-images demo-gallery">
             <div class="main-img-slider">
-              <? if (!empty($videos[0]->DownloadUrl)) { ?>
+              <? if (!empty($videos[0]->DownloadUrl) && strpos($videos[0]->DownloadUrl, ".mp4") !== false) { ?>
                 <!-- =============== video =============== -->
                 <a data-fancybox="gallery" href="<?= $videos[0]->DownloadUrl ?>">
                   <video width="100%" height="100%" loop autoplay muted>
@@ -439,7 +439,7 @@ if ($products->is_quick == 1) {
             </div>
             <!-- Begin product thumb nav -->
             <ul class="thumb-nav">
-              <? if (!empty($videos[0]->DownloadUrl)) { ?>
+              <? if (!empty($videos[0]->DownloadUrl) && strpos($videos[0]->DownloadUrl, ".mp4") !== false) { ?>
                 <!-- =============== video =============== -->
                 <li><img src="<?= base_url() ?>assets/frontend/play.png"></li>
               <? } ?>

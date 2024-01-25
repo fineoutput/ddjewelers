@@ -450,7 +450,7 @@ $minor2Data = $this->db->get_where('tbl_minisubcategory2', array('id' => $produc
     <!-- ----------- END MAIN SLIDER ------------- -->
     <!-- ----------- START MIDDLE SECTION ------------- -->
     <div class="col-md-5 border-le">
-      <? if (count($stone_data) > 1 && !empty($stone_data[0]->stone) && $stone_data[0]->stone != "NA" && $products->stone != "NA") { ?>
+      <? if (count($stone_data) > 1 && !empty($stone_data[0]->stone) && $stone_data[0]->stone != "N/A" && $products->stone != "N/A") { ?>
         <div class="row">
           <div class="col-md-12">
             <h5>Primary Stone Shape</h5>
@@ -460,7 +460,7 @@ $minor2Data = $this->db->get_where('tbl_minisubcategory2', array('id' => $produc
             <div class=" swiper-container swiper-containericon">
               <div class="swiper-wrapper text-center">
                 <?php foreach ($stone_data as $st) :
-                  if (!empty($st->stone) && $st->stone != "NA") {
+                  if (!empty($st->stone) && $st->stone != "N/A") {
                     if (strtolower($st->stone) == strtolower('ROUND')) {
                       $img = strtolower($products->stone) == strtolower('ROUND') ? 'round_3.png' : 'round_1.png';
                     } else if (strtolower($st->stone) == strtolower('CUSHION')) {
@@ -496,7 +496,7 @@ $minor2Data = $this->db->get_where('tbl_minisubcategory2', array('id' => $produc
             </div>
           </div>
         </div>
-      <? } else if (!empty($stone_data[0]->stone && $stone_data[0]->stone != "NA")) { ?>
+      <? } else if (!empty($stone_data[0]->stone && $stone_data[0]->stone != "N/A")) { ?>
         <div class="d-flex jus_cont">
           <p><b>Primary Stone</b></p>
           <p><?= $stone_data[0]->stone ?></p>
