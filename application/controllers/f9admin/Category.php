@@ -639,8 +639,8 @@ class Category extends CI_finecontrol
         $zapak = $this->db->update('tbl_category', $data_update);
         if ($zapak != 0) {
           if (!empty($img)) {
-            $path = FCPATH . $img;
-            unlink($path);
+            // $path = FCPATH . $img;
+            // unlink($path);
           }
 
           redirect("dcadmin/category/view_category", "refresh");

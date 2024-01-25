@@ -30,9 +30,9 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.3.5/jquery.fancybox.min.css">
   <!-- <link rel="stylesheet" href="https://www.insightindia.com/mcss/icon-font.css"> -->
-<!-- Add these links in your HTML head section -->
-<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
-<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+  <!-- Add these links in your HTML head section -->
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
+  <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
 
 </head>
 <style>
@@ -44,12 +44,15 @@
   #menu ul:hover {
     display: block !important;
   }
-.swiper-backface-hidden .swiper-slide{
+
+  .swiper-backface-hidden .swiper-slide {
     margin-right: 20px !important;
   }
+
   .swiper-backface-hidden .swiper-slide a p.h6 {
     font-size: 13px;
-}
+  }
+
   .center {
     display: flex;
     justify-content: center;
@@ -61,14 +64,17 @@
     background-color: #fff;
     z-index: 9999;
   }
+
   .swiper-slide a img.img-responsive.small_mob {
     width: 54%;
-}
-@media(max-width:767px){
-  .swiper-slide a img.img-responsive.small_mob {
-    width: 100%;
-}
-}
+  }
+
+  @media(max-width:767px) {
+    .swiper-slide a img.img-responsive.small_mob {
+      width: 100%;
+    }
+  }
+
   .loader {
     border: 16px solid #f3f3f3;
     border-top: 16px solid #1A2F64;
@@ -346,24 +352,24 @@
           </div>
           <div class="col-md-4 d-none d-lg-block">
             <!-- d-none d-lg-block -->
-            <a href="<?= base_url(); ?>Home/index">
-              <div class="col-md-12 text-center">
-                <img src="<?= base_url() ?>assets/jewel\img\dd_logo.png" class="" style="width:40%" />
-                <!-- assets\jewel\img\dd.jewelplus.com_Website_Latest_-removebg-preview.png -->
-              </div>
-              <!-- <h4 class=" text-center">D&D Jewelry</h4>
+            <div class="col-md-12 text-center">
+              <a href="<?= base_url(); ?>Home/index">
+
+                <img src="<?= base_url() ?>assets/jewel\img\dd_logo.png" class="" style="width:40%" /></a>
+              <!-- assets\jewel\img\dd.jewelplus.com_Website_Latest_-removebg-preview.png -->
+            </div>
+            <!-- <h4 class=" text-center">D&D Jewelry</h4>
               <div class="text-center">
                   <h6>Since 1985</h6>
               </div> -->
-            </a>
           </div>
           <div class="col-4 lardis ">
             <!-- d-none d-lg-block -->
-            <a href="<?= base_url(); ?>Home/index">
-              <div class=" text-center">
+            <div class=" text-center">
+              <a href="<?= base_url(); ?>Home/index">
                 <img src="<?= base_url() ?>assets/jewel\img\dd_logo.png" class="" style="width:100px" />
-              </div>
-            </a>
+              </a>
+            </div>
           </div>
           <div class="col-4 lardis align-self-center" style="margin:0;padding:0px;justify-content: end; text-align: right;">
             <a href="#!" role="button" onclick="mobSearch()" style="padding-right:7px;">

@@ -618,8 +618,8 @@ class Sub_category extends CI_finecontrol
 
         if ($zapak != 0) {
           if (!empty($img)) {
-            $path = FCPATH . $img;
-            unlink($path);
+            // $path = FCPATH . $img;
+            // unlink($path);
           }
           redirect("dcadmin/sub_category/view_sub_category", "refresh");
         } else {

@@ -402,10 +402,10 @@ $minor2Data = $this->db->get_where('tbl_minisubcategory2', array('id' => $produc
     <!-- ----------- START MAIN SLIDER ------------- -->
     <div class="col-md-4">
       <section id="detail">
-        <div class="col-md-12 mx-auto">
+        <div class="col-md-8 mx-auto">
           <div class="product-images demo-gallery">
             <div class="main-img-slider">
-              <? if (!empty($videos[0]->DownloadUrl)) { ?>
+              <? if (!empty($videos[0]->DownloadUrl) && strpos($videos[0]->DownloadUrl, ".mp4") !== false) { ?>
                 <!-- =============== video =============== -->
                 <a data-fancybox="gallery" href="<?= $videos[0]->DownloadUrl ?>">
                   <video width="100%" height="100%" loop autoplay muted>
@@ -420,7 +420,7 @@ $minor2Data = $this->db->get_where('tbl_minisubcategory2', array('id' => $produc
             </div>
             <!-- Begin product thumb nav -->
             <ul class="thumb-nav">
-              <? if (!empty($videos[0]->DownloadUrl)) { ?>
+              <? if (!empty($videos[0]->DownloadUrl) && strpos($videos[0]->DownloadUrl, ".mp4") !== false) { ?>
                 <!-- =============== video =============== -->
                 <li><img src="<?= base_url() ?>assets/frontend/play.png"></li>
               <? } ?>
@@ -450,7 +450,7 @@ $minor2Data = $this->db->get_where('tbl_minisubcategory2', array('id' => $produc
     <!-- ----------- END MAIN SLIDER ------------- -->
     <!-- ----------- START MIDDLE SECTION ------------- -->
     <div class="col-md-5 border-le">
-      <? if (count($stone_data) > 1 && !empty($stone_data[0]->stone)) { ?>
+      <? if (count($stone_data) > 1 && !empty($stone_data[0]->stone) && $stone_data[0]->stone != "NA" && $products->stone != "NA") { ?>
         <div class="row">
           <div class="col-md-12">
             <h5>Primary Stone Shape</h5>
@@ -460,41 +460,43 @@ $minor2Data = $this->db->get_where('tbl_minisubcategory2', array('id' => $produc
             <div class=" swiper-container swiper-containericon">
               <div class="swiper-wrapper text-center">
                 <?php foreach ($stone_data as $st) :
-                  if (strtolower($st->stone) == strtolower('ROUND')) {
-                    $img = strtolower($products->stone) == strtolower('ROUND') ? 'round_3.png' : 'round_1.png';
-                  } else if (strtolower($st->stone) == strtolower('CUSHION')) {
-                    $img = strtolower($products->stone) == strtolower('CUSHION') ? 'cushion_3.png' : 'cushion_1.png';
-                  } else if (strtolower($st->stone) == strtolower('OVAL')) {
-                    $img = strtolower($products->stone) == strtolower('OVAL') ? 'oval_3.png' : 'oval_1.png';
-                  } else if (strtolower($st->stone) == strtolower('EMERALD')) {
-                    $img = strtolower($products->stone) == strtolower('EMERALD') ? 'emerald_3.png' : 'emerald_1.png';
-                  } else if (strtolower($st->stone) == strtolower('SQUARE')) {
-                    $img = strtolower($products->stone) == strtolower('SQUARE') ? 'square_3.png' : 'square_1.png';
-                  } else if (strtolower($st->stone) == strtolower('PEAR SHAPE')) {
-                    $img = strtolower($products->stone) == strtolower('PEAR SHAPE') ? 'pear_3.png' : 'pear_1.png';
-                  } else if (strtolower($st->stone) == strtolower('ASSCHER')) {
-                    $img = strtolower($products->stone) == strtolower('ASSCHER') ? 'asscher_3.png' : 'asscher_1.png';
-                  } else if (strtolower($st->stone) == strtolower('MARQUISE')) {
-                    $img = strtolower($products->stone) == strtolower('MARQUISE') ? 'marquise_3.png' : 'marquise_1.png';
-                  } else if (strtolower($st->stone) == strtolower('HEART SHAPE')) {
-                    $img = strtolower($products->stone) == strtolower('HEART SHAPE') ? 'heart_3.png' : 'heart_1.png';
-                  } else {
-                    $img = "";
-                  }
+                  if (!empty($st->stone) && $st->stone != "NA") {
+                    if (strtolower($st->stone) == strtolower('ROUND')) {
+                      $img = strtolower($products->stone) == strtolower('ROUND') ? 'round_3.png' : 'round_1.png';
+                    } else if (strtolower($st->stone) == strtolower('CUSHION')) {
+                      $img = strtolower($products->stone) == strtolower('CUSHION') ? 'cushion_3.png' : 'cushion_1.png';
+                    } else if (strtolower($st->stone) == strtolower('OVAL')) {
+                      $img = strtolower($products->stone) == strtolower('OVAL') ? 'oval_3.png' : 'oval_1.png';
+                    } else if (strtolower($st->stone) == strtolower('EMERALD')) {
+                      $img = strtolower($products->stone) == strtolower('EMERALD') ? 'emerald_3.png' : 'emerald_1.png';
+                    } else if (strtolower($st->stone) == strtolower('SQUARE')) {
+                      $img = strtolower($products->stone) == strtolower('SQUARE') ? 'square_3.png' : 'square_1.png';
+                    } else if (strtolower($st->stone) == strtolower('PEAR SHAPE')) {
+                      $img = strtolower($products->stone) == strtolower('PEAR SHAPE') ? 'pear_3.png' : 'pear_1.png';
+                    } else if (strtolower($st->stone) == strtolower('ASSCHER')) {
+                      $img = strtolower($products->stone) == strtolower('ASSCHER') ? 'asscher_3.png' : 'asscher_1.png';
+                    } else if (strtolower($st->stone) == strtolower('MARQUISE')) {
+                      $img = strtolower($products->stone) == strtolower('MARQUISE') ? 'marquise_3.png' : 'marquise_1.png';
+                    } else if (strtolower($st->stone) == strtolower('HEART SHAPE')) {
+                      $img = strtolower($products->stone) == strtolower('HEART SHAPE') ? 'heart_3.png' : 'heart_1.png';
+                    } else {
+                      $img = "";
+                    }
                 ?>
-                  <div class="swiper-slide">
-                    <a href="<?= base_url() ?>Home/product_details/<?= $products->series_id ?>/<?= $st->pro_id ?>?groupId=<?= $products->group_id ?>"><img src="<?= base_url() ?>assets\jewel\img\stone_shape\<?= $img ?>" style="width:70%;" class="img-fluid Stone_Shape_img">
-                      <p class="h6"><?= $st->stone ?></p>
-                    </a>
-                  </div>
-                <?php endforeach; ?>
+                    <div class="swiper-slide">
+                      <a href="<?= base_url() ?>Home/product_details/<?= $products->series_id ?>/<?= $st->pro_id ?>?groupId=<?= $products->group_id ?>"><img src="<?= base_url() ?>assets\jewel\img\stone_shape\<?= $img ?>" style="width:70%;" class="img-fluid Stone_Shape_img">
+                        <p class="h6"><?= $st->stone ?></p>
+                      </a>
+                    </div>
+                <?php }
+                endforeach; ?>
               </div>
               <div class="swiper-button-next arrow-1"></div>
               <div class="swiper-button-prev arrow-1"></div>
             </div>
           </div>
         </div>
-      <? } else if (!empty($stone_data[0]->stone)) { ?>
+      <? } else if (!empty($stone_data[0]->stone && $stone_data[0]->stone != "NA")) { ?>
         <div class="d-flex jus_cont">
           <p><b>Primary Stone</b></p>
           <p><?= $stone_data[0]->stone ?></p>
@@ -518,7 +520,7 @@ $minor2Data = $this->db->get_where('tbl_minisubcategory2', array('id' => $produc
           <? }
         } else if ($key == 'Quality') { ?>
           <div class="d-flex jus_cont">
-            <p><b><?php echo $key; ?></b></p>
+            <p><b>Quality</b></p>
             <select class="w-100 " id="<?php echo $key; ?>" name="<?php echo $key; ?>">
               <?php
               $quality = '';

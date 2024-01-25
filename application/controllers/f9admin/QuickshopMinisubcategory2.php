@@ -433,8 +433,8 @@ class QuickshopMinisubcategory2 extends CI_finecontrol
 
         $zapak = $this->db->delete('tbl_quickshop_minisubcategory2', array('id' => $id));
         if ($zapak != 0) {
-          $path = FCPATH . $img;
-          unlink($path);
+          // $path = FCPATH . $img;
+          // unlink($path);
           redirect("dcadmin/QuickshopMinisubcategory2/view_minor_subcategory2", "refresh");
         } else {
           $this->session->set_flashdata('emessage', 'Sorry error occured');
@@ -486,8 +486,8 @@ class QuickshopMinisubcategory2 extends CI_finecontrol
 
         if ($zapak != 0) {
           if (!empty($img)) {
-            $path = FCPATH . $img;
-            unlink($path);
+            // $path = FCPATH . $img;
+            // unlink($path);
           }
           redirect("dcadmin/QuickshopMinisubcategory2/view_minor_subcategory2", "refresh");
         } else {

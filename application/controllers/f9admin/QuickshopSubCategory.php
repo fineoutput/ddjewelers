@@ -390,8 +390,8 @@ if(!empty($img)) { if(empty($nnnn2)){ $nnnn2 = $img; } }else{ if(empty($nnnn2)){
 
  $zapak=$this->db->delete('tbl_quickshop_subcategory', array('id' => $id));
  if($zapak!=0){
-        $path = FCPATH .$img;
-          unlink($path);
+        // $path = FCPATH .$img;
+        //   unlink($path);
         redirect("dcadmin/QuickshopSubCategory/view_sub_category","refresh");
                 }
                 else
@@ -450,8 +450,8 @@ if(!empty($img)) { if(empty($nnnn2)){ $nnnn2 = $img; } }else{ if(empty($nnnn2)){
 
       if($zapak!=0){
           if(!empty($img)){
-              $path = FCPATH .$img;
-              unlink($path);
+              // $path = FCPATH .$img;
+              // unlink($path);
           }
       redirect("dcadmin/QuickshopSubCategory/view_sub_category","refresh");
          }

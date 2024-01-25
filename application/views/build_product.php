@@ -421,7 +421,7 @@ if ($products->is_quick == 1) {
     <!-- ----------- START MAIN SLIDER ------------- -->
     <div class="col-md-4">
       <section id="detail">
-        <div class="col-md-12 mx-auto">
+        <div class="col-md-8 mx-auto">
           <div class="product-images demo-gallery">
             <div class="main-img-slider">
               <? if (!empty($videos[0]->DownloadUrl)) { ?>
@@ -469,7 +469,7 @@ if ($products->is_quick == 1) {
     <!-- ----------- END MAIN SLIDER ------------- -->
     <!-- ----------- START MIDDLE SECTION ------------- -->
     <div class="col-md-5 border-le">
-      <? if (count($stone_data) > 1 && !empty($stone_data[0]->stone)) { ?>
+      <? if (count($stone_data) > 1 && !empty($stone_data[0]->stone) && $stone_data[0]->stone != "NA" && $products->stone != "NA") { ?>
         <div class="row">
           <div class="col-md-12">
             <h5>Primary Stone Shape</h5>
@@ -479,41 +479,43 @@ if ($products->is_quick == 1) {
             <div class=" swiper-container swiper-containericon">
               <div class="swiper-wrapper text-center">
                 <?php foreach ($stone_data as $st) :
-                  if (strtolower($st->stone) == strtolower('ROUND')) {
-                    $img = strtolower($products->stone) == strtolower('ROUND') ? 'round_3.png' : 'round_1.png';
-                  } else if (strtolower($st->stone) == strtolower('CUSHION')) {
-                    $img = strtolower($products->stone) == strtolower('CUSHION') ? 'cushion_3.png' : 'cushion_1.png';
-                  } else if (strtolower($st->stone) == strtolower('OVAL')) {
-                    $img = strtolower($products->stone) == strtolower('OVAL') ? 'oval_3.png' : 'oval_1.png';
-                  } else if (strtolower($st->stone) == strtolower('EMERALD')) {
-                    $img = strtolower($products->stone) == strtolower('EMERALD') ? 'emerald_3.png' : 'emerald_1.png';
-                  } else if (strtolower($st->stone) == strtolower('SQUARE')) {
-                    $img = strtolower($products->stone) == strtolower('SQUARE') ? 'square_3.png' : 'square_1.png';
-                  } else if (strtolower($st->stone) == strtolower('PEAR SHAPE')) {
-                    $img = strtolower($products->stone) == strtolower('PEAR SHAPE') ? 'pear_3.png' : 'pear_1.png';
-                  } else if (strtolower($st->stone) == strtolower('ASSCHER')) {
-                    $img = strtolower($products->stone) == strtolower('ASSCHER') ? 'asscher_3.png' : 'asscher_1.png';
-                  } else if (strtolower($st->stone) == strtolower('MARQUISE')) {
-                    $img = strtolower($products->stone) == strtolower('MARQUISE') ? 'marquise_3.png' : 'marquise_1.png';
-                  } else if (strtolower($st->stone) == strtolower('HEART SHAPE')) {
-                    $img = strtolower($products->stone) == strtolower('HEART SHAPE') ? 'heart_3.png' : 'heart_1.png';
-                  } else {
-                    $img = "";
-                  }
+                  if (!empty($st->stone) && $st->stone != "NA") {
+                    if (strtolower($st->stone) == strtolower('ROUND')) {
+                      $img = strtolower($products->stone) == strtolower('ROUND') ? 'round_3.png' : 'round_1.png';
+                    } else if (strtolower($st->stone) == strtolower('CUSHION')) {
+                      $img = strtolower($products->stone) == strtolower('CUSHION') ? 'cushion_3.png' : 'cushion_1.png';
+                    } else if (strtolower($st->stone) == strtolower('OVAL')) {
+                      $img = strtolower($products->stone) == strtolower('OVAL') ? 'oval_3.png' : 'oval_1.png';
+                    } else if (strtolower($st->stone) == strtolower('EMERALD')) {
+                      $img = strtolower($products->stone) == strtolower('EMERALD') ? 'emerald_3.png' : 'emerald_1.png';
+                    } else if (strtolower($st->stone) == strtolower('SQUARE')) {
+                      $img = strtolower($products->stone) == strtolower('SQUARE') ? 'square_3.png' : 'square_1.png';
+                    } else if (strtolower($st->stone) == strtolower('PEAR SHAPE')) {
+                      $img = strtolower($products->stone) == strtolower('PEAR SHAPE') ? 'pear_3.png' : 'pear_1.png';
+                    } else if (strtolower($st->stone) == strtolower('ASSCHER')) {
+                      $img = strtolower($products->stone) == strtolower('ASSCHER') ? 'asscher_3.png' : 'asscher_1.png';
+                    } else if (strtolower($st->stone) == strtolower('MARQUISE')) {
+                      $img = strtolower($products->stone) == strtolower('MARQUISE') ? 'marquise_3.png' : 'marquise_1.png';
+                    } else if (strtolower($st->stone) == strtolower('HEART SHAPE')) {
+                      $img = strtolower($products->stone) == strtolower('HEART SHAPE') ? 'heart_3.png' : 'heart_1.png';
+                    } else {
+                      $img = "";
+                    }
                 ?>
-                  <div class="swiper-slide">
-                    <a href="<?= base_url() ?>Home/product_details/<?= $products->series_id ?>/<?= $st->pro_id ?>?groupId=<?= $products->group_id ?>"><img src="<?= base_url() ?>assets\jewel\img\stone_shape\<?= $img ?>" style="width:70%;" class="img-fluid Stone_Shape_img">
-                      <p class="h6"><?= $st->stone ?></p>
-                    </a>
-                  </div>
-                <?php endforeach; ?>
+                    <div class="swiper-slide">
+                      <a href="<?= base_url() ?>Home/product_details/<?= $products->series_id ?>/<?= $st->pro_id ?>?groupId=<?= $products->group_id ?>"><img src="<?= base_url() ?>assets\jewel\img\stone_shape\<?= $img ?>" style="width:70%;" class="img-fluid Stone_Shape_img">
+                        <p class="h6"><?= $st->stone ?></p>
+                      </a>
+                    </div>
+                <?php }
+                endforeach; ?>
               </div>
               <div class="swiper-button-next "></div>
               <div class="swiper-button-prev "></div>
             </div>
           </div>
         </div>
-      <? } else if (!empty($stone_data[0]->stone)) { ?>
+      <? } else if (!empty($stone_data[0]->stone && $stone_data[0]->stone != "NA")) { ?>
         <div class="d-flex jus_cont">
           <p><b>Primary Stone</b></p>
           <p><?= $stone_data[0]->stone ?></p>
@@ -531,7 +533,7 @@ if ($products->is_quick == 1) {
       <?php
       $index = 0;
       foreach ($options as  $key => $uniqueOptions) :
-        $excludedKeys = ['Series', 'Description', 'Primary Stone Shape'];
+        $excludedKeys = ['Series', 'Description', 'Primary Stone Shape','Clarity, Color :: CTW','SERIES'];
         if (in_array($key, $excludedKeys)) {
           $index++;
           continue;
@@ -546,7 +548,7 @@ if ($products->is_quick == 1) {
           <? }
         } else if ($key == 'Quality') { ?>
           <div class="d-flex jus_cont">
-            <p><b><?php echo $key; ?></b></p>
+            <p><b>Metal</b></p>
             <select class="w-100 " id="<?php echo $key; ?>" name="<?php echo $key; ?>">
               <?php
               $quality = '';
@@ -622,7 +624,7 @@ if ($products->is_quick == 1) {
       <?php $index++;
       endforeach; ?>
       <!-- ----------------- START RING SIZE DROPDOWN ------------ -->
-      <? if ($products->ring_sizable) { ?>
+      <? if ($products->ring_sizable && !empty($ring_size)) { ?>
         <div class="d-flex jus_cont">
           <p><b>Ring Size</b></p>
           <select class="w-100" id="Ring Size" name="Ring_Size">
@@ -1238,16 +1240,28 @@ if ($products->is_quick == 1) {
     //---- types
     categories.map(function(category) {
       // if (category.CategoryName != 'Imitation' && category.CategoryName != 'Natural') {
+      if (category.CategoryName == "Notable Gems") {
+        var SName = "Natural Gems";
+      } else if (category.CategoryName == "Diamonds with Grading Report") {
+        var SName = "Diamonds with Certificate";
+      } else if (category.CategoryName == "Diamonds without Grading Report") {
+        var SName = "Diamonds without Certificate";
+      } else if (category.CategoryName == "Lab-Grown") {
+        var SName = "Lab-Grown Diamonds";
+      } else {
+        var SName = category.CategoryName;
+      }
       var colDiv = document.createElement('div');
       colDiv.className = 'col-md-3';
       var buttonElement = document.createElement('button');
       buttonElement.className = 'btn btn-light';
-      buttonElement.textContent = category.CategoryName;
+      buttonElement.textContent = SName;
       buttonElement.style.width = '100%';
       buttonElement.style.borderColor = '#797979';
       buttonElement.setAttribute('data-modelId', modelId);
       buttonElement.setAttribute('data-Location', LocationNumber);
       buttonElement.setAttribute('data-StoneFamily', name);
+      buttonElement.setAttribute('data-ShowName', SName);
       buttonElement.setAttribute('data-stoneCategory', category.CategoryName);
       buttonElement.setAttribute('data-IsSerialized', category.IsSerialized);
       buttonElement.setAttribute('data-group-count', group_count);
@@ -1275,6 +1289,7 @@ if ($products->is_quick == 1) {
     var stoneCategory = obj.getAttribute('data-stoneCategory');
     var group_count = obj.getAttribute('data-group-count');
     var is_serialized = obj.getAttribute('data-IsSerialized');
+    var ShowName = obj.getAttribute('data-ShowName');
     $.ajax({
       url: "<?= base_url() ?>dcadmin/Products/SearchStone",
       method: "POST",
@@ -1285,6 +1300,7 @@ if ($products->is_quick == 1) {
         stoneCategory: stoneCategory,
         group_count: group_count,
         is_serialized: is_serialized,
+        ShowName: ShowName,
       },
       dataType: 'json',
       success: function(response) {

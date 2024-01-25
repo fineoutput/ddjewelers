@@ -358,8 +358,8 @@ class QuickshopCategory extends CI_finecontrol
 
         $zapak = $this->db->delete('tbl_quickshop_category', array('id' => $id));
         if ($zapak != 0) {
-          $path = FCPATH . $img;
-          unlink($path);
+          // $path = FCPATH . $img;
+          // unlink($path);
           redirect("dcadmin/QuickshopCategory/view_category", "refresh");
         } else {
           $this->session->set_flashdata('emessage', 'Sorry error occured');
@@ -410,8 +410,8 @@ class QuickshopCategory extends CI_finecontrol
         $zapak = $this->db->update('tbl_quickshop_category', $data_update);
         if ($zapak != 0) {
           if (!empty($img)) {
-            $path = FCPATH . $img;
-            unlink($path);
+            // $path = FCPATH . $img;
+            // unlink($path);
           }
           redirect("dcadmin/QuickshopCategory/view_category", "refresh");
         } else {

@@ -831,10 +831,11 @@ class Home extends CI_Controller
 
             if ($this->form_validation->run() == TRUE) {
                 $string_main = $this->input->post('search_input');
+                $string = str_replace('SLR-', '', $string_main);
                 $product_data = $this->db->select('id,pro_id,series_id,group_id,search_values')
                     ->from('tbl_products')
                     ->limit(1)
-                    ->where("JSON_SEARCH(search_values, 'one', '$string_main') IS NOT NULL", null, false)
+                    ->where("JSON_SEARCH(search_values, 'one', '$string') IS NOT NULL", null, false)
                     ->get()->row();
                 $data['search_string'] = $string_main;
                 if (!empty($product_data)) {
@@ -1308,8 +1309,10 @@ class Home extends CI_Controller
         foreach ($product_data as $product) {
             $jsonData = json_decode($product->elements, true);
             foreach ($jsonData as $index => $element) {
+                // echo $element['DisplayValue'];
                 $key = $element['Name'];
                 $value = $element['DisplayValue'];
+
                 // Collect unique options for each key
                 if (!isset($options[$key])) {
                     $options[$key] = [];
@@ -1324,6 +1327,15 @@ class Home extends CI_Controller
                     } else {
                         $selected = "";
                     }
+                    // if ($value == 'NA' && !empty($selected)) {
+                    //     continue;
+                    // }
+                    if ($value == 'N/A' && !empty($selected)) {
+                        continue;
+                    }
+                    if ($value == 'N/A' && empty($selected)) {
+                        continue;
+                    }
                     $options[$key][] = [
                         'DisplayValue' => $value,
                         'selected' => $selected,
@@ -1332,12 +1344,15 @@ class Home extends CI_Controller
                 }
             }
         }
+
         // Sort options in ascending order
         foreach ($options as &$option) {
             usort($option, function ($a, $b) {
                 return strcmp($a['DisplayValue'], $b['DisplayValue']);
             });
         }
+        // print_r($options);
+        // die();
         //---- CALCULATE PRICE -------
         $r_data = json_decode($data['products']->ring_size_data, true);
         $sizePrice = 0;

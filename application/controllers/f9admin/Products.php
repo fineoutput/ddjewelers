@@ -766,6 +766,7 @@ class Products extends CI_finecontrol
             $this->form_validation->set_rules('stoneCategory', 'stoneCategory', 'required|xss_clean|trim');
             $this->form_validation->set_rules('group_count', 'group_count', 'required|xss_clean|trim');
             $this->form_validation->set_rules('is_serialized', 'is_serialized', 'required|xss_clean|trim');
+            $this->form_validation->set_rules('ShowName', 'ShowName', 'required|xss_clean|trim');
             if ($this->form_validation->run() == true) {
                 $modelID = $this->input->post('modelID');
                 $LocationNumber = $this->input->post('LocationNumber');
@@ -773,6 +774,7 @@ class Products extends CI_finecontrol
                 $stoneCategory = $this->input->post('stoneCategory');
                 $group_count = $this->input->post('group_count');
                 $is_serialized = $this->input->post('is_serialized');
+                $ShowName = $this->input->post('ShowName');
                 //-------- Start get search stone  curl ------------
                 $curl = curl_init();
                 curl_setopt_array($curl, array(
@@ -800,7 +802,7 @@ class Products extends CI_finecontrol
                 //-------- START CREATING STONE LIST TABLE ------------
                 $count = count($data);
                 $html = "<div class='w-100 text-right'><button onclick='setStonesTableBtn()' class='btn' style='border-color: #797979;'>Back</button></div>"; //--back button
-                $html .= '<h6 class="mt-3">Results - ' . $stoneCategory . ' (' . $count . ')</h6>';
+                $html .= '<h6 class="mt-3">Results - ' . $ShowName . ' (' . $count . ')</h6>';
                 $html .= '<div class="row mt-3">';
                 $html .= '<div class="table-responsive" style="height: 400px !important;
                 overflow: scroll;">';
