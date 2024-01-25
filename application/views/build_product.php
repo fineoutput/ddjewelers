@@ -533,12 +533,12 @@ if ($products->is_quick == 1) {
       <?php
       $index = 0;
       foreach ($options as  $key => $uniqueOptions) :
-        $excludedKeys = ['Series', 'Description', 'Primary Stone Shape','Clarity, Color :: CTW','SERIES'];
+        $excludedKeys = ['Series', 'Description', 'Primary Stone Shape', 'Clarity, Color :: CTW', 'SERIES'];
         if (in_array($key, $excludedKeys)) {
           $index++;
           continue;
         }
-        if (count($uniqueOptions) <= 1) {
+        if (!empty($uniqueOptions) && count($uniqueOptions) <= 1) {
           if ($uniqueOptions[0]['DisplayValue'] != 'N/A' && !empty($uniqueOptions[0]['DisplayValue'])) {
       ?>
             <div class="d-flex jus_cont">

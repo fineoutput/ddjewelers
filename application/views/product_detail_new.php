@@ -510,7 +510,7 @@ $minor2Data = $this->db->get_where('tbl_minisubcategory2', array('id' => $produc
           $index++;
           continue;
         }
-        if (count($uniqueOptions) <= 1) {
+        if (!empty($uniqueOptions) && count($uniqueOptions) <= 1) {
           if ($uniqueOptions[0]['DisplayValue'] != 'N/A' && !empty($uniqueOptions[0]['DisplayValue'])) {
       ?>
             <div class="d-flex jus_cont">
