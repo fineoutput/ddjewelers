@@ -604,7 +604,7 @@ if ($products->is_quick == 1) {
               <p style="color: #547f9e; font-size: 0.8rem;"><?= $extra ?></p>
             </div>
           <? } ?>
-        <? } else { ?>
+        <? } else if (!empty($uniqueOptions)) { ?>
           <div class="d-flex jus_cont">
             <p><b><?php echo $key; ?></b></p>
             <select class="w-100" id="<?php echo $key; ?>" name="<?php echo $key; ?>">
