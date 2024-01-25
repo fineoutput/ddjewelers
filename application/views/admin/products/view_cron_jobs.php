@@ -48,6 +48,9 @@
                                                 <th>Inserted Products</th>
                                             <? } ?>
                                             <th>Status</th>
+                                            <? if ($dev == 1) { ?>
+                                                <th>Action</th>
+                                            <? } ?>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -68,10 +71,10 @@
                                             <tr>
                                                 <td><?php echo $i ?> </td>
                                                 <td><b><? if ($data->is_quick == 1) {
-                                                        echo "QuickShops";
-                                                    } else {
-                                                        echo "Normal";
-                                                    } ?></b></td>
+                                                            echo "QuickShops";
+                                                        } else {
+                                                            echo "Normal";
+                                                        } ?></b></td>
                                                 <td><?= $cat_data ? $cat_data->name : '-' ?></td>
                                                 <td><?= $sub_cat_data ? $sub_cat_data->name : '-' ?></td>
                                                 <td><?= $minor_cat_data ? $minor_cat_data->name : '-' ?></td>
@@ -110,7 +113,22 @@
                                                         <p class="label bg-green">Completed</p>
                                                     <? } ?>
                                                 </td>
+                                                <? if ($dev == 1) { ?>
+                                                    <td>
+                                                        <?php if ($data->status == 0) { ?>
+                                                            <a href="javascript:;" class="dCnf" mydata="<?php echo $i ?>"> <button type="button" class="btn btn-default">Delete</button></a>
+                                                        <?php } else { ?>
+                                                            NA
+                                                        <? } ?>
+                                                        <div style="display:none" id="cnfbox<?php echo $i ?>">
+                                                            <p> Are you sure delete this </p>
+                                                            <a href="<?php echo base_url() ?>dcadmin/Products/delete_cron_jon/<?php echo base64_encode($data->id); ?>" class="btn btn-danger">Yes</a>
+                                                            <a href="javasript:;" class="cans btn btn-default" mydatas="<?php echo $i ?>">No</a>
+                                                        </div>
+                                                    </td>
+                                                <? } ?>
                                             </tr>
+
                                         <?php $i++;
                                         } ?>
                                     </tbody>

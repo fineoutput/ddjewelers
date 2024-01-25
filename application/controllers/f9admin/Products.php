@@ -556,6 +556,33 @@ class Products extends CI_finecontrol
         }
     }
     //============================= END VIEW PRODUCT CRON JOB==========================
+    //============================= START DELETE CRON JOB ==========================
+    public function delete_cron_jon($idd)
+    {
+        if (!empty($this->session->userdata('admin_data'))) {
+            $data['user_name'] = $this->load->get_var('user_name');
+            $id = base64_decode($idd);
+            if ($this->load->get_var('position') == "Super Admin") {
+                $zapak = $this->db->delete('tbl_cron_jobs', array('id' => $id));
+                if ($zapak != 0) {
+                    $this->session->set_flashdata('smessage', 'Successfully deleted');
+                    redirect($_SERVER['HTTP_REFERER']);
+                } else {
+                    $this->session->set_flashdata('emessage', 'Some error occurred');
+                    redirect($_SERVER['HTTP_REFERER']);
+                }
+            } else {
+                $this->session->set_flashdata('emessage', 'Sorry You Do not Have Permission To Delete Anything.');
+                redirect($_SERVER['HTTP_REFERER']);
+            }
+        } else {
+
+            $this->load->view('admin/login/index');
+        }
+    }
+    //============================= END DELETE CRON JOB ==========================
+
+
 
     //============================= START GET AJAX SUBCATEGORY ==========================
     public function getSub_category()
