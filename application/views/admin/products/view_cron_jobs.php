@@ -60,12 +60,12 @@
                                                 $cat_data = $this->db->get_where('tbl_quickshop_category', array('id' => $data->cat_id))->row();
                                                 $sub_cat_data = $this->db->get_where('tbl_quickshop_subcategory', array('id' => $data->subcat_id))->row();
                                                 $minor_cat_data = $this->db->get_where('tbl_quickshop_minisubcategory', array('id' => $data->mincat_id1))->row();
-                                                $minor_cat_data2 = $this->db->get_where('tbl_quickshop_minisubcategory2', array('id' => $data->mincat_id1))->row();
+                                                $minor_cat_data2 = $this->db->get_where('tbl_quickshop_minisubcategory2', array('id' => $data->mincat_id2))->row();
                                             } else {
                                                 $cat_data = $this->db->get_where('tbl_category', array('id' => $data->cat_id))->row();
                                                 $sub_cat_data = $this->db->get_where('tbl_sub_category', array('id' => $data->subcat_id))->row();
                                                 $minor_cat_data = $this->db->get_where('tbl_minisubcategory', array('id' => $data->mincat_id1))->row();
-                                                $minor_cat_data2 = $this->db->get_where('tbl_minisubcategory2', array('id' => $data->mincat_id1))->row();
+                                                $minor_cat_data2 = $this->db->get_where('tbl_minisubcategory2', array('id' => $data->mincat_id2))->row();
                                             }
                                         ?>
                                             <tr>
