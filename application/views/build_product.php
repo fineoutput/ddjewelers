@@ -4,6 +4,7 @@
   .vodiapicker {
     display: none;
   }
+  
 
   .sorting {
     font-size: 12px !important;
@@ -347,6 +348,19 @@
   .main-img-slider.slick-initialized.slick-slider .slick-prev.slick-arrow {
     display: none !important;
   }
+
+  .top-slider-image{
+    width: 70% !important;
+  }
+  @media(max-width:1014px){
+    .top-slider-image{
+    width: 100% !important;
+  }
+  .slider-main-box {
+    margin-right: 20px !important;
+    width: 15% !important;
+}
+  }
 </style>
 
 <?
@@ -502,8 +516,8 @@ if ($products->is_quick == 1) {
                       $img = "";
                     }
                 ?>
-                    <div class="swiper-slide">
-                      <a href="<?= base_url() ?>Home/product_details/<?= $products->series_id ?>/<?= $st->pro_id ?>?groupId=<?= $products->group_id ?>"><img src="<?= base_url() ?>assets\jewel\img\stone_shape\<?= $img ?>" style="width:70%;" class="img-fluid Stone_Shape_img">
+                    <div class="swiper-slide slider-main-box">
+                      <a href="<?= base_url() ?>Home/product_details/<?= $products->series_id ?>/<?= $st->pro_id ?>?groupId=<?= $products->group_id ?>"><img src="<?= base_url() ?>assets\jewel\img\stone_shape\<?= $img ?>"  class="img-fluid Stone_Shape_img top-slider-image">
                         <p class="h6"><?= $st->stone ?></p>
                       </a>
                     </div>
