@@ -4,6 +4,7 @@
   .vodiapicker {
     display: none;
   }
+ 
   
 
   .sorting {
@@ -352,15 +353,61 @@
   .top-slider-image{
     width: 70% !important;
   }
-  @media(max-width:1014px){
-    .top-slider-image{
-    width: 100% !important;
-  }
-  .slider-main-box {
-    margin-right: 20px !important;
-    width: 15% !important;
+  @media(max-width:2560px){
+    .swiper-backface-hidden .swiper-slide {
+    margin-right: -66px ;
+}
+.top-slider-image {
+    width: 53% ;
 }
   }
+  
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  @media screen and (min-width: 1024px) and (max-width: 1440px) { 
+    .swiper-backface-hidden .swiper-slide {
+    margin-right: -17px ;
+}
+.top-slider-image {
+    width: 55% ;
+}
+.swiper-backface-hidden .swiper-slide {
+    margin-right: -15px ;
+    width: 82px ;
+}
+.swiper-backface-hidden .swiper-slide a p.h6 {
+    font-size: 11px;
+}
+.swiper-backface-hidden .swiper-slide {
+    margin-right: -15px ;
+}
+}
+
 </style>
 
 <?
@@ -433,7 +480,7 @@ if ($products->is_quick == 1) {
   ?>
   <div class="col-md-12 row mt-5">
     <!-- ----------- START MAIN SLIDER ------------- -->
-    <div class="col-md-4">
+    <div class="col-md-4 col-xl-3 col-xxl-3">
       <section id="detail">
         <div class="col-md-8 mx-auto">
           <div class="product-images demo-gallery">
@@ -482,7 +529,7 @@ if ($products->is_quick == 1) {
     </div>
     <!-- ----------- END MAIN SLIDER ------------- -->
     <!-- ----------- START MIDDLE SECTION ------------- -->
-    <div class="col-md-5 border-le">
+    <div class="col-md-5 col-xl-6 col-xxl-6  border-le">
       <? if (count($stone_data) > 1 && !empty($stone_data[0]->stone) && $stone_data[0]->stone != "N/A" && $products->stone != "N/A") { ?>
         <div class="row">
           <div class="col-md-12">
@@ -660,7 +707,7 @@ if ($products->is_quick == 1) {
     </div>
     <!-- ----------- END MIDDLE SECTION ------------- -->
     <!-- ----------- START RIGHT SECTION ------------- -->
-    <div class="col-md-3">
+    <div class="col-md-3 col-xl-3 col-xxl-3">
       <?php
       if (!empty($now_price)) {
       ?>
@@ -1102,6 +1149,19 @@ if ($products->is_quick == 1) {
         },
         '767': {
           slidesPerView: 6,
+          spaceBetween: 30,
+        },
+        
+        '1220': {
+          slidesPerView: 9,
+          spaceBetween: 30,
+        },
+        '1440': {
+          slidesPerView: 10,
+          spaceBetween: 30,
+        },
+        '2560': {
+          slidesPerView: 15,
           spaceBetween: 30,
         },
       },
