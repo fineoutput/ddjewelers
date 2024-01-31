@@ -405,6 +405,7 @@ if ($products->is_quick == 1) {
   $group_images = json_decode($products->group_images);
   $setting_options = json_decode($products->setting_options);
   $location_images = $images;
+  $all_images = [];
   if (!empty($full_images)) {
     $all_images = $full_images;
   } else if (!empty($images)) {
@@ -422,35 +423,39 @@ if ($products->is_quick == 1) {
     <div class="col-md-4">
       <section id="detail">
         <div class="col-md-8 mx-auto">
-          <div class="product-images demo-gallery">
-            <div class="main-img-slider">
-              <? if (!empty($videos[0]->DownloadUrl) && strpos($videos[0]->DownloadUrl, ".mp4") !== false) { ?>
-                <!-- =============== video =============== -->
-                <a data-fancybox="gallery" href="<?= $videos[0]->DownloadUrl ?>">
-                  <video width="100%" height="100%" loop autoplay muted>
-                    <source type="video/mp4" src="<?= $videos[0]->DownloadUrl ?>" class="img-fluid gc-zoom">
-                  </video> </a>
+          <? if (!empty($all_images)) { ?>
+            <div class="product-images demo-gallery">
+              <div class="main-img-slider">
+                <? if (!empty($videos[0]->DownloadUrl) && strpos($videos[0]->DownloadUrl, ".mp4") !== false) { ?>
+                  <!-- =============== video =============== -->
+                  <a data-fancybox="gallery" href="<?= $videos[0]->DownloadUrl ?>">
+                    <video width="100%" height="100%" loop autoplay muted>
+                      <source type="video/mp4" src="<?= $videos[0]->DownloadUrl ?>" class="img-fluid gc-zoom">
+                    </video> </a>
+                  <!-- =============== video end =============== -->
+                <? } ?>
+                <?php foreach ($all_images as $img) :
+                ?>
+                  <a data-fancybox="gallery" href="<?= $img->ZoomUrl ?>"><img src="<?= $img->ZoomUrl ?>" class="img-fluid2"></a>
+                <?php endforeach; ?>
+              </div>
+              <!-- Begin product thumb nav -->
+              <ul class="thumb-nav">
+                <? if (!empty($videos[0]->DownloadUrl) && strpos($videos[0]->DownloadUrl, ".mp4") !== false) { ?>
+                  <!-- =============== video =============== -->
+                  <li><img src="<?= base_url() ?>assets/frontend/play.png"></li>
+                <? } ?>
                 <!-- =============== video end =============== -->
-              <? } ?>
-              <?php foreach ($all_images as $img) :
-              ?>
-                <a data-fancybox="gallery" href="<?= $img->ZoomUrl ?>"><img src="<?= $img->ZoomUrl ?>" class="img-fluid2"></a>
-              <?php endforeach; ?>
+                <?php foreach ($all_images as $img) :
+                ?>
+                  <li><img src="<?= $img->ThumbnailUrl ?>"></li>
+                <?php endforeach; ?>
+              </ul>
+              <!-- End product thumb nav -->
             </div>
-            <!-- Begin product thumb nav -->
-            <ul class="thumb-nav">
-              <? if (!empty($videos[0]->DownloadUrl) && strpos($videos[0]->DownloadUrl, ".mp4") !== false) { ?>
-                <!-- =============== video =============== -->
-                <li><img src="<?= base_url() ?>assets/frontend/play.png"></li>
-              <? } ?>
-              <!-- =============== video end =============== -->
-              <?php foreach ($all_images as $img) :
-              ?>
-                <li><img src="<?= $img->ThumbnailUrl ?>"></li>
-              <?php endforeach; ?>
-            </ul>
-            <!-- End product thumb nav -->
-          </div>
+          <? } else { ?>
+            <img src="<?= base_url() ?>assets/uploads/no-image-found.jpg" alt="" class="img-fluid first_img">
+          <? } ?>
         </div>
       </section>
       <div class="row mt-5">

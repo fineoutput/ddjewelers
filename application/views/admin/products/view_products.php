@@ -60,7 +60,7 @@
                         <td><?php echo $data->weight ?></td>
 
                         <td>
-                          <?php if ($images[0]->FullUrl != "") { ?>
+                          <?php if (!empty($images) && $images[0]->FullUrl != "") { ?>
                             <img id="slide_img_path" height=50 width=100 src="<?php echo  $images[0]->FullUrl
                                                                               ?>">
                           <?php } else { ?>

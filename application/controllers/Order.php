@@ -45,13 +45,14 @@ class Order extends CI_Controller
                             $full_images = json_decode($pro_da->full_set_images);
                             $images = json_decode($pro_da->images);
                             $group_images = json_decode($pro_da->group_images);
+                            $all_images = [];
                             if (!empty($full_images)) {
                                 $all_images = $full_images;
-                              } else if (!empty($images)) {
+                            } else if (!empty($images)) {
                                 $all_images = $images;
-                              } else if (!empty($group_images)) {
+                            } else if (!empty($group_images)) {
                                 $all_images = $group_images;
-                              }
+                            }
                             $sku = $pro_da->sku;
                             if (empty($data->price)) {
                                 $pr_data = $this->db->get_where('tbl_price_rule', array())->row();
@@ -107,6 +108,13 @@ class Order extends CI_Controller
                             );
                             $last_order_id = $this->base_model->insert_table("tbl_order1", $data_insert_order1, 1);
                         }
+                        if ($data->img) {
+                            $order_img = $data->img;
+                        } else if ($all_images) {
+                            $order_img = $all_images[0]->ZoomUrl;
+                        } else {
+                            $order_img = '';
+                        }
                         //---------------- Order2 entry ------
                         $data_insert = array(
                             'pro_id' => $data->pro_id,
@@ -121,7 +129,7 @@ class Order extends CI_Controller
                             'series_id' => $pro_da->series_id,
                             'category_id' => $pro_da->category_id,
                             'gem_data' => $data->gem_data,
-                            'img' => $data->img?$data->img:$all_images[0]->ZoomUrl ,
+                            'img' => $order_img,
                             'sku' => $pro_da->sku,
                             'date' => $cur_date
                         );
