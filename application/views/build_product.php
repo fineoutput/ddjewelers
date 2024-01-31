@@ -4,6 +4,8 @@
   .vodiapicker {
     display: none;
   }
+ 
+  
 
   .sorting {
     font-size: 12px !important;
@@ -347,6 +349,65 @@
   .main-img-slider.slick-initialized.slick-slider .slick-prev.slick-arrow {
     display: none !important;
   }
+
+  .top-slider-image{
+    width: 70% !important;
+  }
+  @media(max-width:2560px){
+    .swiper-backface-hidden .swiper-slide {
+    margin-right: -66px ;
+}
+.top-slider-image {
+    width: 53% ;
+}
+  }
+  
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  @media screen and (min-width: 1024px) and (max-width: 1440px) { 
+    .swiper-backface-hidden .swiper-slide {
+    margin-right: -17px ;
+}
+.top-slider-image {
+    width: 55% ;
+}
+.swiper-backface-hidden .swiper-slide {
+    margin-right: -15px ;
+    width: 82px ;
+}
+.swiper-backface-hidden .swiper-slide a p.h6 {
+    font-size: 11px;
+}
+.swiper-backface-hidden .swiper-slide {
+    margin-right: -15px ;
+}
+}
+
 </style>
 
 <?
@@ -420,7 +481,7 @@ if ($products->is_quick == 1) {
   ?>
   <div class="col-md-12 row mt-5">
     <!-- ----------- START MAIN SLIDER ------------- -->
-    <div class="col-md-4">
+    <div class="col-md-4 col-xl-3 col-xxl-3">
       <section id="detail">
         <div class="col-md-8 mx-auto">
           <? if (!empty($all_images)) { ?>
@@ -473,7 +534,7 @@ if ($products->is_quick == 1) {
     </div>
     <!-- ----------- END MAIN SLIDER ------------- -->
     <!-- ----------- START MIDDLE SECTION ------------- -->
-    <div class="col-md-5 border-le">
+    <div class="col-md-5 col-xl-6 col-xxl-6  border-le">
       <? if (count($stone_data) > 1 && !empty($stone_data[0]->stone) && $stone_data[0]->stone != "N/A" && $products->stone != "N/A") { ?>
         <div class="row">
           <div class="col-md-12">
@@ -507,8 +568,8 @@ if ($products->is_quick == 1) {
                       $img = "";
                     }
                 ?>
-                    <div class="swiper-slide">
-                      <a href="<?= base_url() ?>Home/product_details/<?= $products->series_id ?>/<?= $st->pro_id ?>?groupId=<?= $products->group_id ?>"><img src="<?= base_url() ?>assets\jewel\img\stone_shape\<?= $img ?>" style="width:70%;" class="img-fluid Stone_Shape_img">
+                    <div class="swiper-slide slider-main-box">
+                      <a href="<?= base_url() ?>Home/product_details/<?= $products->series_id ?>/<?= $st->pro_id ?>?groupId=<?= $products->group_id ?>"><img src="<?= base_url() ?>assets\jewel\img\stone_shape\<?= $img ?>"  class="img-fluid Stone_Shape_img top-slider-image">
                         <p class="h6"><?= $st->stone ?></p>
                       </a>
                     </div>
@@ -651,7 +712,7 @@ if ($products->is_quick == 1) {
     </div>
     <!-- ----------- END MIDDLE SECTION ------------- -->
     <!-- ----------- START RIGHT SECTION ------------- -->
-    <div class="col-md-3">
+    <div class="col-md-3 col-xl-3 col-xxl-3">
       <?php
       if (!empty($now_price)) {
       ?>
@@ -1093,6 +1154,19 @@ if ($products->is_quick == 1) {
         },
         '767': {
           slidesPerView: 6,
+          spaceBetween: 30,
+        },
+        
+        '1220': {
+          slidesPerView: 9,
+          spaceBetween: 30,
+        },
+        '1440': {
+          slidesPerView: 10,
+          spaceBetween: 30,
+        },
+        '2560': {
+          slidesPerView: 15,
           spaceBetween: 30,
         },
       },

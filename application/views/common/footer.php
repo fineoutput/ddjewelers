@@ -281,6 +281,44 @@
       prevEl: '.swiper-button-prev',
     },
   });
+  var mySwiper = new Swiper('.swiper-containernew', {
+      slidesPerView: 6,
+      spaceBetween: 10,
+      breakpoints: {
+        '300': {
+          slidesPerView: 2,
+          spaceBetween: 30,
+        },
+        '400': {
+          slidesPerView: 2,
+          spaceBetween: 30,
+        },
+        '500': {
+          slidesPerView: 3,
+          spaceBetween: 40,
+        },
+        '600': {
+          slidesPerView: 4,
+          spaceBetween: 40,
+        },
+        '767': {
+          slidesPerView: 5,
+          spaceBetween: 30,
+        },
+      },
+      // Optional parameters
+      freeMode: true,
+      loop: false,
+      scrollbar: {
+        el: '.swiper-scrollbar',
+        hide: true,
+      },
+      navigation: {
+        nextEl: '.swiper-button-next',
+        prevEl: '.swiper-button-prev',
+      },
+
+    })
 </script>
 <script>
   $(document).scroll(function() {
