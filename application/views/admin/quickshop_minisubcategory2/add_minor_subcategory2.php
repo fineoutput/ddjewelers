@@ -87,11 +87,11 @@
                       <td> <strong>Api Id</strong> <span style="color:red;">*</span></strong> </td>
                       <td><textarea name="api_id" class="form-control" rows="5" cols="50"></textarea></td>
                     </tr>
-
+<!-- 
                     <tr>
                       <td> <strong>Image</strong> <span style="color:red;">*</span></strong> </td>
                       <td> <input type="file" name="image" class="form-control" placeholder="" value="" /> </td>
-                    </tr>
+                    </tr> -->
 
                     <tr>
                       <td> <strong>Sequence</strong> <span style="color:red;">*</span></strong> </td>

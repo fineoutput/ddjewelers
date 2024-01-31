@@ -163,45 +163,45 @@ class QuickshopMinisubcategory2 extends CI_finecontrol
 
 
 
-            $img2 = 'image';
+            // $img2 = 'image';
 
 
-            $file_check = ($_FILES['image']['error']);
-            if ($file_check != 4) {
+            // $file_check = ($_FILES['image']['error']);
+            // if ($file_check != 4) {
 
-              $image_upload_folder = FCPATH . "assets/uploads/quick_minor_subcategory2/";
-              if (!file_exists($image_upload_folder)) {
-                mkdir($image_upload_folder, DIR_WRITE_MODE, true);
-              }
-              $new_file_name = "quick_minor_subcategory2" . date("Ymdhms");
-              $this->upload_config = array(
-                'upload_path'   => $image_upload_folder,
-                'file_name' => $new_file_name,
-                'allowed_types' => 'xlsx|csv|xls|pdf|doc|docx|txt|jpg|jpeg|png',
-                'max_size'      => 25000
-              );
-              $this->upload->initialize($this->upload_config);
-              if (!$this->upload->do_upload($img2)) {
-                $upload_error = $this->upload->display_errors();
-                // echo json_encode($upload_error);
+            //   $image_upload_folder = FCPATH . "assets/uploads/quick_minor_subcategory2/";
+            //   if (!file_exists($image_upload_folder)) {
+            //     mkdir($image_upload_folder, DIR_WRITE_MODE, true);
+            //   }
+            //   $new_file_name = "quick_minor_subcategory2" . date("Ymdhms");
+            //   $this->upload_config = array(
+            //     'upload_path'   => $image_upload_folder,
+            //     'file_name' => $new_file_name,
+            //     'allowed_types' => 'xlsx|csv|xls|pdf|doc|docx|txt|jpg|jpeg|png',
+            //     'max_size'      => 25000
+            //   );
+            //   $this->upload->initialize($this->upload_config);
+            //   if (!$this->upload->do_upload($img2)) {
+            //     $upload_error = $this->upload->display_errors();
+            //     // echo json_encode($upload_error);
 
-                //$this->session->set_flashdata('emessage',$upload_error);
-                //redirect($_SERVER['HTTP_REFERER']);
-              } else {
+            //     //$this->session->set_flashdata('emessage',$upload_error);
+            //     //redirect($_SERVER['HTTP_REFERER']);
+            //   } else {
 
-                $file_info = $this->upload->data();
+            //     $file_info = $this->upload->data();
 
-                $videoNAmePath = "assets/uploads/quick_minor_subcategory2/" . $new_file_name . $file_info['file_ext'];
-                $file_info['new_name'] = $videoNAmePath;
-                // $this->step6_model->updateappIconImage($imageNAmePath,$appInfoId);
-                $nnnn = $file_info['file_name'];
-                $nnnn2 = $videoNAmePath;
+            //     $videoNAmePath = "assets/uploads/quick_minor_subcategory2/" . $new_file_name . $file_info['file_ext'];
+            //     $file_info['new_name'] = $videoNAmePath;
+            //     // $this->step6_model->updateappIconImage($imageNAmePath,$appInfoId);
+            //     $nnnn = $file_info['file_name'];
+            //     $nnnn2 = $videoNAmePath;
 
-                // echo json_encode($file_info);
-              }
-            } else {
-              $nnnn2 = "";
-            }
+            //     // echo json_encode($file_info);
+            //   }
+            // } else {
+            //   $nnnn2 = "";
+            // }
 
 
 
@@ -210,7 +210,7 @@ class QuickshopMinisubcategory2 extends CI_finecontrol
               'subcategory' => $subcategory,
               'minorsubcategory' => $minorsubcategory,
               'name' => $name,
-              'image' => $nnnn2,
+              // 'image' => $nnnn2,
               'description' => $description,
               'seq' => $seq,
               'api_id' => $api_id,
@@ -248,58 +248,58 @@ class QuickshopMinisubcategory2 extends CI_finecontrol
 
 
 
-            $img2 = 'image';
+            // $img2 = 'image';
 
 
-            $file_check = ($_FILES['image']['error']);
-            if ($file_check != 4) {
+            // $file_check = ($_FILES['image']['error']);
+            // if ($file_check != 4) {
 
-              $image_upload_folder = FCPATH . "assets/uploads/quick_minor_subcategory2/";
-              if (!file_exists($image_upload_folder)) {
-                mkdir($image_upload_folder, DIR_WRITE_MODE, true);
-              }
-              $new_file_name = "quick_minor_subcategory2" . date("Ymdhms");
-              $this->upload_config = array(
-                'upload_path'   => $image_upload_folder,
-                'file_name' => $new_file_name,
-                'allowed_types' => 'xlsx|csv|xls|pdf|doc|docx|txt|jpg|jpeg|png',
-                'max_size'      => 25000
-              );
-              $this->upload->initialize($this->upload_config);
-              if (!$this->upload->do_upload($img2)) {
-                $upload_error = $this->upload->display_errors();
-                // echo json_encode($upload_error);
+            //   $image_upload_folder = FCPATH . "assets/uploads/quick_minor_subcategory2/";
+            //   if (!file_exists($image_upload_folder)) {
+            //     mkdir($image_upload_folder, DIR_WRITE_MODE, true);
+            //   }
+            //   $new_file_name = "quick_minor_subcategory2" . date("Ymdhms");
+            //   $this->upload_config = array(
+            //     'upload_path'   => $image_upload_folder,
+            //     'file_name' => $new_file_name,
+            //     'allowed_types' => 'xlsx|csv|xls|pdf|doc|docx|txt|jpg|jpeg|png',
+            //     'max_size'      => 25000
+            //   );
+            //   $this->upload->initialize($this->upload_config);
+            //   if (!$this->upload->do_upload($img2)) {
+            //     $upload_error = $this->upload->display_errors();
+            //     // echo json_encode($upload_error);
 
-                //$this->session->set_flashdata('emessage',$upload_error);
-                //redirect($_SERVER['HTTP_REFERER']);
-              } else {
+            //     //$this->session->set_flashdata('emessage',$upload_error);
+            //     //redirect($_SERVER['HTTP_REFERER']);
+            //   } else {
 
-                $file_info = $this->upload->data();
+            //     $file_info = $this->upload->data();
 
-                $videoNAmePath = "assets/uploads/quick_minor_subcategory2/" . $new_file_name . $file_info['file_ext'];
-                $file_info['new_name'] = $videoNAmePath;
-                // $this->step6_model->updateappIconImage($imageNAmePath,$appInfoId);
-                $nnnn = $file_info['file_name'];
-                $nnnn2 = $videoNAmePath;
+            //     $videoNAmePath = "assets/uploads/quick_minor_subcategory2/" . $new_file_name . $file_info['file_ext'];
+            //     $file_info['new_name'] = $videoNAmePath;
+            //     // $this->step6_model->updateappIconImage($imageNAmePath,$appInfoId);
+            //     $nnnn = $file_info['file_name'];
+            //     $nnnn2 = $videoNAmePath;
 
-                // echo json_encode($file_info);
-              }
-            }
+            //     // echo json_encode($file_info);
+            //   }
+            // }
 
 
 
-            if (!empty($da)) {
-              $img = $da->image;
-              if (!empty($img)) {
-                if (empty($nnnn2)) {
-                  $nnnn2 = $img;
-                }
-              } else {
-                if (empty($nnnn2)) {
-                  $nnnn2 = "";
-                }
-              }
-            }
+            // if (!empty($da)) {
+            //   $img = $da->image;
+            //   if (!empty($img)) {
+            //     if (empty($nnnn2)) {
+            //       $nnnn2 = $img;
+            //     }
+            //   } else {
+            //     if (empty($nnnn2)) {
+            //       $nnnn2 = "";
+            //     }
+            //   }
+            // }
 
             $data_insert = array(
               'category' => $category,
@@ -307,7 +307,7 @@ class QuickshopMinisubcategory2 extends CI_finecontrol
               'minorsubcategory' => $minorsubcategory,
               'api_id' => $api_id,
               'name' => $name,
-              'image' => $nnnn2,
+              // 'image' => $nnnn2,
               'description' => $description,
               'seq' => $seq,
 
