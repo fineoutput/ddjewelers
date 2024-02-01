@@ -346,15 +346,15 @@
         },
         
         '1220': {
-          slidesPerView: 9,
+          slidesPerView: 8,
           spaceBetween: 30,
         },
         '1440': {
           slidesPerView: 9,
           spaceBetween: 30,
         },
-        '2560': {
-          slidesPerView: 10,
+        '2660': {
+          slidesPerView: 8,
           spaceBetween: 30,
         },
       },

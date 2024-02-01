@@ -178,7 +178,15 @@
       background: #fff !important;
       Width: 4px !important;
     }
+    .d-flex.justify-content-between.p-2.pb-4{
+      flex-direction: column;
+    }
 
+    @media (max-width: 1744px) {
+      .d-flex.justify-content-between.p-2.pb-4{
+      flex-direction: row;
+    }
+    }
     @media (min-width: 991px) and (max-width: 1038px) {
       .displaynone {
         display: none;

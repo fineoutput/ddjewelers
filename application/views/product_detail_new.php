@@ -968,6 +968,19 @@ $minor2Data = $this->db->get_where('tbl_minisubcategory2', array('id' => $produc
           slidesPerView: 6,
           spaceBetween: 30,
         },
+        
+        '1220': {
+          slidesPerView: 8,
+          spaceBetween: 30,
+        },
+        '1440': {
+          slidesPerView: 9,
+          spaceBetween: 30,
+        },
+        '2660': {
+          slidesPerView: 8,
+          spaceBetween: 30,
+        },
       },
       // Optional parameters
       freeMode: true,

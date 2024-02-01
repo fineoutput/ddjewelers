@@ -1160,15 +1160,15 @@ if ($products->is_quick == 1) {
         },
         
         '1220': {
-          slidesPerView: 9,
+          slidesPerView: 8,
           spaceBetween: 30,
         },
         '1440': {
-          slidesPerView: 10,
+          slidesPerView: 8,
           spaceBetween: 30,
         },
-        '2560': {
-          slidesPerView: 15,
+        '2660': {
+          slidesPerView: 8,
           spaceBetween: 30,
         },
       },
