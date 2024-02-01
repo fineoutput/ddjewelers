@@ -56,8 +56,19 @@ if (!empty($cart_data)) {
                 <? if (!empty($gem_data)) { ?>
                   <div class="col-md-12">
                     <span><b>Stones : </b></span>
-                    <? foreach ($gem_data as  $gem) { ?>
-                      <span><?= $gem->Product->Description ?> <b>|</b> </span>
+                    <? foreach ($gem_data as  $gem) {
+                    if (!empty($gem->Product)) {
+                        $item = $gem->Product;
+                      } else if (!empty($data->Diamond)) {
+                        $item = $gem->Diamond;
+
+                      } else if (!empty($data->GemStone)) {
+                        $item = $gem->GemStone;
+
+                      } else if (!empty($data->LabGrownDiamond)) {
+                        $item = $gem->LabGrownDiamond;
+                       } ?>
+                      <span><?=$item->Description?> <b>|</b> </span>
                     <? } ?>
                   </div>
                 <? } ?>
