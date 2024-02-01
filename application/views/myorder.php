@@ -109,7 +109,7 @@
                                                     <? } ?>
                                                 </p>
                                             <? } ?>
-                                            <p><b>SKU:</b> <?= $o_product_sku; ?></p>
+                                            <p><b>SKU:</b> SLR-<?= $o_product_sku; ?></p>
                                             <p><b>Quantity: </b> <?= $dd1->quantity; ?></p>
                                             <p><b>Price:</b> $<?= $dd1->amount; ?></p>
                                         </div>
