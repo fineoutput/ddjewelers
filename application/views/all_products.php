@@ -50,7 +50,7 @@
       <?php } else  if (!empty($minorsub_name)) { ?>
         > <span><?= $subcategory_name; ?></span> > <span><?= $minorsub_name; ?>d</span>
         </p>
-      <?php } else if (!empty($subcategory_name)){ ?>
+      <?php } else if (!empty($subcategory_name)) { ?>
         > <span><?= $subcategory_name; ?></span> </p>
       <?php } ?>
     <?php } else { ?>
@@ -312,19 +312,24 @@
               } ?>
           </div>
           <div class="row justify-content-center w-100">
-            <?= $links ?>
-            <div class="pagination-dropdown row align-items-center">
-              <label for="page-select">Go to page: </label>
-              <?= form_dropdown('page-select', $page_options, $current_page, 'class="form-control ml-2 " style="width: auto;" onchange="window.location.href=\'' . base_url("Home/all_products/{$idd}/{$t}/") . '\' + this.value"') ?>
-            </div>
+            <?
+              if ($current_page != "all") {
+                echo $links;
+                if (count($page_options) > 1) { ?>
+                <div class="pagination-dropdown row align-items-center">
+                  <label for="page-select">Go to page: </label>
+                  <?= form_dropdown('page-select', $page_options, $current_page, 'class="form-control ml-2 " style="width: auto;" onchange="handleChange(this)"') ?>
+                </div>
           </div>
-        <? } else { ?>
-          <div class="text-center">
-            <img src="<?= base_url() ?>/assets/frontend/no_data.jpg" style="    max-width: 45%;
+      <? }
+              }
+            } else { ?>
+      <div class="text-center">
+        <img src="<?= base_url() ?>/assets/frontend/no_data.jpg" style="    max-width: 45%;
 height: auto;">
-            <h5 class="mt-2">Opps! No Data Found...</h5>
-          </div>
-        <? } ?>
+        <h5 class="mt-2">Opps! No Data Found...</h5>
+      </div>
+    <? } ?>
         </div>
       </div>
     </div>
@@ -332,3 +337,14 @@ height: auto;">
   </div>
   <input type="hidden" value="<?= $level_id; ?>" id="level_id">
 </section>
+<script>
+  function handleChange(selectElement) {
+    var selectedOption = selectElement.options[selectElement.selectedIndex].text;
+    var selectedValue = selectElement.options[selectElement.selectedIndex].value;
+    if (selectedOption === 'Show All') {
+      window.location.href = '<?= base_url("Home/all_products/{$idd}/{$t}/all") ?>';
+    } else {
+      window.location.href = '<?= base_url("Home/all_products/{$idd}/{$t}/") ?>' + selectedValue;
+    }
+  }
+</script>
