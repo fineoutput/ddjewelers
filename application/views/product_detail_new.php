@@ -8,7 +8,9 @@
   }
 
 
-
+  .swiper-backface-hidden .swiper-slide {
+    margin-right: 30px !important;
+}
   #a img,
   .btn-select img {
     width: 26px;
@@ -325,6 +327,7 @@
     border: 0px;
     color: white;
   }
+  
 
   .orderul {
     text-align: center;
@@ -359,7 +362,7 @@
     margin-right: -17px ;
 }
 .top-slider-image {
-    width: 55% ;
+    width: 100% !important ;
 }
 .swiper-backface-hidden .swiper-slide {
     margin-right: -15px ;
@@ -1006,7 +1009,7 @@ $minor2Data = $this->db->get_where('tbl_minisubcategory2', array('id' => $produc
         },
         
         '1220': {
-          slidesPerView: 8,
+          slidesPerView: 7,
           spaceBetween: 30,
         },
         '1440': {

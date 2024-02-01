@@ -320,57 +320,6 @@
 
     })
 
-    var mySwiper = new Swiper('.swiper-containericon', {
-      slidesPerView: 6,
-      spaceBetween: 10,
-      breakpoints: {
-        '300': {
-          slidesPerView: 3,
-          spaceBetween: 30,
-        },
-        '400': {
-          slidesPerView: 3,
-          spaceBetween: 30,
-        },
-        '500': {
-          slidesPerView: 4,
-          spaceBetween: 40,
-        },
-        '600': {
-          slidesPerView: 4,
-          spaceBetween: 40,
-        },
-        '767': {
-          slidesPerView: 6,
-          spaceBetween: 30,
-        },
-        
-        '1220': {
-          slidesPerView: 8,
-          spaceBetween: 30,
-        },
-        '1440': {
-          slidesPerView: 8,
-          spaceBetween: 30,
-        },
-        '2660': {
-          slidesPerView: 8,
-          spaceBetween: 30,
-        },
-      },
-      // Optional parameters
-      freeMode: true,
-      loop: false,
-      scrollbar: {
-        el: '.swiper-scrollbar',
-        hide: true,
-      },
-      navigation: {
-        nextEl: '.swiper-button-next',
-        prevEl: '.swiper-button-prev',
-      },
-
-    })
 </script>
 <script>
   $(document).scroll(function() {
