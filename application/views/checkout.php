@@ -148,8 +148,22 @@
                                                     <p><?= $cart->description; ?></p>
                                                     <? if (!empty($gem_data)) { ?>
                                                         <span><b>Stones : </b></span>
-                                                        <? foreach ($gem_data as  $gem) { ?>
-                                                            <span><?= $gem->Product->Description ?> <b>|</b> </span>
+                                                        <? foreach ($gem_data as  $gem) {
+                                                            if (!empty($gem->Product)) {
+                                                                $item = $gem->Product;
+                                                            } else if (!empty($gem->Diamond)) {
+                                                                $item = $gem->Diamond;
+                                                            } else if (!empty($gem->GemStone)) {
+                                                                $item = $gem->GemStone;
+                                                            } else if (!empty($gem->LabGrownDiamond)) {
+                                                                $item = $gem->LabGrownDiamond;
+                                                            } ?>
+                                                            <? if (!empty($item->Description)) { ?>
+                                                                <span> <?= $item->Description ?> <b>|</b> </span>
+                                                            <? } else { ?>
+                                                                <span> <?= $item->SerialNumber ?> <b>|</b> </span>
+
+                                                            <? } ?>
                                                     <? }
                                                     } ?>
                                                 </div>
@@ -530,7 +544,7 @@ $return_url = site_url() . 'Home/callback/' . $ordr_id_enc;
             "tax_amount": 0,
             "total": "<?= round($order1_data[0]->final_amount * 100) ?>"
         })
-        affirm.checkout.open({            
+        affirm.checkout.open({
             onFail: (error) => {
                 window.open(base_url + 'Home/order_failed', "_self");
             },
