@@ -1249,8 +1249,7 @@ class Home extends CI_Controller
                 $catalogValues = json_decode($existing_pro_data->catalog_values);
                 // print_r($catalogValues);
                 $catalogValues[$catalog_key] = $catalog_value;
-                // print_r($catalogValues);
-                // die();
+            
                 $new_pro_data = $this->db->like('catalog_values', json_encode($catalogValues))->get_where('tbl_products', array('group_id' => $group_id, 'series_id' => $series_id))->row();
                 if (!empty($new_pro_data)) {
                     $res = array(
@@ -1259,11 +1258,24 @@ class Home extends CI_Controller
                     );
                     echo json_encode($res);
                 } else {
-                    $res = array(
-                        'message' => 'No combination found!',
-                        'status' => 201
-                    );
-                    echo json_encode($res);
+                    $new_pro_data = $this->db
+                    ->where(['group_id' => $group_id, 'series_id' => $series_id])
+                    ->where("JSON_SEARCH(catalog_values, 'one', '$catalog_value') IS NOT NULL", null, false)
+                    ->get('tbl_products')
+                    ->row();
+                    if (!empty($new_pro_data)) {
+                        $res = array(
+                            'message' => $new_pro_data->pro_id,
+                            'status' => 200
+                        );
+                        echo json_encode($res);
+                    } else {
+                        $res = array(
+                            'message' => 'No combination found!',
+                            'status' => 201
+                        );
+                        echo json_encode($res);
+                    }
                 }
             } else {
                 $res = array(
