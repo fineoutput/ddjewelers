@@ -468,235 +468,7 @@ class Home extends CI_Controller
         $this->load->view('search_products');
         $this->load->view('common/footer');
     }
-    //Search Products Page after search
-    public function search_products_old()
-    {
-        $this->load->helper(array('form', 'url'));
-        $this->load->library('form_validation');
-        $this->load->helper('security');
-        if ($this->input->post()) {
-            $this->form_validation->set_rules('search_input', 'search_input', 'required|xss_clean|trim');
-            if ($this->form_validation->run() == TRUE) {
-                $string_main = $this->input->post('search_input');
-                $string = str_replace('SLR-', '', $string_main);
-                // echo $string; exit;
-                // $id = base64_decode($idd);
-                //  $this->db->select('*');
-                // $this->db->from('tbl_categories');
-                // $this->db->where('id',$id);
-                // $data['categories_data']= $this->db->get();
-                $this->db->select('*');
-                $this->db->from('tbl_category');
-                $this->db->where('is_active', 1);
-                $data['categories'] = $this->db->get();
-                $user_id = $this->session->userdata('user_id');
-                // $data['products']= $this->db->select('*')->from('tbl_vendors_product')->where('is_active', 1)->where("name LIKE '%$string%'")->or_where('product_tag', 'like', '%' . $string . '%')->get();
-                // 				$this->db->select('*');
-                // $this->db->from('tbl_vendors_product');
-                // $this->db->where("name LIKE '%$string%'");
-                // $this->db->or_where("product_tag LIKE '%$string%'");
-                // $this->db->where('is_active', 1);
-                // $data['products']= $this->db->get();
-                // ----------------query to fetch distinct product types--------------------
-                // $this->db->select('product_type');
-                // $this->db->from('tbl_products');
-                // $this->db->distinct();
-                // $query = $this->db->get();
-                // foreach($query->result() as $type){
-                // 	echo $type->product_type."<br />";
-                // }
-                // die();
-                // ---------------------------------------------------------------
-                //new search code start
-                $ss = [];
-                $string1 = explode(" ", $string);
-                $st_count = count($string1);
-                // print_r($st_count);die();
-                $det1 = "";
-                $det2 = "";
-                $det3 = "";
-                $det4 = "";
-                $det5 = "";
-                $det6 = "";
-                $findProduct = "";
-                if ($st_count >= 1) {
-                    $a = " " . $string1[0] . " ";            //----------ADDED SPACES TO DIFFERENTIATE BETWEEN WORDS LIKE RING AND EAR-RING
-                    if (strtoupper($string1[0]) == "RING" || strtoupper($string1[0]) == "RINGS") {
-                        $findProduct = "Rings";
-                    }
-                    if (strtoupper($string1[0]) == "EARRING" || strtoupper($string1[0]) == "EARRINGS") {
-                        $findProduct = "Earrings";
-                    }
-                    if (strtoupper($string1[0]) == "SHANK" || strtoupper($string1[0]) == "SHANKS") {
-                        $findProduct = "Shanks";
-                    }
-                    if (strtoupper($string1[0]) == "NECKLACE" || strtoupper($string1[0]) == "NECKLACES") {
-                        $findProduct = "Necklaces";
-                    }
-                    if (strtoupper($string1[0]) == "BRACELET" || strtoupper($string1[0]) == "BRACELETS") {
-                        $findProduct = "Bracelets";
-                    }
-                    if (strtoupper($string1[0]) == "PENDANT" || strtoupper($string1[0]) == "PENDANTS") {
-                        $findProduct = "Pendants";
-                    }
-                    if (strtoupper($string1[0]) == "CHARM" || strtoupper($string1[0]) == "CHARMS") {
-                        $findProduct = "Charms";
-                    }
-                    // echo $a;die();
-                    // $det1="->where('name','LIKE', '%{$a}%' )";
-                    $det1 = " sdesc LIKE '%" . $a . "%' ";
-                    // echo $det1;
-                }
-                if ($st_count >= 2) {
-                    $b = $string1[1];
-                    $findProduct = "";
-                    // $det2="->where('name','LIKE', '%{$a}%' )";
-                    $det2 = "AND sdesc LIKE '%" . $b . "%' ";
-                }
-                if ($st_count >= 3) {
-                    $c = $string1[2];
-                    // $det3="->where('name','LIKE', '%{$a}%' )";
-                    $det3 = "AND sdesc LIKE '%" . $c . "%' ";
-                }
-                if ($st_count >= 4) {
-                    $d = $string1[3];
-                    // $det4="->where('name','LIKE', '%{$a}%' )";
-                    $det4 = "AND sdesc LIKE '%" . $d . "%' ";
-                }
-                if ($st_count >= 5) {
-                    $e = $string1[4];
-                    // $det4="->where('name','LIKE', '%{$a}%' )";
-                    $det5 = "AND sdesc LIKE '%" . $e . "%' ";
-                }
-                if ($st_count >= 6) {
-                    $f = $string1[5];
-                    // $det4="->where('name','LIKE', '%{$a}%' )";
-                    $det6 = "AND sdesc LIKE '%" . $f . "%' ";
-                }
-                $isactiveProductCondition = "AND is_active = 1";
-                $groupByCondition = " group by sku_series, sku_series_type1";
-                // $isCatDeleteProductCondition = "AND is_cat_delete = 0";
-                // $isSubCatDeleteProductCondition = "AND is_subcat_delete = 0";
-                // $deleteAtProductCondition = "AND deleted_at IS NULL";
-                // $details= "SELECT * FROM `tbl_products` WHERE name LIKE '%silver%' AND name LIKE '%gemstone%' AND name LIKE '%chain%'";
-                if (!empty($findProduct)) {
-                    $native_query = "SELECT * FROM tbl_products WHERE product_type='" . $findProduct . "'  " . $isactiveProductCondition . " " . $groupByCondition . " LIMIT 5000";
-                } else {
-                    $native_query = "SELECT * FROM tbl_products WHERE " . $det1 . "  " . $det2 . "  " . $det3 . "  " . $det4 . "  " . $det5 . "  " . $det6 . "  " . $isactiveProductCondition . " " . $groupByCondition . " LIMIT 5000";
-                }
-                // echo $native_query; die();
-                // $details = DB::select($native_query);
-                $details = $this->db->query($native_query);
-                // echo "<pre>";	print_r($details->result()); die();
-                // SELECT * FROM tbl_products WHERE name LIKE '%lapis%' AND name LIKE '%tyre%' AND name LIKE '%beads%' AND is_active = 1 AND is_cat_delete = 0 AND is_subcat_delete = 0
-                // print_r($details); die();
-                if (!empty($details)) {
-                    $ss = [];
-                    foreach ($details->result() as $dt) {
-                        // code...
-                        // print_r($dt);die();
-                        $a = 0;
-                        if (!empty($ss)) {
-                            foreach ($ss as $value) {
-                                if ($dt->sku_series == $value['sku_series']) {
-                                    $a = 1;
-                                }
-                            }
-                        }
-                        if ($a == 1) {
-                            continue;
-                        } else {
-                            $ss[] = array(
-                                'id' => $dt->id, 'product_id' => $dt->product_id, 'category' => $dt->category, 'sub_category' => $dt->sub_category, 'minisub_category' => $dt->minisub_category, 'minisub_category2' => $dt->minisub_category2, 'vendor' => $dt->vendor, 'sku' => $dt->sku, 'sku_series' => $dt->sku_series, 'description' => $dt->description, 'sdesc' => $dt->sdesc, 'gdesc' => $dt->gdesc, 'mcat1' => $dt->mcat1, 'mcat2' => $dt->mcat2,
-                                'mcat3' => $dt->mcat3, 'mcat4' => $dt->mcat4, 'mcat5' => $dt->mcat5, 'product_type' => $dt->product_type, 'collection' => $dt->collection, 'onhand' => $dt->onhand, 'status' => $dt->status, 'price' => $dt->price, 'currency' => $dt->currency, 'unitofsale' => $dt->unitofsale, 'weight' => $dt->weight, 'weightunit' => $dt->weightunit, 'gramweight' => $dt->gramweight, 'ringsizable' => $dt->ringsizable, 'ringsize' => $dt->ringsize, 'ringsizetype' => $dt->ringsizetype, 'leadtime' => $dt->leadtime, 'agta' => $dt->agta, 'desc_e_grp' => $dt->desc_e_grp, 'desc_e_name1' => $dt->desc_e_name1, 'desc_e_value1' => $dt->desc_e_value1, 'desc_e_name2' => $dt->desc_e_name2, 'desc_e_value2' => $dt->desc_e_value2, 'desc_e_name3' => $dt->desc_e_name3, 'desc_e_value3' => $dt->desc_e_value3, 'desc_e_name4' => $dt->desc_e_name4, 'desc_e_value4' => $dt->desc_e_value4, 'desc_e_name5' => $dt->desc_e_name5, 'desc_e_value5' => $dt->desc_e_value5, 'desc_e_name6' => $dt->desc_e_name6,
-                                'desc_e_value6' => $dt->desc_e_value6, 'desc_e_name7' => $dt->desc_e_name7, 'desc_e_value7' => $dt->desc_e_value7, 'desc_e_name8' => $dt->desc_e_name8, 'desc_e_value8' => $dt->desc_e_value8, 'desc_e_name9' => $dt->desc_e_name9, 'desc_e_value9' => $dt->desc_e_value9, 'desc_e_name10' => $dt->desc_e_name10, 'desc_e_value10' => $dt->desc_e_value10,
-                                'desc_e_name11' => $dt->desc_e_name11, 'desc_e_value11' => $dt->desc_e_value11, 'desc_e_name12' => $dt->desc_e_name12, 'desc_e_value12' => $dt->desc_e_value12, 'desc_e_name13' => $dt->desc_e_name13, 'desc_e_value13' => $dt->desc_e_value13, 'desc_e_name14' => $dt->desc_e_name14, 'desc_e_value14' => $dt->desc_e_value14, 'desc_e_name15' => $dt->desc_e_value15,
-                                'readytowear' => $dt->readytowear, 'smi' => $dt->smi, 'FullySetImage1' => $dt->FullySetImage1, 'FullySetImage2' => $dt->FullySetImage2, 'image3' => $dt->image3, 'video' => $dt->video, 'gimage1' => $dt->gimage1, 'gimage2' => $dt->gimage2, 'gimage3' => $dt->gimage3,
-                                'gvideo' => $dt->gvideo, 'creationdate' => $dt->creationdate, 'currencycode' => $dt->currencycode, 'country' => $dt->country, 'dclarity' => $dt->dclarity, 'dcolor' => $dt->dcolor,  'totalweight' => $dt->totalweight,  'ip' => $dt->ip,  'date' => $dt->date,  'added_by' => $dt->added_by,  'is_active' => $dt->is_active
-                            );
-                        }
-                    }
-                } else {
-                    $ss = [];
-                }
-                $detail_name = $ss;
-                // print_r($detail_name);die();
-                // $detail_sku = Product::wherenull('deleted_at')->where('is_active', 1)->where('is_cat_delete', 0)->where('is_subcat_delete', 0)
-                // ->where('sku_id','LIKE', "%{$string}%" )->get()->toArray();
-                // $detail_tag = Product::wherenull('deleted_at')->where('is_active', 1)->where('is_cat_delete', 0)->where('is_subcat_delete', 0)
-                // ->where('tag','LIKE', "%{$string}%" )->get()->toArray();
-                $this->db->select('*');
-                $this->db->from('tbl_products');
-                $this->db->group_by(array("sku_series", "sku_series_type1"));
-                $this->db->where("sku LIKE ", '%' . $string . '%');
-                $this->db->where('is_active', 1);
-                $detail_sku = $this->db->get();
-                $detail = [];
-                $yy = [];
-                foreach ($detail_sku->result() as $dt) {
-                    // print_r($yy);
-                    $b = 0;
-                    if (empty($detail_name)) {
-                        $j = 1;
-                        foreach ($yy as $value) {
-                            // echo $dt->sku_series." ".$value['sku_series'];
-                            if ($dt->sku_series == $value['sku_series']) {
-                                $b = 1;
-                            }
-                        }
-                    }
-                    if ($b == 1) {
-                        continue;
-                    } else {
-                        $yy[] = array(
-                            'id' => $dt->id, 'product_id' => $dt->product_id, 'category' => $dt->category, 'sub_category' => $dt->sub_category, 'minisub_category' => $dt->minisub_category, 'minisub_category2' => $dt->minisub_category2, 'vendor' => $dt->vendor, 'sku' => $dt->sku, 'sku_series' => $dt->sku_series, 'description' => $dt->description, 'sdesc' => $dt->sdesc, 'gdesc' => $dt->gdesc, 'mcat1' => $dt->mcat1, 'mcat2' => $dt->mcat2,
-                            'mcat3' => $dt->mcat3, 'mcat4' => $dt->mcat4, 'mcat5' => $dt->mcat5, 'product_type' => $dt->product_type, 'collection' => $dt->collection, 'onhand' => $dt->onhand, 'status' => $dt->status, 'price' => $dt->price, 'currency' => $dt->currency, 'unitofsale' => $dt->unitofsale, 'weight' => $dt->weight, 'weightunit' => $dt->weightunit, 'gramweight' => $dt->gramweight, 'ringsizable' => $dt->ringsizable, 'ringsize' => $dt->ringsize, 'ringsizetype' => $dt->ringsizetype, 'leadtime' => $dt->leadtime, 'agta' => $dt->agta, 'desc_e_grp' => $dt->desc_e_grp, 'desc_e_name1' => $dt->desc_e_name1, 'desc_e_value1' => $dt->desc_e_value1, 'desc_e_name2' => $dt->desc_e_name2, 'desc_e_value2' => $dt->desc_e_value2, 'desc_e_name3' => $dt->desc_e_name3, 'desc_e_value3' => $dt->desc_e_value3, 'desc_e_name4' => $dt->desc_e_name4, 'desc_e_value4' => $dt->desc_e_value4, 'desc_e_name5' => $dt->desc_e_name5, 'desc_e_value5' => $dt->desc_e_value5, 'desc_e_name6' => $dt->desc_e_name6,
-                            'desc_e_value6' => $dt->desc_e_value6, 'desc_e_name7' => $dt->desc_e_name7, 'desc_e_value7' => $dt->desc_e_value7, 'desc_e_name8' => $dt->desc_e_name8, 'desc_e_value8' => $dt->desc_e_value8, 'desc_e_name9' => $dt->desc_e_name9, 'desc_e_value9' => $dt->desc_e_value9, 'desc_e_name10' => $dt->desc_e_name10, 'desc_e_value10' => $dt->desc_e_value10,
-                            'desc_e_name11' => $dt->desc_e_name11, 'desc_e_value11' => $dt->desc_e_value11, 'desc_e_name12' => $dt->desc_e_name12, 'desc_e_value12' => $dt->desc_e_value12, 'desc_e_name13' => $dt->desc_e_name13, 'desc_e_value13' => $dt->desc_e_value13, 'desc_e_name14' => $dt->desc_e_name14, 'desc_e_value14' => $dt->desc_e_value14, 'desc_e_name15' => $dt->desc_e_value15,
-                            'readytowear' => $dt->readytowear, 'smi' => $dt->smi, 'FullySetImage1' => $dt->FullySetImage1, 'FullySetImage2' => $dt->FullySetImage2, 'image3' => $dt->image3, 'video' => $dt->video, 'gimage1' => $dt->gimage1, 'gimage2' => $dt->gimage2, 'gimage3' => $dt->gimage3,
-                            'gvideo' => $dt->gvideo, 'creationdate' => $dt->creationdate, 'currencycode' => $dt->currencycode, 'country' => $dt->country, 'dclarity' => $dt->dclarity, 'dcolor' => $dt->dcolor,  'totalweight' => $dt->totalweight,  'ip' => $dt->ip,  'date' => $dt->date,  'added_by' => $dt->added_by,  'is_active' => $dt->is_active
-                        );
-                    }
-                }
-                // exit;
-                $detail = array_merge($detail_name, $yy);
-                // print_r($yy);die();
-                if (empty($detail)) {
-                    $detail = $detail_name;
-                }
-                // $detail = array_merge( $detail_name, $detail_sku );
-                // print_r($detail); die();
-                //duplicate objects will be removed
-                $detail = array_map("unserialize", array_unique(array_map("serialize", $detail)));
-                // print_r($detail); die();
-                //array is sorted on the bases of id
-                sort($detail);
-                //new search code end
-                // echo "<pre>";
-                // print_r($detail); die();
-                $data['product'] = $detail;
-                $data['search_string'] = $string_main;
-                // echo count($detail);die();
-                if (count($detail) == 1) {
-                    // echo "hi";die();
-                    redirect('Home/product_detail/' . $detail[0]['sku']);
-                } else {
-                    $this->load->view('common/header', $data);
-                    $this->load->view('search_products');
-                    $this->load->view('common/footer');
-                }
-            } else {
-                $this->session->set_flashdata('emessage', validation_errors());
-                // redirect("auth/login","refresh");
-                redirect($_SERVER['HTTP_REFERER']);
-            }
-        } else {
-            $this->session->set_flashdata('emessage', 'sorry error occur.');
-            // redirect("auth/login","refresh");
-            redirect($_SERVER['HTTP_REFERER']);
-        }
-    }
-    public function search_products()
+    public function search_product_old()
     {
         $this->load->helper(array('form', 'url'));
         $this->load->library('form_validation');
@@ -708,130 +480,7 @@ class Home extends CI_Controller
             if ($this->form_validation->run() == TRUE) {
                 $string_main = $this->input->post('search_input');
                 $string = str_replace('SLR-', '', $string_main);
-                $user_id = $this->session->userdata('user_id');
-                $ss = [];
 
-                $string1 = explode(" ", $string);
-                $st_count = count($string1);
-
-                $det = array();
-
-                for ($i = 0; $i < min($st_count, 6); $i++) {
-                    $det[] = "sdesc LIKE '%" . $string1[$i] . "%'";
-                }
-
-                $isactiveProductCondition = "AND is_active = 1";
-                $groupByCondition = " GROUP BY sku_series, sku_series_type1";
-                $findProduct = "";
-
-                if ($st_count >= 1) {
-                    $a = " " . $string1[0] . " ";
-                    $det[] = "sdesc LIKE '%" . $a . "%'";
-                    $findProduct = $this->getProductType($string1[0]);
-                }
-
-                if ($st_count >= 2) {
-                    $b = $string1[1];
-                    $det[] = "AND sdesc LIKE '%" . $b . "%'";
-                }
-
-                if (!empty($findProduct)) {
-                    $native_query = "SELECT 'id, product_id, category, sub_category, minisub_category, minisub_category2, vendor, sku, sku_series, description, sdesc, gdesc, mcat1, mcat2, mcat3, mcat4, mcat5, product_type, collection, onhand, status, price, currency, unitofsale, weight, weightunit, gramweight, ringsizable, ringsize, ringsizetype, leadtime, agta, desc_e_grp, desc_e_name1, desc_e_value1, desc_e_name2, desc_e_value2, desc_e_name3, desc_e_value3, desc_e_name4, desc_e_value4, desc_e_name5, desc_e_value5, desc_e_name6, desc_e_value6, desc_e_name7, desc_e_value7, desc_e_name8, desc_e_value8, desc_e_name9, desc_e_value9, desc_e_name10, desc_e_value10, desc_e_name11, desc_e_value11, desc_e_name12, desc_e_value12, desc_e_name13, desc_e_value13, desc_e_name14, desc_e_value14, desc_e_name15, desc_e_value15, readytowear, smi, FullySetImage1, FullySetImage2, image3, video, gimage1, gimage2, gimage3, gvideo, creationdate, currencycode, country, dclarity, dcolor, totalweight, ip, date, added_by, is_active' FROM tbl_products WHERE product_type='" . $findProduct . "' " . $isactiveProductCondition . $groupByCondition;
-                } else {
-                    $placeholders = implode(' ', $det);
-                    $native_query = "SELECT 'id, product_id, category, sub_category, minisub_category, minisub_category2, vendor, sku, sku_series, description, sdesc, gdesc, mcat1, mcat2, mcat3, mcat4, mcat5, product_type, collection, onhand, status, price, currency, unitofsale, weight, weightunit, gramweight, ringsizable, ringsize, ringsizetype, leadtime, agta, desc_e_grp, desc_e_name1, desc_e_value1, desc_e_name2, desc_e_value2, desc_e_name3, desc_e_value3, desc_e_name4, desc_e_value4, desc_e_name5, desc_e_value5, desc_e_name6, desc_e_value6, desc_e_name7, desc_e_value7, desc_e_name8, desc_e_value8, desc_e_name9, desc_e_value9, desc_e_name10, desc_e_value10, desc_e_name11, desc_e_value11, desc_e_name12, desc_e_value12, desc_e_name13, desc_e_value13, desc_e_name14, desc_e_value14, desc_e_name15, desc_e_value15, readytowear, smi, FullySetImage1, FullySetImage2, image3, video, gimage1, gimage2, gimage3, gvideo, creationdate, currencycode, country, dclarity, dcolor, totalweight, ip, date, added_by, is_active' FROM tbl_products WHERE " . implode(' AND ', $det) . $isactiveProductCondition . $groupByCondition;
-                }
-
-                $details = $this->db->query($native_query);
-
-                if ($details->num_rows() > 0) {
-                    $ss = [];
-                    foreach ($details->result() as $dt) {
-                        $a = 0;
-                        if (!empty($ss)) {
-                            foreach ($ss as $value) {
-                                if ($dt->sku_series == $value['sku_series']) {
-                                    $a = 1;
-                                }
-                            }
-                        }
-
-                        if ($a == 1) {
-                            continue;
-                        } else {
-                            $ss[] = $this->prepareProductData($dt);
-                        }
-                    }
-                } else {
-                    $ss = [];
-                }
-
-                $this->db->select('id, product_id, category, sub_category, minisub_category, minisub_category2, vendor, sku, sku_series, description, sdesc, gdesc, mcat1, mcat2, mcat3, mcat4, mcat5, product_type, collection, onhand, status, price, currency, unitofsale, weight, weightunit, gramweight, ringsizable, ringsize, ringsizetype, leadtime, agta, desc_e_grp, desc_e_name1, desc_e_value1, desc_e_name2, desc_e_value2, desc_e_name3, desc_e_value3, desc_e_name4, desc_e_value4, desc_e_name5, desc_e_value5, desc_e_name6, desc_e_value6, desc_e_name7, desc_e_value7, desc_e_name8, desc_e_value8, desc_e_name9, desc_e_value9, desc_e_name10, desc_e_value10, desc_e_name11, desc_e_value11, desc_e_name12, desc_e_value12, desc_e_name13, desc_e_value13, desc_e_name14, desc_e_value14, desc_e_name15, desc_e_value15, readytowear, smi, FullySetImage1, FullySetImage2, image3, video, gimage1, gimage2, gimage3, gvideo, creationdate, currencycode, country, dclarity, dcolor, totalweight, ip, date, added_by, is_active');
-                $this->db->from('tbl_products');
-                $this->db->group_by(array("sku_series", "sku_series_type1"));
-                $this->db->like("sku", $string);
-                $this->db->where('is_active', 1);
-                $detail_sku = $this->db->get();
-                $yy = [];
-
-                foreach ($detail_sku->result() as $dt) {
-                    $b = 0;
-
-                    if (empty($ss)) {
-                        foreach ($yy as $value) {
-                            if ($dt->sku_series == $value['sku_series']) {
-                                $b = 1;
-                            }
-                        }
-                    }
-
-                    if ($b == 1) {
-                        continue;
-                    } else {
-                        $yy[] = $this->prepareProductData($dt);
-                    }
-                }
-
-                $detail = array_merge($ss, $yy);
-
-                if (empty($detail)) {
-                    $detail = $ss;
-                }
-
-                $detail = array_map("unserialize", array_unique(array_map("serialize", $detail)));
-                sort($detail);
-
-                $data['product'] = $detail;
-                $data['search_string'] = $string_main;
-
-                if (count($detail) == 1) {
-                    redirect('Home/product_detail/' . $detail[0]['sku']);
-                } else {
-                    $this->load->view('common/header', $data);
-                    $this->load->view('search_products');
-                    $this->load->view('common/footer');
-                }
-            } else {
-                $this->session->set_flashdata('emessage', validation_errors());
-                redirect($_SERVER['HTTP_REFERER']);
-            }
-        } else {
-            $this->session->set_flashdata('emessage', 'Sorry, an error occurred.');
-            redirect($_SERVER['HTTP_REFERER']);
-        }
-    }
-    public function search_product()
-    {
-        $this->load->helper(array('form', 'url'));
-        $this->load->library('form_validation');
-        $this->load->helper('security');
-
-        if ($this->input->post()) {
-            $this->form_validation->set_rules('search_input', 'search_input', 'required|xss_clean|trim');
-
-            if ($this->form_validation->run() == TRUE) {
-                $string_main = $this->input->post('search_input');
-                $string = str_replace('SLR-', '', $string_main);
                 $product_data = $this->db->select('id,pro_id,series_id,group_id,search_values')
                     ->from('tbl_products')
                     ->limit(1)
@@ -855,6 +504,132 @@ class Home extends CI_Controller
             $this->session->set_flashdata('emessage', 'Sorry, an error occurred.');
             redirect($_SERVER['HTTP_REFERER']);
         }
+    }
+    public function search_product()
+    {
+        // $this->load->helper(array('form', 'url'));
+        // $this->load->library('form_validation');
+        // $this->load->helper('security');
+
+        // if ($this->input->post()) {
+        //     $this->form_validation->set_rules('search_input', 'search_input', 'required|xss_clean|trim');
+
+        //     if ($this->form_validation->run() == TRUE) {
+        //         $string_main = $this->input->post('search_input');
+        $this->load->helper('form');
+        $string_main = $_GET['search_input'];
+        $page_index = isset($_GET['page_index']) ? $_GET['page_index'] : 1;
+        // echo $page_index;die();
+        // $page_index = $this->input->post('page_index') ? $this->input->post('page_index') : 1;
+        $string = str_replace('SLR-', '', $string_main);
+        // echo "hi";die();
+        // $config['base_url'] = base_url() . 'Home/search_product?search_input=' . $string_main . "&page_index=";
+        // $per_page = 28;
+        // $config['per_page'] = $per_page;
+        // $config['num_links'] = 3;
+        // $config['full_tag_open'] = '<ul class="pagination " style="margin: auto;">';
+        // $config['full_tag_close'] = '</ul>';
+        // $config['use_page_numbers'] = true;
+        // $config['next_link'] = 'First';
+        // $config['first_tag_open'] = '<li class="first page page-link">';
+        // $config['first_tag_close'] = '</li>';
+        // $config['last_link'] = 'Last';
+        // $config['last_tag_open'] = '<li class="last page page-link">';
+        // $config['last_tag_close'] = '</li>';
+        // $config['next_link'] = ' <span aria-hidden="true">&raquo;</span>';
+        // $config['next_tag_open'] = '<li class="page-item page-link nextpage">';
+        // $config['next_tag_close'] = '</li>';
+        // $config['prev_link'] = ' <span aria-hidden="true">&laquo;</span>';
+        // $config['prev_tag_open'] = '<li class="page-item  page-link prevpage">';
+        // $config['prev_tag_close'] = '</li>';
+        // $config['cur_tag_open'] = '<li class="page-item active page-link"><a href="">';
+        // $config['cur_tag_close'] = '</a></li>';
+        // $config['num_tag_open'] = '<li class="page-item page-link page-link">';
+        // $config['num_tag_close'] = '</li>';
+        // $productCount = $this->db->select('id')->group_by(array("series_id"))->from('tbl_products')->like("search_values", $string)->count_all_results();
+        // $product_data = $this->db->select('id,pro_id,series_id,group_id,search_values')
+        //     ->from('tbl_products')
+        //     ->limit(1)
+        //     ->where("JSON_SEARCH(search_values, 'one', '$string') IS NOT NULL", null, false)
+        //     ->get()->row();
+        // $product_data = $this->db->select('full_set_images,images,group_images,series_id,pro_id,group_id,description,price,catalog_values')
+        $product_data = $this->db->select('id')
+            ->from('tbl_products')
+            // ->limit($per_page, $start)
+            ->group_by(array("series_id"))
+            ->like("search_values", $string)
+            ->get();
+        echo "hi";
+        die();
+        $data['search_string'] = $string_main;
+        if (!empty($product_data)) {
+            // //--------- pagination config ----------------------
+            // $total_rows = $productCount;
+            // // Calculate the total number of pages
+            // $total_pages = ceil($total_rows / $per_page);
+
+            // // Get the current page number
+            // $current_page = $page_index;
+            // $config['total_rows'] = $total_rows;
+
+            // // Initialize the pagination
+            // $this->pagination->initialize($config);
+
+            // // Create an array for the page dropdown options
+            // $page_options = array();
+            // for ($i = 1; $i <= $total_pages; $i++) {
+            //     $page_options[$i] = $i;
+            // }
+            // if (!empty($page_index)) {
+            //     if (is_numeric($page_index)) {
+            //         $start = ($page_index - 1) * $config['per_page'];
+            //     } else {
+            //         $page_index = 0;
+            //         $start = 0;
+            //     }
+            // } else {
+            //     $page_index = 0;
+            //     $start = 0;
+            // }
+            // $product_data = $this->db->select('full_set_images,images,group_images,series_id,pro_id,group_id,description,price,catalog_values,search_values')
+            //     ->from('tbl_products')
+            //     ->limit($per_page, $start)
+            //     ->group_by(array("series_id"))
+            //     ->like("search_values", $string)
+            //     ->get();
+            // $links = $this->pagination->create_links();
+            if (count($product_data) > 1) {
+                $data['product_data'] = $product_data;
+                // $data['links'] = $links;
+                // $data['current_page'] = $current_page;
+                // $data['total_pages'] = $total_pages;
+                // $data['page_options'] = $page_options;
+                $data['links'] = [];
+                $data['current_page'] = 1;
+                $data['total_pages'] = 10;
+                $data['page_options'] = [];
+                $data['page_index'] = $page_index;
+                $this->load->view('common/header', $data);
+                $this->load->view('search_products');
+                $this->load->view('common/footer');
+            } else {
+                redirect('Home/product_details/' . $product_data->row()->series_id . '/' . $product_data->row()->pro_id . '?groupId=' . $product_data->row()->group_id . '');
+            }
+        } else {
+            $this->load->view('common/header', $data);
+            $this->load->view('empty_result');
+            $this->load->view('common/footer');
+            // $this->session->set_flashdata('emessage', 'No Product found!');
+            // redirect($_SERVER['HTTP_REFERER']);
+        }
+        //     } else {
+        //         $this->session->set_flashdata('emessage', validation_errors());
+        //         redirect($_SERVER['HTTP_REFERER']);
+        //     }
+        // } else {
+        //     $this->session->set_flashdata('emessage', 'Sorry, an error occurred.');
+        //     redirect($_SERVER['HTTP_REFERER']);
+        // }
     }
     function getProductType($input)
     {
@@ -1156,7 +931,50 @@ class Home extends CI_Controller
         $config['num_tag_close'] = '</li>';
 
 
-        if ($type == 1) {
+        if ($type == 2) {//---- minor2 category
+            $data['productCount'] = $this->db->select('id')->group_by(array("series_id"))->get_where('tbl_products', array('minor2_category_id ' => $idd, 'is_quick' => null))->num_rows();
+            //--------- pagination config ----------------------
+            $total_rows = $data['productCount'];
+            // Calculate the total number of pages
+            $total_pages = ceil($total_rows / $per_page);
+
+            // Get the current page number
+            $current_page = $page_index;
+            $config['total_rows'] = $total_rows;
+
+            // Initialize the pagination
+            $this->pagination->initialize($config);
+
+            // Create an array for the page dropdown options
+            $page_options = array();
+            for ($i = 1; $i <= $total_pages; $i++) {
+                $page_options[$i] = $i;
+            }
+            if (!empty($page_index)) {
+                if (is_numeric($page_index)) {
+                    $start = ($page_index - 1) * $config['per_page'];
+                } else {
+                    $page_index = 0;
+                    $start = 0;
+                }
+            } else {
+                $page_index = 0;
+                $start = 0;
+            }
+            $data['products_data'] = $this->db->select('full_set_images,images,group_images,series_id,pro_id,group_id,description,price,catalog_values')->limit($config["per_page"], $start)->group_by(array("series_id"))->get_where('tbl_products', array('minor2_category_id ' => $idd, 'is_quick' => null))->result();
+            $mini2_data = $this->db->get_where('tbl_minisubcategory2', array('is_active' => 1, 'id' => $idd))->row();
+            $mini_data = $this->db->get_where('tbl_minisubcategory', array('is_active' => 1, 'id' => $mini2_data->minorsubcategory))->row();
+            $subcat_data = $this->db->get_where('tbl_sub_category', array('is_active' => 1, 'id' => $mini_data->subcategory))->row();
+            $cat_data = $this->db->get_where('tbl_category', array('is_active' => 1, 'id' => $mini_data->category))->row();
+            $data['category_name'] = $cat_data->name;
+            $data['subcategory_name'] = $subcat_data->name;
+            $data['category_id'] = $cat_data->id;
+            $data['minorsub_name'] = $mini_data->name;
+            $data['minorsub2_name'] = $mini2_data->name;
+            $data['description'] = $mini2_data->description;
+            $data['banner'] = $mini2_data->banner;
+            $data['heading'] = $mini2_data->name;
+        } else if ($type == 1) {//---- minor category
             $data['productCount'] = $this->db->select('id')->group_by(array("series_id"))->get_where('tbl_products', array('minor_category_id' => $idd, 'is_quick' => null))->num_rows();
             //--------- pagination config ----------------------
             $total_rows = $data['productCount'];
@@ -1197,7 +1015,7 @@ class Home extends CI_Controller
             $data['description'] = $mini_data->description;
             $data['banner'] = $mini_data->banner;
             $data['heading'] = $mini_data->name;
-        } else if ($type == 3) {
+        } else if ($type == 3) {//---- category
             $data['productCount'] = $this->db->select('id')->group_by(array("series_id"))->get_where('tbl_products', array('category_id' => $idd, 'is_quick' => null))->num_rows();
             //--------- pagination config ----------------------
             $total_rows = $data['productCount'];
@@ -1236,7 +1054,7 @@ class Home extends CI_Controller
             $data['description'] = $cat_data->description;
             $data['banner'] = $cat_data->banner;
             $data['heading'] = $cat_data->name;
-        } else {
+        } else {//---- subactegory
             $data['productCount'] = $this->db->select('id')->group_by(array("series_id"))->get_where('tbl_products', array('subcategory_id' => $idd, 'is_quick' => null))->num_rows();
             //--------- pagination config ----------------------
             $total_rows = $data['productCount'];
@@ -5573,6 +5391,30 @@ class Home extends CI_Controller
         $data['description'] = $description;
         $this->load->view('common/header', $data);
         $this->load->view('minorsub_category');
+        $this->load->view('common/footer');
+    }
+    public function minor2_sub_products($idd)
+    {
+        $id = base64_decode($idd);
+        $data['subcategory_id'] = $idd;
+        $minor_data = $this->db->get_where('tbl_minisubcategory', array('is_active' => 1, 'id' => $id))->row();
+        $this->db->select('*');
+        $this->db->from('tbl_minisubcategory2');
+        $this->db->where('minorsubcategory', $id);
+        $this->db->where('is_active', 1);
+        $this->db->order_by('seq', 'ASC');
+        $data['minorsub_category'] = $this->db->get();
+        //get subcategory ans category name
+        $sub_data = $this->db->get_where('tbl_sub_category', array('is_active' => 1, 'id' => $minor_data->subcategory))->row();
+        $cat_data = $this->db->get_where('tbl_category', array('is_active' => 1, 'id' => $minor_data->category))->row();
+        $data['category_id'] = $cat_data ? $cat_data->id : '';
+        $data['category_name'] = $cat_data ? $cat_data->name : 'N/A';
+        $data['subcategory_name'] =  $sub_data ? $sub_data->name : 'N/A';
+        $data['name'] =  $minor_data ? $minor_data->name : 'N/A';
+        $data['banner'] = $minor_data->banner;
+        $data['description'] = $minor_data->description;
+        $this->load->view('common/header', $data);
+        $this->load->view('minorsub_category2');
         $this->load->view('common/footer');
     }
     // public function checkout()

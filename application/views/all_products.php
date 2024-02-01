@@ -44,10 +44,13 @@
         <p><a href="<?= base_url() ?>"><span>Home</span></a> >
           <?php if (!empty($subcategory_name)) { ?>
             <a href="<?= base_url(); ?>Home/sub_category/<?= $category_id ?>"><span><?= $category_name; ?></span></a>
-            <?php if (!empty($minorsub_name)) { ?>
-              > <span><?= $subcategory_name; ?></span> > <span><?= $minorsub_name; ?></span>
+            <?php if (!empty($minorsub2_name)) { ?>
+              > <span><?= $subcategory_name; ?></span> > <span><?= $minorsub_name; ?> > <span><?= $minorsub2_name; ?></span>
         </p>
-      <?php } else { ?>
+      <?php } else  if (!empty($minorsub_name)) { ?>
+        > <span><?= $subcategory_name; ?></span> > <span><?= $minorsub_name; ?>d</span>
+        </p>
+      <?php } else if (!empty($subcategory_name)){ ?>
         > <span><?= $subcategory_name; ?></span> </p>
       <?php } ?>
     <?php } else { ?>

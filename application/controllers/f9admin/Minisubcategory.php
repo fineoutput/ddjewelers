@@ -423,7 +423,6 @@ class Minisubcategory extends CI_finecontrol
               'type' => $type,
               'image' => $nnnn3,
               'banner' => $banner2,
-
               'api_id' => $api_id,
               'seq' => $seq,
               'finshed' => $finshed,

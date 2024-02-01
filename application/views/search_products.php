@@ -137,13 +137,13 @@
                             <?php $i++;
                             } ?>
 
-                            <div class="row justify-content-center w-100">
+                            <!-- <div class="row justify-content-center w-100">
                                 <?= $links ?>
                                 <div class="pagination-dropdown row align-items-center">
                                     <label for="page-select">Go to page: </label>
                                     <?= form_dropdown('page-select', $page_options, $current_page, 'class="form-control ml-2 " style="width: auto;" onchange="window.location.href=\'' . base_url("Home/search_product?search_input={$search_string}&page_index=") . '\' + this.value"') ?>
                                 </div>
-                            </div>
+                            </div> -->
                         <?  } ?>
                     </div>
                 </div>

@@ -29,10 +29,7 @@ class Home extends CI_finecontrol
 			// echo $this->session->userdata('image');
 			// echo $this->session->userdata('position');
 			// exit;
-			$this->db->select('*');
-			$this->db->group_by(array("series_id"));
-			$this->db->from('tbl_products');
-			$data1['products'] = $this->db->count_all_results();
+			
 
 			$this->db->select('*');
 			$this->db->from('tbl_category');
