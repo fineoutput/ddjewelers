@@ -37,11 +37,14 @@
 									<?php $i = 1;
 									foreach ($ordered_product_details_data->result() as $data) {
 										$gem_data = json_decode($data->gem_data);
+											  $pro_data = $this->db->get_where('tbl_products', array('series_id'=> $data->pro_id,'series_id'=> $data->series_id))->row();
+										
 									?>
 										<tr>
 											<td><?php echo $i ?> </td>
 											<td><img src="<?= $data->img ?>" style="width:150px;height:150px"></td>
-											<td><?= $data->description ?>
+											<td>
+											<a href="<?= base_url() ?>Home/product_details/<?= $pro_data->series_id ?>/<?= $pro_data->pro_id ?>?groupId=<?= $pro_data->group_id ?>" target="_blank" rel="noopener noreferrer"><?= $data->description ?>
 												<? if (!empty($gem_data)) { ?>
 													</br><span><b>Stones : </b></span>
 													<? foreach ($gem_data as  $gem) {
@@ -62,6 +65,7 @@
 														<? } ?>
 													<? } ?>
 												<? } ?>
+											</a>
 											</td>
 											<td><?php echo $data->quantity ?></td>
 											<td>$<?php echo $data->amount ?></td>

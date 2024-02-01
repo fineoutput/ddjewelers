@@ -96,6 +96,7 @@
                         $state = $state_name;
                         $city = $addr_da->city;
                         $zip = $addr_da->zipcode;
+
                       } else {
                         $uname = '';
                         $address = "";
@@ -104,6 +105,7 @@
                         $zip = "";
                         $country = "";
                         $notes = '';
+                        
                       }
 
                     ?>
