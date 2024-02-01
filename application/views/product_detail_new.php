@@ -44,6 +44,10 @@
     border-radius: 5px;
 
   }
+  .arrow-1 {
+    top: 24%;
+  }
+
 
   .open {
     display: show !important;
@@ -337,6 +341,38 @@
   .main-img-slider.slick-initialized.slick-slider .slick-prev.slick-arrow {
     display: none !important;
   }
+  .top-slider-image{
+    width: 70% !important;
+  }
+  @media(max-width:2560px){
+    .swiper-backface-hidden .swiper-slide {
+    margin-right: -66px ;
+}
+.top-slider-image {
+    width: 53% ;
+}
+  }
+  
+
+  @media screen and (min-width: 1024px) and (max-width: 1440px) { 
+    .swiper-backface-hidden .swiper-slide {
+    margin-right: -17px ;
+}
+.top-slider-image {
+    width: 55% ;
+}
+.swiper-backface-hidden .swiper-slide {
+    margin-right: -15px ;
+    width: 82px ;
+}
+.swiper-backface-hidden .swiper-slide a p.h6 {
+    font-size: 11px;
+}
+.swiper-backface-hidden .swiper-slide {
+    margin-right: -15px ;
+}
+}
+
 </style>
 <?
 $catData = $this->db->get_where('tbl_category', array('id' => $products->category_id))->row();
@@ -458,7 +494,7 @@ $minor2Data = $this->db->get_where('tbl_minisubcategory2', array('id' => $produc
       <? if (count($stone_data) > 1 && !empty($stone_data[0]->stone) && $stone_data[0]->stone != "N/A" && $products->stone != "N/A") { ?>
         <div class="row">
           <div class="col-md-12">
-            <h5>Primary Stone Shape</h5>
+            <h5 class="mt-2">Primary Stone Shape</h5>
             <hr>
           </div>
           <div class="col-md-12 mb-4">
@@ -488,8 +524,8 @@ $minor2Data = $this->db->get_where('tbl_minisubcategory2', array('id' => $produc
                       $img = "";
                     }
                 ?>
-                    <div class="swiper-slide">
-                      <a href="<?= base_url() ?>Home/product_details/<?= $products->series_id ?>/<?= $st->pro_id ?>?groupId=<?= $products->group_id ?>"><img src="<?= base_url() ?>assets\jewel\img\stone_shape\<?= $img ?>" style="width:70%;" class="img-fluid Stone_Shape_img">
+                    <div class="swiper-slide slider-main-box">
+                      <a href="<?= base_url() ?>Home/product_details/<?= $products->series_id ?>/<?= $st->pro_id ?>?groupId=<?= $products->group_id ?>"><img src="<?= base_url() ?>assets\jewel\img\stone_shape\<?= $img ?>"  class="img-fluid Stone_Shape_img top-slider-image">
                         <p class="h6"><?= $st->stone ?></p>
                       </a>
                     </div>
@@ -974,7 +1010,7 @@ $minor2Data = $this->db->get_where('tbl_minisubcategory2', array('id' => $produc
           spaceBetween: 30,
         },
         '1440': {
-          slidesPerView: 9,
+          slidesPerView: 8,
           spaceBetween: 30,
         },
         '2660': {

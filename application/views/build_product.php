@@ -363,32 +363,6 @@
   }
   
 
-
-
-
-
-
-
- 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
-
   @media screen and (min-width: 1024px) and (max-width: 1440px) { 
     .swiper-backface-hidden .swiper-slide {
     margin-right: -17px ;
