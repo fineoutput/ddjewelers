@@ -18,9 +18,9 @@ if (!empty($cart_data)) {
     $pro_data = $this->db->get_where('tbl_products', array('pro_id' => $data['pro_id']))->row();
     if (!empty($pro_data)) {
       if (empty($data['img'])) {
-      $images = json_decode($pro_data->full_set_images);
-      $img = $images[0]->FullUrl;
-      }else{
+        $images = json_decode($pro_data->full_set_images);
+        $img = $images[0]->FullUrl;
+      } else {
         $img = $data['img'];
       }
       $elements = json_decode($pro_data->elements);
@@ -57,18 +57,21 @@ if (!empty($cart_data)) {
                   <div class="col-md-12">
                     <span><b>Stones : </b></span>
                     <? foreach ($gem_data as  $gem) {
-                    if (!empty($gem->Product)) {
+                      if (!empty($gem->Product)) {
                         $item = $gem->Product;
-                      } else if (!empty($data->Diamond)) {
+                      } else if (!empty($gem->Diamond)) {
                         $item = $gem->Diamond;
-
-                      } else if (!empty($data->GemStone)) {
+                      } else if (!empty($gem->GemStone)) {
                         $item = $gem->GemStone;
-
-                      } else if (!empty($data->LabGrownDiamond)) {
+                      } else if (!empty($gem->LabGrownDiamond)) {
                         $item = $gem->LabGrownDiamond;
-                       } ?>
-                      <span><?=$item->Description?> <b>|</b> </span>
+                      } ?>
+                      <? if (!empty($item->Description)) { ?>
+                        <span> <?= $item->Description ?> <b>|</b> </span>
+                      <? } else { ?>
+                        <span> <?= $item->SerialNumber ?> <b>|</b> </span>
+
+                      <? } ?>
                     <? } ?>
                   </div>
                 <? } ?>

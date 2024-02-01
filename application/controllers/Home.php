@@ -1249,7 +1249,7 @@ class Home extends CI_Controller
                 $catalogValues = json_decode($existing_pro_data->catalog_values);
                 // print_r($catalogValues);
                 $catalogValues[$catalog_key] = $catalog_value;
-            
+
                 $new_pro_data = $this->db->like('catalog_values', json_encode($catalogValues))->get_where('tbl_products', array('group_id' => $group_id, 'series_id' => $series_id))->row();
                 if (!empty($new_pro_data)) {
                     $res = array(
@@ -1259,10 +1259,10 @@ class Home extends CI_Controller
                     echo json_encode($res);
                 } else {
                     $new_pro_data = $this->db
-                    ->where(['group_id' => $group_id, 'series_id' => $series_id])
-                    ->where("JSON_SEARCH(catalog_values, 'one', '$catalog_value') IS NOT NULL", null, false)
-                    ->get('tbl_products')
-                    ->row();
+                        ->where(['group_id' => $group_id, 'series_id' => $series_id])
+                        ->where("JSON_SEARCH(catalog_values, 'one', '$catalog_value') IS NOT NULL", null, false)
+                        ->get('tbl_products')
+                        ->row();
                     if (!empty($new_pro_data)) {
                         $res = array(
                             'message' => $new_pro_data->pro_id,
@@ -7243,8 +7243,32 @@ class Home extends CI_Controller
                     $this->session->set_userdata('user_name', $nnn3);
                     $this->session->set_userdata('user_id', $nnn4);
                     $this->session->set_userdata('user_data', $nnn4);
+                    //----- update cart data -------------
+                    $cart_data = $this->session->userdata('cart_data');
+                    $ip = $this->input->ip_address();
+                    date_default_timezone_set("Asia/Calcutta");
+                    $cur_date = date("Y-m-d H:i:s");
+                    foreach ($cart_data as $data) {
+                        $cartInfo = $this->db->get_where('tbl_cart', array('user_id' => $nnn4, 'pro_id' => $data['pro_id'], 'ring_size' => $data['ring_size']))->row();
+                        if (empty($cartInfo)) {
+                            $cart_insert = array(
+                                'user_id' => $nnn4,
+                                'pro_id' => $data['pro_id'],
+                                'quantity' => $data['quantity'],
+                                'ring_size' => $data['ring_size'],
+                                'ring_price' => $data['ring_price'],
+                                'gem_data' => $data['gem_data'],
+                                'price' => $data['price'],
+                                'img' => $data['img'],
+                                'date' => $cur_date
+                            );
+                            $last_id = $this->base_model->insert_table("tbl_cart", $cart_insert, 1);
+                        }
+                    }
+                    $this->session->unset_userdata('cart_data'); //---deleting session cart data
+                    $this->session->set_flashdata('smessage', 'Successfully Login!');
                     //$this->session->set_userdata('name',$name);
-                    redirect("Home/index", "refresh");
+                    redirect("Home/index");
                 } else {
                     $this->session->set_flashdata('emessage', 'wrong password');
                     // redirect("auth/login","refresh");
@@ -7265,7 +7289,10 @@ class Home extends CI_Controller
     {
         if (!empty($this->session->userdata('user_name'))) {
             $this->session->sess_destroy();
-            redirect("Home/index", "refresh");
+            $this->session->set_flashdata('smessage', 'Successfully Logout!');
+            redirect($_SERVER['HTTP_REFERER']);
+
+            // redirect("Home/index", "refresh");
         } else {
             echo "Error Loging out";
         }

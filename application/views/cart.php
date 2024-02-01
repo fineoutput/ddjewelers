@@ -61,14 +61,19 @@ if (!empty($cart_data)) {
                     <? foreach ($gem_data as  $gem) {
                       if (!empty($gem->Product)) {
                         $item = $gem->Product;
-                      } else if (!empty($data->Diamond)) {
+                      } else if (!empty($gem->Diamond)) {
                         $item = $gem->Diamond;
-                      } else if (!empty($data->GemStone)) {
+                      } else if (!empty($gem->GemStone)) {
                         $item = $gem->GemStone;
-                      } else if (!empty($data->LabGrownDiamond)) {
+                      } else if (!empty($gem->LabGrownDiamond)) {
                         $item = $gem->LabGrownDiamond;
                       } ?>
-                      <span><?= $item->Description ?> <b>|</b> </span>
+                      <? if (!empty($item->Description)) { ?>
+                        <span> <?= $item->Description ?> <b>|</b> </span>
+                      <? } else { ?>
+                        <span> <?= $item->SerialNumber ?> <b>|</b> </span>
+
+                      <? } ?>
                     <? } ?>
                   </div>
                 <? } ?>
