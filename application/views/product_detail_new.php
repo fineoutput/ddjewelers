@@ -346,7 +346,7 @@ $minor2Data = $this->db->get_where('tbl_minisubcategory2', array('id' => $produc
 
 ?>
 
-<div class="container-fluid mt-3 ">
+<div class="container mt-3 ">
   <div class="row">
     <div class="col-md-12 page_span">
       <p>
@@ -403,7 +403,7 @@ $minor2Data = $this->db->get_where('tbl_minisubcategory2', array('id' => $produc
     <!-- ----------- START MAIN SLIDER ------------- -->
     <div class="col-md-4">
       <section id="detail">
-        <div class="col-md-8 mx-auto">
+        <div class="col-md-12 mx-auto">
           <? if (!empty($all_images)) { ?>
             <div class="product-images demo-gallery">
               <div class="main-img-slider">
@@ -440,12 +440,12 @@ $minor2Data = $this->db->get_where('tbl_minisubcategory2', array('id' => $produc
         </div>
       </section>
       <div class="row mt-5">
-        <div class="col-md-8 m-auto">
+        <div class="col-md-12 m-auto">
           <a href="javascript:void(0)">
             <button type="button" id="view" class="btn w-100" style="background: #547f9e;color: white;">View Full Detail</button>
           </a>
         </div>
-        <div class="col-md-8 m-auto">
+        <div class="col-md-12 m-auto">
           <a href="<?= base_url() ?>Home/load_modify_contact/<?= $products->id ?>">
             <button type="button" class="btn w-100 mt-3" style="background-color:#2a2828;color:white"><i class="fa fa-cog" style="color:#edbe68" aria-hidden="true"></i><span> Modify This Style</span></button>
           </a>
@@ -695,10 +695,12 @@ $minor2Data = $this->db->get_where('tbl_minisubcategory2', array('id' => $produc
         <input type="submit" class="mt-3 add-btn" id="wishBtn" value="Add to wishlist" onclick="wishlist(this)" data-pro-id="<?= $products->pro_id; ?>" status="add">
       <?php } ?>
       <div class="d-flex justify-content-between p-2 pb-4">
-        <div>
-          <a href="<?= base_url(); ?>Home/contact_us"><button class="btn" style="background:#2a2828;color:white;"><i class="fa fa-fw fa-envelope" aria-hidden="true"></i>Contact</button></a>
-          <a href="<?= base_url(); ?>Home/contact_us"><button class="btn" style="background:#2a2828;color:white;"><i class="fa fa-fw fa-calendar" aria-hidden="true"></i>Appointment</button></a>
-        </div>
+     
+          <a href="<?= base_url(); ?>Home/contact_us"><button class="btn d-flex" style=" background:#2a2828;color:white;     align-items: center;
+    margin: 2px;"><i class="fa fa-fw fa-envelope" aria-hidden="true"></i>Contact</button></a>
+          <a href="<?= base_url(); ?>Home/contact_us"><button class="btn d-flex" style="background:#2a2828;color:white;     align-items: center;
+    margin: 2px;"><i class="fa fa-fw fa-calendar" aria-hidden="true"></i>Appointment</button></a>
+   
       </div>
 
       <div class="col-md-12">

@@ -350,11 +350,11 @@
           spaceBetween: 30,
         },
         '1440': {
-          slidesPerView: 10,
+          slidesPerView: 9,
           spaceBetween: 30,
         },
         '2560': {
-          slidesPerView: 15,
+          slidesPerView: 10,
           spaceBetween: 30,
         },
       },
