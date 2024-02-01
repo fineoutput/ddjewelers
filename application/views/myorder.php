@@ -61,10 +61,10 @@
                                 <div class="col-12 sp_od_mob mb-3 d-none">
                                     <center>
                                         <span class="">Order Placed
-                                                <?php
-                                                $newdate = new DateTime($data_order1->date);
-                                                echo $newdate->format('j F, Y, g:i a');   #d-m-Y  // March 10, 2001, 5:16 pm
-                                                ?>
+                                            <?php
+                                            $newdate = new DateTime($data_order1->date);
+                                            echo $newdate->format('j F, Y, g:i a');   #d-m-Y  // March 10, 2001, 5:16 pm
+                                            ?>
                                         </span>
                                     </center>
                                 </div>
@@ -90,14 +90,28 @@
                                         <div class="col-10">
                                             <h4><?= $o_product_name; ?></h4>
                                             <? if (!empty($gem_data)) { ?>
-                                                <p><b>Stones:</b> <? foreach ($gem_data as  $gem) { ?>
-                                                        <span><?= $gem->Product->Description ?> <b>|</b> </span>
-                                                <? }
-                                                                } ?>
+                                                <p><b>Stones:</b> <? foreach ($gem_data as  $gem) {
+                                                                        if (!empty($gem->Product)) {
+                                                                            $item = $gem->Product;
+                                                                        } else if (!empty($gem->Diamond)) {
+                                                                            $item = $gem->Diamond;
+                                                                        } else if (!empty($gem->GemStone)) {
+                                                                            $item = $gem->GemStone;
+                                                                        } else if (!empty($gem->LabGrownDiamond)) {
+                                                                            $item = $gem->LabGrownDiamond;
+                                                                        } ?>
+                                                        <? if (!empty($item->Description)) { ?>
+                                                            <span> <?= $item->Description ?> <b>|</b> </span>
+                                                        <? } else { ?>
+                                                            <span> <?= $item->SerialNumber ?> <b>|</b> </span>
+
+                                                        <? } ?>
+                                                    <? } ?>
                                                 </p>
-                                                <p><b>SKU:</b> <?= $o_product_sku; ?></p>
-                                                <p><b>Quantity: </b> <?= $dd1->quantity; ?></p>
-                                                <p><b>Price:</b> $<?= $dd1->amount; ?></p>
+                                            <? } ?>
+                                            <p><b>SKU:</b> <?= $o_product_sku; ?></p>
+                                            <p><b>Quantity: </b> <?= $dd1->quantity; ?></p>
+                                            <p><b>Price:</b> $<?= $dd1->amount; ?></p>
                                         </div>
                                     </div>
                                 </div>
@@ -121,7 +135,7 @@
               </button> -->
                                 </div>
                                 <div class="col-12 col-sm-10 col-md-10 col-lg-10 d-flex align-items-center ab_p_h" style="justify-content: space-between;">
-                                    <p class="mb-0"><b>Payment Method :</b>  <?= $data_order1->payment_type ?></p>
+                                    <p class="mb-0"><b>Payment Method :</b> <?= $data_order1->payment_type ?></p>
                                     <p class="mb-0 ml-2"><b>Subtotal:</b> $<?= $data_order1->total_amount; ?></p>
                                     <? if (!empty($data_order1->shipping)) { ?><p class="mb-0"><b>Shipping:</b>$<?= $data_order1->shipping; ?></p><? } ?>
                                     <? if (!empty($data_order1->p_discount)) { ?><p class="mb-0"><b>Coupon Discount:</b> $<?= $data_order1->p_discount; ?></p><? } ?>

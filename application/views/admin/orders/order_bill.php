@@ -203,10 +203,24 @@
                                 <td><?= $data->description ?>
                                     <? if (!empty($gem_data)) { ?>
                                         </br><span><b>Stones : </b></span>
-                                        <? foreach ($gem_data as  $gem) { ?>
-                                            <span><?= $gem->Product->Description ?> <b>|</b> </span>
-                                    <? }
-                                    } ?>
+                                        <? foreach ($gem_data as  $gem) {
+                                            if (!empty($gem->Product)) {
+                                                $item = $gem->Product;
+                                            } else if (!empty($gem->Diamond)) {
+                                                $item = $gem->Diamond;
+                                            } else if (!empty($gem->GemStone)) {
+                                                $item = $gem->GemStone;
+                                            } else if (!empty($gem->LabGrownDiamond)) {
+                                                $item = $gem->LabGrownDiamond;
+                                            } ?>
+                                            <? if (!empty($item->Description)) { ?>
+                                                <span> <?= $item->Description ?> <b>|</b> </span>
+                                            <? } else { ?>
+                                                <span> <?= $item->SerialNumber ?> <b>|</b> </span>
+
+                                            <? } ?>
+                                        <? } ?>
+                                    <? } ?>
                                 </td>
                                 <td><?php echo "$" . $data->unit_price; ?></td>
                                 <td><?php echo $data->quantity; ?></td>
