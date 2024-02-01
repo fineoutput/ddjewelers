@@ -165,6 +165,11 @@
       }
     }
 
+    .d-flex.justify-content-between.p-2.pb-4 button.btn.d-flex {
+    width: 98%;
+    justify-content: center;
+}
+
     .signup {
       background: #333366;
       color: white !important;
