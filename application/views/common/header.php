@@ -35,6 +35,8 @@
   <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
 
 </head>
+
+
 <style>
   ul.hov_ul li a {
     width: 100%;
@@ -226,7 +228,20 @@
       cursor: pointer;
     }
 
-    @media (min-width: 1025px) and (max-width: 1350px) {}
+   @media(max-width:1108px){
+    .ulcontent {
+    top: 25%;
+}
+button.ser_btn{
+  min-width: 13% !important;
+}
+   }
+
+   @media(max-width:1168px){
+      button.ser_btn{
+        min-width: 13% !important;
+      }
+   }
   </style>
   <section class="top_her">
     <div class="container-fluid pt-0 pb-0 pl-5 pr-5 h-100">

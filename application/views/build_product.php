@@ -425,6 +425,8 @@ if ($products->is_quick == 1) {
 
 ?>
 <div class="container-fluid mt-3 ">
+  <div class="row ">
+  <div class="col-xxl-10 col-xl-11 col-lg-12 col-md-12 " style=" margin: auto;">
   <div class="row">
     <div class="col-md-12 page_span">
       <p>
@@ -479,11 +481,11 @@ if ($products->is_quick == 1) {
   $can_be_set = json_decode($products->can_be_set);
   $videos = json_decode($products->videos);
   ?>
-  <div class="col-md-12 row mt-5">
+  <div class="col-md-12 row mt-5 p-0">
     <!-- ----------- START MAIN SLIDER ------------- -->
     <div class="col-md-4 col-xl-3 col-xxl-3">
       <section id="detail">
-        <div class="col-md-8 mx-auto">
+        <div class="col-md-10 mx-auto">
           <? if (!empty($all_images)) { ?>
             <div class="product-images demo-gallery">
               <div class="main-img-slider">
@@ -803,12 +805,12 @@ if ($products->is_quick == 1) {
   </div>
   <!-- ===================== START MORE FOR YOU =========================== -->
   <? if (!empty($more_products)) { ?>
-    <div class=" container-fluid row " style="margin-top: 2.5rem!important;">
-      <div class="col-md-12 txt">
+    <div class=" container-fluid p-0 row " style="margin-top: 2.5rem!important;">
+      <div class="col-md-12 p-0 txt">
         <h2>More Items to Consider</h2>
         <hr>
       </div>
-      <div class="col-md-12">
+      <div class="col-md-12 p-0">
         <div class=" swiper-container swiper-containernew">
           <div class="swiper-wrapper text-center">
             <?php
@@ -958,6 +960,8 @@ if ($products->is_quick == 1) {
     </div>
   <? } ?>
   <!-- ====================== END CAN BE SET WITH ================= -->
+</div> <!-- Container end -->
+</div> <!-- Container end -->
 </div> <!-- Container end -->
 <!-- ====================== START STONE LOCATION MODEL ============================== -->
 <div class="modal fade" id="myModal">
