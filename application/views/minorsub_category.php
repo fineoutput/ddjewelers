@@ -28,18 +28,23 @@
         <!-- <img src="<?= base_url(); ?>assets/jewel/img/sub.jpg"> -->
         <div class="row">
           <?php $i = 1;
-          foreach ($minorsub_category->result() as $data) { ?>
+          foreach ($minorsub_category->result() as $data) {
+            $check = $this->db->get_where('tbl_minisubcategory2', array('is_active' => 1, 'minorsubcategory' => $data->id))->row();
+
+          ?>
             <div class="col-md-4">
               <? if ($data->id == 34 || $data->id == 37) { ?>
                 <a href="<?= base_url(); ?>Home/minor_category/<?= base64_encode($data->id) ?>">
-                <? } else { ?>
-                  <a href="<?= base_url(); ?>Home/all_products/<?= $data->id ?>/<?= base64_encode(1); ?>">
-                  <? } ?>
-                  <div class="text-center sub_img">
-                    <img src="<?= base_url(); ?><?= $data->image ?>">
-                    <p><a href="<?= base_url(); ?>Home/all_products/<?= $data->id ?>/<?= base64_encode(1); ?>"><?= $data->name ?></a></p>
-                  </div>
-                  </a>
+                <? } else if (!empty($check)) { ?>
+                  <a href="<?= base_url(); ?>Home/minor2_sub_products/<?= base64_encode($data->id) ?>">
+                  <? } else { ?>
+                    <a href="<?= base_url(); ?>Home/all_products/<?= $data->id ?>/<?= base64_encode(1); ?>">
+                    <? } ?>
+                    <div class="text-center sub_img">
+                      <img src="<?= base_url(); ?><?= $data->image ?>">
+                      <p><a href="<?= base_url(); ?>Home/all_products/<?= $data->id ?>/<?= base64_encode(1); ?>"><?= $data->name ?></a></p>
+                    </div>
+                    </a>
             </div>
           <?php $i++;
           } ?>
