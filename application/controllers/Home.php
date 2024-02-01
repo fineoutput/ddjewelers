@@ -907,7 +907,7 @@ class Home extends CI_Controller
         $this->load->helper('form');
         $type = base64_decode($t);
         $config['base_url'] = base_url() . 'Home/all_products/' . $idd . '/' . $t;
-        $per_page = 3;
+        $per_page = 28;
         $config['per_page'] = $per_page;
         $config['num_links'] = 3;
         $config['full_tag_open'] = '<ul class="pagination " style="margin: auto;">';
