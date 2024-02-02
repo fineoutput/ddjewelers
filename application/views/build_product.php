@@ -541,23 +541,25 @@ if ($products->is_quick == 1) {
                 <?php foreach ($stone_data as $st) :
                   if (!empty($st->stone) && $st->stone != "N/A") {
                     if (strtolower($st->stone) == strtolower('ROUND')) {
-                      $img = strtolower($products->stone) == strtolower('ROUND') ? 'round_3.png' : 'round_1.png';
+                      $img = strtolower($products->stone) == strtolower('ROUND') ? 'round_2.png' : 'round_1.png';
                     } else if (strtolower($st->stone) == strtolower('CUSHION')) {
-                      $img = strtolower($products->stone) == strtolower('CUSHION') ? 'cushion_3.png' : 'cushion_1.png';
+                      $img = strtolower($products->stone) == strtolower('CUSHION') ? 'cushion_2.png' : 'cushion_1.png';
                     } else if (strtolower($st->stone) == strtolower('OVAL')) {
-                      $img = strtolower($products->stone) == strtolower('OVAL') ? 'oval_3.png' : 'oval_1.png';
+                      $img = strtolower($products->stone) == strtolower('OVAL') ? 'oval_2.png' : 'oval_1.png';
                     } else if (strtolower($st->stone) == strtolower('EMERALD')) {
-                      $img = strtolower($products->stone) == strtolower('EMERALD') ? 'emerald_3.png' : 'emerald_1.png';
+                      $img = strtolower($products->stone) == strtolower('EMERALD') ? 'emerald_2.png' : 'emerald_1.png';
                     } else if (strtolower($st->stone) == strtolower('SQUARE')) {
-                      $img = strtolower($products->stone) == strtolower('SQUARE') ? 'square_3.png' : 'square_1.png';
+                      $img = strtolower($products->stone) == strtolower('SQUARE') ? 'square_2.png' : 'square_1.png';
                     } else if (strtolower($st->stone) == strtolower('PEAR SHAPE')) {
-                      $img = strtolower($products->stone) == strtolower('PEAR SHAPE') ? 'pear_3.png' : 'pear_1.png';
+                      $img = strtolower($products->stone) == strtolower('PEAR SHAPE') ? 'pear_2.png' : 'pear_1.png';
                     } else if (strtolower($st->stone) == strtolower('ASSCHER')) {
-                      $img = strtolower($products->stone) == strtolower('ASSCHER') ? 'asscher_3.png' : 'asscher_1.png';
+                      $img = strtolower($products->stone) == strtolower('ASSCHER') ? 'asscher_2.png' : 'asscher_1.png';
                     } else if (strtolower($st->stone) == strtolower('MARQUISE')) {
-                      $img = strtolower($products->stone) == strtolower('MARQUISE') ? 'marquise_3.png' : 'marquise_1.png';
+                      $img = strtolower($products->stone) == strtolower('MARQUISE') ? 'marquise_2.png' : 'marquise_1.png';
                     } else if (strtolower($st->stone) == strtolower('HEART SHAPE')) {
-                      $img = strtolower($products->stone) == strtolower('HEART SHAPE') ? 'heart_3.png' : 'heart_1.png';
+                      $img = strtolower($products->stone) == strtolower('HEART SHAPE') ? 'heart_2.png' : 'heart_1.png';
+                    } else if (strtolower($st->stone) == strtolower('STRAIGHT BAGUETTE')) {
+                      $img = strtolower($products->stone) == strtolower('STRAIGHT BAGUETTE') ? 'straight_baguette_2.png' : 'straight_baguette_1.png';
                     } else {
                       $img = "";
                     }
