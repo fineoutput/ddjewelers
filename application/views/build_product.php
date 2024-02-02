@@ -13,21 +13,16 @@
     width: 30px !important;
 }
 
+.col-md-12.mb-4.box-slider-111 .swiper-container.swiper-containericon.swiper.swiper-initialized.swiper-horizontal.swiper-pointer-events.swiper-backface-hidden .text-center {
+    transform: translate3d(0px, 10px, 10px) !important;
+}
+
 @media screen and (min-width: 1024px) and (max-width: 1440px){
 .top-slider-image {
     width: 30px !important;
 }
 
 }
-
-
-
-
-
-
-
-
-
   .vodiapicker {
     display: none;
   }
@@ -540,7 +535,7 @@ if ($products->is_quick == 1) {
             <h5>Primary Stone Shape</h5>
             <hr>
           </div>
-          <div class="col-md-12 mb-4">
+          <div class="col-md-12 mb-4 box-slider-111">
             <div class=" swiper-container swiper-containericon swiper">
               <div class="swiper-wrapper text-center">
                 <?php foreach ($stone_data as $st) :
@@ -1187,7 +1182,12 @@ if ($products->is_quick == 1) {
 
     const swiper = new Swiper('.swiper', {
   // Optional parameters
-  loop: true,
+  freeMode: true,
+  loop: false, 
+      scrollbar: {
+        el: '.swiper-scrollbar',
+        hide: true,
+      },
   centeredSlides: true,
   // Navigation arrows
   navigation: {
@@ -1197,8 +1197,10 @@ if ($products->is_quick == 1) {
   breakpoints: {
     // when window width is >= 320px
     768: {
+      loop: true, 
       slidesPerView: 5,
       spaceBetween: 30
+      
     },
     // when window width is >= 480px
     1024: {

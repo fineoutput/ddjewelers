@@ -15,6 +15,9 @@
 .arrow-1 {
     top: 33%;
 }
+.col-md-12.mb-4.box-slider-111 .swiper-container.swiper-containericon.swiper.swiper-initialized.swiper-horizontal.swiper-pointer-events.swiper-backface-hidden .text-center {
+    transform: translate3d(0px, 10px, 10px) !important;
+}
 
 .top-slider-image {
     width: 30px !important;
@@ -520,7 +523,7 @@ $minor2Data = $this->db->get_where('tbl_minisubcategory2', array('id' => $produc
             <h5 class="mt-2">Primary Stone Shape</h5>
             <hr>
           </div>
-          <div class="col-md-12 mb-4">
+          <div class="col-md-12 mb-4 box-slider-111">
             <div class=" swiper-container swiper-containericon swiper">
               <div class="swiper-wrapper text-center">
                 <?php foreach ($stone_data as $st) :
@@ -1058,8 +1061,14 @@ $minor2Data = $this->db->get_where('tbl_minisubcategory2', array('id' => $produc
 
     const swiper = new Swiper('.swiper', {
   // Optional parameters
-  loop: true,
+  freeMode: true,
+      loop: false,
+      scrollbar: {
+        el: '.swiper-scrollbar',
+        hide: true,
+      },
   centeredSlides: true,
+ 
   // Navigation arrows
   navigation: {
     nextEl: '.swiper-button-next',
@@ -1068,8 +1077,10 @@ $minor2Data = $this->db->get_where('tbl_minisubcategory2', array('id' => $produc
   breakpoints: {
     // when window width is >= 320px
     768: {
+      loop: true, 
       slidesPerView: 5,
       spaceBetween: 30
+      
     },
     // when window width is >= 480px
     1024: {
