@@ -164,30 +164,33 @@
                       </div>
                       <div class="row m-4">
                         <?php
-                        $product_da = $this->db->select('id,full_set_images,images,group_images,series_id,group_id,description,pro_id')->group_by(array("series_id"))->get_where('tbl_products', array('minor2_category_id' => $quick_mini_subcate2->id, 'is_quick' => 1))->result();
+                        $product_da = $this->db->select('stone,quality')->group_by(array("series_id"))->get_where('tbl_products', array('minor2_category_id' => $quick_mini_subcate2->id, 'is_quick' => 1))->result();
 
                         // $product_da = [];
                         if (!empty($product_da)) {
-                          foreach ($product_da as $data) {
-                            $full_images = json_decode($data->full_set_images);
-                            $images = json_decode($data->images);
-                            $group_images = json_decode($data->group_images);
-                            $image1 = '';
-                            if (!empty($full_images)) {
-                              $image1 = $full_images[0]->FullUrl;
-                            } else if (!empty($images)) {
-                              $image1 = $images[0]->FullUrl;
-                            } else if (!empty($group_images)) {
-                              $image1 = $group_images[0]->FullUrl;
-                            }
+                          foreach ($product_da as $pro) {
+                            $product_da2 = $this->db->select('id,full_set_images,images,group_images,series_id,group_id,description,pro_id')->get_where('tbl_products', array('minor2_category_id' => $quick_mini_subcate2->id, 'is_quick' => 1,'stone'=> $pro->stone,'quality' => $pro->quality))->result();
+                            foreach ($product_da2 as $data) {
+                              $full_images = json_decode($data->full_set_images);
+                              $images = json_decode($data->images);
+                              $group_images = json_decode($data->group_images);
+                              $image1 = '';
+                              if (!empty($full_images)) {
+                                $image1 = $full_images[0]->FullUrl;
+                              } else if (!empty($images)) {
+                                $image1 = $images[0]->FullUrl;
+                              } else if (!empty($group_images)) {
+                                $image1 = $group_images[0]->FullUrl;
+                              }
                         ?>
-                            <a href="<?= base_url() ?>Home/product_details/<?= $data->series_id ?>/<?= $data->pro_id ?>?groupId=<?= $data->group_id ?>">
-                              <div class="col-md-dd">
-                                <img src="<?= $image1; ?>">
-                                <P><?= $data->description; ?></P>
-                              </div>
-                            </a>
+                              <a href="<?= base_url() ?>Home/product_details/<?= $data->series_id ?>/<?= $data->pro_id ?>?groupId=<?= $data->group_id ?>">
+                                <div class="col-md-dd">
+                                  <img src="<?= $image1; ?>">
+                                  <P><?= $data->description; ?></P>
+                                </div>
+                              </a>
                         <?php
+                            }
                           }
                         } else {
                           echo "No products found!";

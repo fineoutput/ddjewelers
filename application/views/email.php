@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -10,27 +11,34 @@
     * {
         font-family: sans-serif;
     }
+
     .dnd {
         text-align: center;
     }
+
     .dnd img {
         width: 120px;
     }
+
     .order_section {
         text-align: center;
         margin-top: 50px;
     }
+
     .Italian_sec {
         margin-top: 50px;
     }
+
     h1,
     h2 {
         color: #333366;
     }
+
     p,
     td {
         color: #909292;
     }
+
     .order_section button {
         width: 220px;
         background-color: #e1e3e4;
@@ -38,6 +46,7 @@
         border: 0px;
         border-radius: 2px;
     }
+
     .summary {
         border: 1px solid #e1e3e4;
         border-radius: 5px;
@@ -45,31 +54,38 @@
         padding: 15px 20px;
         background-color: #eeeff0;
     }
+
     section {
         margin-top: 50px;
         margin-bottom: 50px;
     }
+
     @media only screen and (max-width: 768px) {
         .order_section button {
             width: 162px;
         }
+
         section {
             margin-top: 6px;
             margin-bottom: 15px;
             padding: 3px;
         }
+
         .summary {
             margin-top: 30px;
             margin-bottom: 25px;
         }
+
         .order_section {
             margin-top: 5px;
         }
+
         .dnd img {
             width: 80px;
         }
     }
 </style>
+
 <body>
     <div class="container">
         <div class="dnd  text-center">
@@ -128,6 +144,7 @@
             ?>
             <? $count = 0;
             foreach ($order2->result() as $ord) {
+                $gem_data = json_decode($ord->gem_data);
             ?>
                 <div class="Italian_section ">
                     <div class="row">
@@ -135,7 +152,28 @@
                             <img src="<?= $ord->img ?>" alt="D&D" class="img-fluid">
                         </div>
                         <div class="col-lg-8 Italian_sec">
-                            <h3><?= $ord->description ?></h3>
+                            <h3><?= $ord->description ?>
+                                <? if (!empty($gem_data)) { ?>
+                                    </br><span><b>Stones : </b></span>
+                                    <? foreach ($gem_data as  $gem) {
+                                        if (!empty($gem->Product)) {
+                                            $item = $gem->Product;
+                                        } else if (!empty($gem->Diamond)) {
+                                            $item = $gem->Diamond;
+                                        } else if (!empty($gem->GemStone)) {
+                                            $item = $gem->GemStone;
+                                        } else if (!empty($gem->LabGrownDiamond)) {
+                                            $item = $gem->LabGrownDiamond;
+                                        } ?>
+                                        <? if (!empty($item->Description)) { ?>
+                                            <span> <?= $item->Description ?> <b>|</b> </span>
+                                        <? } else { ?>
+                                            <span> <?= $item->SerialNumber ?> <b>|</b> </span>
+
+                                        <? } ?>
+                                    <? } ?>
+                                <? } ?>
+                            </h3>
                             <p><?= 'QTY : ' . $ord->quantity ?></p>
                             <p><?= 'Sku Id : ' . $ord->sku ?></p>
                             <h3><?= '$' . $ord->amount ?></h3>
@@ -230,4 +268,5 @@
     <!-- JavaScript Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
 </body>
+
 </html>
