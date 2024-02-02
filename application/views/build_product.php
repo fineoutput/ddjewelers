@@ -1,6 +1,33 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 
 <style>
+ .swiper-slide.slider-main-box {
+    width: auto !important;
+    margin: 6px !important;
+}
+.arrow-1 {
+    top: 33%;
+}
+
+.top-slider-image {
+    width: 30px !important;
+}
+
+@media screen and (min-width: 1024px) and (max-width: 1440px){
+.top-slider-image {
+    width: 30px !important;
+}
+
+}
+
+
+
+
+
+
+
+
+
   .vodiapicker {
     display: none;
   }
@@ -40,10 +67,7 @@
   }
 
 
-  .arrow-1 {
-    top: 24%;
-  }
-
+ 
   #a img,
   .btn-select img {
     width: 26px;
@@ -345,31 +369,31 @@
     display: none !important;
   }
 
-
   .main-img-slider.slick-initialized.slick-slider .slick-prev.slick-arrow {
     display: none !important;
   }
-
   .top-slider-image{
-    width: 70% !important;
+    /* width: 70% !important; */
   }
   @media(max-width:2560px){
     .swiper-backface-hidden .swiper-slide {
     margin-right: -66px ;
 }
 .top-slider-image {
-    width: 53% ;
+    /* width: 53% ; */
 }
   }
   
-
+  .swiper-slide.slider-main-box p.h6{
+    font-size: 0.8rem;
+  }
   @media screen and (min-width: 1024px) and (max-width: 1440px) { 
     .swiper-backface-hidden .swiper-slide {
     margin-right: -17px ;
 }
-.top-slider-image {
-    width: 55% ;
-}
+/* .top-slider-image {
+    width: 100% !important ;
+} */
 .swiper-backface-hidden .swiper-slide {
     margin-right: -15px ;
     width: 82px ;
@@ -517,7 +541,7 @@ if ($products->is_quick == 1) {
             <hr>
           </div>
           <div class="col-md-12 mb-4">
-            <div class=" swiper-container swiper-containericon">
+            <div class=" swiper-container swiper-containericon swiper">
               <div class="swiper-wrapper text-center">
                 <?php foreach ($stone_data as $st) :
                   if (!empty($st->stone) && $st->stone != "N/A") {
@@ -545,14 +569,14 @@ if ($products->is_quick == 1) {
                 ?>
                     <div class="swiper-slide slider-main-box">
                       <a href="<?= base_url() ?>Home/product_details/<?= $products->series_id ?>/<?= $st->pro_id ?>?groupId=<?= $products->group_id ?>"><img src="<?= base_url() ?>assets\jewel\img\stone_shape\<?= $img ?>"  class="img-fluid Stone_Shape_img top-slider-image">
-                        <p class="h6"><?= $st->stone ?></p>
-                      </a>
+                    </a>
+                    <p class="h6"><?= $st->stone ?></p>
                     </div>
                 <?php }
                 endforeach; ?>
               </div>
-              <div class="swiper-button-next "></div>
-              <div class="swiper-button-prev "></div>
+              <!-- <div class="swiper-button-next "></div>
+              <div class="swiper-button-prev "></div> -->
             </div>
           </div>
         </div>
@@ -1108,58 +1132,86 @@ if ($products->is_quick == 1) {
     });
 
     //initialize swiper when document ready
-    var mySwiper = new Swiper('.swiper-containericon', {
-      slidesPerView: 6,
-      spaceBetween: 10,
-      breakpoints: {
-        '300': {
-          slidesPerView: 3,
-          spaceBetween: 30,
-        },
-        '400': {
-          slidesPerView: 3,
-          spaceBetween: 30,
-        },
-        '500': {
-          slidesPerView: 4,
-          spaceBetween: 40,
-        },
-        '600': {
-          slidesPerView: 4,
-          spaceBetween: 40,
-        },
-        '767': {
-          slidesPerView: 6,
-          spaceBetween: 30,
-        },
+    // var mySwiper = new Swiper('.swiper-containericon', {
+    //   slidesPerView: 6,
+    //   spaceBetween: 10,
+    //   breakpoints: {
+    //     '300': {
+    //       slidesPerView: 3,
+    //       spaceBetween: 30,
+    //     },
+    //     '400': {
+    //       slidesPerView: 3,
+    //       spaceBetween: 30,
+    //     },
+    //     '500': {
+    //       slidesPerView: 4,
+    //       spaceBetween: 40,
+    //     },
+    //     '600': {
+    //       slidesPerView: 4,
+    //       spaceBetween: 40,
+    //     },
+    //     '767': {
+    //       slidesPerView: 6,
+    //       spaceBetween: 30,
+    //     },
         
-        '1220': {
-          slidesPerView: 8,
-          spaceBetween: 30,
-        },
-        '1440': {
-          slidesPerView: 8,
-          spaceBetween: 30,
-        },
-        '2660': {
-          slidesPerView: 8,
-          spaceBetween: 30,
-        },
-      },
-      // Optional parameters
-      freeMode: true,
-      loop: false,
-      scrollbar: {
-        el: '.swiper-scrollbar',
-        hide: true,
-      },
-      navigation: {
-        nextEl: '.swiper-button-next',
-        prevEl: '.swiper-button-prev',
-      },
+    //     '1220': {
+    //       slidesPerView: 8,
+    //       spaceBetween: 30,
+    //     },
+    //     '1440': {
+    //       slidesPerView: 8,
+    //       spaceBetween: 30,
+    //     },
+    //     '2660': {
+    //       slidesPerView: 8,
+    //       spaceBetween: 30,
+    //     },
+    //   },
+    //   // Optional parameters
+    //   freeMode: true,
+    //   loop: false,
+    //   scrollbar: {
+    //     el: '.swiper-scrollbar',
+    //     hide: true,
+    //   },
+    //   navigation: {
+    //     nextEl: '.swiper-button-next',
+    //     prevEl: '.swiper-button-prev',
+    //   },
 
-    })
+    // })
 
+
+    const swiper = new Swiper('.swiper', {
+  // Optional parameters
+  loop: true,
+  centeredSlides: true,
+  // Navigation arrows
+  navigation: {
+    nextEl: '.swiper-button-next',
+    prevEl: '.swiper-button-prev',
+  },
+  breakpoints: {
+    // when window width is >= 320px
+    768: {
+      slidesPerView: 5,
+      spaceBetween: 30
+    },
+    // when window width is >= 480px
+    1024: {
+      slidesPerView: 6,
+      spaceBetween: 40
+    },
+    // when window width is >= 640px
+    1280: {
+      slidesPerView: 7,
+      spaceBetween: 50
+    }
+  }
+});
     $(".carousel-control-prev").click(function() {
       $("#myCarousel").carousel("prev");
     });
