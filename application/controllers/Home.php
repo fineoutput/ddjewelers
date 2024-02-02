@@ -7248,21 +7248,23 @@ class Home extends CI_Controller
                     $ip = $this->input->ip_address();
                     date_default_timezone_set("Asia/Calcutta");
                     $cur_date = date("Y-m-d H:i:s");
-                    foreach ($cart_data as $data) {
-                        $cartInfo = $this->db->get_where('tbl_cart', array('user_id' => $nnn4, 'pro_id' => $data['pro_id'], 'ring_size' => $data['ring_size']))->row();
-                        if (empty($cartInfo)) {
-                            $cart_insert = array(
-                                'user_id' => $nnn4,
-                                'pro_id' => $data['pro_id'],
-                                'quantity' => $data['quantity'],
-                                'ring_size' => $data['ring_size'],
-                                'ring_price' => $data['ring_price'],
-                                'gem_data' => $data['gem_data'],
-                                'price' => $data['price'],
-                                'img' => $data['img'],
-                                'date' => $cur_date
-                            );
-                            $last_id = $this->base_model->insert_table("tbl_cart", $cart_insert, 1);
+                    if (!empty($cart_data)) {
+                        foreach ($cart_data as $data) {
+                            $cartInfo = $this->db->get_where('tbl_cart', array('user_id' => $nnn4, 'pro_id' => $data['pro_id'], 'ring_size' => $data['ring_size']))->row();
+                            if (empty($cartInfo)) {
+                                $cart_insert = array(
+                                    'user_id' => $nnn4,
+                                    'pro_id' => $data['pro_id'],
+                                    'quantity' => $data['quantity'],
+                                    'ring_size' => $data['ring_size'],
+                                    'ring_price' => $data['ring_price'],
+                                    'gem_data' => $data['gem_data'],
+                                    'price' => $data['price'],
+                                    'img' => $data['img'],
+                                    'date' => $cur_date
+                                );
+                                $last_id = $this->base_model->insert_table("tbl_cart", $cart_insert, 1);
+                            }
                         }
                     }
                     $this->session->unset_userdata('cart_data'); //---deleting session cart data
