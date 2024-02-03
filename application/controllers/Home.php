@@ -7260,12 +7260,40 @@ class Home extends CI_Controller
                         'psw' => $pass,
                         'name' => $name
                     );
+
                     $last_id = $this->base_model->insert_table("tbl_users", $data_insert, 1);
-                    $this->session->set_userdata('user_name', $name);
+                    $user_name = (explode(" ", $name));
+                    $this->session->set_userdata('user_name', $user_name[0]);
                     $this->session->set_userdata('user_id', $last_id);
-                    //$this->session->set_userdata('name',$name);
+                    $this->session->set_userdata('user_data', $last_id);
+                    //----- update cart data -------------
+                    $cart_data = $this->session->userdata('cart_data');
+                    $ip = $this->input->ip_address();
+                    date_default_timezone_set("Asia/Calcutta");
+                    $cur_date = date("Y-m-d H:i:s");
+                    if (!empty($cart_data)) {
+                        foreach ($cart_data as $data) {
+                            $cartInfo = $this->db->get_where('tbl_cart', array('user_id' => $last_id, 'pro_id' => $data['pro_id'], 'ring_size' => $data['ring_size']))->row();
+                            if (empty($cartInfo)) {
+                                $cart_insert = array(
+                                    'user_id' => $last_id,
+                                    'pro_id' => $data['pro_id'],
+                                    'quantity' => $data['quantity'],
+                                    'ring_size' => $data['ring_size'],
+                                    'ring_price' => $data['ring_price'],
+                                    'gem_data' => $data['gem_data'],
+                                    'price' => $data['price'],
+                                    'img' => $data['img'],
+                                    'date' => $cur_date
+                                );
+                                $last_id = $this->base_model->insert_table("tbl_cart", $cart_insert, 1);
+                            }
+                        }
+                    }
+                    $this->session->unset_userdata('cart_data'); //---deleting session cart data
+
                     if ($last_id != 0) {
-                        $this->session->set_flashdata('smessage', 'Sign Up Success');
+                        $this->session->set_flashdata('smessage', 'Register Successfully!');
                         redirect("Home/index", "refresh");
                     } else {
                         $this->session->set_flashdata('emessage', 'Sorry error occured');
@@ -7299,57 +7327,64 @@ class Home extends CI_Controller
                 $this->db->select('*');
                 $this->db->from('tbl_users');
                 $this->db->where('email', $email);
-                $this->db->where('psw', $pass);
                 $da_teacher = $this->db->get();
                 $da = $da_teacher->row();
                 if (!empty($da)) {
-                    $nnn1 = $da->email;
-                    $nnn2 = $da->psw;
-                    $nnn3 = $da->name;
-                    $nnn4 = $da->id;
-                    $this->session->set_userdata('user_name', $nnn3);
-                    $this->session->set_userdata('user_id', $nnn4);
-                    $this->session->set_userdata('user_data', $nnn4);
-                    //----- update cart data -------------
-                    $cart_data = $this->session->userdata('cart_data');
-                    $ip = $this->input->ip_address();
-                    date_default_timezone_set("Asia/Calcutta");
-                    $cur_date = date("Y-m-d H:i:s");
-                    if (!empty($cart_data)) {
-                        foreach ($cart_data as $data) {
-                            $cartInfo = $this->db->get_where('tbl_cart', array('user_id' => $nnn4, 'pro_id' => $data['pro_id'], 'ring_size' => $data['ring_size']))->row();
-                            if (empty($cartInfo)) {
-                                $cart_insert = array(
-                                    'user_id' => $nnn4,
-                                    'pro_id' => $data['pro_id'],
-                                    'quantity' => $data['quantity'],
-                                    'ring_size' => $data['ring_size'],
-                                    'ring_price' => $data['ring_price'],
-                                    'gem_data' => $data['gem_data'],
-                                    'price' => $data['price'],
-                                    'img' => $data['img'],
-                                    'date' => $cur_date
-                                );
-                                $last_id = $this->base_model->insert_table("tbl_cart", $cart_insert, 1);
+                    if ($da->psw == $pass) {
+                        $nnn1 = $da->email;
+                        $nnn2 = $da->psw;
+                        $nnn3 = $da->name;
+                        $nnn4 = $da->id;
+                        $user_name = (explode(" ", $nnn3));
+                        $this->session->set_userdata('user_name', $user_name[0]);
+                        $this->session->set_userdata('user_name', $nnn3);
+                        $this->session->set_userdata('user_id', $nnn4);
+                        $this->session->set_userdata('user_data', $nnn4);
+                        //----- update cart data -------------
+                        $cart_data = $this->session->userdata('cart_data');
+                        $ip = $this->input->ip_address();
+                        date_default_timezone_set("Asia/Calcutta");
+                        $cur_date = date("Y-m-d H:i:s");
+                        if (!empty($cart_data)) {
+                            foreach ($cart_data as $data) {
+                                $cartInfo = $this->db->get_where('tbl_cart', array('user_id' => $nnn4, 'pro_id' => $data['pro_id'], 'ring_size' => $data['ring_size']))->row();
+                                if (empty($cartInfo)) {
+                                    $cart_insert = array(
+                                        'user_id' => $nnn4,
+                                        'pro_id' => $data['pro_id'],
+                                        'quantity' => $data['quantity'],
+                                        'ring_size' => $data['ring_size'],
+                                        'ring_price' => $data['ring_price'],
+                                        'gem_data' => $data['gem_data'],
+                                        'price' => $data['price'],
+                                        'img' => $data['img'],
+                                        'date' => $cur_date
+                                    );
+                                    $last_id = $this->base_model->insert_table("tbl_cart", $cart_insert, 1);
+                                }
                             }
                         }
+                        $this->session->unset_userdata('cart_data'); //---deleting session cart data
+                        $this->session->set_flashdata('smessage', 'Successfully Login!');
+                        //$this->session->set_userdata('name',$name);
+                        redirect("Home/index");
+                    } else {
+                        $this->session->set_flashdata('emessage', 'Wrong password');
+                        // redirect("auth/login","refresh");
+                        redirect($_SERVER['HTTP_REFERER']);
                     }
-                    $this->session->unset_userdata('cart_data'); //---deleting session cart data
-                    $this->session->set_flashdata('smessage', 'Successfully Login!');
-                    //$this->session->set_userdata('name',$name);
-                    redirect("Home/index");
                 } else {
-                    $this->session->set_flashdata('emessage', 'wrong password');
-                    // redirect("auth/login","refresh");
+                    //echo $pass;
+                    $this->session->set_flashdata('emessage', 'Email does not exist!');
                     redirect($_SERVER['HTTP_REFERER']);
                 }
             } else {
-                //echo $pass;
-                $this->session->set_flashdata('emessage', 'Wrong Details Entered');
+                $this->session->set_flashdata('emessage', validation_errors());
+                // redirect("auth/login","refresh");
                 redirect($_SERVER['HTTP_REFERER']);
             }
         } else {
-            $this->session->set_flashdata('emessage', validation_errors());
+            $this->session->set_flashdata('emessage', "No post data found!");
             // redirect("auth/login","refresh");
             redirect($_SERVER['HTTP_REFERER']);
         }
