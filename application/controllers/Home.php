@@ -516,7 +516,7 @@ class Home extends CI_Controller
 
             if ($this->form_validation->run() == TRUE) {
                 $string_main = $this->input->post('search_input');
-                redirect("Home/search_result/".$string_main.'/1');
+                redirect("Home/search_result/" . $string_main . '/1');
             } else {
                 $this->session->set_flashdata('emessage', validation_errors());
                 redirect($_SERVER['HTTP_REFERER']);
@@ -556,7 +556,7 @@ class Home extends CI_Controller
         $data['search_string'] = urldecode($string_main);
         $session_string = $this->session->userdata('search_string');
         if (empty($session_string)) {
-            $productCount = $this->db->select('id')->group_by(array("series_id"))->from('tbl_products')->where("search_values LIKE '%$string%'", null, false)->count_all_results();
+            $productCount = $this->db->select('id')->group_by("series_id")->from('tbl_products')->like("search_values", $string)->count_all_results();
             $this->session->set_userdata('search_string', $string);
             if (!empty($productCount)) {
                 $this->session->set_userdata('productCount', $productCount);
@@ -564,7 +564,7 @@ class Home extends CI_Controller
         } else {
             if ($session_string != $string) {
                 $this->session->set_userdata('search_string', $string);
-                $productCount = $this->db->select('id')->group_by(array("series_id"))->from('tbl_products')->where("search_values LIKE '%$string%'", null, false)->count_all_results();
+                $productCount = $this->db->select('id')->group_by("series_id")->from('tbl_products')->like("search_values", $string)->count_all_results();
                 if (!empty($productCount)) {
                     $this->session->set_userdata('productCount', $productCount);
                 }
@@ -609,7 +609,7 @@ class Home extends CI_Controller
             // //     ->get();
             // $product_data = $this->db->select('id')->limit($per_page, $start)->group_by(array("series_id"))->like("search_values", $string)->get_where('tbl_products', array())->result();
             // echo "hi";die();
-            $product_data = $this->db->select('full_set_images,images,group_images,series_id,pro_id,group_id,description,price,catalog_values')->where("search_values LIKE '%$string%'", null, false)->limit($per_page, $start)->group_by(array("series_id"))->get_where('tbl_products', array())->result();
+            $product_data = $this->db->select('full_set_images,images,group_images,series_id,pro_id,group_id,description,price,catalog_values')->like("search_values", $string)->limit($per_page, $start)->group_by("series_id")->get_where('tbl_products', array())->result();
             if (count($product_data) > 1) {
                 $data['product_data'] = $product_data;
                 $data['total_pages'] = $total_pages;
