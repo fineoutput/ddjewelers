@@ -3,7 +3,7 @@
 <style>
  .swiper-slide.slider-main-box {
     width: auto !important;
-    margin: 6px !important;
+    margin: 4px !important;
 }
 .arrow-1 {
     top: 33%;
@@ -12,7 +12,11 @@
 .top-slider-image {
     width: 30px !important;
 }
-
+.scroller {
+    overflow-y: scroll;
+    scrollbar-color: #1f1f2200 #bada5500;
+    scroll-behavior: smooth;
+}
 .col-md-12.mb-4.box-slider-111 .swiper-container.swiper-containericon.swiper.swiper-initialized.swiper-horizontal.swiper-pointer-events.swiper-backface-hidden .text-center {
     transform: translate3d(0px, 10px, 10px) !important;
 }
@@ -536,8 +540,8 @@ if ($products->is_quick == 1) {
             <hr>
           </div>
           <div class="col-md-12 mb-4 box-slider-111">
-            <div class=" swiper-container swiper-containericon swiper">
-              <div class="swiper-wrapper text-center">
+            <div class=" swiper-container ">
+              <div class="swiper-wrapper text-center scroller">
                 <?php foreach ($stone_data as $st) :
                   if (!empty($st->stone) && $st->stone != "N/A") {
                     if (strtolower($st->stone) == strtolower('ROUND')) {
@@ -569,6 +573,7 @@ if ($products->is_quick == 1) {
                     </a>
                     <p class="h6"><?= $st->stone ?></p>
                     </div>
+                    
                 <?php }
                 endforeach; ?>
               </div>
@@ -1182,40 +1187,40 @@ if ($products->is_quick == 1) {
     // })
 
 
-    const swiper = new Swiper('.swiper', {
-  // Optional parameters
-  freeMode: true,
-  loop: false, 
-      scrollbar: {
-        el: '.swiper-scrollbar',
-        hide: true,
-      },
-  centeredSlides: true,
-  // Navigation arrows
-  navigation: {
-    nextEl: '.swiper-button-next',
-    prevEl: '.swiper-button-prev',
-  },
-  breakpoints: {
-    // when window width is >= 320px
-    768: {
-      loop: true, 
-      slidesPerView: 5,
-      spaceBetween: 30
+//     const swiper = new Swiper('.swiper', {
+//   // Optional parameters
+//   freeMode: true,
+//   loop: false, 
+//       scrollbar: {
+//         el: '.swiper-scrollbar',
+//         hide: true,
+//       },
+//   centeredSlides: true,
+//   // Navigation arrows
+//   navigation: {
+//     nextEl: '.swiper-button-next',
+//     prevEl: '.swiper-button-prev',
+//   },
+//   breakpoints: {
+//     // when window width is >= 320px
+//     768: {
+//       loop: true, 
+//       slidesPerView: 5,
+//       spaceBetween: 30
       
-    },
-    // when window width is >= 480px
-    1024: {
-      slidesPerView: 6,
-      spaceBetween: 40
-    },
-    // when window width is >= 640px
-    1280: {
-      slidesPerView: 7,
-      spaceBetween: 50
-    }
-  }
-});
+//     },
+//     // when window width is >= 480px
+//     1024: {
+//       slidesPerView: 6,
+//       spaceBetween: 40
+//     },
+//     // when window width is >= 640px
+//     1280: {
+//       slidesPerView: 7,
+//       spaceBetween: 50
+//     }
+//   }
+// });
     $(".carousel-control-prev").click(function() {
       $("#myCarousel").carousel("prev");
     });
