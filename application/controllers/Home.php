@@ -1220,6 +1220,24 @@ class Home extends CI_Controller
         $data['product_data'] = $product_data;
         $data['searchedValues'] = $searchedValues;
         $setting_options = json_decode($data['products']->setting_options);
+        //--- check added in cart or not 
+        $cart = 0;
+        if ($this->session->userdata('user_id')) {
+            $cartInfo = $this->db->get_where('tbl_cart', array('user_id' => $this->session->userdata('user_id'), 'pro_id' => $data['products']->pro_id, 'ring_size' => $data['products']->ring_size))->row();
+            if (!empty($cartInfo)) {
+                $cart = 1;
+            }
+        } else {
+            $cart_data = $this->session->userdata('cart_data');
+            if (!empty($cart_data)) {
+                foreach ($cart_data as $items) {
+                    if ($items['pro_id'] == $data['products']->pro_id && $items['ring_size'] == $data['products']->ring_size) {
+                        $cart = 1;
+                    }
+                }
+            }
+        }
+        $data['cart_status'] = $cart;
         $this->load->view('common/header', $data);
         if (!empty($setting_options)) {
             $this->load->view('build_product');

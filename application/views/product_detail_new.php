@@ -11,31 +11,34 @@
   .swiper-slide.slider-main-box {
     width: auto !important;
     margin: 6px !important;
-}
-.arrow-1 {
+  }
+
+  .arrow-1 {
     top: 33%;
-}
-.col-md-12.mb-4.box-slider-111 .swiper-container.swiper-containericon.swiper.swiper-initialized.swiper-horizontal.swiper-pointer-events.swiper-backface-hidden .text-center {
+  }
+
+  .col-md-12.mb-4.box-slider-111 .swiper-container.swiper-containericon.swiper.swiper-initialized.swiper-horizontal.swiper-pointer-events.swiper-backface-hidden .text-center {
     transform: translate3d(0px, 10px, 10px) !important;
-}
+  }
 
-.top-slider-image {
+  .top-slider-image {
     width: 30px !important;
-}
+  }
 
-@media screen and (min-width: 1024px) and (max-width: 1440px){
-.top-slider-image {
-    width: 30px !important;
-}
+  @media screen and (min-width: 1024px) and (max-width: 1440px) {
+    .top-slider-image {
+      width: 30px !important;
+    }
 
-}
+  }
 
 
 
 
   .swiper-backface-hidden .swiper-slide {
     margin-right: 30px !important;
-}
+  }
+
   #a img,
   .btn-select img {
     width: 26px;
@@ -72,7 +75,7 @@
 
   }
 
-  
+
 
 
   .open {
@@ -113,7 +116,7 @@
 
 
 
-  
+
 
 
 
@@ -348,7 +351,7 @@
     border: 0px;
     color: white;
   }
-  
+
 
   .orderul {
     text-align: center;
@@ -365,40 +368,46 @@
   .main-img-slider.slick-initialized.slick-slider .slick-prev.slick-arrow {
     display: none !important;
   }
-  .top-slider-image{
+
+  .top-slider-image {
     /* width: 70% !important; */
   }
-  @media(max-width:2560px){
+
+  @media(max-width:2560px) {
     .swiper-backface-hidden .swiper-slide {
-    margin-right: -66px ;
-}
-.top-slider-image {
-    /* width: 53% ; */
-}
+      margin-right: -66px;
+    }
+
+    .top-slider-image {
+      /* width: 53% ; */
+    }
   }
-  
-  .swiper-slide.slider-main-box p.h6{
+
+  .swiper-slide.slider-main-box p.h6 {
     font-size: 0.8rem;
   }
-  @media screen and (min-width: 1024px) and (max-width: 1440px) { 
+
+  @media screen and (min-width: 1024px) and (max-width: 1440px) {
     .swiper-backface-hidden .swiper-slide {
-    margin-right: -17px ;
-}
-/* .top-slider-image {
+      margin-right: -17px;
+    }
+
+    /* .top-slider-image {
     width: 100% !important ;
 } */
-.swiper-backface-hidden .swiper-slide {
-    margin-right: -15px ;
-    width: 82px ;
-}
-.swiper-backface-hidden .swiper-slide a p.h6 {
-    font-size: 11px;
-}
-.swiper-backface-hidden .swiper-slide {
-    margin-right: -15px ;
-}
-}
+    .swiper-backface-hidden .swiper-slide {
+      margin-right: -15px;
+      width: 82px;
+    }
 
+    .swiper-backface-hidden .swiper-slide a p.h6 {
+      font-size: 11px;
+    }
+
+    .swiper-backface-hidden .swiper-slide {
+      margin-right: -15px;
+    }
+  }
 </style>
 <?
 $catData = $this->db->get_where('tbl_category', array('id' => $products->category_id))->row();
@@ -553,9 +562,9 @@ $minor2Data = $this->db->get_where('tbl_minisubcategory2', array('id' => $produc
                     }
                 ?>
                     <div class="swiper-slide slider-main-box">
-                      <a href="<?= base_url() ?>Home/product_details/<?= $products->series_id ?>/<?= $st->pro_id ?>?groupId=<?= $products->group_id ?>"><img src="<?= base_url() ?>assets\jewel\img\stone_shape\<?= $img ?>"  class="img-fluid Stone_Shape_img top-slider-image">
-                    </a>
-                    <p class="h6"><?= $st->stone ?></p>
+                      <a href="<?= base_url() ?>Home/product_details/<?= $products->series_id ?>/<?= $st->pro_id ?>?groupId=<?= $products->group_id ?>"><img src="<?= base_url() ?>assets\jewel\img\stone_shape\<?= $img ?>" class="img-fluid Stone_Shape_img top-slider-image">
+                      </a>
+                      <p class="h6"><?= $st->stone ?></p>
                     </div>
                 <?php }
                 endforeach; ?>
@@ -745,12 +754,18 @@ $minor2Data = $this->db->get_where('tbl_minisubcategory2', array('id' => $produc
                                   } ?>
       </p>
 
-      <?php if (empty($this->session->userdata('user_id'))) { ?>
-        <input type="submit" class="mt-3 add-btn" value=" Add to cart" onclick="addToCart(this);" quantity="" id="addToCartBtn" data-pro-id="<?= $products->pro_id; ?>" data-ring_size="<?= $products->ring_size ?>" data-ring_price="<?= $sizePrice ?>">
-      <?php } else { ?>
-        <input type="submit" class="mt-3 add-btn" value=" Add to cart" onclick="addToCart(this);" quantity="" id="addToCartBtn" data-pro-id="<?= $products->pro_id; ?>" data-ring_size="<?= $products->ring_size ?>" data-ring_price="<?= $sizePrice ?>">
+      <?php
+      if ($cart_status == 0) {
+        if (empty($this->session->userdata('user_id'))) {
+      ?>
+          <input type="submit" class="mt-3 add-btn" value=" Add to cart" onclick="addToCart(this);" quantity="" id="addToCartBtn" data-pro-id="<?= $products->pro_id; ?>" data-ring_size="<?= $products->ring_size ?>" data-ring_price="<?= $sizePrice ?>">
+        <?php } else { ?>
+          <input type="submit" class="mt-3 add-btn" value=" Add to cart" onclick="addToCart(this);" quantity="" id="addToCartBtn" data-pro-id="<?= $products->pro_id; ?>" data-ring_size="<?= $products->ring_size ?>" data-ring_price="<?= $sizePrice ?>">
 
-      <?php } ?>
+        <?php }
+      } else { ?>
+        <a href="<?=base_url()?>Cart/view_cart"><button class="mt-3 add-btn" style="background-color:#547f9e" type="button">Go to cart</button></a>
+      <? } ?>
       <button class="mt-3 add-btn" id="loader" disabled style="display:none">
         <i class="fa fa-spinner fa-spin"></i> Loading...
       </button>
@@ -759,12 +774,12 @@ $minor2Data = $this->db->get_where('tbl_minisubcategory2', array('id' => $produc
         <input type="submit" class="mt-3 add-btn" id="wishBtn" value="Add to wishlist" onclick="wishlist(this)" data-pro-id="<?= $products->pro_id; ?>" status="add">
       <?php } ?>
       <div class="d-flex justify-content-between p-2 pb-4">
-     
-          <a href="<?= base_url(); ?>Home/contact_us"><button class="btn d-flex" style=" background:#2a2828;color:white;     align-items: center;
+
+        <a href="<?= base_url(); ?>Home/contact_us"><button class="btn d-flex" style=" background:#2a2828;color:white;     align-items: center;
     margin: 2px;"><i class="fa fa-fw fa-envelope" aria-hidden="true"></i>Contact</button></a>
-          <a href="<?= base_url(); ?>Home/contact_us"><button class="btn d-flex" style="background:#2a2828;color:white;     align-items: center;
+        <a href="<?= base_url(); ?>Home/contact_us"><button class="btn d-flex" style="background:#2a2828;color:white;     align-items: center;
     margin: 2px;"><i class="fa fa-fw fa-calendar" aria-hidden="true"></i>Appointment</button></a>
-   
+
       </div>
 
       <div class="col-md-12">
@@ -1032,7 +1047,7 @@ $minor2Data = $this->db->get_where('tbl_minisubcategory2', array('id' => $produc
     //       slidesPerView: 6,
     //       spaceBetween: 30,
     //     },
-        
+
     //     '1220': {
     //       slidesPerView: 8,
     //       spaceBetween: 30,
@@ -1062,40 +1077,40 @@ $minor2Data = $this->db->get_where('tbl_minisubcategory2', array('id' => $produc
 
 
     const swiper = new Swiper('.swiper', {
-  // Optional parameters
-  freeMode: true,
+      // Optional parameters
+      freeMode: true,
       loop: false,
       scrollbar: {
         el: '.swiper-scrollbar',
         hide: true,
       },
-  centeredSlides: true,
- 
-  // Navigation arrows
-  navigation: {
-    nextEl: '.swiper-button-next',
-    prevEl: '.swiper-button-prev',
-  },
-  breakpoints: {
-    // when window width is >= 320px
-    768: {
-      loop: true, 
-      slidesPerView: 5,
-      spaceBetween: 30
-      
-    },
-    // when window width is >= 480px
-    1024: {
-      slidesPerView: 6,
-      spaceBetween: 40
-    },
-    // when window width is >= 640px
-    1280: {
-      slidesPerView: 7,
-      spaceBetween: 50
-    }
-  }
-});
+      centeredSlides: true,
+
+      // Navigation arrows
+      navigation: {
+        nextEl: '.swiper-button-next',
+        prevEl: '.swiper-button-prev',
+      },
+      breakpoints: {
+        // when window width is >= 320px
+        768: {
+          loop: true,
+          slidesPerView: 5,
+          spaceBetween: 30
+
+        },
+        // when window width is >= 480px
+        1024: {
+          slidesPerView: 6,
+          spaceBetween: 40
+        },
+        // when window width is >= 640px
+        1280: {
+          slidesPerView: 7,
+          spaceBetween: 50
+        }
+      }
+    });
 
     $(".carousel-control-prev").click(function() {
       $("#myCarousel").carousel("prev");
