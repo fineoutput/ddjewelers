@@ -7,7 +7,11 @@
     padding-left: 0px;
   }
 
-
+  .scroller {
+    overflow-y: scroll;
+    scrollbar-color: #1f1f2200 #bada5500;
+    scroll-behavior: smooth;
+} 
   .swiper-slide.slider-main-box {
     width: auto !important;
     margin: 6px !important;
@@ -532,8 +536,10 @@ $minor2Data = $this->db->get_where('tbl_minisubcategory2', array('id' => $produc
             <h5 class="mt-2">Primary Stone Shape</h5>
             <hr>
           </div>
-          <div class="col-md-12 mb-4 box-slider-111">
-            <div class=" swiper-container swiper-containericon swiper">
+          <div class=" swiper-container ">
+              <div class="swiper-wrapper text-center scroller">
+          <!-- <div class="col-md-12 mb-4 box-slider-111">
+            <div class=" swiper-container swiper-containericon swiper"> -->
               <div class="swiper-wrapper text-center">
                 <?php foreach ($stone_data as $st) :
                   if (!empty($st->stone) && $st->stone != "N/A") {
