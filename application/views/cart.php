@@ -90,33 +90,8 @@ if (!empty($cart_data)) {
             </div>
             <div class="col-md-3 text-right">
               <?php
-              if (empty($gem_data)) {
-                $pr_data = $this->db->get_where('tbl_price_rule', array())->row();
-                $multiplier = $pr_data->multiplier;
-                $cost_price = $pro_data->price;
-                $retail = $cost_price * $multiplier;
-                $now_price = $cost_price;
-                if ($cost_price <= 500) {
-                  $cost_price2 = $cost_price * $cost_price;
-                  $number = round($cost_price * ($pr_data->cost_price1 * $cost_price2 + $pr_data->cost_price2 * $cost_price + $pr_data->cost_price3), 2);
-                  $unit = 5;
-                  $remainder = $number % $unit;
-                  $m_round = ($remainder < $unit / 2) ? $number - $remainder : $number + ($unit - $remainder);
-                  $now_price = round($m_round) - 1 + 0.95;
-                  $price_with_quantity = $now_price * $data->quantity;
-                } else  if ($cost_price > 500) {
-                  $number = round($cost_price * ($pr_data->cost_price4 * $cost_price / $multiplier + $pr_data->cost_price5));
-                  $unit = 5;
-                  $remainder = $number % $unit;
-                  $m_round = ($remainder < $unit / 2) ? $number - $remainder : $number + ($unit - $remainder);
-                  $now_price = round($m_round) - 1 + 0.95;
-                  $price_with_quantity = $now_price * $data->quantity;
-                }
-              } else {
-                $now_price = $data->price;
-                $price_with_quantity = $data->price * $data->quantity;
-              }
-
+               $now_price = $data->price;
+               $price_with_quantity = $data->price * $data->quantity;
               ?>
               <p class="green_text"><a>$<?= number_format((float)$price_with_quantity, 2, '.', ''); ?></a></p>
             </div>
