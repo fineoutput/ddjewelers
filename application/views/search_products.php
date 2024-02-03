@@ -34,7 +34,7 @@
                     <div class="row w-100">
                         <?php $i = 1;
                         if (!empty($product_data)) {
-                            foreach ($product_data->result() as $data) {
+                            foreach ($product_data as $data) {
                                 $catalogValues = json_decode($data->catalog_values);
                                 if (in_array("Unset", $catalogValues)) {
                                     $set_data = $this->db->select('pro_id, full_set_images, images, group_images, series_id, group_id, description, price, catalog_values')
@@ -137,13 +137,12 @@
                             <?php $i++;
                             } ?>
 
-                            <!-- <div class="row justify-content-center w-100">
-                                <?= $links ?>
+                            <div class="row justify-content-center w-100">
                                 <div class="pagination-dropdown row align-items-center">
                                     <label for="page-select">Go to page: </label>
-                                    <?= form_dropdown('page-select', $page_options, $current_page, 'class="form-control ml-2 " style="width: auto;" onchange="window.location.href=\'' . base_url("Home/search_product?search_input={$search_string}&page_index=") . '\' + this.value"') ?>
+                                    <?= form_dropdown('page-select', $page_options, $page_index, 'class="form-control ml-2 " style="width: auto;" onchange="handleChange(this)"') ?>
                                 </div>
-                            </div> -->
+                            </div>
                         <?  } ?>
                     </div>
                 </div>
@@ -153,3 +152,12 @@
 
     </div>
 </section>
+<script>
+    function handleChange(selectElement) {
+        var selectedOption = selectElement.options[selectElement.selectedIndex].text;
+        var selectedValue = selectElement.options[selectElement.selectedIndex].value;
+          var x = '<?= base_url("Home/search_result/{$search_string}/") ?>' + selectedValue;
+        console.log(x)
+        location.replace(x)
+    }
+</script>

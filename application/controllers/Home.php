@@ -468,7 +468,7 @@ class Home extends CI_Controller
         $this->load->view('search_products');
         $this->load->view('common/footer');
     }
-    public function search_product()
+    public function search_product_old()
     {
         $this->load->helper(array('form', 'url'));
         $this->load->library('form_validation');
@@ -505,26 +505,33 @@ class Home extends CI_Controller
             redirect($_SERVER['HTTP_REFERER']);
         }
     }
-    public function search_product_new()
+    public function search_product()
     {
-        // $this->load->helper(array('form', 'url'));
-        // $this->load->library('form_validation');
-        // $this->load->helper('security');
+        $this->load->helper(array('form', 'url'));
+        $this->load->library('form_validation');
+        $this->load->helper('security');
 
-        // if ($this->input->post()) {
-        //     $this->form_validation->set_rules('search_input', 'search_input', 'required|xss_clean|trim');
+        if ($this->input->post()) {
+            $this->form_validation->set_rules('search_input', 'search_input', 'required|xss_clean|trim');
 
-        //     if ($this->form_validation->run() == TRUE) {
-        //         $string_main = $this->input->post('search_input');
+            if ($this->form_validation->run() == TRUE) {
+                $string_main = $this->input->post('search_input');
+                redirect("Home/search_result/".$string_main.'/1');
+            } else {
+                $this->session->set_flashdata('emessage', validation_errors());
+                redirect($_SERVER['HTTP_REFERER']);
+            }
+        } else {
+            $this->session->set_flashdata('emessage', 'Sorry, an error occurred.');
+            redirect($_SERVER['HTTP_REFERER']);
+        }
+    }
+    public function search_result($string_main, $page_index = 1)
+    {
         $this->load->helper('form');
-        $string_main = $_GET['search_input'];
-        $page_index = isset($_GET['page_index']) ? $_GET['page_index'] : 1;
-        // echo $page_index;die();
-        // $page_index = $this->input->post('page_index') ? $this->input->post('page_index') : 1;
-        $string = str_replace('SLR-', '', $string_main);
-        // echo "hi";die();
-        // $config['base_url'] = base_url() . 'Home/search_product?search_input=' . $string_main . "&page_index=";
-        // $per_page = 28;
+        $string = str_replace('SLR-', '', urldecode($string_main));
+        // $config['base_url'] = base_url() . 'Home/search_result/' . $string . "/" . $page_index;
+        $per_page = 12;
         // $config['per_page'] = $per_page;
         // $config['num_links'] = 3;
         // $config['full_tag_open'] = '<ul class="pagination " style="margin: auto;">';
@@ -546,74 +553,73 @@ class Home extends CI_Controller
         // $config['cur_tag_close'] = '</a></li>';
         // $config['num_tag_open'] = '<li class="page-item page-link page-link">';
         // $config['num_tag_close'] = '</li>';
-        // $productCount = $this->db->select('id')->group_by(array("series_id"))->from('tbl_products')->like("search_values", $string)->count_all_results();
-        // $product_data = $this->db->select('id,pro_id,series_id,group_id,search_values')
-        //     ->from('tbl_products')
-        //     ->limit(1)
-        //     ->where("JSON_SEARCH(search_values, 'one', '$string') IS NOT NULL", null, false)
-        //     ->get()->row();
-        // $product_data = $this->db->select('full_set_images,images,group_images,series_id,pro_id,group_id,description,price,catalog_values')
-        $product_data = $this->db->select('id')
-            ->from('tbl_products')
-            // ->limit($per_page, $start)
-            ->group_by(array("series_id"))
-            ->like("search_values", $string)
-            ->get();
-        echo "hi";
-        die();
-        $data['search_string'] = $string_main;
-        if (!empty($product_data)) {
-            // //--------- pagination config ----------------------
-            // $total_rows = $productCount;
-            // // Calculate the total number of pages
-            // $total_pages = ceil($total_rows / $per_page);
+        $data['search_string'] = urldecode($string_main);
+        $session_string = $this->session->userdata('search_string');
+        if (empty($session_string)) {
+            $productCount = $this->db->select('id')->group_by(array("series_id"))->from('tbl_products')->where("search_values LIKE '%$string%'", null, false)->count_all_results();
+            $this->session->set_userdata('search_string', $string);
+            if (!empty($productCount)) {
+                $this->session->set_userdata('productCount', $productCount);
+            }
+        } else {
+            if ($session_string != $string) {
+                $this->session->set_userdata('search_string', $string);
+                $productCount = $this->db->select('id')->group_by(array("series_id"))->from('tbl_products')->where("search_values LIKE '%$string%'", null, false)->count_all_results();
+                if (!empty($productCount)) {
+                    $this->session->set_userdata('productCount', $productCount);
+                }
+            } else {
+                $productCount = $this->session->userdata('productCount');
+            }
+        }
 
-            // // Get the current page number
-            // $current_page = $page_index;
+
+        if (!empty($productCount)) {
+            // // // //--------- pagination config ----------------------
+            $total_rows = $productCount;
+            // Calculate the total number of pages
+            $total_pages = ceil($total_rows / $per_page);
+
             // $config['total_rows'] = $total_rows;
 
-            // // Initialize the pagination
+            // Initialize the pagination
             // $this->pagination->initialize($config);
 
-            // // Create an array for the page dropdown options
-            // $page_options = array();
-            // for ($i = 1; $i <= $total_pages; $i++) {
-            //     $page_options[$i] = $i;
-            // }
-            // if (!empty($page_index)) {
-            //     if (is_numeric($page_index)) {
-            //         $start = ($page_index - 1) * $config['per_page'];
-            //     } else {
-            //         $page_index = 0;
-            //         $start = 0;
-            //     }
-            // } else {
-            //     $page_index = 0;
-            //     $start = 0;
-            // }
-            // $product_data = $this->db->select('full_set_images,images,group_images,series_id,pro_id,group_id,description,price,catalog_values,search_values')
-            //     ->from('tbl_products')
-            //     ->limit($per_page, $start)
-            //     ->group_by(array("series_id"))
-            //     ->like("search_values", $string)
-            //     ->get();
-            // $links = $this->pagination->create_links();
+            // Create an array for the page dropdown options
+            $page_options = array();
+            for ($i = 1; $i <= $total_pages; $i++) {
+                $page_options[$i] = $i;
+            }
+            if (!empty($page_index)) {
+                if (is_numeric($page_index)) {
+                    $start = ($page_index - 1) * $per_page;
+                } else {
+                    $page_index = 0;
+                    $start = 0;
+                }
+            } else {
+                $page_index = 0;
+                $start = 0;
+            }
+            // // $product_data = $this->db->select('id,series_id,pro_id,group_id')
+            // //     ->from('tbl_products')
+            // //     ->limit($per_page, $start)
+            // //     ->group_by(array("series_id"))
+            // //     ->like("search_values", $string)
+            // //     ->get();
+            // $product_data = $this->db->select('id')->limit($per_page, $start)->group_by(array("series_id"))->like("search_values", $string)->get_where('tbl_products', array())->result();
+            // echo "hi";die();
+            $product_data = $this->db->select('full_set_images,images,group_images,series_id,pro_id,group_id,description,price,catalog_values')->where("search_values LIKE '%$string%'", null, false)->limit($per_page, $start)->group_by(array("series_id"))->get_where('tbl_products', array())->result();
             if (count($product_data) > 1) {
                 $data['product_data'] = $product_data;
-                // $data['links'] = $links;
-                // $data['current_page'] = $current_page;
-                // $data['total_pages'] = $total_pages;
-                // $data['page_options'] = $page_options;
-                $data['links'] = [];
-                $data['current_page'] = 1;
-                $data['total_pages'] = 10;
-                $data['page_options'] = [];
+                $data['total_pages'] = $total_pages;
+                $data['page_options'] = $page_options;
                 $data['page_index'] = $page_index;
                 $this->load->view('common/header', $data);
                 $this->load->view('search_products');
                 $this->load->view('common/footer');
             } else {
-                redirect('Home/product_details/' . $product_data->row()->series_id . '/' . $product_data->row()->pro_id . '?groupId=' . $product_data->row()->group_id . '');
+                redirect('Home/product_details/' . $product_data[0]->series_id . '/' . $product_data[0]->pro_id . '?groupId=' . $product_data[0]->group_id . '');
             }
         } else {
             $this->load->view('common/header', $data);
@@ -622,14 +628,6 @@ class Home extends CI_Controller
             // $this->session->set_flashdata('emessage', 'No Product found!');
             // redirect($_SERVER['HTTP_REFERER']);
         }
-        //     } else {
-        //         $this->session->set_flashdata('emessage', validation_errors());
-        //         redirect($_SERVER['HTTP_REFERER']);
-        //     }
-        // } else {
-        //     $this->session->set_flashdata('emessage', 'Sorry, an error occurred.');
-        //     redirect($_SERVER['HTTP_REFERER']);
-        // }
     }
     function getProductType($input)
     {
