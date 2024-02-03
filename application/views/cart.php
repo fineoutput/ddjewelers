@@ -1,7 +1,43 @@
 <!-- cart start -->
 
+<style>
+  .moblie {
+    display: block;
+  }
+
+  @media(max-width:785px) {
+    .d-none-1 {
+      display: block !important;
+      text-align: start;
+    }
+    .moblie-respons-p{
+      padding: 10px !important;
+    }
+
+    .col-md-2.d-flex.justify-content-between.mt-2 form {
+      width: 50%;
+    }
+
+    .moblie {
+      display: none;
+    }
+  }
+
+  @media(max-width:397px){
+.cart_btn {
+  font-size: 13px;
+}
+  }
+
+  @media(max-width:352px){
+.cart_btn {
+  font-size: 11px;
+}
+  }
+</style>
+
 <section>
-  <div class="container-fluid pl-5 pr-5 pt-3 pb-5">
+  <div class="container-fluid pl-5 pr-5 pt-3 pb-5 moblie-respons-p">
     <div class="row">
       <div class="col-md-12">
         <h1 class="r-title">Your Cart</h1>
@@ -33,10 +69,10 @@ if (!empty($cart_data)) {
             <div class="col-md-7 pl-0 pr-0">
               <strong>ITEM DESCRIPTION</strong>
             </div>
-            <div class="col-md-2 text-right pl-0">
+            <div class="col-md-2 text-right pl-0 moblie">
               <strong>QUANTITY</strong>
             </div>
-            <div class="col-md-3 text-right pr-0">
+            <div class="col-md-3 text-right pr-0 moblie">
               <strong>EST. PRICE</strong>
             </div>
           </div>
@@ -79,7 +115,10 @@ if (!empty($cart_data)) {
                 <? } ?>
               </div>
             </div>
-            <div class="col-md-2">
+            <div class="col-md-2 d-flex justify-content-between mt-2 ">
+              <div class="d-none d-none-1">
+                <p class="mb-0"> <strong>QUANTITY :</strong></p>
+              </div>
               <form action="<?php echo base_url() ?>Cart/UpdateCartOnline/<?= $data->pro_id ?>" method="Get" enctype="multipart/form-data">
                 <input type="hidden" name="ring_size" value="<?= $data->ring_size ?>">
                 <div class="d-flex">
@@ -88,12 +127,14 @@ if (!empty($cart_data)) {
                 </div>
               </form>
             </div>
-            <div class="col-md-3 text-right">
+            <div class="col-md-3 text-right d-flex justify-content-between ">
+              <p class="d-none d-none-1 mb-0 mt-3 "> <strong>EST. PRICE : </strong></p>
               <?php
-               $now_price = $data->price;
-               $price_with_quantity = $data->price * $data->quantity;
+              $now_price = $data->price;
+              $price_with_quantity = $data->price * $data->quantity;
               ?>
-              <p class="green_text"><a>$<?= number_format((float)$price_with_quantity, 2, '.', ''); ?></a></p>
+
+              <p class="green_text mb-0 mt-3" style="text-align: end;"><a>$<?= number_format((float)$price_with_quantity, 2, '.', ''); ?></a></p>
             </div>
           </div>
           <div class="row back_col">
@@ -122,7 +163,7 @@ if (!empty($cart_data)) {
         <div class="col-3 ml-auto text-right">
           <p>Subtotal:</p>
         </div>
-        <div class="col-2 text-right">
+        <div class="col-3 text-right">
           <p>$<?= number_format((float)$total_cart_amount, 2, '.', ''); ?></p>
         </div>
       </div>
@@ -135,7 +176,7 @@ if (!empty($cart_data)) {
         <div class="col-4 ml-auto">
           <?php if ($total_cart_amount  != 0) { ?>
             <a href="<?= base_url(); ?>Home/add_address">
-              <button class="cart_btn">Checkout</button>
+              <button class="cart_btn ">Checkout</button>
             </a>
           <?php } else { ?>
             <button class="cart_btn" disabled style="opacity:0.5;">Checkout</button>

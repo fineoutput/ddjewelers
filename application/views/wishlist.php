@@ -1,7 +1,31 @@
+
+<style>
+  .moblie{
+  display: block;
+}
+  @media(max-width:785px){
+.d-none-1{
+  display:  block  !important;  
+  text-align: start;
+}
+.col-md-2.d-flex.justify-content-between.mt-2 form {
+    width: 50%;
+}
+.moblie{
+  display: none;
+}
+.moblie-respons-p{
+      padding: 10px !important;
+    }
+  }
+ 
+</style>
+
+
 <!-- cart start -->
 <div id="WishlistData">
   <section>
-    <div class="container-fluid pl-5 pr-5 pt-3 pb-5">
+    <div class="container-fluid pl-5 pr-5 pt-3 pb-5 moblie-respons-p">
       <div class="row">
         <div class="col-md-12">
           <h1 class="r-title">Your Wishlist</h1>
@@ -27,7 +51,7 @@
               </div>
               <div class="col-md-2 text-right pl-0">
               </div>
-              <div class="col-md-3 text-right pr-0">
+              <div class="col-md-3 text-right pr-0 moblie">
                 <strong>EST. PRICE</strong>
               </div>
             </div>
@@ -51,7 +75,8 @@
               </div>
               <div class="col-md-2">
               </div>
-              <div class="col-md-3 text-right">
+              <div class="col-md-3 text-right d-flex justify-content-between  " >
+              <p class="d-none d-none-1 mb-0  ">  <strong>EST. PRICE : </strong></p>
                 <?php
                 $pr_data = $this->db->get_where('tbl_price_rule', array())->row();
                 $multiplier = $pr_data->multiplier;

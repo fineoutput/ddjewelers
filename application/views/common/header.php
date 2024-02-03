@@ -251,6 +251,11 @@ button.ser_btn{
    }
 
    @media(max-width:1168px){
+    svg.svg-inline--fa.fa-heart.fa-w-18{
+      margin-right: 6px !important;
+    }
+   }
+   @media(max-width:329px){
       button.ser_btn{
         min-width: 13% !important;
       }
