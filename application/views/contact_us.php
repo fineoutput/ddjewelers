@@ -76,6 +76,12 @@
     }
     @media (max-width:1199.98px) {
         .widget-location .location-listing .card-hours .hours-inner {
+            width: 100%;
+            text-align: left;
+        }
+    }
+    @media (max-width:570px) {
+        .widget-location .location-listing .card-hours .hours-inner {
             width: auto;
             text-align: left;
         }
@@ -144,7 +150,7 @@
     <div class="container">
         <div class="columns">
             <div class="row row-columns">
-                <div id="80dd5b18-a986-40a4-8df0-ab52f9ad1e7e" class="widget section-widget widget-emailformemailform   col-8 widget-emailform hidden-print ">
+                <div id="80dd5b18-a986-40a4-8df0-ab52f9ad1e7e" class="widget section-widget widget-emailformemailform col-md-8 col-12 widget-emailform hidden-print ">
                     <!-- 
                     <div class="widget-title ">
                         <h2>
@@ -238,7 +244,7 @@
                         </div>
                     </div>
                 </div>
-                <div id="f2c5742b-21a2-404e-a6d9-72161e78531f" class="widget section-widget widget-ts_companylocations   col-4  widget-location ">
+                <div id="f2c5742b-21a2-404e-a6d9-72161e78531f" class="widget section-widget widget-ts_companylocations col-md-4 col-12 widget-location ">
                     <div class="widget-header ck-content  conceal">
                     </div>
                     <div class="widget-content ">
