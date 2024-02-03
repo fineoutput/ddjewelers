@@ -1189,10 +1189,35 @@ class Home extends CI_Controller
             $sizePriceDa = array_values(array_filter($r_data, fn ($item) => $item['Size'] == $data['products']->ring_size))[0] ?? null;
             $sizePrice = $sizePriceDa['Price']['Value'];
         }
+
+        //----- START GET PRODUCT LATEST PRICE ------
+        $curl = curl_init();
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => 'https://api.stuller.com/v2/products',
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'POST',
+            CURLOPT_POSTFIELDS => '{"Include":["All"],"Filter":["OnPriceList","Orderable"], "SKU":["' . $data['products']->sku . '"]}',
+            CURLOPT_HTTPHEADER => array(
+                'Authorization: Basic ZGV2amV3ZWw6Q29kaW5nMjA9',
+                'Content-Type: application/json',
+                'Host: api.stuller.com',
+            ),
+        ));
+
+        $response = curl_exec($curl);
+        curl_close($curl);
+        $prod = json_decode($response);
+        //----- END GET PRODUCT LATEST PRICE ------
+        $pro_price = $prod->Products[0]->Price->Value;
         $pr_data = $this->db->get_where('tbl_price_rule', array())->row();
         $data['sizePrice'] = $sizePrice;
         $multiplier = $pr_data->multiplier;
-        $cost_price = $data['products']->price + $sizePrice;
+        $cost_price = $pro_price + $sizePrice;
         $retail = $cost_price * $multiplier;
         $now_price = $cost_price;
         if ($cost_price <= 500) {
@@ -1325,9 +1350,33 @@ class Home extends CI_Controller
                 $price = $this->input->post('price');
                 $pro_data = $this->db->get_where('tbl_products', array('pro_id' => $pro_id))->row();
                 if (!empty($pro_data)) {
+                    //----- START GET PRODUCT LATEST PRICE ------
+                    $curl = curl_init();
+                    curl_setopt_array($curl, array(
+                        CURLOPT_URL => 'https://api.stuller.com/v2/products',
+                        CURLOPT_RETURNTRANSFER => true,
+                        CURLOPT_ENCODING => '',
+                        CURLOPT_MAXREDIRS => 10,
+                        CURLOPT_TIMEOUT => 0,
+                        CURLOPT_FOLLOWLOCATION => true,
+                        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                        CURLOPT_CUSTOMREQUEST => 'POST',
+                        CURLOPT_POSTFIELDS => '{"Include":["All"],"Filter":["OnPriceList","Orderable"], "SKU":["' . $pro_data->sku . '"]}',
+                        CURLOPT_HTTPHEADER => array(
+                            'Authorization: Basic ZGV2amV3ZWw6Q29kaW5nMjA9',
+                            'Content-Type: application/json',
+                            'Host: api.stuller.com',
+                        ),
+                    ));
+
+                    $response = curl_exec($curl);
+                    curl_close($curl);
+                    $prod = json_decode($response);
+                    //----- END GET PRODUCT LATEST PRICE ------
+                    $pro_price = $prod->Products[0]->Price->Value;
                     $pr_data = $this->db->get_where('tbl_price_rule', array())->row();
                     $multiplier = $pr_data->multiplier;
-                    $cost_price = $pro_data->price + $price;
+                    $cost_price = $pro_price + $price;
                     $retail = $cost_price * $multiplier;
                     $now_price = $cost_price;
                     if ($cost_price <= 500) {
