@@ -114,6 +114,11 @@
             padding: 0 0 .5rem !important;
         }
     }
+    @media (max-width:874px) {
+     .min h5{
+        font-size: 18px;
+     }
+    }
 </style>
 <div class="title-wrapper pt-5 pb-5">
     <div class="container">
@@ -145,7 +150,7 @@
         <div class="columns">
             <div class="row row-columns">
                 <div id="80dd5b18-a986-40a4-8df0-ab52f9ad1e7e" class="widget section-widget widget-emailformemailform   col-12 widget-emailform hidden-print ">
-                    <div class=" ">
+                    <div class="min">
                         <h5>
                             Sign Up For Special Offers
                         </h5>

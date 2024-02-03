@@ -2,6 +2,9 @@
   .sign_btn_new:hover {
     color: #fff;
   }
+  .nav-wrapper.d-none-print {
+    display: none !important;
+}
 </style>
 <div class="scroll_up_div dimaond_scroll">
   <a href="#body" class="scroll_up">
@@ -9,6 +12,7 @@
     <p>TOP</p>
   </a>
 </div>
+
 <!-- footer start -->
 <!-- <section id="footer">
   <footer>
