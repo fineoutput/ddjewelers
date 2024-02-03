@@ -138,7 +138,6 @@ class Cart extends CI_Controller
 		$ip = $this->input->ip_address();
 		date_default_timezone_set("Asia/Calcutta");
 		$cur_date = date("Y-m-d H:i:s");
-		$pro_data = $this->db->get_where('tbl_products', array('pro_id' => $receive['pro_id']))->row();
 		$cart_item = array(
 			'pro_id' => $receive['pro_id'],
 			'quantity' => $receive['quantity'],
