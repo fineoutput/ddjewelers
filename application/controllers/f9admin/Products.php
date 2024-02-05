@@ -917,13 +917,18 @@ class Products extends CI_finecontrol
                                 $StoneProductId = $item->Product->Id;
                                 $SerialNumber = '';
                             } else {
+                                if(!empty($v->Clarity)){
+                                    $clarity = $v->Clarity;
+                                }else{
+                                    $clarity = '-' ;
+                                }
                                 //------ if product is serialized and have serialized data-----
                                 $html .= '<td>' . $v->SerialNumber . '</td>';
                                 $html .= '<td>' . $v->StoneType . '</td>';
                                 $html .= '<td>' . $v->Shape . '</td>';
                                 $html .= '<td>' . $v->Cut . '</td>';
                                 $html .= '<td>' . $v->ColorDescription . '</td>';
-                                $html .= '<td>' . $v->Clarity . '</td>';
+                                $html .= '<td>' . $clarity . '</td>';
                                 $html .= '<td>' . $v->Measurements . '</td>';
                                 $html .= '<td>' . $v->CaratWeight . '</td>';
                                 $html .= '<td>$' . $item->TotalPrice->Value . '</td>';
