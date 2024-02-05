@@ -8159,4 +8159,32 @@ class Home extends CI_Controller
             redirect("/", "refresh");
         }
     }
+    public function test_email()
+    {
+
+        $config = array(
+            'protocol' => 'smtp',
+            'smtp_host' => SMTP_HOST,
+            'smtp_port' => SMTP_PORT,
+            'smtp_user' => USER_NAME, // change it to yours
+            'smtp_pass' => PASSWORD, // change it to yours
+            'mailtype' => 'html',
+            'charset' => 'iso-8859-1',
+            'wordwrap' => true
+        );
+        $full_name = "Nitesh Shah";
+        $message = 'Hello Admin,
+        You have received a new order from ' . $full_name;
+        $this->load->library('email', $config);
+        $this->email->set_newline("\r\n");
+        $this->email->from(EMAIL);
+        $this->email->to('office.fineoutput@gmail.com');
+        $this->email->subject('Test Email');
+        $this->email->message($message);
+        if ($this->email->send()) {
+            echo 'Email sent.';
+        } else {
+            show_error($this->email->print_debugger());
+        }
+    } 
 }
