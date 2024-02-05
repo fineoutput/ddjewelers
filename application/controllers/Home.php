@@ -530,6 +530,15 @@ class Home extends CI_Controller
     {
         $this->load->helper('form');
         $string = str_replace('SLR-', '', urldecode($string_main));
+        if ($string == "10mm") {
+            $string = "10 mm";
+        }else if($string=='14k gold'){
+            $string = "14k"; 
+        }else if($string=='14k white gold'){
+            $string = "14k white"; 
+        }else if($string=='cushion center stone'){
+            $string = "cushion"; 
+        }
         // $config['base_url'] = base_url() . 'Home/search_result/' . $string . "/" . $page_index;
         $per_page = 12;
         // $config['per_page'] = $per_page;
@@ -614,12 +623,13 @@ class Home extends CI_Controller
             // //     ->get();
             // $product_data = $this->db->select('id')->limit($per_page, $start)->group_by(array("series_id"))->like("search_values", $string)->get_where('tbl_products', array())->result();
             // echo "hi";die();
-       
+
             if (count($product_data) > 1) {
                 $data['product_data'] = $product_data;
                 $data['total_pages'] = $total_pages;
                 $data['page_options'] = $page_options;
                 $data['page_index'] = $page_index;
+                $data['productCount'] = $productCount;
                 $this->load->view('common/header', $data);
                 $this->load->view('search_products');
                 $this->load->view('common/footer');
@@ -8186,5 +8196,5 @@ class Home extends CI_Controller
         } else {
             show_error($this->email->print_debugger());
         }
-    } 
+    }
 }

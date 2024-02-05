@@ -14,9 +14,6 @@
         <div class="row">
             <div class="col-md-12 page_span">
                 <p><a href="<?= base_url() ?>"><span>Home</span></a> > Search Products
-
-
-
             </div>
         </div>
         <div class="row ">
@@ -27,7 +24,7 @@
                         <div class="row ">
                             <div class="col-md-12 mb-4 hrds">
                                 <h1 class="r-title">
-                                    Search Products - <?= $search_string; ?>
+                                    Search Products - <?= $search_string; ?> (<?=$productCount?>)
                                 </h1>
                             </div>
                         </div>
