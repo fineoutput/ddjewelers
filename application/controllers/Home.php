@@ -592,16 +592,19 @@ class Home extends CI_Controller
             for ($i = 1; $i <= $total_pages; $i++) {
                 $page_options[$i] = $i;
             }
-            if (!empty($page_index)) {
+            $page_options[$i] = "Show All";
+            if (!empty($page_index) && $page_index != "all") {
                 if (is_numeric($page_index)) {
                     $start = ($page_index - 1) * $per_page;
                 } else {
                     $page_index = 0;
                     $start = 0;
                 }
+                $product_data = $this->db->select('full_set_images,images,group_images,series_id,pro_id,group_id,description,price,catalog_values')->like("search_values", $string)->limit($per_page, $start)->group_by("series_id")->get_where('tbl_products', array())->result();
             } else {
                 $page_index = 0;
                 $start = 0;
+                $product_data = $this->db->select('full_set_images,images,group_images,series_id,pro_id,group_id,description,price,catalog_values')->like("search_values", $string)->group_by("series_id")->get_where('tbl_products', array())->result();
             }
             // // $product_data = $this->db->select('id,series_id,pro_id,group_id')
             // //     ->from('tbl_products')
@@ -611,7 +614,7 @@ class Home extends CI_Controller
             // //     ->get();
             // $product_data = $this->db->select('id')->limit($per_page, $start)->group_by(array("series_id"))->like("search_values", $string)->get_where('tbl_products', array())->result();
             // echo "hi";die();
-            $product_data = $this->db->select('full_set_images,images,group_images,series_id,pro_id,group_id,description,price,catalog_values')->like("search_values", $string)->limit($per_page, $start)->group_by("series_id")->get_where('tbl_products', array())->result();
+       
             if (count($product_data) > 1) {
                 $data['product_data'] = $product_data;
                 $data['total_pages'] = $total_pages;

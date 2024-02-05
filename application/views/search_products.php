@@ -2,6 +2,7 @@
 <style>
     .img-fluid {
         width: 100% !important;
+        margin: auto;
     }
 
     .searchColumn {
@@ -91,10 +92,10 @@
                                     <a href="<?= base_url() ?>Home/product_details/<?= $data->series_id ?>/<?= $data->pro_id ?>?groupId=<?= $data->group_id ?>">
                                         <? if (!empty($image1)) { ?>
                                             <img src="<?= $image1 ?>" alt="" class=" img-fluid first_img">
-                                            <img src="<?= $image2 ? $image2 : $image1 ?>" alt="" class="img-fluid second_img" style="margin-left: 28px;">
+                                            <img src="<?= $image2 ? $image2 : $image1 ?>" alt="" class="img-fluid second_img">
                                         <? } else { ?>
                                             <img src="<?= base_url() ?>assets/uploads/no-image-found.jpg" alt="" class="img-fluid first_img">
-                                            <img src="<?= base_url() ?>assets/uploads/no-image-found.jpg" alt="" class="img-fluid second_img" style="margin-left: 28px;">
+                                            <img src="<?= base_url() ?>assets/uploads/no-image-found.jpg" alt="" class="img-fluid second_img">
                                         <? } ?>
                                         <p><b><?= $data->description ?></b></p>
                                         <? if (!empty($data->price)) {
@@ -135,15 +136,16 @@
                                     </a>
                                 </div>
                             <?php $i++;
-                            } ?>
-
+                            } 
+                            if ($page_index != "all") {
+                            ?>
                             <div class="row justify-content-center w-100">
                                 <div class="pagination-dropdown row align-items-center">
                                     <label for="page-select">Go to page: </label>
                                     <?= form_dropdown('page-select', $page_options, $page_index, 'class="form-control ml-2 " style="width: auto;" onchange="handleChange(this)"') ?>
                                 </div>
                             </div>
-                        <?  } ?>
+                        <?  }} ?>
                     </div>
                 </div>
             </div>
@@ -156,7 +158,12 @@
     function handleChange(selectElement) {
         var selectedOption = selectElement.options[selectElement.selectedIndex].text;
         var selectedValue = selectElement.options[selectElement.selectedIndex].value;
-          var x = '<?= base_url("Home/search_result/{$search}/") ?>' + selectedValue;
+        if (selectedOption === 'Show All') {
+            var x = '<?= base_url("Home/search_result/{$search}/all") ?>';
+
+        } else {
+            var x = '<?= base_url("Home/search_result/{$search}/") ?>' + selectedValue;
+        }
         // console.log(x)
         location.replace(x)
     }
