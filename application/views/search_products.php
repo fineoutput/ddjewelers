@@ -156,8 +156,8 @@
     function handleChange(selectElement) {
         var selectedOption = selectElement.options[selectElement.selectedIndex].text;
         var selectedValue = selectElement.options[selectElement.selectedIndex].value;
-          var x = '<?= base_url("Home/search_result/{$search_string}/") ?>' + selectedValue;
-        console.log(x)
+          var x = '<?= base_url("Home/search_result/{$search}/") ?>' + selectedValue;
+        // console.log(x)
         location.replace(x)
     }
 </script>

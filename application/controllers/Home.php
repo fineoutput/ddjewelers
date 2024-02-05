@@ -515,7 +515,7 @@ class Home extends CI_Controller
             $this->form_validation->set_rules('search_input', 'search_input', 'required|xss_clean|trim');
 
             if ($this->form_validation->run() == TRUE) {
-                $string_main = $this->input->post('search_input');
+                $string_main = urlencode($this->input->post('search_input'));
                 redirect("Home/search_result/" . $string_main . '/1');
             } else {
                 $this->session->set_flashdata('emessage', validation_errors());
@@ -553,7 +553,9 @@ class Home extends CI_Controller
         // $config['cur_tag_close'] = '</a></li>';
         // $config['num_tag_open'] = '<li class="page-item page-link page-link">';
         // $config['num_tag_close'] = '</li>';
+        $productCount = $this->db->select('id')->group_by("series_id")->from('tbl_products')->like("search_values", $string)->count_all_results();
         $data['search_string'] = urldecode($string_main);
+        $data['search'] = $string_main;
         $session_string = $this->session->userdata('search_string');
         if (empty($session_string)) {
             $productCount = $this->db->select('id')->group_by("series_id")->from('tbl_products')->like("search_values", $string)->count_all_results();
