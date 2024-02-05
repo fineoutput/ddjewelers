@@ -37,35 +37,36 @@
 									<?php $i = 1;
 									foreach ($ordered_product_details_data->result() as $data) {
 										$gem_data = json_decode($data->gem_data);
-											  $pro_data = $this->db->get_where('tbl_products', array('series_id'=> $data->pro_id,'series_id'=> $data->series_id))->row();
-										
+										$pro_data = $this->db->get_where('tbl_products', array('series_id' => $data->pro_id, 'series_id' => $data->series_id))->row();
+
 									?>
 										<tr>
 											<td><?php echo $i ?> </td>
 											<td><img src="<?= $data->img ?>" style="width:150px;height:150px"></td>
 											<td>
-											<a href="<?= base_url() ?>Home/product_details/<?= $pro_data->series_id ?>/<?= $pro_data->pro_id ?>?groupId=<?= $pro_data->group_id ?>" target="_blank" rel="noopener noreferrer"><?= $data->description ?>
-												<? if (!empty($gem_data)) { ?>
-													</br><span><b>Stones : </b></span>
-													<? foreach ($gem_data as  $gem) {
-														if (!empty($gem->Product)) {
-															$item = $gem->Product;
-														} else if (!empty($gem->Diamond)) {
-															$item = $gem->Diamond;
-														} else if (!empty($gem->GemStone)) {
-															$item = $gem->GemStone;
-														} else if (!empty($gem->LabGrownDiamond)) {
-															$item = $gem->LabGrownDiamond;
-														} ?>
-														<? if (!empty($item->Description)) { ?>
-															<span> <?= $item->Description ?> <b>|</b> </span>
-														<? } else { ?>
-															<span> <?= $item->SerialNumber ?> <b>|</b> </span>
-
+												<a href="<?= base_url() ?>Home/product_details/<?= $pro_data->series_id ?>/<?= $pro_data->pro_id ?>?groupId=<?= $pro_data->group_id ?>" target="_blank" rel="noopener noreferrer"><?= $data->description ?>
+													<? if (!empty($gem_data)) { ?>
+														</br><span><b>Stones : </b></span>
+														<? foreach ($gem_data as  $gem) {
+															if (!empty($gem->Product)) {
+																$item = $gem->Product;
+															} else if (!empty($gem->Diamond)) {
+																$item = $gem->Diamond;
+															} else if (!empty($gem->GemStone)) {
+																$item = $gem->GemStone;
+															} else if (!empty($gem->LabGrownDiamond)) {
+																$item = $gem->LabGrownDiamond;
+															} ?>
+															<? if (!empty($item->Description)) { ?>
+																<span> <?= $item->Description ?> <b>|</b> </span>
+															<? } else if (!empty($item->SerialNumber)) { ?>
+																<span> <?= $item->SerialNumber ?> <b>|</b> </span>
+															<? } else { ?>
+																<span> <?= $item->Id ?> <b>|</b> </span>
+															<? } ?>
 														<? } ?>
 													<? } ?>
-												<? } ?>
-											</a>
+												</a>
 											</td>
 											<td><?php echo $data->quantity ?></td>
 											<td>$<?php echo $data->amount ?></td>

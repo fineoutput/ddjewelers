@@ -102,9 +102,10 @@
                                                                         } ?>
                                                         <? if (!empty($item->Description)) { ?>
                                                             <span> <?= $item->Description ?> <b>|</b> </span>
-                                                        <? } else { ?>
+                                                        <? } else if (!empty($item->SerialNumber)) { ?>
                                                             <span> <?= $item->SerialNumber ?> <b>|</b> </span>
-
+                                                        <? } else { ?>
+                                                            <span> <?= $item->Id ?> <b>|</b> </span>
                                                         <? } ?>
                                                     <? } ?>
                                                 </p>
