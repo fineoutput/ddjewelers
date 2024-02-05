@@ -10,7 +10,8 @@
       display: block !important;
       text-align: start;
     }
-    .moblie-respons-p{
+
+    .moblie-respons-p {
       padding: 10px !important;
     }
 
@@ -23,16 +24,16 @@
     }
   }
 
-  @media(max-width:397px){
-.cart_btn {
-  font-size: 13px;
-}
+  @media(max-width:397px) {
+    .cart_btn {
+      font-size: 13px;
+    }
   }
 
-  @media(max-width:352px){
-.cart_btn {
-  font-size: 11px;
-}
+  @media(max-width:352px) {
+    .cart_btn {
+      font-size: 11px;
+    }
   }
 </style>
 
@@ -106,9 +107,10 @@ if (!empty($cart_data)) {
                       } ?>
                       <? if (!empty($item->Description)) { ?>
                         <span> <?= $item->Description ?> <b>|</b> </span>
-                      <? } else { ?>
+                      <? } else if (!empty($item->SerialNumber)) { ?>
                         <span> <?= $item->SerialNumber ?> <b>|</b> </span>
-
+                      <? } else { ?>
+                        <span> <?= $item->Id ?> <b>|</b> </span>
                       <? } ?>
                     <? } ?>
                   </div>

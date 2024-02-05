@@ -139,14 +139,15 @@ class Cart extends CI_Controller
 		date_default_timezone_set("Asia/Calcutta");
 		$cur_date = date("Y-m-d H:i:s");
 		$pro = $this->db->get_where('tbl_products', array('pro_id' => $receive['pro_id']))->row();
-		$price = $this->getPrice($pro->sku,$receive['ring_price']);
+		$ring_price =  $receive['ring_price'] ? $receive['ring_price'] : 0;
+		$price = $this->getPrice($pro->sku, $ring_price);
 		$cart_item = array(
 			'pro_id' => $receive['pro_id'],
 			'quantity' => $receive['quantity'],
 			'ring_size' => $receive['ring_size'],
 			'ring_price' => $receive['ring_price'],
 			'gem_data' => $receive['gem_data'],
-			'price' => $receive['price'] ? round($receive['price'],2) : round($price,2),
+			'price' => $receive['price'] ? round($receive['price'], 2) : round($price, 2),
 			'img' => $receive['img'],
 			'ip' => $ip,
 			'date' => $cur_date
@@ -262,7 +263,8 @@ class Cart extends CI_Controller
 			$cartInfo = $this->db->get_where('tbl_cart', array('user_id' => $user_id, 'pro_id' => $receive['pro_id'], 'ring_size' => $receive['ring_size']))->row();
 			if (empty($cartInfo)) {
 				$pro = $this->db->get_where('tbl_products', array('pro_id' => $receive['pro_id']))->row();
-				$price = $this->getPrice($pro->sku,$receive['ring_price']);
+				$ring_price =  $receive['ring_price'] ? $receive['ring_price'] : 0;
+				$price = $this->getPrice($pro->sku, $ring_price);
 				$cart_insert = array(
 					'user_id' => $user_id,
 					'pro_id' => $receive['pro_id'],
@@ -270,7 +272,7 @@ class Cart extends CI_Controller
 					'ring_size' => $receive['ring_size'],
 					'ring_price' => $receive['ring_price'],
 					'gem_data' => $receive['gem_data'],
-					'price' => $receive['price'] ? round($receive['price'],2) : round($price,2),
+					'price' => $receive['price'] ? round($receive['price'], 2) : round($price, 2),
 					'img' => $receive['img'],
 					'date' => $cur_date
 				);
@@ -455,7 +457,7 @@ class Cart extends CI_Controller
 		}
 	}
 	//----- START GET PRODUCT LATEST PRICE ------
-	public function getPrice($sku,$sizePrice)
+	public function getPrice($sku, $sizePrice)
 	{
 		$curl = curl_init();
 		curl_setopt_array($curl, array(
@@ -478,26 +480,34 @@ class Cart extends CI_Controller
 		$response = curl_exec($curl);
 		curl_close($curl);
 		$prod = json_decode($response);
-		$pro_price = $prod->Products[0]->Price->Value;
-        $pr_data = $this->db->get_where('tbl_price_rule', array())->row();
-        $data['sizePrice'] = $sizePrice;
-        $multiplier = $pr_data->multiplier;
-        $cost_price = $pro_price + $sizePrice;
-        $now_price = $cost_price;
-        if ($cost_price <= 500) {
-            $cost_price2 = $cost_price * $cost_price;
-            $number = round($cost_price * ($pr_data->cost_price1 * $cost_price2 + $pr_data->cost_price2 * $cost_price + $pr_data->cost_price3), 2);
-            $unit = 5;
-            $remainder = $number % $unit;
-            $mround = ($remainder < $unit / 2) ? $number - $remainder : $number + ($unit - $remainder);
-            $now_price = round($mround) - 1 + 0.95;
-        } else if ($cost_price > 500) {
-            $number = round($cost_price * ($pr_data->cost_price4 * $cost_price / $multiplier + $pr_data->cost_price5));
-            $unit = 5;
-            $remainder = $number % $unit;
-            $mround = ($remainder < $unit / 2) ? $number - $remainder : $number + ($unit - $remainder);
-            $now_price = round($mround) - 1 + 0.95;
-        }
+		if (!empty($prod->Products)) {
+			$pro_price = $prod->Products[0]->Price->Value;
+		} else if (!empty($prod->Diamond)) {
+			$pro_price = $prod->Diamond[0]->Price->Value;
+		} else if (!empty($prod->GemStone)) {
+			$pro_price = $prod->GemStone[0]->Price->Value;
+		} else if (!empty($prod->LabGrownDiamond)) {
+			$pro_price = $prod->LabGrownDiamond[0]->Price->Value;
+		}
+		$pr_data = $this->db->get_where('tbl_price_rule', array())->row();
+		$data['sizePrice'] = $sizePrice;
+		$multiplier = $pr_data->multiplier;
+		$cost_price = $pro_price + $sizePrice;
+		$now_price = $cost_price;
+		if ($cost_price <= 500) {
+			$cost_price2 = $cost_price * $cost_price;
+			$number = round($cost_price * ($pr_data->cost_price1 * $cost_price2 + $pr_data->cost_price2 * $cost_price + $pr_data->cost_price3), 2);
+			$unit = 5;
+			$remainder = $number % $unit;
+			$mround = ($remainder < $unit / 2) ? $number - $remainder : $number + ($unit - $remainder);
+			$now_price = round($mround) - 1 + 0.95;
+		} else if ($cost_price > 500) {
+			$number = round($cost_price * ($pr_data->cost_price4 * $cost_price / $multiplier + $pr_data->cost_price5));
+			$unit = 5;
+			$remainder = $number % $unit;
+			$mround = ($remainder < $unit / 2) ? $number - $remainder : $number + ($unit - $remainder);
+			$now_price = round($mround) - 1 + 0.95;
+		}
 		return $now_price;
 	}
 	//----- END GET PRODUCT LATEST PRICE ------
