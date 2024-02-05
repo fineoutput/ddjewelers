@@ -55,66 +55,67 @@ class Order extends CI_Controller
                             }
                             $sku = $pro_da->sku;
                             if (empty($data->price)) {
-                            $pro_qty_price = $quantity * $data->price;
-                            $total_cart_amount += $pro_qty_price;
-                        } else {
-                            $this->session->set_flashdata('emessage', 'Some error occurred.');
-                            redirect($_SERVER['HTTP_REFERER']);
-                        }
-                        $delivery_charge = 0;
-                        //----- check inventory ----------------
-                        $invRes = $this->check_Inventory($data->pro_id, $quantity);
-                        if ($invRes['data'] == false) {
-                            $response['status'] = false;
-                            $response['message'] = $invRes['data_message'];
-                            echo json_encode($response);
-                            return;
-                        }
-                        if ($i == 1) {
-                            //---------------- Order1 entry ------
-                            $data_insert_order1 = array(
-                                'user_id' => $user_id,
-                                'total_amount' => $total_cart_amount,
-                                'address_id' => $address_id,
-                                'payment_type' => 0,
-                                'payment_status' => 0,
-                                'order_status' => 0,
-                                'delivery_charge' => $delivery_charge,
-                                'txnid' => $txn_id,
-                                'ip' => $ip,
+                                $pro_qty_price = $quantity * $data->price;
+                                $total_cart_amount += $pro_qty_price;
+                            } else {
+                                $this->session->set_flashdata('emessage', 'Some error occurred.');
+                                redirect($_SERVER['HTTP_REFERER']);
+                            }
+                            $delivery_charge = 0;
+                            //----- check inventory ----------------
+                            $invRes = $this->check_Inventory($data->pro_id, $quantity);
+                            if ($invRes['data'] == false) {
+                                $response['status'] = false;
+                                $response['message'] = $invRes['data_message'];
+                                echo json_encode($response);
+                                return;
+                            }
+                            if ($i == 1) {
+                                //---------------- Order1 entry ------
+                                $data_insert_order1 = array(
+                                    'user_id' => $user_id,
+                                    'total_amount' => $total_cart_amount,
+                                    'address_id' => $address_id,
+                                    'payment_type' => 0,
+                                    'payment_status' => 0,
+                                    'order_status' => 0,
+                                    'delivery_charge' => $delivery_charge,
+                                    'txnid' => $txn_id,
+                                    'ip' => $ip,
+                                    'date' => $cur_date
+                                );
+                                $last_order_id = $this->base_model->insert_table("tbl_order1", $data_insert_order1, 1);
+                            }
+                            if ($data->img) {
+                                $order_img = $data->img;
+                            } else if ($all_images) {
+                                $order_img = $all_images[0]->ZoomUrl;
+                            } else {
+                                $order_img = '';
+                            }
+                            //---------------- Order2 entry ------
+                            $data_insert = array(
+                                'pro_id' => $data->pro_id,
+                                'details' => json_encode($pro_da->elements),
+                                'description' => $pro_da->short_description,
+                                'ring_size' => $data->ring_size,
+                                'ring_price' => $data->ring_price,
+                                'quantity' => $data->quantity,
+                                'amount' => $pro_qty_price,
+                                'main_id' => $last_order_id,
+                                'unit_price' => $data->price,
+                                'series_id' => $pro_da->series_id,
+                                'category_id' => $pro_da->category_id,
+                                'gem_data' => $data->gem_data,
+                                'img' => $order_img,
+                                'sku' => $pro_da->sku,
                                 'date' => $cur_date
                             );
-                            $last_order_id = $this->base_model->insert_table("tbl_order1", $data_insert_order1, 1);
+                            $last_id = $this->base_model->insert_table("tbl_order2", $data_insert, 1);
+                            //calculate total cart amount
+                            $totalAmount = $totalAmount + $pro_qty_price;
+                            $i++;
                         }
-                        if ($data->img) {
-                            $order_img = $data->img;
-                        } else if ($all_images) {
-                            $order_img = $all_images[0]->ZoomUrl;
-                        } else {
-                            $order_img = '';
-                        }
-                        //---------------- Order2 entry ------
-                        $data_insert = array(
-                            'pro_id' => $data->pro_id,
-                            'details' => json_encode($pro_da->elements),
-                            'description' => $pro_da->short_description,
-                            'ring_size' => $data->ring_size,
-                            'ring_price' => $data->ring_price,
-                            'quantity' => $data->quantity,
-                            'amount' => $pro_qty_price,
-                            'main_id' => $last_order_id,
-                            'unit_price' => $now_price,
-                            'series_id' => $pro_da->series_id,
-                            'category_id' => $pro_da->category_id,
-                            'gem_data' => $data->gem_data,
-                            'img' => $order_img,
-                            'sku' => $pro_da->sku,
-                            'date' => $cur_date
-                        );
-                        $last_id = $this->base_model->insert_table("tbl_order2", $data_insert, 1);
-                        //calculate total cart amount
-                        $totalAmount = $totalAmount + $pro_qty_price;
-                        $i++;
                     }
                     $address_data = $this->db->get_where('tbl_user_address', array('is_active' => 1, 'id' => $address_id))->row();
                     $state_data = $this->db->get_where('tbl_state_detail', array('is_active' => 1, 'zip_code' => $address_data->zipcode))->row();
@@ -131,10 +132,9 @@ class Order extends CI_Controller
                     $zapak2 = $this->db->update('tbl_order1', $data_insert_order11);
                     $this->session->set_userdata('order_id', $last_order_id);
                     redirect("Order/view_checkout/" . base64_encode($last_order_id), "refresh");
-                    // $this->load->view('common/header', $data2);
-                    // $this->load->view('checkout');
-                    // $this->load->view('common/footer');
                 } else {
+                    $this->session->set_flashdata('emessage', 'Some error occurred!');
+                    redirect($_SERVER['HTTP_REFERER']);
                 }
             } else {
                 $this->session->set_flashdata('emessage', validation_errors());
