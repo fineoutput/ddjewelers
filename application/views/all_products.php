@@ -139,6 +139,13 @@
                   <?= $heading . " ( " . $productCount . " )"; ?>
                 </h1>
                 <?
+                if (!empty($banner)) {
+                ?>
+                  <img src="<?php echo base_url() . $banner ?>" alt="img">
+                <?
+                }
+                ?>
+                <?
                 if (!empty($description)) {
                 ?>
                   <h6 class="mt-3 mb-4"><i><?= $description; ?></i></h6>
@@ -146,13 +153,7 @@
                 }
                 ?>
               </div>
-              <?
-              if (!empty($banner)) {
-              ?>
-                <img src="<?php echo base_url() . $banner ?>" alt="img">
-              <?
-              }
-              ?>
+
 
               <!-- <div class="col-md-12 mt-5 hrdx">
                 <div class="sb-text ">
