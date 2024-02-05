@@ -54,7 +54,7 @@ class Order extends CI_Controller
                                 $all_images = $group_images;
                             }
                             $sku = $pro_da->sku;
-                            if (empty($data->price)) {
+                            if (!empty($data->price)) {
                                 $pro_qty_price = $quantity * $data->price;
                                 $total_cart_amount += $pro_qty_price;
                             } else {
