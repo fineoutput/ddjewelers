@@ -1,37 +1,41 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 
 <style>
- .swiper-slide.slider-main-box {
+  .swiper-slide.slider-main-box {
     width: auto !important;
     margin: 4px !important;
-}
-.arrow-1 {
-    top: 33%;
-}
+  }
 
-.top-slider-image {
+  .arrow-1 {
+    top: 33%;
+  }
+
+  .top-slider-image {
     width: 30px !important;
-}
-.scroller {
+  }
+
+  .scroller {
     overflow-y: scroll;
     scrollbar-color: #1f1f2200 #bada5500;
     scroll-behavior: smooth;
-}
-.col-md-12.mb-4.box-slider-111 .swiper-container.swiper-containericon.swiper.swiper-initialized.swiper-horizontal.swiper-pointer-events.swiper-backface-hidden .text-center {
+  }
+
+  .col-md-12.mb-4.box-slider-111 .swiper-container.swiper-containericon.swiper.swiper-initialized.swiper-horizontal.swiper-pointer-events.swiper-backface-hidden .text-center {
     transform: translate3d(0px, 10px, 10px) !important;
-}
+  }
 
-@media screen and (min-width: 1024px) and (max-width: 1440px){
-.top-slider-image {
-    width: 30px !important;
-}
+  @media screen and (min-width: 1024px) and (max-width: 1440px) {
+    .top-slider-image {
+      width: 30px !important;
+    }
 
-}
+  }
+
   .vodiapicker {
     display: none;
   }
- 
-  
+
+
 
   .sorting {
     font-size: 12px !important;
@@ -66,7 +70,7 @@
   }
 
 
- 
+
   #a img,
   .btn-select img {
     width: 26px;
@@ -371,40 +375,46 @@
   .main-img-slider.slick-initialized.slick-slider .slick-prev.slick-arrow {
     display: none !important;
   }
-  .top-slider-image{
+
+  .top-slider-image {
     /* width: 70% !important; */
   }
-  @media(max-width:2560px){
+
+  @media(max-width:2560px) {
     .swiper-backface-hidden .swiper-slide {
-    margin-right: -66px ;
-}
-.top-slider-image {
-    /* width: 53% ; */
-}
+      margin-right: -66px;
+    }
+
+    .top-slider-image {
+      /* width: 53% ; */
+    }
   }
-  
-  .swiper-slide.slider-main-box p.h6{
+
+  .swiper-slide.slider-main-box p.h6 {
     font-size: 0.8rem;
   }
-  @media screen and (min-width: 1024px) and (max-width: 1440px) { 
+
+  @media screen and (min-width: 1024px) and (max-width: 1440px) {
     .swiper-backface-hidden .swiper-slide {
-    margin-right: -17px ;
-}
-/* .top-slider-image {
+      margin-right: -17px;
+    }
+
+    /* .top-slider-image {
     width: 100% !important ;
 } */
-.swiper-backface-hidden .swiper-slide {
-    margin-right: -15px ;
-    width: 82px ;
-}
-.swiper-backface-hidden .swiper-slide a p.h6 {
-    font-size: 11px;
-}
-.swiper-backface-hidden .swiper-slide {
-    margin-right: -15px ;
-}
-}
+    .swiper-backface-hidden .swiper-slide {
+      margin-right: -15px;
+      width: 82px;
+    }
 
+    .swiper-backface-hidden .swiper-slide a p.h6 {
+      font-size: 11px;
+    }
+
+    .swiper-backface-hidden .swiper-slide {
+      margin-right: -15px;
+    }
+  }
 </style>
 
 <?
@@ -422,7 +432,7 @@ if ($products->is_quick == 1) {
 
 ?>
 <div class="container mt-3 ">
-  
+
   <div class="row">
     <div class="col-md-12 page_span">
       <p>
@@ -569,11 +579,11 @@ if ($products->is_quick == 1) {
                     }
                 ?>
                     <div class="swiper-slide slider-main-box">
-                      <a href="<?= base_url() ?>Home/product_details/<?= $products->series_id ?>/<?= $st->pro_id ?>?groupId=<?= $products->group_id ?>"><img src="<?= base_url() ?>assets\jewel\img\stone_shape\<?= $img ?>"  class="img-fluid Stone_Shape_img top-slider-image">
-                    </a>
-                    <p class="h6"><?= $st->stone ?></p>
+                      <a href="<?= base_url() ?>Home/product_details/<?= $products->series_id ?>/<?= $st->pro_id ?>?groupId=<?= $products->group_id ?>"><img src="<?= base_url() ?>assets\jewel\img\stone_shape\<?= $img ?>" class="img-fluid Stone_Shape_img top-slider-image">
+                      </a>
+                      <p class="h6"><?= $st->stone ?></p>
                     </div>
-                    
+
                 <?php }
                 endforeach; ?>
               </div>
@@ -600,7 +610,7 @@ if ($products->is_quick == 1) {
       <?php
       $index = 0;
       foreach ($options as  $key => $uniqueOptions) :
-        $excludedKeys = ['Series', 'Description', 'Primary Stone Shape', 'Clarity, Color :: CTW', 'SERIES','Primary Stone Size'];
+        $excludedKeys = ['Series', 'Description', 'Primary Stone Shape', 'Clarity, Color :: CTW', 'SERIES', 'Primary Stone Size'];
         if (in_array($key, $excludedKeys)) {
           $index++;
           continue;
@@ -778,9 +788,9 @@ if ($products->is_quick == 1) {
       <?php } ?>
       <div class="d-flex justify-content-between p-2 pb-4">
 
-          <a href="<?= base_url(); ?>Home/contact_us"><button class="btn d-flex" style="background:#2a2828;color:white;     align-items: center; margin: 2px;"><i class="fa fa-fw fa-envelope" aria-hidden="true"></i>Contact</button></a>
-          <a href="<?= base_url(); ?>Home/contact_us"><button class="btn d-flex" style="background:#2a2828;color:white; align-items: center;    margin: 2px;"><i class="fa fa-fw fa-calendar" aria-hidden="true"></i>Appointment</button></a>
-       
+        <a href="<?= base_url(); ?>Home/contact_us"><button class="btn d-flex" style="background:#2a2828;color:white;     align-items: center; margin: 2px;"><i class="fa fa-fw fa-envelope" aria-hidden="true"></i>Contact</button></a>
+        <a href="<?= base_url(); ?>Home/contact_us"><button class="btn d-flex" style="background:#2a2828;color:white; align-items: center;    margin: 2px;"><i class="fa fa-fw fa-calendar" aria-hidden="true"></i>Appointment</button></a>
+
       </div>
 
       <div class="col-md-12">
@@ -960,7 +970,7 @@ if ($products->is_quick == 1) {
   <? } ?>
   <!-- ====================== END CAN BE SET WITH ================= -->
 </div> <!-- Container end -->
- <!-- Container end -->
+<!-- Container end -->
 <!-- ====================== START STONE LOCATION MODEL ============================== -->
 <div class="modal fade" id="myModal">
   <div class="dizzy-gillespie" style="position: absolute;left: 0;right: 0;top: 0; bottom: 0;margin:  auto;display:none;z-index: 99999;     background: #125965;" id='modelLoader'></div>
@@ -1073,6 +1083,132 @@ if ($products->is_quick == 1) {
 </div>
 <!-- ====================== END STONE LOCATION MODEL ============================== -->
 
+
+
+
+
+<!-- <style>
+  .fade:not(.show) {
+    opacity: 1;
+}
+</style> -->
+
+
+
+
+<!-- ====================== START NEW MODEL ============================== -->
+<div class="modal fade" id="myModal2">
+  <div class="dizzy-gillespie" style="position: absolute;left: 0;right: 0;top: 0; bottom: 0;margin:  auto;display:none;z-index: 99999;     background: #125965;" id='modelLoader'></div>
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h4 class="modal-title">ENGRAVING & PATTERNS</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <!-- Modal body -->
+      <div class="modal-body">
+
+        <div class="row">
+          <div class="col-md-12">
+            <P class="mb-0">PRECISION LASER ENGRAVING</P>
+            <H2>Name 2 Engraving</H2>
+
+            <div class="engravingOption">
+              <p class="mb-1">Engraving Type</p>
+              <p class="mb-2">Laser Engraving</p>
+            </div>
+          </div>
+        </div>
+        <div class="row align-items-center">
+          <div class="col-md-12 ">
+            <p class="mb-0">Message</p>
+          </div>
+          <div class="col-md-6">
+            <div class="message-box">
+
+              <div class="d-flex align-items-center model-top-box">
+                <input type="text" class="w-100 py-2 " name="" id="">
+                <span class="input-group-addon u-border-radius-0 t-ui-label">0/8</span>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <img src="https://meteor.stullercloud.com/?src=(das/75898418?recipe=white&size=405,55&fmt=png)&src=(?text=&text.size=50px&text.color=%23000000&text.insetshadow=2&text.font=das/4784143&size=405,55&fmt=png)&hei=42&fmt=smart-alpha" style="height: 46px;">
+          </div>
+        </div>
+
+
+
+        <div class="row align-items-center mt-3">
+          <div class="col-md-12 ">
+            <p class="mb-0">Font</p>
+          </div>
+          <div class="col-md-12">
+            <div class="message-box">
+
+              <select name="cars " id="cars" form="carform" class="py-2 w-100">
+                <option value="volvo">Bookmano</option>
+                <option value="saab">Bookman2</option>
+                <option value="opel">Bookman3</option>
+                <option value="audi">Bookman4</option>
+              </select>
+
+            </div>
+          </div>
+
+        </div>
+
+
+        <div class="row align-items-center mt-3">
+          <div class="col-md-12 ">
+            <p class="mb-1">Color</p>
+          </div>
+          <div class="col-md-3 ps-0">
+
+            <div class="engravingFillColorContainer selectedEngravingFillColor">
+
+              <div class="engravingFillColor black"></div>
+              <span>Black</span>
+              <!-- /ko -->
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <div class="row align-items-center mt-3">
+          <div class="col-md-12" style="text-align: end;">
+            <div class="floatRight rightMarginLarge bottomPadding">
+
+              <a href="#" class="engravingModalButtons c-red rightMargin">Reset This Location</a>
+
+              <div class="u-inline-block u-margin-left-10">
+                <button class="sbtn sbtn-secondary">Cancel</button>
+              </div>
+              <div class="u-inline-block u-margin-left-10">
+                <button class="sbtn sbtn-primary">Save</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+</div>
+<!-- ====================== END NEW MODEL ============================== -->
+
+
+
+
+
+
+
+
 <input name="temp_data" id="temp_data" type="hidden" value="">
 <input name="ring_size" id="r_size" type="hidden" value="<?= $products->ring_size ?>">
 <input name="r_price" id="r_price" type="hidden" value="<?= $sizePrice ?>">
@@ -1158,7 +1294,7 @@ if ($products->is_quick == 1) {
     //       slidesPerView: 6,
     //       spaceBetween: 30,
     //     },
-        
+
     //     '1220': {
     //       slidesPerView: 8,
     //       spaceBetween: 30,
@@ -1187,40 +1323,40 @@ if ($products->is_quick == 1) {
     // })
 
 
-//     const swiper = new Swiper('.swiper', {
-//   // Optional parameters
-//   freeMode: true,
-//   loop: false, 
-//       scrollbar: {
-//         el: '.swiper-scrollbar',
-//         hide: true,
-//       },
-//   centeredSlides: true,
-//   // Navigation arrows
-//   navigation: {
-//     nextEl: '.swiper-button-next',
-//     prevEl: '.swiper-button-prev',
-//   },
-//   breakpoints: {
-//     // when window width is >= 320px
-//     768: {
-//       loop: true, 
-//       slidesPerView: 5,
-//       spaceBetween: 30
-      
-//     },
-//     // when window width is >= 480px
-//     1024: {
-//       slidesPerView: 6,
-//       spaceBetween: 40
-//     },
-//     // when window width is >= 640px
-//     1280: {
-//       slidesPerView: 7,
-//       spaceBetween: 50
-//     }
-//   }
-// });
+    //     const swiper = new Swiper('.swiper', {
+    //   // Optional parameters
+    //   freeMode: true,
+    //   loop: false, 
+    //       scrollbar: {
+    //         el: '.swiper-scrollbar',
+    //         hide: true,
+    //       },
+    //   centeredSlides: true,
+    //   // Navigation arrows
+    //   navigation: {
+    //     nextEl: '.swiper-button-next',
+    //     prevEl: '.swiper-button-prev',
+    //   },
+    //   breakpoints: {
+    //     // when window width is >= 320px
+    //     768: {
+    //       loop: true, 
+    //       slidesPerView: 5,
+    //       spaceBetween: 30
+
+    //     },
+    //     // when window width is >= 480px
+    //     1024: {
+    //       slidesPerView: 6,
+    //       spaceBetween: 40
+    //     },
+    //     // when window width is >= 640px
+    //     1280: {
+    //       slidesPerView: 7,
+    //       spaceBetween: 50
+    //     }
+    //   }
+    // });
     $(".carousel-control-prev").click(function() {
       $("#myCarousel").carousel("prev");
     });
