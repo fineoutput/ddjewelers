@@ -1098,7 +1098,7 @@ if ($products->is_quick == 1) {
 
 <!-- ====================== START NEW MODEL ============================== -->
 <div class="modal fade" id="myModal2">
-  <div class="dizzy-gillespie" style="position: absolute;left: 0;right: 0;top: 0; bottom: 0;margin:  auto;display:none;z-index: 99999;     background: #125965;" id='modelLoader'></div>
+  <div class="dizzy-gillespie" style="position: absolute;left: 0;right: 0;top: 0; bottom: 0;margin:       auto;   display:none;z-index: 99999;     background: #125965;" id='modelLoader'></div>
   <div class="modal-dialog modal-xl">
     <div class="modal-content">
       <!-- Modal Header -->
@@ -1120,6 +1120,7 @@ if ($products->is_quick == 1) {
             </div>
           </div>
         </div>
+
         <div class="row align-items-center">
           <div class="col-md-12 ">
             <p class="mb-0">Message</p>
@@ -1137,9 +1138,6 @@ if ($products->is_quick == 1) {
             <img src="https://meteor.stullercloud.com/?src=(das/75898418?recipe=white&size=405,55&fmt=png)&src=(?text=&text.size=50px&text.color=%23000000&text.insetshadow=2&text.font=das/4784143&size=405,55&fmt=png)&hei=42&fmt=smart-alpha" style="height: 46px;">
           </div>
         </div>
-
-
-
         <div class="row align-items-center mt-3">
           <div class="col-md-12 ">
             <p class="mb-0">Font</p>
@@ -1158,8 +1156,6 @@ if ($products->is_quick == 1) {
           </div>
 
         </div>
-
-
         <div class="row align-items-center mt-3">
           <div class="col-md-12 ">
             <p class="mb-1">Color</p>
@@ -1176,8 +1172,6 @@ if ($products->is_quick == 1) {
           </div>
 
         </div>
-
-
         <div class="row align-items-center mt-3">
           <div class="col-md-12" style="text-align: end;">
             <div class="floatRight rightMarginLarge bottomPadding">
@@ -1193,13 +1187,11 @@ if ($products->is_quick == 1) {
             </div>
           </div>
         </div>
-
       </div>
     </div>
   </div>
 </div>
-</div>
-</div>
+
 <!-- ====================== END NEW MODEL ============================== -->
 
 
