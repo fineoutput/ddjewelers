@@ -11,7 +11,8 @@
     overflow-y: scroll;
     scrollbar-color: #1f1f2200 #bada5500;
     scroll-behavior: smooth;
-} 
+  }
+
   .swiper-slide.slider-main-box {
     width: auto !important;
     margin: 6px !important;
@@ -537,8 +538,8 @@ $minor2Data = $this->db->get_where('tbl_minisubcategory2', array('id' => $produc
             <hr>
           </div>
           <div class=" swiper-container ">
-              <div class="swiper-wrapper text-center scroller">
-          <!-- <div class="col-md-12 mb-4 box-slider-111">
+            <div class="swiper-wrapper text-center scroller">
+              <!-- <div class="col-md-12 mb-4 box-slider-111">
             <div class=" swiper-container swiper-containericon swiper"> -->
               <div class="swiper-wrapper text-center">
                 <?php foreach ($stone_data as $st) :
@@ -570,7 +571,7 @@ $minor2Data = $this->db->get_where('tbl_minisubcategory2', array('id' => $produc
                     <div class="swiper-slide slider-main-box">
                       <a href="<?= base_url() ?>Home/product_details/<?= $products->series_id ?>/<?= $st->pro_id ?>?groupId=<?= $products->group_id ?>"><img src="<?= base_url() ?>assets\jewel\img\stone_shape\<?= $img ?>" class="img-fluid Stone_Shape_img top-slider-image">
                       </a>
-                      <p class="h6"><?= $st->stone ?></p>
+                      <p class="h6"><?= ucwords(strtolower(str_replace('SHAPE', '', $st->stone))) ?></p>
                     </div>
                 <?php }
                 endforeach; ?>
@@ -583,7 +584,7 @@ $minor2Data = $this->db->get_where('tbl_minisubcategory2', array('id' => $produc
       <? } else if (!empty($stone_data[0]->stone && $stone_data[0]->stone != "N/A")) { ?>
         <div class="d-flex jus_cont">
           <p><b>Primary Stone</b></p>
-          <p><?= $stone_data[0]->stone ?></p>
+          <p><?= ucwords(strtolower(str_replace('SHAPE', '', $stone_data[0]->stone))) ?></p>
         </div>
       <? } ?>
       <?php
@@ -770,7 +771,7 @@ $minor2Data = $this->db->get_where('tbl_minisubcategory2', array('id' => $produc
 
         <?php }
       } else { ?>
-        <a href="<?=base_url()?>Cart/view_cart"><button class="mt-3 add-btn" style="background-color:#547f9e" type="button">Go to cart</button></a>
+        <a href="<?= base_url() ?>Cart/view_cart"><button class="mt-3 add-btn" style="background-color:#547f9e" type="button">Go to cart</button></a>
       <? } ?>
       <button class="mt-3 add-btn" id="loader" disabled style="display:none">
         <i class="fa fa-spinner fa-spin"></i> Loading...

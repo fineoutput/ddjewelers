@@ -164,12 +164,17 @@
                       </div>
                       <div class="row m-4">
                         <?php
-                        $product_da = $this->db->select('stone,quality')->group_by(array("series_id"))->get_where('tbl_products', array('minor2_category_id' => $quick_mini_subcate2->id, 'is_quick' => 1))->result();
+                        $product_da = $this->db->select('stone,quality')->group_by("series_id")->get_where('tbl_products', array('minor2_category_id' => $quick_mini_subcate2->id, 'is_quick' => 1))->result();
 
                         // $product_da = [];
                         if (!empty($product_da)) {
                           foreach ($product_da as $pro) {
-                            $product_da2 = $this->db->select('id,full_set_images,images,group_images,series_id,group_id,description,pro_id')->get_where('tbl_products', array('minor2_category_id' => $quick_mini_subcate2->id, 'is_quick' => 1,'stone'=> $pro->stone,'quality' => $pro->quality))->result();
+                            if(!empty($quick_mini_subcate->search_key)){
+                            $product_da2 = $this->db->select('id,full_set_images,images,group_images,series_id,group_id,description,pro_id')->group_by("pro_id")->get_where('tbl_products', array('minor2_category_id' => $quick_mini_subcate2->id, 'is_quick' => 1,'stone'=>$quick_mini_subcate->search_key,'quality' => $pro->quality))->result();
+                          }else{
+                              $product_da2 = $this->db->select('id,full_set_images,images,group_images,series_id,group_id,description,pro_id')->group_by("pro_id")->get_where('tbl_products', array('minor2_category_id' => $quick_mini_subcate2->id, 'is_quick' => 1,'stone'=> $pro->stone,'quality' => $pro->quality))->result();
+
+                            }
                             foreach ($product_da2 as $data) {
                               $full_images = json_decode($data->full_set_images);
                               $images = json_decode($data->images);

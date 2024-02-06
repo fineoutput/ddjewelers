@@ -848,6 +848,7 @@ class Products extends CI_finecontrol
                             }
                             $html .= '<th scope="col">' . $name . '</th>';
                         }
+                        $html .= '<th scope="col">Certificate</th>';
                         $html .= '<th scope="col">Price</th>';
                     }
                     //------ if product is serialized -----
@@ -860,6 +861,7 @@ class Products extends CI_finecontrol
                         $html .= '<th scope="col">Clarity</th>';
                         $html .= '<th scope="col">Size (mm)</th>';
                         $html .= '<th scope="col">Weight (Ct.)</th>';
+                        $html .= '<th scope="col">Certificate</th>';
                         $html .= '<th scope="col">Price</th>';
                     }
                     $html .= '<th scope="col"></th>';
@@ -881,6 +883,7 @@ class Products extends CI_finecontrol
                             foreach ($values as $v) {
                                 $html .= '<td>' . $v->DisplayValue . '</td>';
                             }
+                            $html .= '<td>-</td>';
                             $html .= '<td>$' . $item->TotalPrice->Value . '</td>';
                             $StoneProductId = $item->Product->Id;
                             $SerialNumber = '';
@@ -899,12 +902,12 @@ class Products extends CI_finecontrol
                             //------ if product is serialized but have non-serialized data-----
                             if (!empty($item->Product)) {
                                 $values = $item->Product->DescriptiveElementGroup->DescriptiveElements;
-                                $shapeIndex = array_search("SHAPE", array_column($values, "Name"));
-                                $typeIndex = array_search("SERIES", array_column($values, "Name"));
-                                $qtyIndex = array_search("QUALITY", array_column($values, "Name"));
-                                $colorIndex = array_search("COLOR", array_column($values, "Name"));
-                                $sizeIndex = array_search("SIZE MM", array_column($values, "Name"));
-                                $ctIndex = array_search("CUT", array_column($values, "Name"));
+                                $shapeIndex = array_search("Shape", array_column($values, "Name"));
+                                $typeIndex = array_search("Series", array_column($values, "Name"));
+                                $qtyIndex = array_search("Quality", array_column($values, "Name"));
+                                $colorIndex = array_search("Color", array_column($values, "Name"));
+                                $sizeIndex = array_search("Size MM", array_column($values, "Name"));
+                                $ctIndex = array_search("Cut", array_column($values, "Name"));
                                 $html .= '<td>' . $item->Product->Id . '</td>';
                                 $html .= '<td>' . $values[$typeIndex]->DisplayValue . '</td>';
                                 $html .= '<td>' . $values[$shapeIndex]->DisplayValue . '</td>';
@@ -913,14 +916,20 @@ class Products extends CI_finecontrol
                                 $html .= '<td>' . $values[$qtyIndex]->DisplayValue . '</td>';
                                 $html .= '<td>' . $values[$sizeIndex]->DisplayValue . '</td>';
                                 $html .= '<td>' . $item->Product->Weight . '</td>';
+                                $html .= '<td>-</td>';
                                 $html .= '<td>$' . $item->Product->ShowcasePrice->Value . '</td>';
                                 $StoneProductId = $item->Product->Id;
                                 $SerialNumber = '';
                             } else {
-                                if(!empty($v->Clarity)){
+                                if (!empty($v->Clarity)) {
                                     $clarity = $v->Clarity;
-                                }else{
-                                    $clarity = '-' ;
+                                } else {
+                                    $clarity = '-';
+                                }
+                                if (!empty($v->CertificatePath)) {
+                                    $CertificatePath = $v->CertificatePath;
+                                } else {
+                                    $CertificatePath = '-';
                                 }
                                 //------ if product is serialized and have serialized data-----
                                 $html .= '<td>' . $v->SerialNumber . '</td>';
@@ -931,7 +940,12 @@ class Products extends CI_finecontrol
                                 $html .= '<td>' . $clarity . '</td>';
                                 $html .= '<td>' . $v->Measurements . '</td>';
                                 $html .= '<td>' . $v->CaratWeight . '</td>';
-                                $html .= '<td>$' . $item->TotalPrice->Value . '</td>';
+                                if (!empty($CertificatePath)) {
+                                    $html .= '<td><a href="' . $CertificatePath. '" target="_blank" rel="noopener noreferrer">' . $v->Certification . '</a></td>';
+                                    $html .= '<td>$' . $item->TotalPrice->Value . '</td>';
+                                } else {
+                                    $html .= '<td>-</td>';
+                                }
                                 $StoneProductId = '';
                                 $SerialNumber = $v->SerialNumber;
                             }

@@ -571,7 +571,7 @@ if ($products->is_quick == 1) {
                     <div class="swiper-slide slider-main-box">
                       <a href="<?= base_url() ?>Home/product_details/<?= $products->series_id ?>/<?= $st->pro_id ?>?groupId=<?= $products->group_id ?>"><img src="<?= base_url() ?>assets\jewel\img\stone_shape\<?= $img ?>"  class="img-fluid Stone_Shape_img top-slider-image">
                     </a>
-                    <p class="h6"><?= $st->stone ?></p>
+                    <p class="h6"><?= ucwords(strtolower(str_replace('SHAPE', '', $st->stone))) ?></p>
                     </div>
                     
                 <?php }
@@ -585,7 +585,7 @@ if ($products->is_quick == 1) {
       <? } else if (!empty($stone_data[0]->stone && $stone_data[0]->stone != "N/A")) { ?>
         <div class="d-flex jus_cont">
           <p><b>Primary Stone</b></p>
-          <p><?= $stone_data[0]->stone ?></p>
+          <p><?= ucwords(strtolower(str_replace('SHAPE', '', $stone_data[0]->stone))) ?></p>
         </div>
       <? } ?>
       <? if (!empty($setting_options)) { ?>
@@ -600,7 +600,7 @@ if ($products->is_quick == 1) {
       <?php
       $index = 0;
       foreach ($options as  $key => $uniqueOptions) :
-        $excludedKeys = ['Series', 'Description', 'Primary Stone Shape', 'Clarity, Color :: CTW', 'SERIES','Primary Stone Size'];
+        $excludedKeys = ['Series', 'Description', 'Primary Stone Shape', 'Clarity, Color :: CTW', 'SERIES','Primary Stone Size','Finished State'];
         if (in_array($key, $excludedKeys)) {
           $index++;
           continue;
