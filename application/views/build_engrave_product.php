@@ -473,6 +473,7 @@ if ($products->is_quick == 1) {
   $images = json_decode($products->images);
   $group_images = json_decode($products->group_images);
   $setting_options = json_decode($products->setting_options);
+  $engraving_options = json_decode($products->engraving_options);
   $location_images = $images;
   $all_images = [];
   if (!empty($full_images)) {
@@ -607,6 +608,22 @@ if ($products->is_quick == 1) {
           </button>
         </div>
       <? } ?>
+      <!-- //------------------- START ENGRAVING SECTION ---------- -->
+      <? if (!empty($engraving_options)) {
+        foreach ($engraving_options as $engrave) {
+          if ($engrave->Description == "Logo") {
+            continue;
+          }
+      ?>
+          <div class="d-flex jus_cont">
+            <p><b><?= $engrave->Description ?></b></p>
+            <button type="button" class="btn add-btn" onclick='openEngrave(<?= json_encode($engrave) ?>)'>
+              Engrave
+            </button>
+          </div>
+      <? }
+      } ?>
+      <!-- //------------------- END ENGRAVING SECTION ---------- -->
       <?php
       $index = 0;
       foreach ($options as  $key => $uniqueOptions) :
@@ -988,7 +1005,7 @@ if ($products->is_quick == 1) {
 
         <div class="row">
           <div class="col-md-4">
-            <img src="<?= $location_images ? $location_images[0]->ZoomUrl : null ?>" class="img-fluid2" id="preview_src">
+            <img src="<?= $products->stone_map_image ? $products->stone_map_image : null ?>" class="img-fluid2" id="preview_src">
           </div>
           <div class="col-md-8">
             <div class="table-responsive-sm">
@@ -1096,8 +1113,8 @@ if ($products->is_quick == 1) {
 
 
 
-<!-- ====================== START NEW MODEL ============================== -->
-<div class="modal fade" id="myModal2">
+<!-- ====================== START ENGRAVE MODAL  ============================== -->
+<div class="modal fade" id="engraveModal">
   <div class="dizzy-gillespie" style="position: absolute;left: 0;right: 0;top: 0; bottom: 0;margin:       auto;   display:none;z-index: 99999;     background: #125965;" id='modelLoader'></div>
   <div class="modal-dialog modal-xl">
     <div class="modal-content">
@@ -1111,12 +1128,11 @@ if ($products->is_quick == 1) {
 
         <div class="row">
           <div class="col-md-12">
-            <P class="mb-0">PRECISION LASER ENGRAVING</P>
-            <H2>Name 2 Engraving</H2>
-
+            <p class="mb-0" style="font-size:12px">PRECISION LASER ENGRAVING</p>
+            <h2 id="en_head"></h2>
             <div class="engravingOption">
               <p class="mb-1">Engraving Type</p>
-              <p class="mb-2">Laser Engraving</p>
+              <p class="mb-2" style="font-size:16px" id="en_type"></p>
             </div>
           </div>
         </div>
@@ -1124,18 +1140,18 @@ if ($products->is_quick == 1) {
         <div class="row align-items-center">
           <div class="col-md-12 ">
             <p class="mb-0">Message</p>
+            <p style="color:red;font-size:12px">Max length : <span id="en_max"></span></p>
           </div>
           <div class="col-md-6">
             <div class="message-box">
-
               <div class="d-flex align-items-center model-top-box">
-                <input type="text" class="w-100 py-2 " name="" id="">
-                <span class="input-group-addon u-border-radius-0 t-ui-label">0/8</span>
+                <input type="text" class="w-100 py-2 " name="" id="en_message" maxlength="" onchange="en_change('message')">
+                <!-- <span class="input-group-addon u-border-radius-0 t-ui-label">0/8</span> -->
               </div>
             </div>
           </div>
           <div class="col-md-6">
-            <img src="https://meteor.stullercloud.com/?src=(das/75898418?recipe=white&size=405,55&fmt=png)&src=(?text=&text.size=50px&text.color=%23000000&text.insetshadow=2&text.font=das/4784143&size=405,55&fmt=png)&hei=42&fmt=smart-alpha" style="height: 46px;">
+            <img id="en_img" src="https://meteor.stullercloud.com/?src=(das/75898418?recipe=white&size=405,55&fmt=png)&src=(?text=&text.size=50px&text.color=%23000000&text.insetshadow=2&text.font=das/4784143&size=405,55&fmt=png)&hei=42&fmt=smart-alpha" style="height: 46px;">
           </div>
         </div>
         <div class="row align-items-center mt-3">
@@ -1144,12 +1160,7 @@ if ($products->is_quick == 1) {
           </div>
           <div class="col-md-12">
             <div class="message-box">
-
-              <select name="cars " id="cars" form="carform" class="py-2 w-100">
-                <option value="volvo">Bookmano</option>
-                <option value="saab">Bookman2</option>
-                <option value="opel">Bookman3</option>
-                <option value="audi">Bookman4</option>
+              <select name="en_font " id="en_font" class="py-2 w-100" onchange="en_change('font')">
               </select>
 
             </div>
@@ -1160,15 +1171,10 @@ if ($products->is_quick == 1) {
           <div class="col-md-12 ">
             <p class="mb-1">Color</p>
           </div>
-          <div class="col-md-3 ps-0">
+          <div class="col-md-12">
+            <div class="row m-auto" id="en_color">
 
-            <div class="engravingFillColorContainer selectedEngravingFillColor">
-
-              <div class="engravingFillColor black"></div>
-              <span>Black</span>
-              <!-- /ko -->
             </div>
-
           </div>
 
         </div>
@@ -1192,7 +1198,7 @@ if ($products->is_quick == 1) {
   </div>
 </div>
 
-<!-- ====================== END NEW MODEL ============================== -->
+<!-- ====================== END ENGRAVE MODEL ============================== -->
 
 
 
@@ -1209,6 +1215,9 @@ if ($products->is_quick == 1) {
   jQuery(document).ready(function() {
     //----------- DROPDOWN CHANGE ---------------
     $('select').on('change', function() {
+      if (this.name == "en_font") {
+        return;
+      }
       if (this.name == "Ring_Size") {
         var selectedOption = this.options[this.selectedIndex];
         var dataKeyValue = selectedOption.getAttribute('data-price');
@@ -1363,6 +1372,46 @@ if ($products->is_quick == 1) {
         'slow');
     });
   });
+
+  //----------- ENGRAVE MODAL -------------
+  function openEngrave(obj) {
+    $("#en_head").html(obj.Description + " Engraving");
+    var en_type = obj.Types[0];
+    $("#en_type").html(en_type.Name);
+    $('#en_font').html('');
+    $('#en_color').html('');
+    var fonts;
+    var colors = [];
+    en_type.Fonts.map(function(font, i) {
+      if (i == 0) {
+        $("#en_max").html(font.MaxCharacters);
+        $("#en_message").attr("maxlength", font.MaxCharacters);
+      }
+      fonts += '<option value="' + font.Id + '">' + font.Name + '</option>';
+    });
+    $('#en_font').append(fonts);
+    en_type.FillOptions[0].Colors.map(function(color) {
+      colors += '<div class="col-md-2 engravingFillColorContainer selectedEngravingFillColor"><div class="engravingFillColor" style="background-color:' + color.Name + '"></div><span>' + color.Name + '</span></div>';
+    });
+    $('#en_color').append(colors);
+
+    $('#engraveModal').modal('show');
+  };
+
+  function en_change(type) {
+    // var img_path = $('#en_img').attr("src");
+    // if (type == 'font') {
+
+    // } else if (type == "color") {
+
+    // } else if (type == "message") {
+    //   var newTextValue = $("#en_message").val();
+    //   var new_path = img_path.replace(/text=&/, 'text=' + encodeURIComponent(newTextValue) + '&')
+    // }
+    // $('#en_img').attr("src", new_path);
+  }
+
+  //----------- ENGRAVE MODAL -------------
 
   function stonesListBtn() {
     $("#stonesList").hide();

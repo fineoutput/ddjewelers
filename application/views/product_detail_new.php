@@ -462,6 +462,8 @@ $minor2Data = $this->db->get_where('tbl_minisubcategory2', array('id' => $produc
   $full_images = json_decode($products->full_set_images);
   $images = json_decode($products->images);
   $group_images = json_decode($products->group_images);
+  $monogram_options = json_decode($products->monogram_options);
+  $monogram_chain_options = json_decode($products->monogram_chain_options);
   $all_images = [];
   if (!empty($full_images)) {
     $all_images = $full_images;
@@ -689,12 +691,45 @@ $minor2Data = $this->db->get_where('tbl_minisubcategory2', array('id' => $produc
             ?>
               <option value="<?= $ring->Size; ?>" data-price="<?= $ring->Price->Value ?>" <? if ($ring->Size == $products->ring_size) {
                                                                                             echo 'selected';
-                                                                                          } ?>><?= $ring->Size; ?></option>e
+                                                                                          } ?>><?= $ring->Size; ?></option>
             <?php endforeach; ?>
           </select>
         </div>
       <? } ?>
       <!-- ----------------- END RING SIZE DROPDOWN ------------ -->
+      <!-- ------- START MONOGRAM CHAIN OPTIONS --------- -->
+      <? if (!empty($monogram_chain_options)) { ?>
+        <div class="d-flex jus_cont">
+          <p><b>Chain Length</b></p>
+          <select class="w-100" id="mono_options<?= $mono->LocationNumber ?>" name="mono_options">
+            <?php
+            foreach ($monogram_chain_options as $chain_option) :
+            ?>
+              <option value="<?= $chain_option->ChainItemId; ?>"><?= $chain_option->ChainLengthDescription; ?></option>
+            <?php endforeach; ?>
+          </select>
+        </div>
+      <?
+      } ?>
+      <!-- ------- END MONOGRAM CHAIN OPTIONS --------- -->
+      <!-- ------- START MONOGRAM OPTIONS --------- -->
+      <? if (!empty($monogram_options)) {
+        $resultArray = range("A", "Z");
+        foreach ($monogram_options as $mono) { ?>
+          <div class="d-flex jus_cont">
+            <p><b><?= $mono->Description ?></b></p>
+            <select class="w-100" id="mono_options<?= $mono->LocationNumber ?>" name="mono_options">
+              <option>Select an initial</option>
+              <?php
+              foreach ($resultArray as $alfa) :
+              ?>
+                <option value="<?= $alfa; ?>"><?= $alfa; ?></option>
+              <?php endforeach; ?>
+            </select>
+          </div>
+      <? }
+      } ?>
+      <!-- ------- END MONOGRAM OPTIONS --------- -->
       <div class="d-flex jus_cont">
         <p><b>Description</b></p>
         <p><?= $products->short_description ?></p>
@@ -975,6 +1010,9 @@ $minor2Data = $this->db->get_where('tbl_minisubcategory2', array('id' => $produc
   jQuery(document).ready(function() {
     //----------- DROPDOWN CHANGE ---------------
     $('select').on('change', function() {
+      if (this.name == "mono_options") {
+        return;
+      }
       if (this.name == "Ring_Size") {
         var selectedOption = this.options[this.selectedIndex];
         var dataKeyValue = selectedOption.getAttribute('data-price');

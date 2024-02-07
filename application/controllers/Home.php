@@ -532,12 +532,12 @@ class Home extends CI_Controller
         $string = str_replace('SLR-', '', urldecode($string_main));
         if ($string == "10mm") {
             $string = "10 mm";
-        }else if($string=='14k gold'){
-            $string = "14k"; 
-        }else if($string=='14k white gold'){
-            $string = "14k white"; 
-        }else if($string=='cushion center stone'){
-            $string = "cushion"; 
+        } else if ($string == '14k gold') {
+            $string = "14k";
+        } else if ($string == '14k white gold') {
+            $string = "14k white";
+        } else if ($string == 'cushion center stone') {
+            $string = "cushion";
         }
         // $config['base_url'] = base_url() . 'Home/search_result/' . $string . "/" . $page_index;
         $per_page = 12;
@@ -1258,6 +1258,7 @@ class Home extends CI_Controller
         $data['product_data'] = $product_data;
         $data['searchedValues'] = $searchedValues;
         $setting_options = json_decode($data['products']->setting_options);
+        $engraving_options = json_decode($data['products']->engraving_options);
         //--- check added in cart or not 
         $cart = 0;
         if ($this->session->userdata('user_id')) {
@@ -1277,7 +1278,9 @@ class Home extends CI_Controller
         }
         $data['cart_status'] = $cart;
         $this->load->view('common/header', $data);
-        if (!empty($setting_options)) {
+        if (!empty($engraving_options)) {
+            $this->load->view('build_engrave_product');
+        } else  if (!empty($setting_options)) {
             $this->load->view('build_product');
         } else {
             $this->load->view('product_detail_new');

@@ -437,6 +437,10 @@ class Products extends CI_finecontrol
                 $cleanedSku = str_replace(' ', '', $receive['exclude_sku']);
                 $exclude_sku = explode(",", $cleanedSku);
                 foreach ($result_da->Products as $prod) {
+                    //--- exclude when price not found --
+                    if (empty($prod->Price)) {
+                        continue;
+                    }
                     //----- exclude series ------ 
                     if (!empty($exclude_series) && in_array($prod->DescriptiveElementGroup->DescriptiveElements[0]->Value, $exclude_series)) {
                         continue;
@@ -494,8 +498,12 @@ class Products extends CI_finecontrol
             'can_be_set' => !empty($prod->CanBeSetWith) ? json_encode($prod->CanBeSetWith) : "",
             'specification' => !empty($prod->Specifications) ? json_encode($prod->Specifications) : '',
             'setting_options' => !empty($prod->ConfigurationModel->SettingOptions) ? json_encode($prod->ConfigurationModel->SettingOptions) : '',
+            'stone_map_image' => !empty($prod->StoneMapImage) ? $prod->StoneMapImage : '',
+            'engraving_options' => !empty($prod->ConfigurationModel->EngravingOptions) ? json_encode($prod->ConfigurationModel->EngravingOptions) : '',
+            'monogram_options' => !empty($prod->ConfigurationModel->MonogramOptions) ? json_encode($prod->ConfigurationModel->MonogramOptions) : '',
+            'monogram_chain_options' => !empty($prod->ConfigurationModel->MonogramChainOptions) ? json_encode($prod->ConfigurationModel->MonogramChainOptions) : '',
             'on_hand' => $prod->OnHand,
-            'lead_time' => $prod->LeadTime,
+            'lead_time' => !empty($prod->LeadTime) ? $prod->LeadTime : '',
             'status' => $prod->Status,
             'weight' => !empty($prod->GramWeight) ? $prod->GramWeight : '',
             'search_values' => $search_value,
@@ -706,6 +714,30 @@ class Products extends CI_finecontrol
                 $response = curl_exec($curl);
                 curl_close($curl);
                 $res = json_decode($response);
+                if (empty($res->StoneFamilies)) {
+                    //-------- Start get stone family curl for family jeweller ------------
+                    $curl = curl_init();
+                    curl_setopt_array($curl, array(
+                        CURLOPT_URL => 'https://api.stuller.com/v2/products/stonefamilies',
+                        CURLOPT_RETURNTRANSFER => true,
+                        CURLOPT_ENCODING => '',
+                        CURLOPT_MAXREDIRS => 10,
+                        CURLOPT_TIMEOUT => 0,
+                        CURLOPT_FOLLOWLOCATION => true,
+                        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                        CURLOPT_CUSTOMREQUEST => 'POST',
+                        CURLOPT_POSTFIELDS => '{"ConfigurationModelId":' . $modelID . ',"LocationNumbers":["' . $LocationNumber . '"]}',
+                        CURLOPT_HTTPHEADER => array(
+                            'Authorization: Basic ZGV2amV3ZWw6Q29kaW5nMjA9',
+                            'Content-Type: application/json',
+                            'Host: api.stuller.com',
+                        ),
+                    ));
+
+                    $response = curl_exec($curl);
+                    curl_close($curl);
+                    $res = json_decode($response);
+                }
                 //-------- End get stone family curl ------------
                 //---------------- START CREATING CENTER STONE HTML ----------
                 $html = "<div class='w-100 text-right'><button onclick='stonesListBtn()' class='btn' style='border-color: #797979;'>Back</button></div>"; //--- Back Button
@@ -941,7 +973,7 @@ class Products extends CI_finecontrol
                                 $html .= '<td>' . $v->Measurements . '</td>';
                                 $html .= '<td>' . $v->CaratWeight . '</td>';
                                 if (!empty($CertificatePath)) {
-                                    $html .= '<td><a href="' . $CertificatePath. '" target="_blank" rel="noopener noreferrer">' . $v->Certification . '</a></td>';
+                                    $html .= '<td><a href="' . $CertificatePath . '" target="_blank" rel="noopener noreferrer">' . $v->Certification . '</a></td>';
                                     $html .= '<td>$' . $item->TotalPrice->Value . '</td>';
                                 } else {
                                     $html .= '<td>-</td>';
@@ -1127,7 +1159,11 @@ class Products extends CI_finecontrol
                                 $final_arr[] = ['LocationNumber' => $LocationNumber, 'SerialNumber' => $SerialNumber];
                                 $stone_series_no = $SerialNumber;
                             }
-                            $groupName = $st->GroupName;
+                            if (!empty($st->GroupName)) {
+                                $groupName = $st->GroupName;
+                            } else {
+                                $groupName = $st->Shape;
+                            }
                         }
                     }
                 } //------end foreach 
