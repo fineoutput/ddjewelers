@@ -490,7 +490,7 @@ if ($products->is_quick == 1) {
   ?>
   <div class="col-md-12 row mt-5 p-0">
     <!-- ----------- START MAIN SLIDER ------------- -->
-    <div class="col-md-4 col-xl-3 col-xxl-3">
+    <div class="col-md-4 col-xl-4 col-xxl-4">
       <section id="detail">
         <div class="col-md-12 mx-auto">
           <? if (!empty($all_images)) { ?>
@@ -543,7 +543,7 @@ if ($products->is_quick == 1) {
     </div>
     <!-- ----------- END MAIN SLIDER ------------- -->
     <!-- ----------- START MIDDLE SECTION ------------- -->
-    <div class="col-md-5 col-xl-6 col-xxl-6  border-le">
+    <div class="col-md-5 col-xl-5 col-xxl-5  border-le">
       <? if (count($stone_data) > 1 && !empty($stone_data[0]->stone) && $stone_data[0]->stone != "N/A" && $products->stone != "N/A") { ?>
         <div class="row">
           <div class="col-md-12">

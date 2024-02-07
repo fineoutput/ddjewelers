@@ -479,7 +479,7 @@ $minor2Data = $this->db->get_where('tbl_minisubcategory2', array('id' => $produc
   ?>
   <div class="col-md-12 row mt-5">
     <!-- ----------- START MAIN SLIDER ------------- -->
-    <div class="col-md-4">
+    <div class="col-md-4 col-xl-4 col-xxl-4">
       <section id="detail">
         <div class="col-md-12 mx-auto">
           <? if (!empty($all_images)) { ?>
@@ -532,7 +532,7 @@ $minor2Data = $this->db->get_where('tbl_minisubcategory2', array('id' => $produc
     </div>
     <!-- ----------- END MAIN SLIDER ------------- -->
     <!-- ----------- START MIDDLE SECTION ------------- -->
-    <div class="col-md-5 border-le">
+    <div class="col-md-5 col-xl-5 col-xxl-5  border-le">
       <? if (count($stone_data) > 1 && !empty($stone_data[0]->stone) && $stone_data[0]->stone != "N/A" && $products->stone != "N/A") { ?>
         <div class="row">
           <div class="col-md-12">
@@ -737,7 +737,7 @@ $minor2Data = $this->db->get_where('tbl_minisubcategory2', array('id' => $produc
     </div>
     <!-- ----------- END MIDDLE SECTION ------------- -->
     <!-- ----------- START RIGHT SECTION ------------- -->
-    <div class="col-md-3">
+    <div class="col-md-3 col-xl-3 col-xxl-3">
       <?php
       if (!empty($now_price)) {
       ?>
