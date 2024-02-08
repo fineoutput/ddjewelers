@@ -437,11 +437,13 @@
     (function($) {
       var pro_id = $(obj).attr("data-pro-id");
       var ring_size = $('#r_size').val();
+      var mono_length = $('#mono_length').val();
       var ring_price = $(obj).attr("data-ring_price");
       var quantity = $(obj).attr("quantity");
       var gem_data = $(obj).attr("data-gem-data");
       var price = $(obj).attr("data-price");
       var img = $(obj).attr("data-img");
+      var monogram = $(obj).attr("data-monogram");
       var btn = $(obj).attr("btn")
       if (quantity == "") {
         quantity = $('#qty').val().trim();
@@ -463,6 +465,8 @@
           gem_data: gem_data,
           price: price,
           img: img,
+          monogram: monogram,
+          mono_length: mono_length,
         },
         dataType: 'json',
         success: function(response) {

@@ -107,6 +107,8 @@ class Order extends CI_Controller
                                 'series_id' => $pro_da->series_id,
                                 'category_id' => $pro_da->category_id,
                                 'gem_data' => $data->gem_data,
+                                'monogram' => $data->monogram,
+                                'mono_chain_length' => $data->mono_chain_length,
                                 'img' => $order_img,
                                 'sku' => $pro_da->sku,
                                 'date' => $cur_date

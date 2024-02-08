@@ -197,10 +197,23 @@
                         $i = 1;
                         foreach ($order2_data->result() as $data) {
                             $gem_data = json_decode($data->gem_data);
+                            $monogram_data = json_decode($data->monogram);
                     ?>
                             <tr class="product_table2">
                                 <td><?php echo $i; ?></td>
                                 <td><?= $data->description ?>
+                                    <? if (!empty($data->ring_size)) { ?>
+                                        </br><span><b>Ring Size : </b></span><?= $data->ring_size ?>
+                                    <? } ?>
+                                    <? if (!empty($data->mono_chain_length)) { ?>
+                                        </br><span><b>Chain Length : </b></span><?= $data->mono_chain_length ?>
+                                    <? } ?>
+                                    <? if (!empty($monogram_data)) { ?>
+                                        </br><span><b>Monogram : </b></span>
+                                            <? foreach ($monogram_data as  $mono) { ?>
+                                                <span><b><?= $mono->Text ?> - </b> <?= $mono->Value ?> <b>|</b> </span>
+                                            <? } ?>
+                                    <? } ?>
                                     <? if (!empty($gem_data)) { ?>
                                         </br><span><b>Stones : </b></span>
                                         <? foreach ($gem_data as  $gem) {

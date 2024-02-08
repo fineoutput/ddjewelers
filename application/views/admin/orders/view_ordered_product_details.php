@@ -37,6 +37,7 @@
 									<?php $i = 1;
 									foreach ($ordered_product_details_data->result() as $data) {
 										$gem_data = json_decode($data->gem_data);
+										$monogram_data = json_decode($data->monogram);
 										$pro_data = $this->db->get_where('tbl_products', array('series_id' => $data->pro_id, 'series_id' => $data->series_id))->row();
 
 									?>
@@ -44,7 +45,21 @@
 											<td><?php echo $i ?> </td>
 											<td><img src="<?= $data->img ?>" style="width:150px;height:150px"></td>
 											<td>
-												<a href="<?= base_url() ?>Home/product_details/<?= $pro_data->series_id ?>/<?= $pro_data->pro_id ?>?groupId=<?= $pro_data->group_id ?>" target="_blank" rel="noopener noreferrer"><?= $data->description ?>
+												<a href="<?= base_url() ?>Home/product_details/<?= $pro_data->series_id ?>/<?= $pro_data->pro_id ?>?groupId=<?= $pro_data->group_id ?>" target="_blank" rel="noopener noreferrer">
+													<?= $data->description ?>
+													<? if (!empty($data->ring_size)) { ?>
+														<p><span><b>Ring Size : </b></span><?= $data->ring_size ?></p>
+													<? } ?>
+													<? if (!empty($data->mono_chain_length)) { ?>
+														<p><span><b>Chain Length : </b></span><?= $data->mono_chain_length ?></p>
+													<? } ?>
+													<? if (!empty($monogram_data)) { ?>
+														<p><span><b>Monogram : </b></span>
+															<? foreach ($monogram_data as  $mono) { ?>
+																<span><b><?= $mono->Text ?> - </b> <?= $mono->Value ?> <b>|</b> </span>
+															<? } ?>
+														</p>
+													<? } ?>
 													<? if (!empty($gem_data)) { ?>
 														</br><span><b>Stones : </b></span>
 														<? foreach ($gem_data as  $gem) {

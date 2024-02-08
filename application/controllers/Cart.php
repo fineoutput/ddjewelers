@@ -36,6 +36,8 @@ class Cart extends CI_Controller
 			$this->form_validation->set_rules('gem_data', 'gem_data', 'xss_clean|trim');
 			$this->form_validation->set_rules('price', 'price', 'xss_clean|trim');
 			$this->form_validation->set_rules('img', 'img', 'xss_clean|trim');
+			$this->form_validation->set_rules('monogram', 'monogram', 'xss_clean|trim');
+			$this->form_validation->set_rules('mono_length', 'mono_length', 'xss_clean|trim');
 
 			if ($this->form_validation->run() == true) {
 				$pro_id = $this->input->post('pro_id');
@@ -45,6 +47,19 @@ class Cart extends CI_Controller
 				$gem_data = $this->input->post('gem_data');
 				$price = $this->input->post('price');
 				$img = $this->input->post('img');
+				$monogram = $this->input->post('monogram');
+				$mono_length = $this->input->post('mono_length');
+				//---- Check monogram value is not null ---
+				if (!empty($monogram)) {
+					foreach (json_decode($monogram) as $mono) {
+						if ($mono->Value == null) {
+							$response['status'] = false;
+							$response['message'] = 'Please Select ' . $mono->Text;
+							echo json_encode($response);
+							return;
+						}
+					}
+				}
 				$send = [
 					'pro_id' => $pro_id,
 					'quantity' => $quantity,
@@ -53,6 +68,8 @@ class Cart extends CI_Controller
 					'gem_data' => $gem_data,
 					'price' => $price,
 					'img' => $img,
+					'monogram' => $monogram,
+					'mono_chain_length' => $mono_length,
 				];
 				//----- check inventory ----------------
 				$invRes = $this->check_Inventory($pro_id, $quantity);
@@ -140,6 +157,7 @@ class Cart extends CI_Controller
 		$cur_date = date("Y-m-d H:i:s");
 		$pro = $this->db->get_where('tbl_products', array('pro_id' => $receive['pro_id']))->row();
 		$ring_price =  $receive['ring_price'] ? $receive['ring_price'] : 0;
+		$monogram =  $receive['monogram'] ? $receive['monogram'] : [];
 		$price = $this->getPrice($pro->sku, $ring_price);
 		$cart_item = array(
 			'pro_id' => $receive['pro_id'],
@@ -149,6 +167,8 @@ class Cart extends CI_Controller
 			'gem_data' => $receive['gem_data'],
 			'price' => $receive['price'] ? round($receive['price'], 2) : round($price, 2),
 			'img' => $receive['img'],
+			'monogram' => $monogram,
+			'mono_chain_length' => $receive['mono_chain_length'],
 			'ip' => $ip,
 			'date' => $cur_date
 		);
@@ -157,7 +177,7 @@ class Cart extends CI_Controller
 		if (!empty($cart_data)) {
 			$i = 0;
 			foreach ($cart_data as $items) {
-				if ($items['pro_id'] == $receive['pro_id'] && $items['ring_size'] == $receive['ring_size']) {
+				if ($items['pro_id'] == $receive['pro_id'] && $items['ring_size'] == $receive['ring_size'] && $items['monogram'] == $monogram) {
 					$i = 1;
 				}
 			}
@@ -259,8 +279,10 @@ class Cart extends CI_Controller
 			$ip = $this->input->ip_address();
 			date_default_timezone_set("Asia/Calcutta");
 			$cur_date = date("Y-m-d H:i:s");
+			$monogram =  $receive['monogram'] ? $receive['monogram'] : [];
+
 			// ------ CHECK ALREADY EXIST ------
-			$cartInfo = $this->db->get_where('tbl_cart', array('user_id' => $user_id, 'pro_id' => $receive['pro_id'], 'ring_size' => $receive['ring_size']))->row();
+			$cartInfo = $this->db->get_where('tbl_cart', array('user_id' => $user_id, 'pro_id' => $receive['pro_id'], 'ring_size' => $receive['ring_size'], 'monogram', $monogram))->row();
 			if (empty($cartInfo)) {
 				$pro = $this->db->get_where('tbl_products', array('pro_id' => $receive['pro_id']))->row();
 				$ring_price =  $receive['ring_price'] ? $receive['ring_price'] : 0;
@@ -274,6 +296,8 @@ class Cart extends CI_Controller
 					'gem_data' => $receive['gem_data'],
 					'price' => $receive['price'] ? round($receive['price'], 2) : round($price, 2),
 					'img' => $receive['img'],
+					'monogram' => $monogram,
+					'mono_chain_length' => $receive['mono_chain_length'],
 					'date' => $cur_date
 				);
 				$last_id = $this->base_model->insert_table("tbl_cart", $cart_insert, 1);

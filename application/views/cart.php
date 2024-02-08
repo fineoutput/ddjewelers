@@ -53,6 +53,7 @@ if (!empty($cart_data)) {
   $i = 1;
   foreach ($cart_data as $data) {
     $gem_data = json_decode($data->gem_data);
+    $monogram_data = json_decode($data->monogram);
     $pid = $data->pro_id;
     $pro_data = $this->db->get_where('tbl_products', array('pro_id' => $data->pro_id))->row();
     if (!empty($pro_data)) {
@@ -92,6 +93,16 @@ if (!empty($cart_data)) {
                 <div class="col-md-12">
                   <p><?= $pro_data->short_description ?></p>
                 </div>
+                <? if (!empty($data->ring_size)) { ?>
+                <div class="col-md-12">
+                  <p><span><b>Ring Size : </b></span><?= $data->ring_size ?></p>
+                </div>
+                <?}?>
+                <? if (!empty($data->mono_chain_length)) { ?>
+                <div class="col-md-12">
+                  <p><span><b>Chain Length : </b></span><?= $data->mono_chain_length ?></p>
+                </div>
+                <?}?>
                 <? if (!empty($gem_data)) { ?>
                   <div class="col-md-12">
                     <span><b>Stones : </b></span>
@@ -112,6 +123,14 @@ if (!empty($cart_data)) {
                       <? } else { ?>
                         <span> <?= $item->Id ?> <b>|</b> </span>
                       <? } ?>
+                    <? } ?>
+                  </div>
+                <? } ?>
+                <? if (!empty($monogram_data)) { ?>
+                  <div class="col-md-12">
+                    <span><b>Monogram : </b></span>
+                    <? foreach ($monogram_data as  $mono) { ?>
+                        <span><b><?= $mono->Text ?> - </b> <?= $mono->Value ?> <b>|</b> </span>
                     <? } ?>
                   </div>
                 <? } ?>

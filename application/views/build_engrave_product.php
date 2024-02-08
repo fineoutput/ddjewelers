@@ -1390,7 +1390,13 @@ if ($products->is_quick == 1) {
       fonts += '<option value="' + font.Id + '">' + font.Name + '</option>';
     });
     $('#en_font').append(fonts);
-    en_type.FillOptions[0].Colors.map(function(color) {
+    var index = en_type.FillOptions.findIndex(function(option) {
+      return option.Name == 'Enamel Color' || option.Name == 'Enamel Color Family';
+    });
+    if (index == -1) {
+      index = 0;
+    }
+    en_type.FillOptions[index].Colors.map(function(color) {
       colors += '<div class="col-md-2 engravingFillColorContainer selectedEngravingFillColor"><div class="engravingFillColor" style="background-color:' + color.Name + '"></div><span>' + color.Name + '</span></div>';
     });
     $('#en_color').append(colors);

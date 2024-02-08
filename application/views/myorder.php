@@ -78,6 +78,7 @@
                         if (!empty($d1)) {
                             foreach ($d1->result() as $dd1) {
                                 $gem_data = json_decode($dd1->gem_data);
+                                $monogram_data = json_decode($dd1->monogram);
                                 $o_product_name = $dd1->description;
                                 $o_product_sku = $dd1->sku;
                                 $o_product_image = $dd1->img;
@@ -89,6 +90,19 @@
                                         </div>
                                         <div class="col-10">
                                             <h4><?= $o_product_name; ?></h4>
+                                            <? if (!empty($dd1->ring_size)) { ?>
+                                                    <p><span><b>Ring Size : </b></span><?= $dd1->ring_size ?></p>
+                                            <? } ?>
+                                            <? if (!empty($dd1->mono_chain_length)) { ?>
+                                                    <p><span><b>Chain Length : </b></span><?= $dd1->mono_chain_length ?></p>
+                                            <? } ?>
+                                            <? if (!empty($monogram_data)) { ?>
+                                                <p><span><b>Monogram : </b></span>
+                                                    <? foreach ($monogram_data as  $mono) { ?>
+                                                        <span><b><?= $mono->Text ?> - </b> <?= $mono->Value ?> <b>|</b> </span>
+                                                    <? } ?>
+                                                </p>
+                                            <? } ?>
                                             <? if (!empty($gem_data)) { ?>
                                                 <p><b>Stones:</b> <? foreach ($gem_data as  $gem) {
                                                                         if (!empty($gem->Product)) {

@@ -934,12 +934,12 @@ class Products extends CI_finecontrol
                             //------ if product is serialized but have non-serialized data-----
                             if (!empty($item->Product)) {
                                 $values = $item->Product->DescriptiveElementGroup->DescriptiveElements;
-                                $shapeIndex = array_search("Shape", array_column($values, "Name"));
-                                $typeIndex = array_search("Series", array_column($values, "Name"));
-                                $qtyIndex = array_search("Quality", array_column($values, "Name"));
-                                $colorIndex = array_search("Color", array_column($values, "Name"));
-                                $sizeIndex = array_search("Size MM", array_column($values, "Name"));
-                                $ctIndex = array_search("Cut", array_column($values, "Name"));
+                                $shapeIndex = array_search("shape", array_map('strtolower',array_column($values, "Name")));
+                                $typeIndex = array_search("series", array_map('strtolower',array_column($values, "Name")));
+                                $qtyIndex = array_search("quality", array_map('strtolower',array_column($values, "Name")));
+                                $colorIndex = array_search("color", array_map('strtolower',array_column($values, "Name")));
+                                $sizeIndex = array_search("size mm", array_map('strtolower',array_column($values, "Name")));
+                                $ctIndex = array_search("cut", array_map('strtolower', array_column($values, "Name")));
                                 $html .= '<td>' . $item->Product->Id . '</td>';
                                 $html .= '<td>' . $values[$typeIndex]->DisplayValue . '</td>';
                                 $html .= '<td>' . $values[$shapeIndex]->DisplayValue . '</td>';

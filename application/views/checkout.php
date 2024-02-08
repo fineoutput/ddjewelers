@@ -135,6 +135,7 @@
                         if (!empty($order2_data)) {
                             foreach ($order2_data as $cart) {
                                 $gem_data = json_decode($cart->gem_data);
+                                $monogram_data = json_decode($cart->monogram);
                                 $product_id = $cart->pro_id;
                                 $pro_da = $this->db->get_where('tbl_products', array('pro_id' => $cart->pro_id))->row();
                                 if (!empty($pro_da)) {
@@ -146,6 +147,12 @@
                                             <div class="row ">
                                                 <div class="col-5  " style="    padding-left: 11px;">
                                                     <p><?= $cart->description; ?></p>
+                                                    <? if (!empty($cart->ring_size)) { ?>
+                                                        <p><span><b>Ring Size : </b></span><?= $cart->ring_size ?></p>
+                                                    <? } ?>
+                                                    <? if (!empty($cart->mono_chain_length)) { ?>
+                                                        <p><span><b>Chain Length : </b></span><?= $cart->mono_chain_length ?></p>
+                                                    <? } ?>
                                                     <? if (!empty($gem_data)) { ?>
                                                         <span><b>Stones : </b></span>
                                                         <? foreach ($gem_data as  $gem) {
@@ -167,6 +174,12 @@
                                                             <? } ?>
                                                     <? }
                                                     } ?>
+                                                    <? if (!empty($monogram_data)) { ?>
+                                                            <span><b>Monogram : </b></span>
+                                                            <? foreach ($monogram_data as  $mono) { ?>
+                                                                <span><b><?= $mono->Text ?> - </b> <?= $mono->Value ?> <b>|</b> </span>
+                                                            <? } ?>
+                                                    <? } ?>
                                                 </div>
                                                 <div class="col-3 p-0">
                                                     <p class="qut-price1"><?= "SLR-" . $cart->sku; ?></p>

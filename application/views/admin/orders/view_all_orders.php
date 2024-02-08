@@ -96,7 +96,6 @@
                         $state = $state_name;
                         $city = $addr_da->city;
                         $zip = $addr_da->zipcode;
-
                       } else {
                         $uname = '';
                         $address = "";
@@ -105,7 +104,6 @@
                         $zip = "";
                         $country = "";
                         $notes = '';
-                        
                       }
 
                     ?>
@@ -128,10 +126,10 @@
                           }
                           ?></td>
                         <td>$<?php
-                            echo $data->final_amount;
-                            // echo $data->sub_total;
+                              echo $data->final_amount;
+                              // echo $data->sub_total;
 
-                            ?></td>
+                              ?></td>
                         <!-- <td><?php
 
                                   $this->db->select('*');
@@ -222,14 +220,14 @@
 
 
 
-                        <td><?=$data->payment_type?></td>
+                        <td><?= $data->payment_type ?></td>
                         <!-- <td><?php if ($data->payment_status == 0) {
                                   ?><span class="label label-warning" style="font-size:13px;">Pending</span><?php
                                                                                                           }
                                                                                                           if ($data->payment_status == 1) {
                                                                                                             ?><span class="label label-success" style="font-size:13px;">Succeed</span><?php
-                                                                                                                                                        }
-                                                                                                                                                          ?></td> -->
+                                                                                                                                                                                    }
+                                                                                                                                                                                      ?></td> -->
 
                         <!-- <td>
        <?
@@ -244,19 +242,19 @@
                                                                                                       }
                                                                                                       if ($data->order_status == 2) {
                                                                                                         ?><span class="label label-success" style="font-size:13px;">Accepted</span><?php
-                                                                                                                                                        }
-                                                                                                                                                        if ($data->order_status == 3) {
-                                                                                                                                                          ?>
+                                                                                                                                                                                  }
+                                                                                                                                                                                  if ($data->order_status == 3) {
+                                                                                                                                                                                    ?>
                             <span class="label label-info" style="font-size:13px;">Dispatched</span>
                           <?php
-                                                                                                                                                        }
-                                                                                                                                                        if ($data->order_status == 4) {
+                                                                                                                                                                                  }
+                                                                                                                                                                                  if ($data->order_status == 4) {
                           ?><span class="label label-success" style="font-size:13px;">Delivered</span><?php
-                                                                                                                                                        }
-                                                                                                                                                        if ($data->order_status == 5) {
+                                                                                                                                                                                  }
+                                                                                                                                                                                  if ($data->order_status == 5) {
                                                                                                       ?><span class="label label-danger" style="font-size:13px;">Rejected</span><?php
-                                                                                                                                                        }
-                                                                                                                                                        ?>
+                                                                                                                                                                                  }
+                                                                                                                                                                                ?>
                         </td>
 
 
@@ -324,11 +322,6 @@
                           echo $newdate->format('j F, Y, g:i a');   #d-m-Y  // March 10, 2001, 5:16 pm
                           ?>
                         </td>
-
-
-
-
-
 
                         <td>
                           <div class="btn-group" id="btns<?php echo $i ?>">

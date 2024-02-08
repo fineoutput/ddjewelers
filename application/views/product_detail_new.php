@@ -698,14 +698,18 @@ $minor2Data = $this->db->get_where('tbl_minisubcategory2', array('id' => $produc
       <? } ?>
       <!-- ----------------- END RING SIZE DROPDOWN ------------ -->
       <!-- ------- START MONOGRAM CHAIN OPTIONS --------- -->
-      <? if (!empty($monogram_chain_options)) { ?>
+      <? $mono_length = null;
+      if (!empty($monogram_chain_options)) { ?>
         <div class="d-flex jus_cont">
           <p><b>Chain Length</b></p>
-          <select class="w-100" id="mono_options<?= $mono->LocationNumber ?>" name="mono_options">
+          <select class="w-100" id="mono_chain_length" name="mono_chain_length">
             <?php
-            foreach ($monogram_chain_options as $chain_option) :
+            foreach ($monogram_chain_options as $index => $chain_option) :
+              if ($index == 0) {
+                $mono_length = $chain_option->ChainLength;
+              }
             ?>
-              <option value="<?= $chain_option->ChainItemId; ?>"><?= $chain_option->ChainLengthDescription; ?></option>
+              <option value="<?= $chain_option->ChainLength; ?>"><?= $chain_option->ChainLength; ?></option>
             <?php endforeach; ?>
           </select>
         </div>
@@ -718,7 +722,7 @@ $minor2Data = $this->db->get_where('tbl_minisubcategory2', array('id' => $produc
         foreach ($monogram_options as $mono) { ?>
           <div class="d-flex jus_cont">
             <p><b><?= $mono->Description ?></b></p>
-            <select class="w-100" id="mono_options<?= $mono->LocationNumber ?>" name="mono_options">
+            <select class="w-100" id="mono_options<?= $mono->LocationNumber ?>" name="mono_options" data-name="<?= $mono->Description ?>" data-location="<?= $mono->LocationNumber ?>">
               <option>Select an initial</option>
               <?php
               foreach ($resultArray as $alfa) :
@@ -795,15 +799,23 @@ $minor2Data = $this->db->get_where('tbl_minisubcategory2', array('id' => $produc
                                     echo "0";
                                   } ?>
       </p>
-
+      <? $monograms = [];
+      if (!empty($monogram_options)) {
+        foreach ($monogram_options as $mono) {
+          $monograms[] = [
+            "LocationNumber" => $mono->LocationNumber,
+            "Text" => $mono->Description,
+            "Value" => null
+          ];
+        }
+      } ?>
       <?php
       if ($cart_status == 0) {
         if (empty($this->session->userdata('user_id'))) {
       ?>
-          <input type="submit" class="mt-3 add-btn" value=" Add to cart" onclick="addToCart(this);" quantity="" id="addToCartBtn" data-pro-id="<?= $products->pro_id; ?>" data-ring_size="<?= $products->ring_size ?>" data-ring_price="<?= $sizePrice ?>">
+          <input type="submit" class="mt-3 add-btn" value=" Add to cart" onclick="addToCart(this);" quantity="" id="addToCartBtn" data-pro-id="<?= $products->pro_id; ?>" data-ring_size="<?= $products->ring_size ?>" data-ring_price="<?= $sizePrice ?>" data-monogram='<?= json_encode($monograms) ?>'>
         <?php } else { ?>
-          <input type="submit" class="mt-3 add-btn" value=" Add to cart" onclick="addToCart(this);" quantity="" id="addToCartBtn" data-pro-id="<?= $products->pro_id; ?>" data-ring_size="<?= $products->ring_size ?>" data-ring_price="<?= $sizePrice ?>">
-
+          <input type="submit" class="mt-3 add-btn" value=" Add to cart" onclick="addToCart(this);" quantity="" id="addToCartBtn" data-pro-id="<?= $products->pro_id; ?>" data-ring_size="<?= $products->ring_size ?>" data-ring_price="<?= $sizePrice ?>" data-monogram='<?= json_encode($monograms) ?>'>
         <?php }
       } else { ?>
         <a href="<?= base_url() ?>Cart/view_cart"><button class="mt-3 add-btn" style="background-color:#547f9e" type="button">Go to cart</button></a>
@@ -1006,13 +1018,34 @@ $minor2Data = $this->db->get_where('tbl_minisubcategory2', array('id' => $produc
 
 <input name="ring_size" id="r_size" type="hidden" value="<?= $products->ring_size ?>">
 <input name="r_price" id="r_price" type="hidden" value="<?= $sizePrice ?>">
+<input name="mono_length" id="mono_length" type="hidden" value="<?= $mono_length ?>">
 <script>
   jQuery(document).ready(function() {
     //----------- DROPDOWN CHANGE ---------------
     $('select').on('change', function() {
+      //--------MANAGE MONOGRAM OPTIONS ---------
       if (this.name == "mono_options") {
+        var selectedOption = this.options[this.selectedIndex];
+        var value = this.value;
+        var dataLocation = this.getAttribute('data-location');
+        var myElement = document.getElementById("addToCartBtn");
+        var monograms = JSON.parse(myElement.getAttribute("data-monogram"));
+        var index = monograms.findIndex(function(element) {
+          return element.LocationNumber == dataLocation;
+        });
+        if (index !== -1) {
+          monograms[index].Value = value;
+        }
+        myElement.setAttribute("data-monogram", JSON.stringify(monograms));
         return;
       }
+      //--------Manage MONOGRAM CHAIN LENGTH OPTIONS ---------
+      if (this.name == "mono_chain_length") {
+        var value = this.value;
+        $('#mono_length').val(this.value);
+        return;
+      }
+      //--------MANAGE RING SIZE OPTIONS ---------
       if (this.name == "Ring_Size") {
         var selectedOption = this.options[this.selectedIndex];
         var dataKeyValue = selectedOption.getAttribute('data-price');
@@ -1044,6 +1077,7 @@ $minor2Data = $this->db->get_where('tbl_minisubcategory2', array('id' => $produc
         })
         return
       }
+      //--------MANAGE OTHER OPTIONS ---------
       var selectedOption = this.options[this.selectedIndex];
       var dataKeyValue = selectedOption.getAttribute('data-key');
       $.ajax({

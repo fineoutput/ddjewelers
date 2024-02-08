@@ -7353,7 +7353,6 @@ class Home extends CI_Controller
                         $nnn4 = $da->id;
                         $user_name = (explode(" ", $nnn3));
                         $this->session->set_userdata('user_name', $user_name[0]);
-                        $this->session->set_userdata('user_name', $nnn3);
                         $this->session->set_userdata('user_id', $nnn4);
                         $this->session->set_userdata('user_data', $nnn4);
                         //----- update cart data -------------
