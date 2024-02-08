@@ -412,6 +412,7 @@ $return_url = site_url() . 'Home/callback/' . $ordr_id_enc;
     //     }
     // });
 </script>
+
 <!-- //--- paypal--------- -->
 <script>
     paypal.Button.render({
@@ -558,13 +559,16 @@ $return_url = site_url() . 'Home/callback/' . $ordr_id_enc;
             "tax_amount": 0,
             "total": "<?= round($order1_data[0]->final_amount * 100) ?>"
         })
+        var base_url = "<?= base_url() ?>";
         affirm.checkout.open({
             onFail: (error) => {
-                window.open(base_url + 'Home/order_failed', "_self");
+                $('.center').hide();
+
+                // window.open(base_url + 'Home/order_failed', "_self");
             },
             onSuccess: (data) => {
                 $('.center').show();
-                var base_url = "<?= base_url() ?>";
+                
                 $.ajax({
                     url: base_url + 'Order/affirm_success',
                     method: 'post',
