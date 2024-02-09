@@ -36,8 +36,8 @@
 								<tbody>
 									<?php $i = 1;
 									foreach ($ordered_product_details_data->result() as $data) {
-										$gem_data = json_decode($data->gem_data);
-										$monogram_data = json_decode($data->monogram);
+										$gem_data = $data->gem_data?json_decode($data->gem_data):[];
+										$monogram_data = $data->monogram?json_decode($data->monogram):[];
 										$pro_data = $this->db->get_where('tbl_products', array('series_id' => $data->pro_id, 'series_id' => $data->series_id))->row();
 
 									?>

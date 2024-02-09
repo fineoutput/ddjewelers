@@ -52,8 +52,8 @@ if (!empty($cart_data)) {
   $total_cart_amount = 0;
   $i = 1;
   foreach ($cart_data as $data) {
-    $gem_data = json_decode($data->gem_data);
-    $monogram_data = json_decode($data->monogram);
+    $gem_data = $data->gem_data?json_decode($data->gem_data):[];
+    $monogram_data = $data->monogram?json_decode($data->monogram):[];
     $pid = $data->pro_id;
     $pro_data = $this->db->get_where('tbl_products', array('pro_id' => $data->pro_id))->row();
     if (!empty($pro_data)) {

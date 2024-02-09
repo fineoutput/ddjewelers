@@ -949,7 +949,7 @@ class Products extends CI_finecontrol
                                 $html .= '<td>' . $values[$sizeIndex]->DisplayValue . '</td>';
                                 $html .= '<td>' . $item->Product->Weight . '</td>';
                                 $html .= '<td>-</td>';
-                                $html .= '<td>$' . $item->Product->ShowcasePrice->Value . '</td>';
+                                $html .= '<td>$' . number_format($item->Product->ShowcasePrice->Value,2) . '</td>';
                                 $StoneProductId = $item->Product->Id;
                                 $SerialNumber = '';
                             } else {
@@ -974,7 +974,7 @@ class Products extends CI_finecontrol
                                 $html .= '<td>' . $v->CaratWeight . '</td>';
                                 if (!empty($CertificatePath)) {
                                     $html .= '<td><a href="' . $CertificatePath . '" target="_blank" rel="noopener noreferrer">' . $v->Certification . '</a></td>';
-                                    $html .= '<td>$' . $item->TotalPrice->Value . '</td>';
+                                    $html .= '<td>$' . number_format($item->TotalPrice->Value,2) . '</td>';
                                 } else {
                                     $html .= '<td>-</td>';
                                 }
@@ -1241,15 +1241,15 @@ class Products extends CI_finecontrol
                 $html .= '<div class="price-summary col-md-8 float-right">
                 <div class="price-item">
                     <span class="item-label">Retail Price:</span>
-                    <span class="item-value">$' . $retail . '</span>
+                    <span class="item-value">$' . number_format($retail,2) . '</span>
                 </div>
                 <div class="price-item">
                     <span class="item-label">You Saved:</span>
-                    <span class="item-value" style="color:green">$' . $saved . '</span>
+                    <span class="item-value" style="color:green">$' . number_format($saved,2) . '</span>
                 </div>
                 <div class="price-item">
                     <span class="item-label">Now Price:</span>
-                    <span class="item-value">$' . $final_price . '</span>
+                    <span class="item-value">$' . number_format($final_price,2) . '</span>
                 </div>';
                 if (empty($this->session->userdata('user_id'))) {
                     $html .= '<input type="submit" class="mt-3 add-btn" value=" Add to cart" onclick="addToCart(this);" quantity="1" id="addToCartBtn" data-pro-id="' . $ProductId . '" data-ring_size="' . $RingSize . '" data-ring_price="" data-gem-data=\'' . json_encode($res->Stones) . '\' data-price="' . $final_price . '" data-img="' . $res->Images[0]->ZoomUrl . '">';

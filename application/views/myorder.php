@@ -77,8 +77,8 @@
                         $d1 = $this->db->get();
                         if (!empty($d1)) {
                             foreach ($d1->result() as $dd1) {
-                                $gem_data = json_decode($dd1->gem_data);
-                                $monogram_data = json_decode($dd1->monogram);
+                                $gem_data = $dd1->gem_data?json_decode($dd1->gem_data):[];
+                                $monogram_data = $dd1->monogram?json_decode($dd1->monogram):[];
                                 $o_product_name = $dd1->description;
                                 $o_product_sku = $dd1->sku;
                                 $o_product_image = $dd1->img;

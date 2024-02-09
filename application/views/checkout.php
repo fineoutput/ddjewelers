@@ -134,8 +134,8 @@
                         $total_cart_amount = 0;
                         if (!empty($order2_data)) {
                             foreach ($order2_data as $cart) {
-                                $gem_data = json_decode($cart->gem_data);
-                                $monogram_data = json_decode($cart->monogram);
+                                $gem_data = $cart->gem_data?json_decode($cart->gem_data):[];
+                                $monogram_data = $cart->monogram?json_decode($cart->monogram):[];
                                 $product_id = $cart->pro_id;
                                 $pro_da = $this->db->get_where('tbl_products', array('pro_id' => $cart->pro_id))->row();
                                 if (!empty($pro_da)) {

@@ -196,8 +196,8 @@
                     if (!empty($order2_data)) {
                         $i = 1;
                         foreach ($order2_data->result() as $data) {
-                            $gem_data = json_decode($data->gem_data);
-                            $monogram_data = json_decode($data->monogram);
+                            $gem_data = $data->gem_data?json_decode($data->gem_data):[];
+                            $monogram_data = $data->monogram?json_decode($data->monogram):[];
                     ?>
                             <tr class="product_table2">
                                 <td><?php echo $i; ?></td>
