@@ -43,6 +43,36 @@
     display: block;
   }
 
+
+  
+	@media (min-width: 1268px) and (max-width:2560px) {
+    button#view {
+      width: 65% !important;
+    font-size: 14px;
+    padding: 6px 10px;
+    justify-content: center;
+    display: flex;
+    margin: auto;
+}
+.container.mt-3 .col-md-12.row.mt-5.p-0 .col-md-4.col-xl-4.col-xxl-4 .row.mt-5 .col-md-12.m-auto button.btn.w-100.mt-3{
+  width: 65% !important;
+    font-size: 14px;
+    padding: 6px 10px;
+    justify-content: center;
+    display: flex;
+    margin: auto;
+    align-items: center;
+}
+div#stonesTypes .col-md-12 .row.mt-3 .col-md-3 button.btn.btn-light {
+    font-size: 16px;
+}
+	}
+  .container.mt-3 .col-md-12.row.mt-5.p-0 .col-md-4.col-xl-4.col-xxl-4 .row.mt-5 .col-md-12.m-auto button.btn.w-100.mt-3 span {
+    padding: 0px 6px;
+}
+
+
+
   #menu ul:hover {
     display: block !important;
   }
