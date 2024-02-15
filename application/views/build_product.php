@@ -1023,9 +1023,9 @@ if ($products->is_quick == 1) {
                       });
                       $groupItems = array_values($groupItems);
                       $uniqueSizes = array_unique(array_column($groupItems, 'SizeMM'));
-                      $groupNames = array_column(array_column($groupItems, 0), 'GroupName');
+                      $groupNames = array_column($groupItems, 'GroupName');
                       if (in_array('Center', $groupNames)) {
-                        if (count($groupCounts) == 1 || $groupName == 'Center') {
+                        if ( $groupName == 'Center') {
                     ?>
                           <tr>
                             <td style="text-align: left;padding: 8px; vertical-align: -webkit-baseline-middle;"><?= $groupName ?>
@@ -1050,9 +1050,10 @@ if ($products->is_quick == 1) {
                             <td><button class="add-btn" onclick="fetchStoneFamily(this)" data-modelID="<?= $products->config_model_id ?>" data-size="<?= $size ?>" data-count="<?= $count ?>" data-groupName="<?= $groupName ?>" data-LocationNumber="<?= $groupItems[0]->LocationNumber ?>" data-group-count="<?= count($groupCounts) ?>">Select</button></td>
                           </tr>
                         <?php
+                        break;
                         }
                       } else {
-                        if ($groupName == 'Accent 1') {
+                        if ($groupName == 'Accent 1' || $groupName == 'Accent') {
                         ?>
                           <!-- //-- if center stone is not present in the product -->
                           <tr>

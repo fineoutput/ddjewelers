@@ -466,7 +466,7 @@ class Products extends CI_finecontrol
     {
         date_default_timezone_set("Asia/Calcutta");
         $cur_date = date("Y-m-d H:i:s");
-        $inputArray = [$prod->Id, $prod->SKU, $prod->ShortDescription, $prod->Description, $prod->DescriptiveElementGroup->DescriptiveElements[0]->Value, $prod->DescriptiveElementGroup->GroupId];
+        $inputArray = [$prod->SKU, $prod->ShortDescription, $prod->Description, $prod->DescriptiveElementGroup->DescriptiveElements[0]->Value, $prod->DescriptiveElementGroup->GroupId];
         $cleanedArray = array_map(function ($item) {
             return str_replace(['\/', '/',], '', $item);
         }, $inputArray);

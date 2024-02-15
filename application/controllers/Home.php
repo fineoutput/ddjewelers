@@ -624,12 +624,13 @@ class Home extends CI_Controller
             // $product_data = $this->db->select('id')->limit($per_page, $start)->group_by(array("series_id"))->like("search_values", $string)->get_where('tbl_products', array())->result();
             // echo "hi";die();
 
-            if (count($product_data) > 1) {
+            if (count($product_data) > 1 || $page_index >1) {
                 $data['product_data'] = $product_data;
                 $data['total_pages'] = $total_pages;
                 $data['page_options'] = $page_options;
                 $data['page_index'] = $page_index;
                 $data['productCount'] = $productCount;
+                $data['string'] = $string;
                 $this->load->view('common/header', $data);
                 $this->load->view('search_products');
                 $this->load->view('common/footer');

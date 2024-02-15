@@ -38,6 +38,7 @@
                                     $set_data = $this->db->select('pro_id, full_set_images, images, group_images, series_id, group_id, description, price, catalog_values')
                                         ->where(['group_id' => $data->group_id, 'series_id' => $data->series_id])
                                         ->where("JSON_SEARCH(catalog_values, 'one', 'Set') IS NOT NULL", null, false)
+                                        ->like("search_values", $string)
                                         ->get('tbl_products')
                                         ->row();
                                     if (!empty($set_data)) {
@@ -46,6 +47,7 @@
                                         $semi_set_data = $this->db->select('pro_id, full_set_images, images, group_images, series_id, group_id, description, price, catalog_values')
                                             ->where(['group_id' => $data->group_id, 'series_id' => $data->series_id])
                                             ->where("JSON_SEARCH(catalog_values, 'one', 'Semi-Set') IS NOT NULL", null, false)
+                                            ->like("search_values", $string)
                                             ->get('tbl_products')
                                             ->row();
                                         if (!empty($semi_set_data)) {

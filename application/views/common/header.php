@@ -166,9 +166,9 @@
     }
 
     .d-flex.justify-content-between.p-2.pb-4 button.btn.d-flex {
-    width: 98%;
-    justify-content: center;
-}
+      width: 98%;
+      justify-content: center;
+    }
 
     .signup {
       background: #333366;
@@ -183,15 +183,17 @@
       background: #fff !important;
       Width: 4px !important;
     }
-    .d-flex.justify-content-between.p-2.pb-4{
+
+    .d-flex.justify-content-between.p-2.pb-4 {
       flex-direction: column;
     }
 
     @media (max-width: 1744px) {
-      .d-flex.justify-content-between.p-2.pb-4{
-      flex-direction: row;
+      .d-flex.justify-content-between.p-2.pb-4 {
+        flex-direction: row;
+      }
     }
-    }
+
     @media (min-width: 991px) and (max-width: 1038px) {
       .displaynone {
         display: none;
@@ -241,25 +243,27 @@
       cursor: pointer;
     }
 
-   @media(max-width:1108px){
-    .ulcontent {
-    top: 25%;
-}
-button.ser_btn{
-  min-width: 13% !important;
-}
-   }
+    @media(max-width:1108px) {
+      .ulcontent {
+        top: 25%;
+      }
 
-   @media(max-width:1168px){
-    svg.svg-inline--fa.fa-heart.fa-w-18{
-      margin-right: 6px !important;
-    }
-   }
-   @media(max-width:329px){
-      button.ser_btn{
+      button.ser_btn {
         min-width: 13% !important;
       }
-   }
+    }
+
+    @media(max-width:1168px) {
+      svg.svg-inline--fa.fa-heart.fa-w-18 {
+        margin-right: 6px !important;
+      }
+    }
+
+    @media(max-width:329px) {
+      button.ser_btn {
+        min-width: 13% !important;
+      }
+    }
   </style>
   <section class="top_her">
     <div class="container-fluid pt-0 pb-0 pl-5 pr-5 h-100">
