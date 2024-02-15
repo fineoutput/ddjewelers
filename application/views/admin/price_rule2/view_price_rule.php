@@ -38,7 +38,12 @@
                     <tr>
                       <th>#</th>
                       <th>Name</th>
-                      <th>Type</th>
+                      <th>Retail Multiplier</th>
+                      <th>Tier1- Variable(a)</th>
+                      <th>Tier1- Variable(b)</th>
+                      <th>Tier1- Variable(c)</th>
+                      <th>Tier2- Variable(m)</th>
+                      <th>Tier2- Variable(b)</th>
                       <th>Action</th>
                     </tr>
                   </thead>
@@ -48,22 +53,19 @@
                       <tr>
                         <td><?php echo $i ?> </td>
                         <td><?php echo $data->name ?></td>
-                        <td><?php if ($data->type == 1) {
-                              echo "Simple";
-                            } else if ($data->type == 2) {
-                              echo "Tier by Cost";
-                            } else if ($data->type == 3) {
-                              echo "Tier by Weight";
-                            } ?></td>
+                        <td><?php echo $data->multiplier ?></td>
+                        <td><?php echo $data->cost_price1 ?></td>
+                        <td><?php echo $data->cost_price2 ?></td>
+                        <td><?php echo $data->cost_price3 ?></td>
+                        <td><?php echo $data->cost_price4 ?></td>
+                        <td><?php echo $data->cost_price5 ?></td>
+
                         <td>
                           <div class="btn-group" id="btns<?php echo $i ?>">
                             <div class="btn-group">
-                              <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                                Action <span class="caret"></span></button>
-                              <ul class="dropdown-menu" role="menu">
-                                <li><a href="<?php echo base_url() ?>dcadmin/price_rule2/update_price_rule/<?php echo
-                                                                                                          base64_encode($data->id) ?>">Edit</a></li>
-                              </ul>
+                              <a href="<?php echo base_url() ?>dcadmin/price_rule2/update_price_rule/<?php echo
+                                                                                                      base64_encode($data->id) ?>"> <button type="button" class="btn btn-default">
+                                  Edit </button></a>
                             </div>
                           </div>
 

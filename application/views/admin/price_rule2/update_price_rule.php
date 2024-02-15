@@ -32,159 +32,51 @@
 
           <div class="panel-body">
             <div class="col-lg-10">
-              <form action=" <?php echo base_url(); ?>dcadmin/price_rule2/add_price_rule_data/<?php echo base64_encode(2); ?>/<?= $id; ?>" method="POST" id="slide_frm" enctype="multipart/form-data">
+              <form action=" <?php echo base_url(); ?>dcadmin/Price_rule2/add_price_rule_data/<?php echo base64_encode(2); ?>/<?= $id; ?>" method="POST" id="slide_frm" enctype="multipart/form-data">
                 <div class="table-responsive">
                   <table class="table table-hover">
                     <tr>
-                      <td> <strong>Type</strong> <span style="color:red;">*</span></strong> </td>
-                      <td style="display:flex"> <input type="radio" id="Simple" name="type" value="1" <? if ($price_rule_data->type == 1) {
-                                                                                                        echo "checked";
-                                                                                                      } ?>>
-                        <label for="Simple">Simple</label><br>
-                        <input type="radio" id="type1" name="type" value="2" <? if ($price_rule_data->type == 2) {
-                                                                                echo "checked";
-                                                                              } ?>>
-                        <label for="type1">Tier by Cost</label><br>
-                        <input type="radio" id="type2" name="type" value="3" <? if ($price_rule_data->type == 3) {
-                                                                                echo "checked";
-                                                                              } ?>>
-                        <label for="type2">Tier by Weight</label>
-                      </td>
+                      <td> <strong>Retail Multiplier</strong> <span style="color:red;">*</span></strong> </td>
+                      <td> <input type="text" name="multiplier" class="form-control" placeholder="" required value="<?= $price_rule_data->multiplier; ?>" /> </td>
                     </tr>
-                    <tr id="simple_des">
-                      <td> <strong>Markup</strong> <span style="color:red;">*</span></strong> </td>
-                      <td> <input type="text" name="s_multiplier" class="form-control" placeholder="" value="<?= $price_rule_data->multiplier1; ?>" /> </td>
+                    <tr>
+                      <td> <strong>Tier1- Variable(a)</strong> <span style="color:red;">*</span></strong> </td>
+                      <td> <input type="text" name="cost_price1" class="form-control" placeholder="" required value="<?= $price_rule_data->cost_price1; ?>" /> </td>
+                    </tr>
+                    <tr>
+                      <td> <strong>Tier1- Variable(b)</strong> <span style="color:red;">*</span></strong> </td>
+                      <td> <input type="text" name="cost_price2" class="form-control" placeholder="" required value="<?= $price_rule_data->cost_price2; ?>" /> </td>
+                    </tr>
+                    <tr>
+                      <td> <strong>Tier1- Variable(c)</strong> <span style="color:red;">*</span></strong> </td>
+                      <td> <input type="text" name="cost_price3" class="form-control" placeholder="" required value="<?= $price_rule_data->cost_price3; ?>" /> </td>
+                    </tr>
+                    <tr>
+                      <td> <strong>Tier2- Variable(m)</strong> <span style="color:red;">*</span></strong> </td>
+                      <td> <input type="text" name="cost_price4" class="form-control" placeholder="" required value="<?= $price_rule_data->cost_price4; ?>" /> </td>
+                    </tr>
+                    <tr>
+                      <td> <strong>Tier2- Variable(b)</strong> <span style="color:red;">*</span></strong> </td>
+                      <td> <input type="text" name="cost_price5" class="form-control" placeholder="" required value="<?= $price_rule_data->cost_price5; ?>" /> </td>
+                    </tr>
+
+
+
+                    <tr>
+                      <td colspan="2">
+                        <input type="submit" class="btn btn-success" value="save">
+                      </td>
                     </tr>
                   </table>
-                  <table class="table table-hover" id="cost_des">
-                    <tr>
-                      <td style="padding-top: 30px">
-                        <strong>$</strong>
-                      </td>
-                      <td>
-                        <strong>Cost</strong>
-                        <input type="text" name="c_condition1" class="form-control" placeholder="" value="<?= $price_rule_data->condition1; ?>" />
-                      </td>
-                      <td>
-                        <strong>use cost multiplied by</strong>
-                        <input type="text" name="c_multiplier1" class="form-control" placeholder="" value="<?= $price_rule_data->multiplier1; ?>" />
-                      </td>
-                    </tr>
-                    <tr>
-                      <td style="padding-top: 30px">
-                        <strong>$</strong>
-                      </td>
-                      <td>
-                        <strong>Cost</strong>
-                        <input type="text" name="c_condition2" class="form-control" placeholder="" value="<?= $price_rule_data->condition2; ?>" />
-                      </td>
-                      <td>
-                        <strong>use cost multiplied by</strong>
-                        <input type="text" name="c_multiplier2" class="form-control" placeholder="" value="<?= $price_rule_data->multiplier2; ?>" />
-                      </td>
-                    </tr>
-                    <tr>
-                      <td style="padding-top: 30px">
-                        <strong>$</strong>
-                      </td>
-                      <td>
-                        <strong>Cost</strong>
-                        <input type="text" name="c_condition3" class="form-control" placeholder="" value="<?= $price_rule_data->condition3; ?>" />
-                      </td>
-                      <td>
-                        <strong>use cost multiplied by</strong>
-                        <input type="text" name="c_multiplier3" class="form-control" placeholder="" value="<?= $price_rule_data->multiplier3; ?>" />
-                      </td>
-                    </tr>
-                    <tr>
-                      <td style="padding-top: 30px">
-                        <strong>$</strong>
-                      </td>
-                      <td>
-                        <strong>Cost</strong>
-                        <input type="text" name="c_condition4" class="form-control" placeholder="" value="<?= $price_rule_data->condition4; ?>" />
-                      </td>
-                      <td>
-                        <strong>use cost multiplied by</strong>
-                        <input type="text" name="c_multiplier4" class="form-control" placeholder="" value="<?= $price_rule_data->multiplier4; ?>" />
-                      </td>
-                    </tr>
                 </div>
-                </table>
-                <table class="table table-hover" id="weight_des">
-                  <tr>
-                    <td style="padding-top: 30px">
-                      <strong>Ct</strong>
-                    </td>
-                    <td>
-                      <strong>Weight</strong>
-                      <input type="text" name="w_condition1" class="form-control" placeholder="" value="<?= $price_rule_data->condition1; ?>" />
-                    </td>
-                    <td>
-                      <strong>use cost multiplied by</strong>
-                      <input type="text" name="w_multiplier1" class="form-control" placeholder="" value="<?= $price_rule_data->multiplier1; ?>" />
-                    </td>
-                  </tr>
-                  <tr>
-                    <td style="padding-top: 30px">
-                      <strong>Ct</strong>
-                    </td>
-                    <td>
-                      <strong>Weight</strong>
-                      <input type="text" name="w_condition2" class="form-control" placeholder="" value="<?= $price_rule_data->condition2; ?>" />
-                    </td>
-                    <td>
-                      <strong>use cost multiplied by</strong>
-                      <input type="text" name="w_multiplier2" class="form-control" placeholder="" value="<?= $price_rule_data->multiplier2; ?>" />
-                    </td>
-                  </tr>
-                  <tr>
-                    <td style="padding-top: 30px">
-                      <strong>Ct</strong>
-                    </td>
-                    <td>
-                      <strong>Weight</strong>
-                      <input type="text" name="w_condition3" class="form-control" placeholder="" value="<?= $price_rule_data->condition3; ?>" />
-                    </td>
-                    <td>
-                      <strong>use cost multiplied by</strong>
-                      <input type="text" name="w_multiplier3" class="form-control" placeholder="" value="<?= $price_rule_data->multiplier3; ?>" />
-                    </td>
-                  </tr>
-                  <tr>
-                    <td style="padding-top: 30px">
-                      <strong>Ct</strong>
-                    </td>
-                    <td>
-                      <strong>Weight</strong>
-                      <input type="text" name="w_condition4" class="form-control" placeholder="" value="<?= $price_rule_data->condition4; ?>" />
-                    </td>
-                    <td>
-                      <strong>use cost multiplied by</strong>
-                      <input type="text" name="w_multiplier4" class="form-control" placeholder="" value="<?= $price_rule_data->multiplier4; ?>" />
-                    </td>
-                  </tr>
+
+              </form>
             </div>
-            </table>
-            <table class="table table-hover">
-              <tr>
-                <td> <strong>Minimum Price</strong> <span style="color:red;">*</span></strong> </td>
-                <td> <input type="text" name="mini_price" class="form-control" placeholder="" required value="<?= $price_rule_data->mini_price; ?>" /> </td>
-              </tr>
-              <tr>
-                <td colspan="2">
-                  <input type="submit" class="btn btn-success" value="save">
-                </td>
-              </tr>
-            </table>
           </div>
-          </form>
         </div>
       </div>
     </div>
-</div>
-</div>
-</section>
+  </section>
 </div>
 
 

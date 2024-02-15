@@ -85,11 +85,21 @@ class Price_rule2 extends CI_finecontrol
             if ($this->input->post()) {
                 // print_r($this->input->post());
                 // exit;
-                $this->form_validation->set_rules('type', 'type', 'required');
-                $this->form_validation->set_rules('mini_price', 'mini_price', 'required');
+                $this->form_validation->set_rules('multiplier', 'multiplier', 'required');
+                $this->form_validation->set_rules('cost_price1', 'cost_price1', 'required');
+                $this->form_validation->set_rules('cost_price2', 'cost_price2', 'required');
+                $this->form_validation->set_rules('cost_price3', 'cost_price3', 'required');
+                $this->form_validation->set_rules('cost_price4', 'cost_price4', 'required');
+                $this->form_validation->set_rules('cost_price5', 'cost_price5', 'required');
+
+
                 if ($this->form_validation->run() == true) {
-                    $type = $this->input->post('type');
-                    $mini_price = $this->input->post('mini_price');
+                    $multiplier = $this->input->post('multiplier');
+                    $cost_price1 = $this->input->post('cost_price1');
+                    $cost_price2 = $this->input->post('cost_price2');
+                    $cost_price3 = $this->input->post('cost_price3');
+                    $cost_price4 = $this->input->post('cost_price4');
+                    $cost_price5 = $this->input->post('cost_price5');
 
                     $ip = $this->input->ip_address();
                     date_default_timezone_set("Asia/Calcutta");
@@ -98,63 +108,50 @@ class Price_rule2 extends CI_finecontrol
 
                     $typ = base64_decode($t);
                     $last_id = 0;
+                    if ($typ == 1) {
+                        $data_insert = array(
+                            'multiplier' => $multiplier,
+                            'cost_price1' => $cost_price1,
+                            'cost_price2' => $cost_price2,
+                            'cost_price3' => $cost_price3,
+                            'cost_price4' => $cost_price4,
+                            'cost_price5' => $cost_price5,
+
+                            'ip' => $ip,
+                            'added_by' => $addedby,
+                            'is_active' => 1,
+                            'date' => $cur_date
+                        );
+
+
+                        $last_id = $this->base_model->insert_table("tbl_price_rule2", $data_insert, 1);
+                    }
                     if ($typ == 2) {
                         $idw = base64_decode($iw);
-                        if ($type == 1) {
-                            $data_insert = array(
-                                'type' => $type,
-                                'mini_price' => $mini_price,
-                                'condition1' => null,
-                                'condition2' => null,
-                                'condition3' => null,
-                                'condition4' => null,
-                                'multiplier1' => $this->input->post('s_multiplier'),
-                                'multiplier2' => null,
-                                'multiplier3' => null,
-                                'multiplier4' => null,
-                                'ip' => $ip,
-                                'added_by' => $addedby,
-                                'date' => $cur_date
-                            );
-                        } else if ($type == 2) {
-                            $data_insert = array(
-                                'type' => $type,
-                                'mini_price' => $mini_price,
-                                'condition1' => $this->input->post('c_condition1'),
-                                'condition2' => $this->input->post('c_condition2'),
-                                'condition3' => $this->input->post('c_condition3'),
-                                'condition4' => $this->input->post('c_condition4'),
-                                'multiplier1' => $this->input->post('c_multiplier1'),
-                                'multiplier2' => $this->input->post('c_multiplier2'),
-                                'multiplier3' => $this->input->post('c_multiplier3'),
-                                'multiplier4' => $this->input->post('c_multiplier4'),
-                                'ip' => $ip,
-                                'added_by' => $addedby,
-                                'date' => $cur_date
-                            );
-                        } else {
-                            $data_insert = array(
-                                'type' => $type,
-                                'mini_price' => $mini_price,
-                                'condition1' => $this->input->post('w_condition1'),
-                                'condition2' => $this->input->post('w_condition2'),
-                                'condition3' => $this->input->post('w_condition3'),
-                                'condition4' => $this->input->post('w_condition4'),
-                                'multiplier1' => $this->input->post('w_multiplier1'),
-                                'multiplier2' => $this->input->post('w_multiplier2'),
-                                'multiplier3' => $this->input->post('w_multiplier3'),
-                                'multiplier4' => $this->input->post('w_multiplier4'),
-                                'ip' => $ip,
-                                'added_by' => $addedby,
-                                'date' => $cur_date
-                            );
-                        }
+
+
+                        $this->db->select('*');
+                        $this->db->from('tbl_price_rule');
+                        $this->db->where('id', $idw);
+                        $dsa = $this->db->get();
+                        $da = $dsa->row();
+
+                        $data_insert = array(
+                            'multiplier' => $multiplier,
+                            'cost_price1' => $cost_price1,
+                            'cost_price2' => $cost_price2,
+                            'cost_price3' => $cost_price3,
+                            'cost_price4' => $cost_price4,
+                            'cost_price5' => $cost_price5,
+
+
+                        );
                         $this->db->where('id', $idw);
                         $last_id = $this->db->update('tbl_price_rule2', $data_insert);
                     }
                     if ($last_id != 0) {
                         $this->session->set_flashdata('smessage', 'Data inserted successfully');
-                        redirect("dcadmin/Price_rule2/view_price_rule", "refresh");
+                        redirect("dcadmin/price_rule2/view_price_rule", "refresh");
                     } else {
                         $this->session->set_flashdata('emessage', 'Sorry error occured');
                         redirect($_SERVER['HTTP_REFERER']);
