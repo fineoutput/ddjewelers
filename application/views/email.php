@@ -9,8 +9,12 @@
 </head>
 
 <body>
-    <div class="container" style="     width: 600px;
-        margin: auto;">
+    <div  style="        width: 600px;
+ 
+    border: 1px solid #80808036;
+    margin: auto;
+    padding: 20px 22px;
+">
         <div class="dnd  text-center" style=" text-align: center;">
             <img src="<?= base_url() ?>assets/jewel/img/dd_logo.png" alt="D&D" class="img-fluid" style="width: 120px;">
        
