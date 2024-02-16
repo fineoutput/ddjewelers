@@ -7,181 +7,32 @@
     <title>DD Jewel Plus</title>
 
 </head>
-<style>
-    * {
-        font-family: sans-serif;
-    }
 
-    .dnd.text-center h3.text-center.lobi {
-        font-weight: 100;
+
+<body>
+    <div class="container" style="  width: 1100px;
+        margin: auto;">
+        <div style="text-align: center">
+            <img src="<?= base_url() ?>assets/jewel/img/dd_logo.png" alt="D&D" style="width: 120px">
+            <h3 class="lobi" style="margin-block-end: 0; font-weight: 100;
         color: #2f3338;
         font-size: 24px;
         margin-top: 5px;
-        text-align: 'center';
-    }
-
-    .row.cart-box {
-        margin-top: 16px;
-    }
-
-    .Italian_sec {
-        width: 80%;
-    }
-
-    .customer_section p {
-        margin: 9px 0px;
-    }
-
-    .customer_section h2 {
-        font-size: 33px;
-        margin: 5px 0px;
-    }
-
-    .col-lg-4.width {
-        width: 43%;
-    }
-
-    .col-lg-6 {
-        width: 50%;
-    }
-
-    .img-box {
-        text-align: center;
-    }
-
-    h5.logo-bott-text {
-        font-size: 22px;
+        text-align: 'center';">D&amp;D Jewelry</h3>
+            <h5 style="margin-block-start:0;margin-block-end: 0;      font-size: 22px;
         padding-top: 5px;
-        color: #2f3338;
-    }
-
-    h2.order-heading {
-        font-size: 33px;
-    }
-
-    a {
-        color: #0d6efd;
-        text-decoration: none;
-    }
-
-    .order-heading {
-        margin-bottom: 0px !important;
-    }
-
-    .row {
-        display: flex;
-        align-items: center;
-    }
-
-    .col-lg-8.Italian_sec h3 {
-        color: #2f3338;
-        font-size: 22px;
-        font-weight: 500;
-    }
-
-    img.img-fluid.product-image {
-        width: 50%
-    }
-
-    .container {
-        width: 1100px;
-        margin: auto;
-    }
-
-    .dnd {
-        text-align: center;
-    }
-
-    .dnd img {
-        width: 120px;
-    }
-
-    .order_section {
-        text-align: center;
-
-    }
-
-
-    h1,
-    h2 {
-        color: #333366;
-    }
-
-    p,
-    td {
-        color: #909292;
-    }
-
-    .order_section button {
-        width: 220px;
-        background-color: #e1e3e4;
-        color: #909292;
-        border: 0px;
-        border-radius: 2px;
-    }
-
-    .summary {
-        border: 1px solid #e1e3e4;
-        border-radius: 5px;
-
-        padding: 15px 20px;
-        background-color: #eeeff0;
-    }
-
-    section {
-        margin-top: 34px;
-        margin-bottom: 34px;
-    }
-
-    .order_section h1 b {
-        font-size: 40px;
-    }
-
-    .order_section p a {
-        color: #0d6efd;
-    }
-
-    @media only screen and (max-width: 768px) {
-        .order_section button {
-            width: 162px;
-        }
-
-        section {
-            margin-top: 6px;
-            margin-bottom: 15px;
-            padding: 3px;
-        }
-
-        .summary {
-            margin-top: 30px;
-            margin-bottom: 25px;
-        }
-
-        .order_section {
-            margin-top: 5px;
-        }
-
-        .dnd img {
-            width: 80px;
-        }
-    }
-</style>
-
-<body>
-    <div class="container">
-        <div style="text-align: center">
-            <img src="<?= base_url() ?>assets/jewel/img/dd_logo.png" alt="D&D" style="width: 120px">
-            <h3 class="lobi" style="margin-block-end: 0;">D&amp;D Jewelry</h3>
-            <h5 style="margin-block-start:0;margin-block-end: 0;" class="logo-bott-text">Since 1985</h5>
+        color: #2f3338;" class="logo-bott-text" >Since 1985</h5>
         </div>
         <hr>
-        <section>
-            <div class="order_section ">
-                <h1><b>Order Confirmation</b></h1>
+        <section style="  margin-top: 34px;
+        margin-bottom: 34px;">
+            <div class="order_section " style="        text-align: center;">
+                <h1><b style="font-size: 40px;">Order Confirmation</b></h1>
                 <p>A new order was made on <span style="color:#0d6efd">www.dd.jewelplus.com</span>, you can view this
                     order in your site admin.</p>
         </section>
-        <section>
+        <section style="  margin-top: 34px;
+        margin-bottom: 34px;">
             <?
             $this->db->select('*');
             $this->db->from('tbl_order2');
@@ -229,12 +80,15 @@
             ?>
                 <div class="Italian_section ">
                     <hr>
-                    <div class="row cart-box">
-                        <div class="col-lg-4 img-box ">
-                            <img src="<?= $ord->img ?>" alt="D&D" class="img-fluid product-image">
+                    <div class="row cart-box" style="  display: flex;
+        align-items: center;">
+                        <div class="col-lg-4 img-box " style="text-align: center;">
+                            <img src="<?= $ord->img ?>" alt="D&D" class="img-fluid product-image" style=" width: 50%">
                         </div>
-                        <div class="col-lg-8 Italian_sec">
-                            <h3><?= $ord->description ?>
+                        <div class="col-lg-8 Italian_sec" style="  width: 80%;">
+                            <h3 style="  color: #2f3338;
+        font-size: 22px;
+        font-weight: 500;"><?= $ord->description ?>
                                 <? if (!empty($gem_data)) { ?>
                                     </br><span><b>Stones : </b></span>
                                     <? foreach ($gem_data as  $gem) {
@@ -268,10 +122,11 @@
             ?>
         </section>
         <hr>
-        <section style="    margin-bottom: 0px;">
+        <section style="    margin-bottom: 0px; margin-top: 34px;">
             <div class="order_section2">
-                <H2 class="order-heading">Order Information</H2>
-                <div class="row">
+                <H2 class="order-heading" style=" margin-bottom: 0px !important;  font-size: 33px;">Order Information</H2>
+                <div class="row" style="  display: flex;
+        align-items: center;">
 
                     <div>
                         <p>Name: <?= $user->name ?></p>
@@ -286,10 +141,11 @@
 
 
 
-        <section style="margin-top: 0px;">
+        <section style="margin-bottom: 0px; margin-top: 34px;">
             <div class="order_section2">
-                <div class="row">
-                    <div class="col-lg-6">
+                <div class="row" style="  display: flex;
+        align-items: center;">
+                    <div class="col-lg-6"  style="width:50%">
 
                         <div class="mt-5">
                             <p><?= 'Order Id : #' . $order1_id ?></p>
@@ -298,8 +154,12 @@
                             <p><?= 'Payment Type : ' . $order1_data->payment_type; ?></p>
                         </div>
                     </div>
-                    <div class="col-lg-6 ">
-                        <div class="summary ">
+                    <div class="col-lg-6 " style="width:50%">
+                        <div class="summary " style="  border: 1px solid #e1e3e4;
+        border-radius: 5px;
+
+        padding: 15px 20px;
+        background-color: #eeeff0;">
                             <h4 class="table" style=" color: #333366;
         font-size: 16px;
         margin-top: 9px;
@@ -331,11 +191,14 @@
             </div>
         </section>
         <hr>
-        <section>
+        <section style="  margin-top: 34px;
+        margin-bottom: 34px;">
             <div class="customer_section">
-                <h2>Customer Info</h2>
-                <div class="row">
-                    <div class="col-lg-4 width">
+                <h2 style="  font-size: 33px;
+        margin: 5px 0px;">Customer Info</h2>
+                <div class="row" style="  display: flex;
+        align-items: center;">
+                    <div class="col-lg-4 width"  style="width:45%">
                         <p class="text-uppercase mt-3 ">Shipping Information</p>
                         <p style="color:#343a40;"><b>Shipping Address</b></p>
                         <div>
@@ -348,7 +211,7 @@
                             <p> Country : <?= $country ?></p>
                         </div>
                     </div>
-                    <div class="col-lg-4 width">
+                    <div class="col-lg-4 width" style="width:45%">
                         <p class="text-uppercase mt-3 ">Billing Information</p>
                         <p style="color:#343a40;"><b>Billing Address</b></p>
                         <p>Name :<?= $name ?></p>
