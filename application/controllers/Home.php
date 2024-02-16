@@ -8204,4 +8204,45 @@ class Home extends CI_Controller
             show_error($this->email->print_debugger());
         }
     }
+    public function order_email()
+    {
+        $config = array(
+            'protocol' => 'smtp',
+            'smtp_host' => SMTP_HOST,
+            'smtp_port' => SMTP_PORT,
+            'smtp_user' => USER_NAME, // change it to yours
+            'smtp_pass' => PASSWORD, // change it to yours
+            'mailtype' => 'html',
+            'charset' => 'utf-8',
+            'newline' => "\r\n",
+            'wordwrap' => true
+        );
+        $this->db->select('*');
+        $this->db->from('tbl_order1');
+        $this->db->where('id', 8);
+        $order1 = $this->db->get()->row();
+        $this->db->select('*');
+        $this->db->from('tbl_users');
+        $this->db->where('id', $order1->user_id);
+        $user = $this->db->get()->row();
+        if (!empty($user->email)) {
+            $to = $user->email;
+            $name = $user->name;
+            $data['name'] = $name;
+            $data['order1_id'] = 8;
+            $data['order1_data'] = $order1;
+            $message = $this->load->view('admin_email', $data, TRUE);
+            $this->load->library('email', $config);
+            $this->email->set_newline("");
+            $this->email->from(EMAIL, EMAIL_NAME); // change it to yours
+            $this->email->to($to); // change it to yours
+            $this->email->subject('Order Placed');
+            $this->email->message($message);
+            if ($this->email->send()) {
+                echo "Email Sent";
+            } else {
+                // show_error($this->email->print_debugger());
+            }
+        }
+    }
 }

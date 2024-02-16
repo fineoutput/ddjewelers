@@ -783,9 +783,9 @@ if ($products->is_quick == 1) {
       </p>
 
 
-      <?php if (!empty($this->session->userdata('user_id'))) { ?>
+      <!-- <?php if (!empty($this->session->userdata('user_id'))) { ?>
         <input type="submit" class="mt-3 add-btn" id="wishBtn" value="Add to wishlist" onclick="wishlist(this)" data-pro-id="<?= $products->pro_id; ?>" status="add">
-      <?php } ?>
+      <?php } ?> -->
       <div class="d-flex justify-content-between p-2 pb-4">
 
         <a href="<?= base_url(); ?>Home/contact_us"><button class="btn d-flex" style="background:#2a2828;color:white;     align-items: center; margin: 2px;"><i class="fa fa-fw fa-envelope" aria-hidden="true"></i>Contact</button></a>

@@ -609,17 +609,28 @@ if ($products->is_quick == 1) {
         </div>
       <? } ?>
       <!-- //------------------- START ENGRAVING SECTION ---------- -->
-      <? if (!empty($engraving_options)) {
-        foreach ($engraving_options as $engrave) {
+      <?
+      $eng_data = [];
+      if (!empty($engraving_options)) {
+        foreach ($engraving_options as $loop => $engrave) {
           if ($engrave->Description == "Logo") {
             continue;
           }
+          $eng_data[] = [
+            "id" => $loop,
+            "Description" => $engrave->Description,
+            "Text" => null,
+            "Font" => null,
+            "Color" => null
+          ];
       ?>
           <div class="d-flex jus_cont">
             <p><b><?= $engrave->Description ?></b></p>
-            <button type="button" class="btn add-btn" onclick='openEngrave(<?= json_encode($engrave) ?>)'>
-              Engrave
-            </button>
+            <div id="en_div_<?= $loop ?>" class="w-100">
+              <button type="button" class="btn add-btn" onclick='openEngrave(<?= json_encode($engrave) ?>,<?= $loop ?>)'>
+                Engrave
+              </button>
+            </div>
           </div>
       <? }
       } ?>
@@ -799,10 +810,23 @@ if ($products->is_quick == 1) {
                                   } ?>
       </p>
 
-
-      <?php if (!empty($this->session->userdata('user_id'))) { ?>
+      <?php
+      if ($cart_status == 0) {
+        if (empty($this->session->userdata('user_id'))) {
+      ?>
+          <input type="submit" class="mt-3 add-btn" value=" Add to cart" onclick="addToCart(this);" quantity="" id="addToCartBtn" data-pro-id="<?= $products->pro_id; ?>" data-ring_size="<?= $products->ring_size ?>" data-ring_price="<?= $sizePrice ?>" data-engrave='<?= json_encode($eng_data) ?>'>
+        <?php } else { ?>
+          <input type="submit" class="mt-3 add-btn" value=" Add to cart" onclick="addToCart(this);" quantity="" id="addToCartBtn" data-pro-id="<?= $products->pro_id; ?>" data-ring_size="<?= $products->ring_size ?>" data-ring_price="<?= $sizePrice ?>" data-engrave='<?= json_encode($eng_data) ?>'>
+        <?php }
+      } else { ?>
+        <a href="<?= base_url() ?>Cart/view_cart"><button class="mt-3 add-btn" style="background-color:#547f9e" type="button">Go to cart</button></a>
+      <? } ?>
+      <button class="mt-3 add-btn" id="loader" disabled style="display:none">
+        <i class="fa fa-spinner fa-spin"></i> Loading...
+      </button>
+      <!-- <?php if (!empty($this->session->userdata('user_id'))) { ?>
         <input type="submit" class="mt-3 add-btn" id="wishBtn" value="Add to wishlist" onclick="wishlist(this)" data-pro-id="<?= $products->pro_id; ?>" status="add">
-      <?php } ?>
+      <?php } ?> -->
       <div class="d-flex justify-content-between p-2 pb-4">
 
         <a href="<?= base_url(); ?>Home/contact_us"><button class="btn d-flex" style="background:#2a2828;color:white;     align-items: center; margin: 2px;"><i class="fa fa-fw fa-envelope" aria-hidden="true"></i>Contact</button></a>
@@ -1145,14 +1169,14 @@ if ($products->is_quick == 1) {
           <div class="col-md-6">
             <div class="message-box">
               <div class="d-flex align-items-center model-top-box">
-                <input type="text" class="w-100 py-2 " name="" id="en_message" maxlength="" onchange="en_change('message')">
+                <input type="text" class="w-100 py-2 " name="" id="en_message" maxlength="">
                 <!-- <span class="input-group-addon u-border-radius-0 t-ui-label">0/8</span> -->
               </div>
             </div>
           </div>
-          <div class="col-md-6">
+          <!-- <div class="col-md-6">
             <img id="en_img" src="https://meteor.stullercloud.com/?src=(das/75898418?recipe=white&size=405,55&fmt=png)&src=(?text=&text.size=50px&text.color=%23000000&text.insetshadow=2&text.font=das/4784143&size=405,55&fmt=png)&hei=42&fmt=smart-alpha" style="height: 46px;">
-          </div>
+          </div> -->
         </div>
         <div class="row align-items-center mt-3">
           <div class="col-md-12 ">
@@ -1160,7 +1184,7 @@ if ($products->is_quick == 1) {
           </div>
           <div class="col-md-12">
             <div class="message-box">
-              <select name="en_font " id="en_font" class="py-2 w-100" onchange="en_change('font')">
+              <select name="en_font" id="en_font" class="py-2 w-100">
               </select>
 
             </div>
@@ -1182,13 +1206,13 @@ if ($products->is_quick == 1) {
           <div class="col-md-12" style="text-align: end;">
             <div class="floatRight rightMarginLarge bottomPadding">
 
-              <a href="#" class="engravingModalButtons c-red rightMargin">Reset This Location</a>
+              <!-- <a href="#" class="engravingModalButtons c-red rightMargin">Reset This Location</a>
 
               <div class="u-inline-block u-margin-left-10">
                 <button class="sbtn sbtn-secondary">Cancel</button>
-              </div>
+              </div> -->
               <div class="u-inline-block u-margin-left-10">
-                <button class="sbtn sbtn-primary">Save</button>
+                <button type="button" class="sbtn sbtn-primary" id="save_btn">Save</button>
               </div>
             </div>
           </div>
@@ -1211,13 +1235,16 @@ if ($products->is_quick == 1) {
 <input name="ring_size" id="r_size" type="hidden" value="<?= $products->ring_size ?>">
 <input name="r_price" id="r_price" type="hidden" value="<?= $sizePrice ?>">
 <input name="proId" id="proId" type="hidden" value="<?= $products->pro_id ?>">
+<input name="engrave_index" id="engrave_index" type="hidden" value="">
+<input name="engrave_color" id="engrave_color" type="hidden" value="">
 <script>
   jQuery(document).ready(function() {
     //----------- DROPDOWN CHANGE ---------------
     $('select').on('change', function() {
       if (this.name == "en_font") {
-        return;
+        return
       }
+
       if (this.name == "Ring_Size") {
         var selectedOption = this.options[this.selectedIndex];
         var dataKeyValue = selectedOption.getAttribute('data-price');
@@ -1374,7 +1401,7 @@ if ($products->is_quick == 1) {
   });
 
   //----------- ENGRAVE MODAL -------------
-  function openEngrave(obj) {
+  function openEngrave(obj, id) {
     $("#en_head").html(obj.Description + " Engraving");
     var en_type = obj.Types[0];
     $("#en_type").html(en_type.Name);
@@ -1387,7 +1414,7 @@ if ($products->is_quick == 1) {
         $("#en_max").html(font.MaxCharacters);
         $("#en_message").attr("maxlength", font.MaxCharacters);
       }
-      fonts += '<option value="' + font.Id + '">' + font.Name + '</option>';
+      fonts += '<option value="' + font.Name + '">' + font.Name + '</option>';
     });
     $('#en_font').append(fonts);
     var index = en_type.FillOptions.findIndex(function(option) {
@@ -1397,25 +1424,78 @@ if ($products->is_quick == 1) {
       index = 0;
     }
     en_type.FillOptions[index].Colors.map(function(color) {
-      colors += '<div class="col-md-2 engravingFillColorContainer selectedEngravingFillColor"><div class="engravingFillColor" style="background-color:' + color.Name + '"></div><span>' + color.Name + '</span></div>';
+      colors += '<div class="col-md-2 engravingFillColorContainer" id="color_btn_' + color.Name + '" onclick="en_change(\'font\',\'' + color.Name + '\')"><div class="engravingFillColor" style="background-color:' + color.Name + '"></div><span>' + color.Name + '</span></div>';
     });
     $('#en_color').append(colors);
-
+    $("#engrave_index").val(id);
     $('#engraveModal').modal('show');
   };
 
-  function en_change(type) {
+
+  function en_change(type, value = "") {
     // var img_path = $('#en_img').attr("src");
-    // if (type == 'font') {
+    // var id = $("#engrave_index").val();
+    // var myElement = document.getElementById("addToCartBtn");
+    // var eng_data = JSON.parse(myElement.getAttribute("data-engrave"));
+    // var index = eng_data.findIndex(function(element) {
+    //   return element.id == id;
+    // });
+    if (type == 'font') {
+      var className = "selectedEngravingFillColor";
+      // Remove class from all elements with a specific class
+      var elements = document.querySelectorAll("." + className);
+      elements.forEach(function(element) {
+        element.classList.remove(className);
+      });
+      var myElement = document.getElementById("color_btn_" + value);
+      // Add a new class to the element
+      myElement.classList.add(className);
+      $("#engrave_color").val(value);
 
-    // } else if (type == "color") {
-
-    // } else if (type == "message") {
-    //   var newTextValue = $("#en_message").val();
-    //   var new_path = img_path.replace(/text=&/, 'text=' + encodeURIComponent(newTextValue) + '&')
-    // }
+      // if (index !== -1) {
+      //   eng_data[index].Font = 'hello';
+      // }
+      // myElement.setAttribute("data-engrave", JSON.stringify(eng_data));
+    } else if (type == "color") {
+      // if (index !== -1) {
+      //   eng_data[index].Color = 'hello2';
+      // }
+      // myElement.setAttribute("data-engrave", JSON.stringify(eng_data));
+    } else if (type == "message") {
+      // var newTextValue = $("#en_message").val();
+      // if (index !== -1) {
+      //   eng_data[index].Text = newTextValue;
+      // }
+      // myElement.setAttribute("data-engrave", JSON.stringify(eng_data));
+      // var new_path = img_path.replace(/text=&/, 'text=' + encodeURIComponent(newTextValue) + '&')
+    }
     // $('#en_img').attr("src", new_path);
   }
+
+  document.getElementById("save_btn").addEventListener("click", function() {
+    var id = $("#engrave_index").val();
+    var color = $("#engrave_color").val();
+    var newTextValue = $("#en_message").val();
+    var selectElement = document.getElementsByName("en_font")[0];
+    var selectedValue = selectElement.options[selectElement.selectedIndex].value;
+    //---- get add to cart buttom engrave json ----
+    var myElement = document.getElementById("addToCartBtn");
+    var eng_data = JSON.parse(myElement.getAttribute("data-engrave"));
+    var index = eng_data.findIndex(function(element) {
+      return element.id == id;
+    });
+    //---- update add to cart buttom engrave json ----
+    if (index !== -1) {
+      eng_data[index].Text = newTextValue;
+      eng_data[index].Font = selectedValue;
+      eng_data[index].Color = color;
+      myElement.setAttribute("data-engrave", JSON.stringify(eng_data));
+    }
+    html = "<div class='row m-0 justify-content-between'><span><b>" + newTextValue + "</b></span><a href='#' style='color:red'>Remove</a></div>"
+    $("#en_div_" + id).html(html);
+    $('#engraveModal').modal('hide');
+
+  });
 
   //----------- ENGRAVE MODAL -------------
 
