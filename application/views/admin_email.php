@@ -10,18 +10,10 @@
 
 
 <body>
-    <div class="container" style="  width: 1100px;
+    <div style="  width: 600px;
         margin: auto;">
         <div style="text-align: center">
             <img src="<?= base_url() ?>assets/jewel/img/dd_logo.png" alt="D&D" style="width: 120px">
-            <h3 class="lobi" style="margin-block-end: 0; font-weight: 100;
-        color: #2f3338;
-        font-size: 24px;
-        margin-top: 5px;
-        text-align: 'center';">D&amp;D Jewelry</h3>
-            <h5 style="margin-block-start:0;margin-block-end: 0;      font-size: 22px;
-        padding-top: 5px;
-        color: #2f3338;" class="logo-bott-text" >Since 1985</h5>
         </div>
         <hr>
         <section style="  margin-top: 34px;
@@ -82,12 +74,12 @@
                     <hr>
                     <div class="row cart-box" style="  display: flex;
         align-items: center;">
-                        <div class="col-lg-4 img-box " style="text-align: center;">
-                            <img src="<?= $ord->img ?>" alt="D&D" class="img-fluid product-image" style=" width: 50%">
+                        <div class="col-lg-4 img-box " style="text-align: center; width:45%;" >
+                            <img src="<?= $ord->img ?>" alt="D&D" class="img-fluid product-image" style=" width: 75%">
                         </div>
                         <div class="col-lg-8 Italian_sec" style="  width: 80%;">
                             <h3 style="  color: #2f3338;
-        font-size: 22px;
+        font-size: 15px;
         font-weight: 500;"><?= $ord->description ?>
                                 <? if (!empty($gem_data)) { ?>
                                     </br><span><b>Stones : </b></span>
