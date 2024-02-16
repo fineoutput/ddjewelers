@@ -106,9 +106,9 @@
                                     <? } ?>
                                 <? } ?>
                             </h3>
-                            <p><?= 'QTY : ' . $ord->quantity ?></p>
-                            <p><?= 'Sku Id : ' . $ord->sku ?></p>
-                            <h3><?= '$' . $ord->amount ?></h3>
+                            <p style="margin: 8px 0px;"><?= 'QTY : ' . $ord->quantity ?></p>
+                            <p style="margin: 8px 0px;"><?= 'Sku Id : ' . $ord->sku ?></p>
+                            <h3 style="margin: 8px 0px;"><?= '$' . $ord->amount ?></h3>
                         </div>
                     </div>
                 </div>
