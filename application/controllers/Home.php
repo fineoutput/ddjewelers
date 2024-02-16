@@ -127,13 +127,17 @@ class Home extends CI_Controller
             }
             //------------User Sent Email End--------------//
             //------------sent email to admin--------------//
+            $data2['name'] = 'Admin';
+            $data2['order1_id'] = $order_id;
+            $data2['order1_data'] = $order1;
+            $message2 = $this->load->view('admin_email', $data2, TRUE);
             $this->load->library('email', $config);
             $this->email->set_newline("");
             $this->email->from(EMAIL, EMAIL_NAME); // change it to yours
             // $this->email->to('jewelplus@gmail.com');  // change it to yours
-            $this->email->to('office.fineoutput@gmail.com');  // change it to yours
+            $this->email->to(TO);  // change it to yours
             $this->email->subject('New order received');
-            $this->email->message($message);
+            $this->email->message($message2);
             if ($this->email->send()) {
             } else {
                 // show_error($this->email->print_debugger());
@@ -624,7 +628,7 @@ class Home extends CI_Controller
             // $product_data = $this->db->select('id')->limit($per_page, $start)->group_by(array("series_id"))->like("search_values", $string)->get_where('tbl_products', array())->result();
             // echo "hi";die();
 
-            if (count($product_data) > 1 || $page_index >1) {
+            if (count($product_data) > 1 || $page_index > 1) {
                 $data['product_data'] = $product_data;
                 $data['total_pages'] = $total_pages;
                 $data['page_options'] = $page_options;

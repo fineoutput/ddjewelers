@@ -519,7 +519,7 @@ class Order extends CI_Controller
                 if (empty($order_data[0]->shipping_id)) {
                     $data_update2 = array(
                         'shipping_id' => $shipping_costs[0]['shipping_id'],
-                        'method_id' => $temp_array?$temp_array[0]['id']:'',
+                        'method_id' => $temp_array ? $temp_array[0]['id'] : '',
                         'shipping' => $shipping_costs[0]['shipment_cost'],
                         'shipping_rule_id' => $shipping_costs[0]['id'],
                         'final_amount' => $order_data[0]->total_amount + $shipping_costs[0]['shipment_cost'] + $order_data[0]->delivery_charge,
@@ -675,13 +675,17 @@ class Order extends CI_Controller
                     }
                     //------------User Sent Email End--------------//
                     //------------sent email to admin--------------//
+                    $data2['name'] = 'Admin';
+                    $data2['order1_id'] = $id;
+                    $data2['order1_data'] = $order1;
+                    $message2 = $this->load->view('admin_email', $data2, TRUE);
                     $this->load->library('email', $config);
                     $this->email->set_newline("");
                     $this->email->from(EMAIL, EMAIL_NAME); // change it to yours
                     // $this->email->to('jewelplus@gmail.com');  // change it to yours
                     $this->email->to(TO);  // change it to yours
                     $this->email->subject('New order received');
-                    $this->email->message($message);
+                    $this->email->message($message2);
                     if ($this->email->send()) {
                     } else {
                         // show_error($this->email->print_debugger());
@@ -957,13 +961,17 @@ class Order extends CI_Controller
                 }
                 //------------User Sent Email End--------------//
                 //------------sent email to admin--------------//
+                $data2['name'] = 'Admin';
+                $data2['order1_id'] = $id;
+                $data2['order1_data'] = $order1;
+                $message2 = $this->load->view('admin_email', $data2, TRUE);
                 $this->load->library('email', $config);
                 $this->email->set_newline("");
                 $this->email->from(EMAIL, EMAIL_NAME); // change it to yours
                 // $this->email->to('jewelplus@gmail.com');  // change it to yours
                 $this->email->to(TO);  // change it to yours
                 $this->email->subject('New order received');
-                $this->email->message($message);
+                $this->email->message($message2);
                 if ($this->email->send()) {
                 } else {
                     // show_error($this->email->print_debugger());

@@ -97,7 +97,7 @@
         <hr>
         <section>
             <div class="order_section ">
-                <h1><b>Order Placed</b></h1>
+                <h1><b>Order Confirmation</b></h1>
                 <p>A new order was made on <a href="#" target="_blank">www.dd.jewelplus.com</a>, you can view this order in your site admin.</p>
         </section>
         <section>

@@ -448,13 +448,17 @@ class Order extends CI_Controller
                     }
                     //------------User Sent Email End--------------//
                     //------------sent email to admin--------------//
+                    $data2['name'] = 'Admin';
+                    $data2['order1_id'] = $id;
+                    $data2['order1_data'] = $order1;
+                    $message2 = $this->load->view('admin_email', $data2, TRUE);
                     $this->load->library('email', $config);
                     $this->email->set_newline("");
                     $this->email->from(EMAIL, EMAIL_NAME); // change it to yours
                     // $this->email->to('jewelplus@gmail.com');  // change it to yours
                     $this->email->to(TO);  // change it to yours
                     $this->email->subject('New order received');
-                    $this->email->message($message);
+                    $this->email->message($message2);
                     if ($this->email->send()) {
                     } else {
                         // show_error($this->email->print_debugger());
@@ -730,13 +734,17 @@ class Order extends CI_Controller
                 }
                 //------------User Sent Email End--------------//
                 //------------sent email to admin--------------//
+                $data2['name'] = 'Admin';
+                $data2['order1_id'] = $id;
+                $data2['order1_data'] = $order1;
+                $message2 = $this->load->view('admin_email', $data2, TRUE);
                 $this->load->library('email', $config);
                 $this->email->set_newline("");
                 $this->email->from(EMAIL, EMAIL_NAME); // change it to yours
                 // $this->email->to('jewelplus@gmail.com');  // change it to yours
                 $this->email->to(TO);  // change it to yours
                 $this->email->subject('New order received');
-                $this->email->message($message);
+                $this->email->message($message2);
                 if ($this->email->send()) {
                 } else {
                     // show_error($this->email->print_debugger());
