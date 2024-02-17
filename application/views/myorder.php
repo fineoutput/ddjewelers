@@ -79,6 +79,8 @@
                             foreach ($d1->result() as $dd1) {
                                 $gem_data = $dd1->gem_data?json_decode($dd1->gem_data):[];
                                 $monogram_data = $dd1->monogram?json_decode($dd1->monogram):[];
+                                $engrave_data = $dd1->engrave_data?json_decode($dd1->engrave_data):[];
+
                                 $o_product_name = $dd1->description;
                                 $o_product_sku = $dd1->sku;
                                 $o_product_image = $dd1->img;
@@ -100,6 +102,13 @@
                                                 <p><span><b>Monogram : </b></span>
                                                     <? foreach ($monogram_data as  $mono) { ?>
                                                         <span><b><?= $mono->Text ?> - </b> <?= $mono->Value ?> <b>|</b> </span>
+                                                    <? } ?>
+                                                </p>
+                                            <? } ?>
+                                            <? if (!empty($engrave_data)) { ?>
+                                                <p><span><b>Engrave : </b></span>
+                                                    <? foreach ($engrave_data as  $mono) { ?>
+                                                        <span><b><?= $mono->Description ?> - </b> <?= $mono->Text ?> <b>|</b> </span>
                                                     <? } ?>
                                                 </p>
                                             <? } ?>

@@ -38,6 +38,7 @@ class Cart extends CI_Controller
 			$this->form_validation->set_rules('img', 'img', 'xss_clean|trim');
 			$this->form_validation->set_rules('monogram', 'monogram', 'xss_clean|trim');
 			$this->form_validation->set_rules('mono_length', 'mono_length', 'xss_clean|trim');
+			$this->form_validation->set_rules('engrave_data', 'engrave_data', 'xss_clean|trim');
 
 			if ($this->form_validation->run() == true) {
 				$pro_id = $this->input->post('pro_id');
@@ -49,6 +50,7 @@ class Cart extends CI_Controller
 				$img = $this->input->post('img');
 				$monogram = $this->input->post('monogram');
 				$mono_length = $this->input->post('mono_length');
+				$engrave_data = $this->input->post('engrave_data');
 				//---- Check monogram value is not null ---
 				if (!empty($monogram)) {
 					foreach (json_decode($monogram) as $mono) {
@@ -70,6 +72,7 @@ class Cart extends CI_Controller
 					'img' => $img,
 					'monogram' => $monogram,
 					'mono_chain_length' => $mono_length,
+					'engrave_data' => $engrave_data,
 				];
 				//----- check inventory ----------------
 				$invRes = $this->check_Inventory($pro_id, $quantity);
@@ -169,6 +172,7 @@ class Cart extends CI_Controller
 			'img' => $receive['img'],
 			'monogram' => $monogram,
 			'mono_chain_length' => $receive['mono_chain_length'],
+			'engrave_data' => $receive['engrave_data'],
 			'ip' => $ip,
 			'date' => $cur_date
 		);
@@ -279,10 +283,14 @@ class Cart extends CI_Controller
 			$ip = $this->input->ip_address();
 			date_default_timezone_set("Asia/Calcutta");
 			$cur_date = date("Y-m-d H:i:s");
-			$monogram =  $receive['monogram'] ? $receive['monogram'] : [];
+			$monogram =  $receive['monogram'] ? $receive['monogram'] :'';
 
 			// ------ CHECK ALREADY EXIST ------
+			if(!empty($monogram)){
 			$cartInfo = $this->db->get_where('tbl_cart', array('user_id' => $user_id, 'pro_id' => $receive['pro_id'], 'ring_size' => $receive['ring_size'], 'monogram', $monogram))->row();
+			}else{
+				$cartInfo = $this->db->get_where('tbl_cart', array('user_id' => $user_id, 'pro_id' => $receive['pro_id'], 'ring_size' => $receive['ring_size']))->row();
+			}
 			if (empty($cartInfo)) {
 				$pro = $this->db->get_where('tbl_products', array('pro_id' => $receive['pro_id']))->row();
 				$ring_price =  $receive['ring_price'] ? $receive['ring_price'] : 0;
@@ -298,6 +306,8 @@ class Cart extends CI_Controller
 					'img' => $receive['img'],
 					'monogram' => $monogram,
 					'mono_chain_length' => $receive['mono_chain_length'],
+					'engrave_data' => $receive['engrave_data'],
+
 					'date' => $cur_date
 				);
 				$last_id = $this->base_model->insert_table("tbl_cart", $cart_insert, 1);

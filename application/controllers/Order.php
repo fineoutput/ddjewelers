@@ -109,6 +109,7 @@ class Order extends CI_Controller
                                 'gem_data' => $data->gem_data,
                                 'monogram' => $data->monogram,
                                 'mono_chain_length' => $data->mono_chain_length,
+                                'engrave_data' => $data->engrave_data,
                                 'img' => $order_img,
                                 'sku' => $pro_da->sku,
                                 'date' => $cur_date

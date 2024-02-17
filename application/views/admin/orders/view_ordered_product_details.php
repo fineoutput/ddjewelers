@@ -38,6 +38,7 @@
 									foreach ($ordered_product_details_data->result() as $data) {
 										$gem_data = $data->gem_data?json_decode($data->gem_data):[];
 										$monogram_data = $data->monogram?json_decode($data->monogram):[];
+										$engrave_data = $data->engrave_data?json_decode($data->engrave_data):[];
 										$pro_data = $this->db->get_where('tbl_products', array('series_id' => $data->pro_id, 'series_id' => $data->series_id))->row();
 
 									?>
@@ -57,6 +58,13 @@
 														<p><span><b>Monogram : </b></span>
 															<? foreach ($monogram_data as  $mono) { ?>
 																<span><b><?= $mono->Text ?> - </b> <?= $mono->Value ?> <b>|</b> </span>
+															<? } ?>
+														</p>
+													<? } ?>
+													<? if (!empty($engrave_data)) { ?>
+														<p><span><b>Engrave : </b></span>
+															<? foreach ($engrave_data as  $eng) { ?>
+																<span><b><?= $eng->Description ?> - </b> Text: <?= $eng->Text ?>, Font: <?= $eng->Font ?>, Color: <?= $eng->Color ?> <b>|</b> </span>
 															<? } ?>
 														</p>
 													<? } ?>

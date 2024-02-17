@@ -1072,6 +1072,7 @@ class Products extends CI_finecontrol
             $this->form_validation->set_rules('LocationNumber', 'LocationNumber', 'required|xss_clean|trim');
             $this->form_validation->set_rules('sideName', 'sideName', 'xss_clean|trim');
             $this->form_validation->set_rules('is_serialized', 'is_serialized', 'xss_clean|trim');
+            $this->form_validation->set_rules('engrave', 'engrave', 'xss_clean|trim');
             if ($this->form_validation->run() == true) {
                 $ProductId = $this->input->post('ProductId');
                 $StoneProductId = $this->input->post('StoneProductId');
@@ -1082,6 +1083,7 @@ class Products extends CI_finecontrol
                 $LocationNumber = $this->input->post('LocationNumber');
                 $sideName = $this->input->post('sideName');
                 $is_serialized = $this->input->post('is_serialized');
+                $engrave = $this->input->post('engrave');
                 //----------------- Get all location of the product--------
                 $pro_data = $this->db->get_where('tbl_products', array('pro_id' => $ProductId))->row();
                 $final_arr = [];
@@ -1291,11 +1293,15 @@ class Products extends CI_finecontrol
                     <span class="item-label">Now Price:</span>
                     <span class="item-value">$' . number_format($final_price, 2) . '</span>
                 </div>';
-                if (empty($this->session->userdata('user_id'))) {
-                    $html .= '<input type="submit" class="mt-3 add-btn" value=" Add to cart" onclick="addToCart(this);" quantity="1" id="addToCartBtn" data-pro-id="' . $ProductId . '" data-ring_size="' . $RingSize . '" data-ring_price="" data-gem-data=\'' . json_encode($res->Stones) . '\' data-price="' . $final_price . '" data-img="' . $res->Images[0]->ZoomUrl . '">';
-                } else {
-                    $html .= '<input type="submit" class="mt-3 add-btn" value=" Add to cart" onclick="addToCart(this);" quantity="1" id="addToCartBtn" data-pro-id="' . $ProductId . '" data-ring_size="' . $RingSize . '"  data-ring_price="" 
+                if (empty($engrave)) {
+                    if (empty($this->session->userdata('user_id'))) {
+                        $html .= '<input type="submit" class="mt-3 add-btn" value=" Add to cart" onclick="addToCart(this);" quantity="1" id="addToCartBtn" data-pro-id="' . $ProductId . '" data-ring_size="' . $RingSize . '" data-ring_price="" data-gem-data=\'' . json_encode($res->Stones) . '\' data-price="' . $final_price . '" data-img="' . $res->Images[0]->ZoomUrl . '">';
+                    } else {
+                        $html .= '<input type="submit" class="mt-3 add-btn" value=" Add to cart" onclick="addToCart(this);" quantity="1" id="addToCartBtn" data-pro-id="' . $ProductId . '" data-ring_size="' . $RingSize . '"  data-ring_price="" 
                     data-gem-data=\'' . json_encode($res->Stones) . '\'  data-price="' . $final_price . '" data-img="' . $res->Images[0]->ZoomUrl . '">';
+                    }
+                } else {
+                    $html .= '<input type="submit" class="mt-3 add-btn" value="Save" onclick="SaveStone(this);" quantity="1" id="addToCartBtn" data-pro-id="' . $ProductId . '" data-ring_size="' . $RingSize . '" data-ring_price="" data-gem-data=\'' . json_encode($res->Stones) . '\' data-price="' . $final_price . '" data-img="' . $res->Images[0]->ZoomUrl . '">';
                 }
                 $html .=  '<button class="mt-3 add-btn" id="loader" disabled style="display:none">
                 <i class="fa fa-spinner fa-spin"></i> Loading...

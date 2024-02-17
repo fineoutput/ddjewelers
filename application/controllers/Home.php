@@ -7378,6 +7378,7 @@ class Home extends CI_Controller
                                         'gem_data' => $data['gem_data'],
                                         'price' => $data['price'],
                                         'img' => $data['img'],
+                                        'engrave_data' => $data['engrave_data'],
                                         'date' => $cur_date
                                     );
                                     $last_id = $this->base_model->insert_table("tbl_cart", $cart_insert, 1);

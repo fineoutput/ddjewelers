@@ -1596,7 +1596,7 @@ if ($products->is_quick == 1) {
     $('.btn-select').attr('value', sessionLang);
   } else {
     var langIndex = langArray.indexOf('ch');
-    console.log(langIndex);
+    // console.log(langIndex);
     $('.btn-select').html(langArray[langIndex]);
     //$('.btn-select').attr('value', 'en');
   }

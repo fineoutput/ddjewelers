@@ -136,6 +136,7 @@
                             foreach ($order2_data as $cart) {
                                 $gem_data = $cart->gem_data?json_decode($cart->gem_data):[];
                                 $monogram_data = $cart->monogram?json_decode($cart->monogram):[];
+                                $engrave_data = $cart->engrave_data?json_decode($cart->engrave_data):[];
                                 $product_id = $cart->pro_id;
                                 $pro_da = $this->db->get_where('tbl_products', array('pro_id' => $cart->pro_id))->row();
                                 if (!empty($pro_da)) {
@@ -178,6 +179,12 @@
                                                             <span><b>Monogram : </b></span>
                                                             <? foreach ($monogram_data as  $mono) { ?>
                                                                 <span><b><?= $mono->Text ?> - </b> <?= $mono->Value ?> <b>|</b> </span>
+                                                            <? } ?>
+                                                    <? } ?>
+                                                    <? if (!empty($engrave_data)) { ?>
+                                                            <span><b>Engrave : </b></span>
+                                                            <? foreach ($engrave_data as  $mono) { ?>
+                                                                <span><b><?= $mono->Description ?> - </b> <?= $mono->Text ?> <b>|</b> </span>
                                                             <? } ?>
                                                     <? } ?>
                                                 </div>

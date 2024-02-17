@@ -9,7 +9,7 @@
 </head>
 
 <body>
-    <div  style="        width: 600px;
+    <div style="        width: 600px;
  
     border: 1px solid #80808036;
     margin: auto;
@@ -17,8 +17,8 @@
 ">
         <div class="dnd  text-center" style=" text-align: center;">
             <img src="<?= base_url() ?>assets/jewel/img/dd_logo.png" alt="D&D" class="img-fluid" style="width: 120px;">
-       
-         
+
+
         </div>
         <hr>
         <section style="   margin-top: 34px;
@@ -72,7 +72,9 @@
             ?>
             <? $count = 0;
             foreach ($order2->result() as $ord) {
-                $gem_data = json_decode($ord->gem_data);
+                $gem_data = $data->gem_data ? json_decode($ord->gem_data) : [];
+                $monogram_data = $data->monogram ? json_decode($ord->monogram) : [];
+                $engrave_data = $data->engrave_data ? json_decode($ord->engrave_data) : [];
             ?>
                 <div class="Italian_section ">
                     <hr>
@@ -85,6 +87,26 @@
                             <h3 style="   color: #2f3338;
         font-size: 15px;
         font-weight: 500;"><?= $ord->description ?>
+                                <? if (!empty($ord->ring_size)) { ?>
+                                    <p><span><b>Ring Size : </b></span><?= $ord->ring_size ?></p>
+                                <? } ?>
+                                <? if (!empty($ord->mono_chain_length)) { ?>
+                                    <p><span><b>Chain Length : </b></span><?= $ord->mono_chain_length ?></p>
+                                <? } ?>
+                                <? if (!empty($monogram_data)) { ?>
+                                    <p><span><b>Monogram : </b></span>
+                                        <? foreach ($monogram_data as  $mono) { ?>
+                                            <span><b><?= $mono->Text ?> - </b> <?= $mono->Value ?> <b>|</b> </span>
+                                        <? } ?>
+                                    </p>
+                                <? } ?>
+                                <? if (!empty($engrave_data)) { ?>
+                                    <p><span><b>Engrave : </b></span>
+                                        <? foreach ($engrave_data as  $eng) { ?>
+                                            <span><b><?= $eng->Description ?> - </b> Text: <?= $eng->Text ?>, Font: <?= $eng->Font ?>, Color: <?= $eng->Color ?> <b>|</b> </span>
+                                        <? } ?>
+                                    </p>
+                                <? } ?>
                                 <? if (!empty($gem_data)) { ?>
                                     </br><span><b>Stones : </b></span>
                                     <? foreach ($gem_data as  $gem) {
@@ -147,7 +169,7 @@
                             <p><?= 'Payment Type : ' . $order1_data->payment_type; ?></p>
                         </div>
                     </div>
-                    <div class="col-lg-6 "  style="width:50%">
+                    <div class="col-lg-6 " style="width:50%">
                         <div class="summary " style="  border: 1px solid #e1e3e4;
         border-radius: 5px;
 

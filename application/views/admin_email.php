@@ -71,19 +71,39 @@
             ?>
             <? $count = 0;
             foreach ($order2->result() as $ord) {
-                $gem_data = json_decode($ord->gem_data);
+                $gem_data = $data->gem_data ? json_decode($ord->gem_data) : [];
+                $monogram_data = $data->monogram ? json_decode($ord->monogram) : [];
+                $engrave_data = $data->engrave_data ? json_decode($ord->engrave_data) : [];
             ?>
                 <div class="Italian_section ">
                     <hr>
                     <div class="row cart-box" style="  display: flex;
         align-items: center;">
-                        <div class="col-lg-4 img-box " style="text-align: center; width:45%;" >
+                        <div class="col-lg-4 img-box " style="text-align: center; width:45%;">
                             <img src="<?= $ord->img ?>" alt="D&D" class="img-fluid product-image" style=" width: 75%">
                         </div>
                         <div class="col-lg-8 Italian_sec" style="  width: 80%;">
-                            <h3 style="  color: #2f3338;
-        font-size: 15px;
-        font-weight: 500;"><?= $ord->description ?>
+                            <h3 style="  color: #2f3338;font-size: 15px;font-weight: 500;"><?= $ord->description ?>
+                                <? if (!empty($ord->ring_size)) { ?>
+                                    <p><span><b>Ring Size : </b></span><?= $ord->ring_size ?></p>
+                                <? } ?>
+                                <? if (!empty($ord->mono_chain_length)) { ?>
+                                    <p><span><b>Chain Length : </b></span><?= $ord->mono_chain_length ?></p>
+                                <? } ?>
+                                <? if (!empty($monogram_data)) { ?>
+                                    <p><span><b>Monogram : </b></span>
+                                        <? foreach ($monogram_data as  $mono) { ?>
+                                            <span><b><?= $mono->Text ?> - </b> <?= $mono->Value ?> <b>|</b> </span>
+                                        <? } ?>
+                                    </p>
+                                <? } ?>
+                                <? if (!empty($engrave_data)) { ?>
+                                    <p><span><b>Engrave : </b></span>
+                                        <? foreach ($engrave_data as  $eng) { ?>
+                                            <span><b><?= $eng->Description ?> - </b> Text: <?= $eng->Text ?>, Font: <?= $eng->Font ?>, Color: <?= $eng->Color ?> <b>|</b> </span>
+                                        <? } ?>
+                                    </p>
+                                <? } ?>
                                 <? if (!empty($gem_data)) { ?>
                                     </br><span><b>Stones : </b></span>
                                     <? foreach ($gem_data as  $gem) {
@@ -140,7 +160,7 @@
             <div class="order_section2">
                 <div class="row" style="  display: flex;
         align-items: center;">
-                    <div class="col-lg-6"  style="width:50%">
+                    <div class="col-lg-6" style="width:50%">
 
                         <div class="mt-5">
                             <p><?= 'Order Id : #' . $order1_id ?></p>
@@ -193,7 +213,7 @@
         margin: 5px 0px;">Customer Info</h2>
                 <div class="row" style="  display: flex;
         align-items: center;">
-                    <div class="col-lg-4 width"  style="width:45%">
+                    <div class="col-lg-4 width" style="width:45%">
                         <p class="text-uppercase mt-3 ">Shipping Information</p>
                         <p style="color:#343a40;"><b>Shipping Address</b></p>
                         <div>

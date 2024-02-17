@@ -2,9 +2,10 @@
   .sign_btn_new:hover {
     color: #fff;
   }
+
   .nav-wrapper.d-none-print {
     display: none !important;
-}
+  }
 </style>
 <div class="scroll_up_div dimaond_scroll">
   <a href="#body" class="scroll_up">
@@ -286,44 +287,43 @@
     },
   });
   var mySwiper = new Swiper('.swiper-containernew', {
-      slidesPerView: 6,
-      spaceBetween: 10,
-      breakpoints: {
-        '300': {
-          slidesPerView: 2,
-          spaceBetween: 30,
-        },
-        '400': {
-          slidesPerView: 2,
-          spaceBetween: 30,
-        },
-        '500': {
-          slidesPerView: 3,
-          spaceBetween: 40,
-        },
-        '600': {
-          slidesPerView: 4,
-          spaceBetween: 40,
-        },
-        '767': {
-          slidesPerView: 5,
-          spaceBetween: 30,
-        },
+    slidesPerView: 6,
+    spaceBetween: 10,
+    breakpoints: {
+      '300': {
+        slidesPerView: 2,
+        spaceBetween: 30,
       },
-      // Optional parameters
-      freeMode: true,
-      loop: false,
-      scrollbar: {
-        el: '.swiper-scrollbar',
-        hide: true,
+      '400': {
+        slidesPerView: 2,
+        spaceBetween: 30,
       },
-      navigation: {
-        nextEl: '.swiper-button-next',
-        prevEl: '.swiper-button-prev',
+      '500': {
+        slidesPerView: 3,
+        spaceBetween: 40,
       },
+      '600': {
+        slidesPerView: 4,
+        spaceBetween: 40,
+      },
+      '767': {
+        slidesPerView: 5,
+        spaceBetween: 30,
+      },
+    },
+    // Optional parameters
+    freeMode: true,
+    loop: false,
+    scrollbar: {
+      el: '.swiper-scrollbar',
+      hide: true,
+    },
+    navigation: {
+      nextEl: '.swiper-button-next',
+      prevEl: '.swiper-button-prev',
+    },
 
-    })
-
+  })
 </script>
 <script>
   $(document).scroll(function() {
@@ -439,17 +439,37 @@
       var ring_size = $('#r_size').val();
       var mono_length = $('#mono_length').val();
       var ring_price = $(obj).attr("data-ring_price");
-      var quantity = $(obj).attr("quantity");
+      var quantity = 1;
       var gem_data = $(obj).attr("data-gem-data");
       var price = $(obj).attr("data-price");
       var img = $(obj).attr("data-img");
       var monogram = $(obj).attr("data-monogram");
       var btn = $(obj).attr("btn")
+      var engrave = $(obj).attr("data-is_engrave");
+      var engrave_data = $(obj).attr("data-engrave");
+      var is_gems = $('#is_gems').val();
+
       if (quantity == "") {
         quantity = $('#qty').val().trim();
       }
       if (quantity == 0) {
         loadErrorNotify('Please Select Quantity Greater Than 1. ');
+        return;
+      }
+      if (engrave == 1) {
+        if (is_gems == 1 && gem_data == "") {
+          loadErrorNotify('Please Select Gem Stone');
+          return;
+        } else {
+          var en_arr = JSON.parse(engrave_data);
+          // Check if Text, Font, and Color are null in each object
+          for (var i = 0; i < en_arr.length; i++) {
+            if (en_arr[i].Text === null || en_arr[i].Font === null || en_arr[i].Color === null) {
+              loadErrorNotify('Please Select Engrave ' + en_arr[i].Description + ' Options');
+              return;
+            }
+          }
+        }
       }
       $("#loader").css("display", 'block');
       $("#addToCartBtn").css("display", 'none');
@@ -467,6 +487,8 @@
           img: img,
           monogram: monogram,
           mono_length: mono_length,
+          engrave: engrave,
+          engrave_data: engrave_data,
         },
         dataType: 'json',
         success: function(response) {

@@ -198,6 +198,7 @@
                         foreach ($order2_data->result() as $data) {
                             $gem_data = $data->gem_data?json_decode($data->gem_data):[];
                             $monogram_data = $data->monogram?json_decode($data->monogram):[];
+                            $engrave_data = $data->engrave_data?json_decode($data->engrave_data):[];
                     ?>
                             <tr class="product_table2">
                                 <td><?php echo $i; ?></td>
@@ -212,6 +213,12 @@
                                         </br><span><b>Monogram : </b></span>
                                             <? foreach ($monogram_data as  $mono) { ?>
                                                 <span><b><?= $mono->Text ?> - </b> <?= $mono->Value ?> <b>|</b> </span>
+                                            <? } ?>
+                                    <? } ?>
+                                    <? if (!empty($engrave_data)) { ?>
+                                        </br><span><b>Engrave : </b></span>
+                                            <? foreach ($engrave_data as  $mono) { ?>
+                                                <span><b><?= $mono->Description ?> - </b> <?= $mono->Text ?> <b>|</b> </span>
                                             <? } ?>
                                     <? } ?>
                                     <? if (!empty($gem_data)) { ?>

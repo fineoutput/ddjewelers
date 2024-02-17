@@ -603,9 +603,11 @@ if ($products->is_quick == 1) {
 
         <div class="d-flex jus_cont">
           <p><b>Gem Stone</b></p>
-          <button type="button" class="btn add-btn" data-toggle="modal" data-target="#myModal">
+          <button type="button" id="gem_btn" class="btn add-btn" data-toggle="modal" data-target="#myModal">
             Set Stone
           </button>
+          <div id="gem_div" class="w-100" style="display:none">
+          </div>
         </div>
       <? } ?>
       <!-- //------------------- START ENGRAVING SECTION ---------- -->
@@ -626,10 +628,10 @@ if ($products->is_quick == 1) {
       ?>
           <div class="d-flex jus_cont">
             <p><b><?= $engrave->Description ?></b></p>
-            <div id="en_div_<?= $loop ?>" class="w-100">
-              <button type="button" class="btn add-btn" onclick='openEngrave(<?= json_encode($engrave) ?>,<?= $loop ?>)'>
-                Engrave
-              </button>
+            <button type="button" id="en_div_btn_<?= $loop ?>" class="btn add-btn" onclick='openEngrave(<?= json_encode($engrave) ?>,<?= $loop ?>)'>
+              Engrave
+            </button>
+            <div id="en_div_<?= $loop ?>" class="w-100" style="display:none">
             </div>
           </div>
       <? }
@@ -814,9 +816,9 @@ if ($products->is_quick == 1) {
       if ($cart_status == 0) {
         if (empty($this->session->userdata('user_id'))) {
       ?>
-          <input type="submit" class="mt-3 add-btn" value=" Add to cart" onclick="addToCart(this);" quantity="" id="addToCartBtn" data-pro-id="<?= $products->pro_id; ?>" data-ring_size="<?= $products->ring_size ?>" data-ring_price="<?= $sizePrice ?>" data-engrave='<?= json_encode($eng_data) ?>'>
+          <input type="submit" class="mt-3 add-btn" value=" Add to cart" onclick="addToCart(this);" quantity="" id="addToCartBtn" data-pro-id="<?= $products->pro_id; ?>" data-ring_size="<?= $products->ring_size ?>" data-ring_price="<?= $sizePrice ?>" data-gem-data="" data-price="" data-img="" data-is_engrave="1" data-engrave='<?= json_encode($eng_data) ?>'>
         <?php } else { ?>
-          <input type="submit" class="mt-3 add-btn" value=" Add to cart" onclick="addToCart(this);" quantity="" id="addToCartBtn" data-pro-id="<?= $products->pro_id; ?>" data-ring_size="<?= $products->ring_size ?>" data-ring_price="<?= $sizePrice ?>" data-engrave='<?= json_encode($eng_data) ?>'>
+          <input type="submit" class="mt-3 add-btn" value=" Add to cart" onclick="addToCart(this);" quantity="" id="addToCartBtn" data-pro-id="<?= $products->pro_id; ?>" data-ring_size="<?= $products->ring_size ?>" data-ring_price="<?= $sizePrice ?>" data-gem-data="" data-price="" data-img="" data-is_engrave="1" data-engrave='<?= json_encode($eng_data) ?>'>
         <?php }
       } else { ?>
         <a href="<?= base_url() ?>Cart/view_cart"><button class="mt-3 add-btn" style="background-color:#547f9e" type="button">Go to cart</button></a>
@@ -1020,7 +1022,7 @@ if ($products->is_quick == 1) {
       <!-- Modal Header -->
       <div class="modal-header">
         <h4 class="modal-title">Stone Locations</h4>
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <button type="button" class="close" id="myModalBtn" data-dismiss="modal">&times;</button>
       </div>
 
 
@@ -1237,6 +1239,10 @@ if ($products->is_quick == 1) {
 <input name="proId" id="proId" type="hidden" value="<?= $products->pro_id ?>">
 <input name="engrave_index" id="engrave_index" type="hidden" value="">
 <input name="engrave_color" id="engrave_color" type="hidden" value="">
+<input name="is_gems" id="is_gems" type="hidden" value="<? if (!empty($setting_options)) {
+                                                          echo "1";
+                                                        } ?>">
+
 <script>
   jQuery(document).ready(function() {
     //----------- DROPDOWN CHANGE ---------------
@@ -1428,7 +1434,8 @@ if ($products->is_quick == 1) {
     });
     $('#en_color').append(colors);
     $("#engrave_index").val(id);
-    $('#engraveModal').modal('show');
+    var $j = jQuery.noConflict();
+    $j('#engraveModal').modal('show');
   };
 
 
@@ -1478,6 +1485,18 @@ if ($products->is_quick == 1) {
     var newTextValue = $("#en_message").val();
     var selectElement = document.getElementsByName("en_font")[0];
     var selectedValue = selectElement.options[selectElement.selectedIndex].value;
+    if (newTextValue == "") {
+      loadErrorNotify('Message filed is required!');
+      return;
+    } else if (selectedValue == '') {
+      loadErrorNotify('Font filed is required!');
+      return;
+
+    } else if (color == '') {
+      loadErrorNotify('Color filed is required!');
+      return;
+
+    }
     //---- get add to cart buttom engrave json ----
     var myElement = document.getElementById("addToCartBtn");
     var eng_data = JSON.parse(myElement.getAttribute("data-engrave"));
@@ -1491,12 +1510,82 @@ if ($products->is_quick == 1) {
       eng_data[index].Color = color;
       myElement.setAttribute("data-engrave", JSON.stringify(eng_data));
     }
-    html = "<div class='row m-0 justify-content-between'><span><b>" + newTextValue + "</b></span><a href='#' style='color:red'>Remove</a></div>"
+    // var buttonElement = document.getElementById('en_div_btn_' + id);
+    var buttonElement = $('#en_div_' + id).html();
+    html = "<div class='row m-0 justify-content-between'><span><b>" + newTextValue + "</b></span><a href='javascript:void(0)' id='remove_" + id + "' onclick='reset_engrave(" + id + ")' style='color:red'>Reset</a></div>"
     $("#en_div_" + id).html(html);
-    $('#engraveModal').modal('hide');
-
+    $("#en_div_btn_" + id).hide();
+    $("#en_div_" + id).show();
+    var $j = jQuery.noConflict();
+    $j('#engraveModal').modal('hide');
   });
 
+  function reset_engrave(id) {
+    //---- get add to cart buttom engrave json ----
+    var myElement = document.getElementById("addToCartBtn");
+    var eng_data = JSON.parse(myElement.getAttribute("data-engrave"));
+    var index = eng_data.findIndex(function(element) {
+      return element.id == id;
+    });
+    //---- update add to cart buttom engrave json ----
+    if (index !== -1) {
+      eng_data[index].Text = null;
+      eng_data[index].Font = null;
+      eng_data[index].Color = null;
+      myElement.setAttribute("data-engrave", JSON.stringify(eng_data));
+    }
+    $("#en_div_" + id).html('');
+    $("#en_div_" + id).hide('');
+    setTimeout(() => {
+      $("#en_div_btn_" + id).show();
+    }, 500);
+  }
+  //------------- START SaveStone -------------------------
+  function SaveStone(obj) {
+    var myElement = document.getElementById("addToCartBtn");
+    var ProductId = obj.getAttribute('data-pro-id');
+    var ring_size = obj.getAttribute('data-ring_size');
+    var ring_price = obj.getAttribute('data-ring_price');
+    var gem_data = obj.getAttribute('data-gem-data');
+    var price = obj.getAttribute('data-price');
+    var img = obj.getAttribute('data-img');
+    myElement.setAttribute("data-pro-id", ProductId);
+    myElement.setAttribute("data-ring_size", ring_size);
+    myElement.setAttribute("data-ring_price", ring_price);
+    myElement.setAttribute("data-gem-data", gem_data);
+    myElement.setAttribute("data-price", price);
+    myElement.setAttribute("data-img", img);
+    var gem_arr = JSON.parse(gem_data);
+    var gem_arr = gem_arr[0]
+    if (gem_arr.Product) {
+      var item = gem_arr.Product;
+    } else if (gem_arr.Diamond) {
+      var item = gem_arr.Diamond;
+    } else if (gem_arr.GemStone) {
+      var item = gem_arr.GemStone;
+    } else if (gem_arr.LabGrownDiamond) {
+      var item = gem_arr.LabGrownDiamond;
+    }
+    html = "<div class='row m-0 justify-content-between'><span><b>" + item.SKU + "</b></span><a href='javascript:void(0)' id='gem_remove' onclick='ResetGems()' style='color:red'>Reset</a></div>"
+    $("#gem_div").html(html);
+    $("#gem_btn").hide();
+    setTimeout(() => {
+      $("#gem_div").show();
+      $("#myModalBtn").trigger("click");
+    }, 500);
+    ResetStone()
+  }
+  //------------- END SaveStone -------------------------
+  function ResetGems() {
+    //---- get add to cart buttom engrave json ----
+    var myElement = document.getElementById("addToCartBtn");
+    myElement.setAttribute("data-gem-data", '');
+    myElement.setAttribute("data-price", '');
+    myElement.setAttribute("data-img", '');
+    $("#gem_div").html('');
+    $("#gem_div").hide('');
+    $("#gem_btn").show();
+  }
   //----------- ENGRAVE MODAL -------------
 
   function stonesListBtn() {
@@ -1758,6 +1847,7 @@ if ($products->is_quick == 1) {
         is_serialized: is_serialized,
         RingSize: RingSize,
         sideName: sideName,
+        engrave: 1,
       },
       dataType: 'json',
       success: function(response) {
