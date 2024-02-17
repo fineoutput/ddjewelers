@@ -8246,4 +8246,26 @@ class Home extends CI_Controller
             }
         }
     }
+    public function reset_cron_job()
+    {
+        $cron_data = $this->db->get_where('tbl_cron_jobs', array())->result();
+        foreach ($cron_data as $cron) {
+            $del_cart = $this->db->delete('tbl_cron_jobs', array('is_quick' => $cron->is_quick, 'cat_id' => $cron->cat_id, 'subcat_id' => $cron->subcat_id, 'mincat_id1' => $cron->mincat_id1, 'mincat_id2' => $cron->mincat_id2,));
+            $ip = $this->input->ip_address();
+            date_default_timezone_set("Asia/Calcutta");
+            $cur_date = date("Y-m-d H:i:s");
+            $data_insert = array(
+                'is_quick' => $cron->is_quick,
+                'cat_id' => $cron->cat_id,
+                'subcat_id' => $cron->subcat_id,
+                'mincat_id1' => $cron->mincat_id1,
+                'mincat_id2' => $cron->mincat_id2,
+                'ip' => $ip,
+                'status' => 0,
+                'date' => $cur_date
+            );
+            $last_id = $this->base_model->insert_table("tbl_cron_jobs", $data_insert, 1);
+        }
+        echo "Done";
+    }
 }
