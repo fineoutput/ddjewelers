@@ -1235,7 +1235,8 @@ class Products extends CI_finecontrol
                 curl_close($curl);
                 $res = json_decode($response);
                 //------- end configure product curl-------
-                // echo json_encode(['status' => 200, 'data' => '', 'html' => '', 'test' => json_encode('{"ProductId":' . $ProductId . ',"Quantity":1,"Stones":' . $final_arr . ',"RingSize":' . $RingSize . '}')]);
+                // echo $response;
+                // echo json_encode(['status' => 200, 'data' => '',]);
                 // return;
 
                 //------- Start creating final html response -------
@@ -1258,9 +1259,42 @@ class Products extends CI_finecontrol
                 // foreach ($res->Stones as $st) {
                 //     $stone_price += ($st->TotalShowcasePrice->Value + $st->ShowcaseLabor->Value);
                 // }
+                //-------- calculate gems stone price --------
+                $stonePrice = 0;
+                foreach ($res->Stones as $st_data) {
+                    $stonePrice += $st_data->Product->ShowcasePrice->Value;
+                }
+                $pr_data = $this->db->get_where('tbl_price_rule2', array())->row();
+                $multiplier = $pr_data->multiplier;
+                $cost_price = $stonePrice;
+                $stone_final_price = $cost_price;
+                if ($cost_price <= 500) {
+                    $cost_price2 = $cost_price * $cost_price;
+                    $number = round($cost_price * ($pr_data->cost_price1 * $cost_price2 + $pr_data->cost_price2 * $cost_price + $pr_data->cost_price3), 2);
+                    $unit = 5;
+                    $remainder = $number % $unit;
+                    $mround = ($remainder < $unit / 2) ? $number - $remainder : $number + ($unit - $remainder);
+                    $stone_final_price = round($mround) - 1 + 0.95;
+                } else if ($cost_price > 500) {
+                    $number = round($cost_price * ($pr_data->cost_price4 * $cost_price / $multiplier + $pr_data->cost_price5));
+                    $unit = 5;
+                    $remainder = $number % $unit;
+                    $mround = ($remainder < $unit / 2) ? $number - $remainder : $number + ($unit - $remainder);
+                    $stone_final_price = round($mround) - 1 + 0.95;
+                }
+              
+                //===== update stone price in final price =====
+                $pro_final_price = ($res->TotalShowcasePrice->Value - $stonePrice) + $stone_final_price;
+                //   echo $res->TotalShowcasePrice->Value;
+                //   echo "br";
+                //   echo $pro_final_price;
+
+                // echo json_encode(['status' => 200, 'data' => '',]);
+                // return;
                 $pr_data = $this->db->get_where('tbl_price_rule', array())->row();
                 $multiplier = $pr_data->multiplier;
-                $cost_price = $res->TotalShowcasePrice->Value;
+                // $cost_price = $res->TotalShowcasePrice->Value;
+                $cost_price = $pro_final_price;
                 $retail =  round($cost_price * $multiplier, 2);
                 $final_price = $cost_price;
                 if ($cost_price <= 500) {
