@@ -196,7 +196,7 @@
                                 </tr>
                                 <tr>
                                     <th style="text-align: start;">Total:</th>
-                                    <th><span style="color: rgb(145, 37, 37); "><?= '$' . $order1_data->final_amount; ?></span>
+                                    <th><span><?= '$' . $order1_data->final_amount; ?></span>
                                     </th>
                                 </tr>
                             </table>
@@ -214,29 +214,31 @@
                 <div class="row" style="  display: flex;
         align-items: center;">
                     <div class="col-lg-4 width" style="width:45%">
-                        <p class="text-uppercase mt-3 ">Shipping Information</p>
+                        <p class="text-uppercase mt-3" style="font-size: 21px;">Shipping Information</p>
                         <p style="color:#343a40;"><b>Shipping Address</b></p>
-                        <div>
-                            <p>Name :<?= $name ?></p>
-                            <p>Address : <?= $address1 ?></p>
-                            <p>Address 2 : <?= $address2 ?></p>
-                            <p> City : <?= $city ?></p>
-                            <p> Zipcode : <?= $zipcode ?></p>
-                            <p> State : <?= $state ?></p>
-                            <p> Country : <?= $country ?></p>
-                        </div>
+                            <div>
+                            <p style="margin: 5px 0px;">Name :<?= $name ?></p>
+                            <p style="margin: 5px 0px;">Address : <?= $address1 ?></p>
+                            <p style="margin: 5px 0px;">Address 2 : <?= $address2 ?></p>
+                            <p style="margin: 5px 0px;"> City : <?= $city ?></p>
+                            <p style="margin: 5px 0px;"> Zipcode : <?= $zipcode ?></p>
+                            <p style="margin: 5px 0px;"> State : <?= $state ?></p>
+                            <p style="margin: 5px 0px;"> Country : <?= $country ?></p>
+                            </div>
                     </div>
                     <div class="col-lg-4 width" style="width:45%">
-                        <p class="text-uppercase mt-3 ">Billing Information</p>
+                        <p class="text-uppercase mt-3" style="font-size: 21px;">Billing Information</p>
                         <p style="color:#343a40;"><b>Billing Address</b></p>
-                        <p>Name :<?= $name ?></p>
-                        <p>Address : <?= $address1 ?></p>
-                        <p>Address 2 : <?= $address2 ?></p>
-                        <p> City : <?= $city ?></p>
-                        <p> Zipcode : <?= $zipcode ?></p>
-                        <p> State : <?= $state ?></p>
-                        <p> Country : <?= $country ?></p>
-                    </div>
+                        <div>
+                        <p style="margin: 5px 0px;">Name :<?= $name ?></p>
+                        <p style="margin: 5px 0px;">Address : <?= $address1 ?></p>
+                        <p style="margin: 5px 0px;">Address 2 : <?= $address2 ?></p>
+                        <p style="margin: 5px 0px;"> City : <?= $city ?></p>
+                        <p style="margin: 5px 0px;"> Zipcode : <?= $zipcode ?></p>
+                        <p style="margin: 5px 0px;"> State : <?= $state ?></p>
+                        <p style="margin: 5px 0px;"> Country : <?= $country ?></p>
+                        </div> 
+                    </div> 
                 </div>
             </div>
         </section>
