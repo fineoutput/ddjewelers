@@ -523,7 +523,7 @@ class Cart extends CI_Controller
 		} else if (!empty($prod->LabGrownDiamond)) {
 			$pro_price = $prod->LabGrownDiamond[0]->Price->Value;
 		}
-		$pr_data = $this->db->get_where('tbl_price_rule', array())->row();
+		$pr_data = $this->db->get_where('tbl_price_rule', array('name'=>'Product'))->row();
 		$data['sizePrice'] = $sizePrice;
 		$multiplier = $pr_data->multiplier;
 		$cost_price = $pro_price + $sizePrice;

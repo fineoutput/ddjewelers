@@ -309,7 +309,7 @@ class Products extends CI_finecontrol
                 $delete = $this->db->delete('tbl_products', array('category_id' => $category_id));
             }
         }
-        $minimum_cost = $this->db->get_where('tbl_minimum_cost', array())->row();
+        $minimum_cost = $this->db->get_where('tbl_minimum_cost', array('name'=>'Product'))->row();
         if ($finished) {
             $filter = json_encode(["Orderable", "OnPriceList", "Finished"]);
         } else {
@@ -1291,7 +1291,7 @@ class Products extends CI_finecontrol
 
                 // echo json_encode(['status' => 200, 'data' => '',]);
                 // return;
-                $pr_data = $this->db->get_where('tbl_price_rule', array())->row();
+                $pr_data = $this->db->get_where('tbl_price_rule', array('name'=>'Product'))->row();
                 $multiplier = $pr_data->multiplier;
                 // $cost_price = $res->TotalShowcasePrice->Value;
                 $cost_price = $pro_final_price;

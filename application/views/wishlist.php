@@ -78,7 +78,7 @@
               <div class="col-md-3 text-right d-flex justify-content-between  " >
               <p class="d-none d-none-1 mb-0  ">  <strong>EST. PRICE : </strong></p>
                 <?php
-                $pr_data = $this->db->get_where('tbl_price_rule', array())->row();
+                $pr_data = $this->db->get_where('tbl_price_rule', array('name'=>'Product'))->row();
                 $multiplier = $pr_data->multiplier;
                 $cost_price = $pro_data->price;
                 $retail = $cost_price * $multiplier;

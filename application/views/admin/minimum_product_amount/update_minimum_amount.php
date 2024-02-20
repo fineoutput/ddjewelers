@@ -1,72 +1,71 @@
 <div class="content-wrapper">
-<section class="content-header">
-<h1>
-Update Min. Item Cost (<=)
-</h1>
-<ol class="breadcrumb">
-<li><a href="<?php echo base_url() ?>dcadmin/Home"><i class="fa fa-dashboard"></i> Dashboard</a></li>
-<!-- <li><a href="<?php echo base_url() ?>admin/college"><i class="fa fa-dashboard"></i> All Team </a></li> -->
+	<section class="content-header">
+		<h1>
+			Update <?= $cost_data->name ?> Min. Item Cost (<=) </h1>
+				<ol class="breadcrumb">
+					<li><a href="<?php echo base_url() ?>dcadmin/Home"><i class="fa fa-dashboard"></i> Dashboard</a> </li>
+					<!-- <li><a href="<?php echo base_url() ?>admin/college"><i class="fa fa-dashboard"></i> All Team </a></li> -->
 
-</ol>
-</section>
-<section class="content">
-<div class="row">
-<div class="col-lg-12">
+				</ol>
+	</section>
+	<section class="content">
+		<div class="row">
+			<div class="col-lg-12">
 
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title"><i class="fa fa-money fa-fw"></i> Update Min. Item Cost (<=)</h3>
-                </div>
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<h3 class="panel-title"><i class="fa fa-money fa-fw"></i> Update <?= $cost_data->name ?> Min. Item Cost (<=) </h3>
+					</div>
 
-                			  <? if(!empty($this->session->flashdata('smessage'))){ ?>
-                			        <div class="alert alert-success alert-dismissible">
-                			    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                			    <h4><i class="icon fa fa-check"></i> Alert!</h4>
-                			  <? echo $this->session->flashdata('smessage'); ?>
-                			  </div>
-                			    <? }
-                			     if(!empty($this->session->flashdata('emessage'))){ ?>
-                			     <div class="alert alert-danger alert-dismissible">
-                			  <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                			  <h4><i class="icon fa fa-ban"></i> Alert!</h4>
-                			<? echo $this->session->flashdata('emessage'); ?>
-                			</div>
-                			  <? } ?>
-
-
-                <div class="panel-body">
-                    <div class="col-lg-10">
-                       <form action="<?php echo base_url() ?>dcadmin/Minimum_product_amount/update_amount/<? echo base64_encode(2); ?>/<?=$id?>" method="POST" id="slide_frm" enctype="multipart/form-data">
-                    <div class="table-responsive">
-                        <table class="table table-hover">
-
-					<tr>
-                                    <td> <strong>Min. Item Cost (<=)</strong> <span style="color:red;">*</span></strong> </td>
-                                    <td>
-							<input type="text" min=0 onkeydown="if(event.key==='.'){event.preventDefault();}"  oninput="event.target.value = event.target.value.replace(/[^0-9]*/g,'');" name="cost"  class="form-control" placeholder="" required value="<?=$cost_data->cost;?>" />
-                                  </td>
-						</tr>
-            	<tr>
-								<td colspan="2" >
-									<input type="submit" class="btn btn-success" value="save">
-								</td>
-							</tr>
-                            </table>
-                        </div>
-
-                     </form>
-
-                        </div>
+					<? if (!empty($this->session->flashdata('smessage'))) { ?>
+						<div class="alert alert-success alert-dismissible">
+							<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+							<h4><i class="icon fa fa-check"></i> Alert!</h4>
+							<? echo $this->session->flashdata('smessage'); ?>
+						</div>
+					<? }
+					if (!empty($this->session->flashdata('emessage'))) { ?>
+						<div class="alert alert-danger alert-dismissible">
+							<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+							<h4><i class="icon fa fa-ban"></i> Alert!</h4>
+							<? echo $this->session->flashdata('emessage'); ?>
+						</div>
+					<? } ?>
 
 
+					<div class="panel-body">
+						<div class="col-lg-10">
+							<form action="<?php echo base_url() ?>dcadmin/Minimum_product_amount/update_amount/<? echo base64_encode(2); ?>/<?= $id ?>" method="POST" id="slide_frm" enctype="multipart/form-data">
+								<div class="table-responsive">
+									<table class="table table-hover">
 
-                    </div>
+										<tr>
+											<td> <strong>Min. Item Cost (<=) </strong> <span style="color:red;">*</span></strong> </td>
+											<td>
+												<input type="text" min=0 onkeydown="if(event.key==='.'){event.preventDefault();}" oninput="event.target.value = event.target.value.replace(/[^0-9]*/g,'');" name="cost" class="form-control" placeholder="" required value="<?= $cost_data->cost; ?>" />
+											</td>
+										</tr>
+										<tr>
+											<td colspan="2">
+												<input type="submit" class="btn btn-success" value="save">
+											</td>
+										</tr>
+									</table>
+								</div>
 
-                </div>
+							</form>
 
-            </div>
-            </div>
-</section>
+						</div>
+
+
+
+					</div>
+
+				</div>
+
+			</div>
+		</div>
+	</section>
 </div>
 
 

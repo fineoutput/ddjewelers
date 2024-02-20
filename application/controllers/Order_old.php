@@ -61,6 +61,7 @@ class Order extends CI_Controller
                             $sku = $pro_da->sku;
                             $this->db->select('*');
                             $this->db->from('tbl_price_rule');
+                            $this->db->where('name','Product');
                             $pr_data = $this->db->get()->row();
                             $multiplier = $pr_data->multiplier;
                             $cost_price11 = $pr_data->cost_price1;
@@ -174,6 +175,7 @@ class Order extends CI_Controller
                                     $sku = $pro_da->sku;
                                     $this->db->select('*');
                                     $this->db->from('tbl_price_rule');
+                                    $this->db->where('name','Product');
                                     $pr_data = $this->db->get()->row();
                                     $multiplier = $pr_data->multiplier;
                                     $cost_price11 = $pr_data->cost_price1;
@@ -275,6 +277,7 @@ class Order extends CI_Controller
                                         $sku = $pro_da->sku;
                                         $this->db->select('*');
                                         $this->db->from('tbl_price_rule');
+                                        $this->db->where('name','Product');
                                         $pr_data = $this->db->get()->row();
                                         $multiplier = $pr_data->multiplier;
                                         $cost_price11 = $pr_data->cost_price1;

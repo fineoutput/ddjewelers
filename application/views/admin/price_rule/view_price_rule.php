@@ -37,16 +37,13 @@
                   <thead>
                     <tr>
                       <th>#</th>
-
+                      <th>Name</th>
                       <th>Retail Multiplier</th>
                       <th>Tier1- Variable(a)</th>
                       <th>Tier1- Variable(b)</th>
                       <th>Tier1- Variable(c)</th>
                       <th>Tier2- Variable(m)</th>
                       <th>Tier2- Variable(b)</th>
-
-
-
                       <!-- <th>Status</th> -->
                       <th>Action</th>
                     </tr>
@@ -56,45 +53,19 @@
                     foreach ($price_rule_data->result() as $data) { ?>
                       <tr>
                         <td><?php echo $i ?> </td>
-
+                        <td><?php echo $data->name ?></td>
                         <td><?php echo $data->multiplier ?></td>
                         <td><?php echo $data->cost_price1 ?></td>
                         <td><?php echo $data->cost_price2 ?></td>
                         <td><?php echo $data->cost_price3 ?></td>
                         <td><?php echo $data->cost_price4 ?></td>
                         <td><?php echo $data->cost_price5 ?></td>
-
-
-
-
-
-                        <!-- <td><?php if ($data->is_active == 1) { ?>
-        <p class="label bg-green" >Active</p>
-
-        <?php } else { ?>
-        <p class="label bg-yellow" >Inactive</p>
-
-
-        <?php } ?>
-        </td> -->
                         <td>
                           <div class="btn-group" id="btns<?php echo $i ?>">
                             <div class="btn-group">
-                              <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                                Action <span class="caret"></span></button>
-                              <ul class="dropdown-menu" role="menu">
-
-                                <!-- <?php if ($data->is_active == 1) { ?>
-        <li><a href="<?php echo base_url() ?>dcadmin/price_rule/updateprice_ruleStatus/<?php echo
-                                                                                        base64_encode($data->id) ?>/inactive">Inactive</a></li>
-        <?php } else { ?>
-        <li><a href="<?php echo base_url() ?>dcadmin/price_rule/updateprice_ruleStatus/<?php echo
-                                                                                        base64_encode($data->id) ?>/active">Active</a></li>
-        <?php } ?> -->
-                                <li><a href="<?php echo base_url() ?>dcadmin/price_rule/update_price_rule/<?php echo
-                                                                                                          base64_encode($data->id) ?>">Edit</a></li>
-                                <!-- <li><a href="javascript:;" class="dCnf" mydata="<?php echo $i ?>">Delete</a></li> -->
-                              </ul>
+                              <a href="<?php echo base_url() ?>dcadmin/price_rule/update_price_rule/<?php echo
+                                                                                                    base64_encode($data->id) ?>"><button type="button" class="btn btn-default">
+                                  Edit</button></a>
                             </div>
                           </div>
 

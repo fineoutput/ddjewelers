@@ -216,7 +216,7 @@ class QuickshopProducts extends CI_finecontrol
     $finished = $received['finished'];
     //------ Deleting existing data -----------
     $delete = $this->db->delete('tbl_products', array('category_id' => $category_id, 'subcategory_id' => $subcategory_id, 'minor_category_id' => $minor_category_id, 'minor2_category_id' => $minor2_category_id, 'is_quick' => 1));
-    $minimum_cost = $this->db->get_where('tbl_minimum_cost', array())->row();
+    $minimum_cost = $this->db->get_where('tbl_minimum_cost', array('name'=>'Product'))->row();
     if ($finished) {
       $filter = json_encode(["Orderable", "OnPriceList", "Finished"]);
     } else {

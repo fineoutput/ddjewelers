@@ -1232,7 +1232,7 @@ class Home extends CI_Controller
         $prod = json_decode($response);
         //----- END GET PRODUCT LATEST PRICE ------
         $pro_price = $prod->Products[0]->Price->Value;
-        $pr_data = $this->db->get_where('tbl_price_rule', array())->row();
+        $pr_data = $this->db->get_where('tbl_price_rule', array('name'=>'Product'))->row();
         $data['sizePrice'] = $sizePrice;
         $multiplier = $pr_data->multiplier;
         $cost_price = $pro_price + $sizePrice;
@@ -1395,7 +1395,7 @@ class Home extends CI_Controller
                     $prod = json_decode($response);
                     //----- END GET PRODUCT LATEST PRICE ------
                     $pro_price = $prod->Products[0]->Price->Value;
-                    $pr_data = $this->db->get_where('tbl_price_rule', array())->row();
+                    $pr_data = $this->db->get_where('tbl_price_rule', array('name'=>'Product'))->row();
                     $multiplier = $pr_data->multiplier;
                     $cost_price = $pro_price + $price;
                     $retail = $cost_price * $multiplier;
@@ -3493,6 +3493,7 @@ class Home extends CI_Controller
                     }
                     $this->db->select('*');
                     $this->db->from('tbl_price_rule');
+                    $this->db->where('name','Product');
                     $pr_data = $this->db->get()->row();
                     $multiplier = $pr_data->multiplier;
                     $cost_price11 = $pr_data->cost_price1;
@@ -3811,6 +3812,7 @@ class Home extends CI_Controller
                         }
                         $this->db->select('*');
                         $this->db->from('tbl_price_rule');
+                        $this->db->where('name','Product');
                         $pr_data = $this->db->get()->row();
                         $multiplier = $pr_data->multiplier;
                         $cost_price11 = $pr_data->cost_price1;
@@ -4162,6 +4164,7 @@ class Home extends CI_Controller
                         }
                         $this->db->select('*');
                         $this->db->from('tbl_price_rule');
+                        $this->db->where('name','Product');
                         $pr_data = $this->db->get()->row();
                         $multiplier = $pr_data->multiplier;
                         $cost_price11 = $pr_data->cost_price1;
@@ -4673,6 +4676,7 @@ class Home extends CI_Controller
                     }
                     $this->db->select('*');
                     $this->db->from('tbl_price_rule');
+                    $this->db->where('name','Product');
                     $pr_data = $this->db->get()->row();
                     $multiplier = $pr_data->multiplier;
                     $cost_price11 = $pr_data->cost_price1;
@@ -4991,6 +4995,7 @@ class Home extends CI_Controller
                         }
                         $this->db->select('*');
                         $this->db->from('tbl_price_rule');
+                        $this->db->where('name','Product');
                         $pr_data = $this->db->get()->row();
                         $multiplier = $pr_data->multiplier;
                         $cost_price11 = $pr_data->cost_price1;
@@ -5342,6 +5347,7 @@ class Home extends CI_Controller
                         }
                         $this->db->select('*');
                         $this->db->from('tbl_price_rule');
+                        $this->db->where('name','Product');
                         $pr_data = $this->db->get()->row();
                         $multiplier = $pr_data->multiplier;
                         $cost_price11 = $pr_data->cost_price1;
@@ -7779,6 +7785,7 @@ class Home extends CI_Controller
                 if (!empty($pro_data)) {
                     $this->db->select('*');
                     $this->db->from('tbl_price_rule');
+                    $this->db->where('name','Product');
                     $pr_data = $this->db->get()->row();
                     $multiplier = $pr_data->multiplier;
                     $cost_price11 = $pr_data->cost_price1;

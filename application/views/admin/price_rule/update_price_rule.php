@@ -1,7 +1,7 @@
 <div class="content-wrapper">
   <section class="content-header">
-    <h1>
-      Update Price Rule
+  <h1>
+      Update <?= $price_rule_data->name ?> Price Rule
     </h1>
 
   </section>
@@ -11,7 +11,7 @@
 
         <div class="panel panel-default">
           <div class="panel-heading">
-            <h3 class="panel-title"><i class="fa fa-money fa-fw"></i> Update Price Rule </h3>
+          <h3 class="panel-title"><i class="fa fa-money fa-fw"></i> Update <?= $price_rule_data->name ?> Price Rule </h3>
           </div>
 
           <?php if (!empty($this->session->flashdata('smessage'))) {  ?>

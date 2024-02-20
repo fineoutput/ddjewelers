@@ -275,6 +275,7 @@
                     <? if (!empty($data->price)) {
                       $this->db->select('*');
                       $this->db->from('tbl_price_rule');
+                      $this->db->where('name','Product');
                       $pr_data = $this->db->get()->row();
                       $multiplier = $pr_data->multiplier;
                       $cost_price11 = $pr_data->cost_price1;
