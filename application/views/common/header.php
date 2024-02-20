@@ -42,15 +42,17 @@
     width: 100%;
     display: block;
   }
+
+  .container.mt-3 .col-md-12.row.mt-5.p-0 .col-md-3.col-xl-3.col-xxl-3 .d-flex.justify-content-between.p-2.pb-4 a button.btn.d-flex {
+    font-size: 14px !important;
+    /* padding: 5px; */
+    width: 100%;
+}
   .d-flex.justify-content-between.p-2.pb-4 {
     padding-left: 0px !important;
 }
 
-  .container.mt-3 .col-md-12.row.mt-5.p-0 .col-md-3.col-xl-3.col-xxl-3 .d-flex.justify-content-between.p-2.pb-4 a button.btn.d-flex {
-    font-size: 20px !important;
-    padding:7px;
-   
-}
+ 
 	@media (min-width: 1268px) and (max-width:2560px) {
     button#view {
       width: 65% !important;
