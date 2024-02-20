@@ -309,7 +309,7 @@ class Products extends CI_finecontrol
                 $delete = $this->db->delete('tbl_products', array('category_id' => $category_id));
             }
         }
-        $minimum_cost = $this->db->get_where('tbl_minimum_cost', array('name'=>'Product'))->row();
+        $minimum_cost = $this->db->get_where('tbl_minimum_cost', array('name' => 'Product'))->row();
         if ($finished) {
             $filter = json_encode(["Orderable", "OnPriceList", "Finished"]);
         } else {
@@ -1262,7 +1262,15 @@ class Products extends CI_finecontrol
                 //-------- calculate gems stone price --------
                 $stonePrice = 0;
                 foreach ($res->Stones as $st_data) {
-                    $stonePrice += $st_data->Product->ShowcasePrice->Value;
+                    if (!empty($st_data->Product)) {
+                        $stonePrice += $st_data->Product->ShowcasePrice->Value;
+                    } else if (!empty($st_data->Diamond)) {
+                        $stonePrice += $st_data->Diamond->ShowcasePrice->Value;
+                    } else if (!empty($st_data->GemStone)) {
+                        $stonePrice += $st_data->GemStone->ShowcasePrice->Value;
+                    } else if (!empty($st_data->LabGrownDiamond)) {
+                        $stonePrice += $st_data->LabGrownDiamond->ShowcasePrice->Value;
+                    }
                 }
                 $pr_data = $this->db->get_where('tbl_price_rule2', array())->row();
                 $multiplier = $pr_data->multiplier;
@@ -1282,7 +1290,7 @@ class Products extends CI_finecontrol
                     $mround = ($remainder < $unit / 2) ? $number - $remainder : $number + ($unit - $remainder);
                     $stone_final_price = round($mround) - 1 + 0.95;
                 }
-              
+
                 //===== update stone price in final price =====
                 $pro_final_price = ($res->TotalShowcasePrice->Value - $stonePrice) + $stone_final_price;
                 //   echo $res->TotalShowcasePrice->Value;
@@ -1291,7 +1299,7 @@ class Products extends CI_finecontrol
 
                 // echo json_encode(['status' => 200, 'data' => '',]);
                 // return;
-                $pr_data = $this->db->get_where('tbl_price_rule', array('name'=>'Product'))->row();
+                $pr_data = $this->db->get_where('tbl_price_rule', array('name' => 'Product'))->row();
                 $multiplier = $pr_data->multiplier;
                 // $cost_price = $res->TotalShowcasePrice->Value;
                 $cost_price = $pro_final_price;
