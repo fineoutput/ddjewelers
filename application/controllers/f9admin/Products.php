@@ -471,6 +471,10 @@ class Products extends CI_finecontrol
             return str_replace(['\/', '/',], '', $item);
         }, $inputArray);
         $search_value = json_encode($cleanedArray);
+        $jewelryState = $this->extractValue($prod->DescriptiveElementGroup->DescriptiveElements, 'Jewelry State');
+        $stoneShape = $this->extractValue($prod->DescriptiveElementGroup->DescriptiveElements, 'Primary Stone Shape');
+        $stoneSize = $this->extractValue($prod->DescriptiveElementGroup->DescriptiveElements, 'Primary Stone Size');
+        $stoneType = $this->extractValue($prod->DescriptiveElementGroup->DescriptiveElements, 'Primary Stone Type');
         $response = array(
             'category_id' => $receive['category_id'],
             'subcategory_id' => $receive['subcategory_id'],
@@ -508,9 +512,22 @@ class Products extends CI_finecontrol
             'weight' => !empty($prod->GramWeight) ? $prod->GramWeight : '',
             'search_values' => $search_value,
             'videos' => !empty($prod->Videos) ? json_encode($prod->Videos) : '',
+            'jewelry_state' => $jewelryState,
+            'stone_shape' => $stoneShape,
+            'stone_size' => $stoneSize,
+            'stone_type' => $stoneType,
             'date' => $cur_date,
         );
         return $response;
+    }
+    private function extractValue($dataArray, $attributeName)
+    {
+        foreach ($dataArray as $element) {
+            if ($element->Name == $attributeName) {
+                return $element->Value;
+            }
+        }
+        return null; // Handle case when attribute is not found
     }
     //============================= END CREATE OBJECT ==========================
     //============================= START PRODUCT CRON JOB ==========================
