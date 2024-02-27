@@ -875,7 +875,6 @@ class Products extends CI_finecontrol
                         'Host: api.stuller.com',
                     ),
                 ));
-
                 $response = curl_exec($curl);
                 curl_close($curl);
                 $res = json_decode($response);
@@ -1284,16 +1283,10 @@ class Products extends CI_finecontrol
                 // }
                 //-------- calculate gems stone price --------
                 $stonePrice = 0;
+                $stoneLabor = 0;
                 foreach ($res->Stones as $st_data) {
-                    if (!empty($st_data->Product)) {
-                        $stonePrice += $st_data->Product->ShowcasePrice->Value;
-                    } else if (!empty($st_data->Diamond)) {
-                        $stonePrice += $st_data->Diamond->ShowcasePrice->Value;
-                    } else if (!empty($st_data->GemStone)) {
-                        $stonePrice += $st_data->GemStone->ShowcasePrice->Value;
-                    } else if (!empty($st_data->LabGrownDiamond)) {
-                        $stonePrice += $st_data->LabGrownDiamond->ShowcasePrice->Value;
-                    }
+                    $stonePrice += $st_data->TotalShowcasePrice->Value;
+                    $stoneLabor += $st_data->ShowcaseLabor->Value;
                 }
                 $pr_data = $this->db->get_where('tbl_price_rule2', array())->row();
                 $multiplier = $pr_data->multiplier;
@@ -1313,7 +1306,10 @@ class Products extends CI_finecontrol
                     $mround = ($remainder < $unit / 2) ? $number - $remainder : $number + ($unit - $remainder);
                     $stone_final_price = round($mround) - 1 + 0.95;
                 }
-
+                // $check=['Stone Price'=>number_format($stonePrice,5),'Labor Price'=>number_format($stoneLabor,5),'Mounting Price'=>$res->Product->ShowcasePrice->Value,'Ring Size Price'=>$res->RingSizingShowcasePrice->Value,'Polish Price'=>$res->PolishingShowcasePrice->Value,'Total'=>number_format($res->Product->ShowcasePrice->Value + $res->RingSizingShowcasePrice->Value + $res->PolishingShowcasePrice->Value+$stonePrice+$stoneLabor,5),'Api Showcase Price'=>$res->TotalShowcasePrice->Value];
+                // echo json_encode($check);
+                // echo json_encode(['status' => 200, 'data' => '',]);
+                // return;
                 //===== update stone price in final price =====
                 $pro_final_price = ($res->TotalShowcasePrice->Value - $stonePrice) + $stone_final_price;
                 //   echo $res->TotalShowcasePrice->Value;

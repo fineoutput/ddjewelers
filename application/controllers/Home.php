@@ -920,8 +920,10 @@ class Home extends CI_Controller
         $this->load->view('product_detail');
         $this->load->view('common/footer');
     }
+
     public function all_products($idd, $t, $page_index = "1")
     {
+
         $this->load->helper('form');
         $type = base64_decode($t);
         $config['base_url'] = base_url() . 'Home/all_products/' . $idd . '/' . $t;
@@ -950,7 +952,9 @@ class Home extends CI_Controller
 
 
         if ($type == 2) { //---- minor2 category
+            $column = 'minor2_category_id';
             $data['productCount'] = $this->db->select('id')->group_by(array("series_id"))->get_where('tbl_products', array('minor2_category_id ' => $idd, 'is_quick' => null))->num_rows();
+
             //--------- pagination config ----------------------
             $total_rows = $data['productCount'];
             // Calculate the total number of pages
@@ -995,6 +999,7 @@ class Home extends CI_Controller
             $data['banner'] = $mini2_data->banner;
             $data['heading'] = $mini2_data->name;
         } else if ($type == 1) { //---- minor category
+            $column = 'minor_category_id';
             $data['productCount'] = $this->db->select('id')->group_by(array("series_id"))->get_where('tbl_products', array('minor_category_id' => $idd, 'is_quick' => null))->num_rows();
             //--------- pagination config ----------------------
             $total_rows = $data['productCount'];
@@ -1039,6 +1044,7 @@ class Home extends CI_Controller
             $data['banner'] = $mini_data->banner;
             $data['heading'] = $mini_data->name;
         } else if ($type == 3) { //---- category
+            $column = 'category_id';
             $data['productCount'] = $this->db->select('id')->group_by(array("series_id"))->get_where('tbl_products', array('category_id' => $idd, 'is_quick' => null))->num_rows();
             //--------- pagination config ----------------------
             $total_rows = $data['productCount'];
@@ -1081,7 +1087,48 @@ class Home extends CI_Controller
             $data['banner'] = $cat_data->banner;
             $data['heading'] = $cat_data->name;
         } else { //---- subactegory
-            $data['productCount'] = $this->db->select('id')->group_by(array("series_id"))->get_where('tbl_products', array('subcategory_id' => $idd, 'is_quick' => null))->num_rows();
+            $jewelry_stateFilters = isset($_GET['jewelry_state']) ? $_GET['jewelry_state'] : array();
+            $stone_shapeFilters = isset($_GET['stone_shape']) ? $_GET['stone_shape'] : array();
+            $stone_sizeFilters = isset($_GET['stone_size']) ? $_GET['stone_size'] : array();
+            $stone_typeFilters = isset($_GET['stone_type']) ? $_GET['stone_type'] : array();
+            // Use the filters to query your database
+            $filterQuery = array();
+            if (!empty($jewelry_stateFilters)) {
+                foreach ($jewelry_stateFilters as $sizeFilter) {
+                    $filterQuery[] = $sizeFilter;
+                }
+            }
+            if (!empty($stone_shapeFilters)) {
+                foreach ($stone_shapeFilters as $sizeFilter) {
+                    $filterQuery[] = $sizeFilter;
+                }
+            }
+            if (!empty($stone_sizeFilters)) {
+                foreach ($stone_sizeFilters as $sizeFilter) {
+                    $filterQuery[] = $sizeFilter;
+                }
+            }
+            if (!empty($stone_typeFilters)) {
+                foreach ($stone_typeFilters as $sizeFilter) {
+                    $filterQuery[] = $sizeFilter;
+                }
+            }
+
+
+            $column = 'subcategory_id';
+
+            // $data['productCount'] = $this->db->select('id')->group_by(array("series_id"))
+            // ->get_where('tbl_products', array('subcategory_id' => $idd, 'is_quick' => null))->num_rows();
+            $this->db->select('id')
+                ->group_by('series_id')
+                ->where('subcategory_id', $idd)
+                ->where('is_quick', null);
+            foreach ($filterQuery as $filter) {
+                $this->db->where("JSON_SEARCH(elements, 'one', '$filter') IS NOT NULL", null, false);
+            }
+
+            $data['productCount'] = $this->db->get('tbl_products')->num_rows();
+
             //--------- pagination config ----------------------
             $total_rows = $data['productCount'];
             // Calculate the total number of pages
@@ -1107,11 +1154,31 @@ class Home extends CI_Controller
                     $page_index = 0;
                     $start = 0;
                 }
-                $data['products_data'] = $this->db->select('full_set_images,images,group_images,series_id,pro_id,group_id,description,price,catalog_values')->limit($config["per_page"], $start)->group_by(array("series_id"))->get_where('tbl_products', array('subcategory_id' => $idd, 'is_quick' => null))->result();
+                // $data['products_data'] = $this->db->select('full_set_images,images,group_images,series_id,pro_id,group_id,description,price,catalog_values')->limit($config["per_page"], $start)->group_by(array("series_id"))->get_where('tbl_products', array_merge(array('subcategory_id' => $idd, 'is_quick' => null)))->result();
+
+                $this->db->select('full_set_images, images, group_images, series_id, pro_id, group_id, description, price, catalog_values')
+                    ->group_by('series_id')
+                    ->where('subcategory_id', $idd)
+                    ->where('is_quick', null);
+
+                foreach ($filterQuery as $filter) {
+                    $this->db->where("JSON_SEARCH(elements, 'one', '$filter') IS NOT NULL", null, false);
+                }
+
+                $data['products_data'] = $this->db->get('tbl_products')->result();
             } else {
                 $page_index = 0;
                 $start = 0;
-                $data['products_data'] = $this->db->select('full_set_images,images,group_images,series_id,pro_id,group_id,description,price,catalog_values')->group_by(array("series_id"))->get_where('tbl_products', array('subcategory_id' => $idd, 'is_quick' => null))->result();
+                $this->db->select('full_set_images, images, group_images, series_id, pro_id, group_id, description, price, catalog_values')
+                    ->group_by('series_id')
+                    ->where('subcategory_id', $idd)
+                    ->where('is_quick', null);
+
+                foreach ($filterQuery as $filter) {
+                    $this->db->where("JSON_SEARCH(elements, 'one', '$filter') IS NOT NULL", null, false);
+                }
+
+                $data['products_data'] = $this->db->get('tbl_products')->result();
             }
 
             $subcat_data = $this->db->get_where('tbl_sub_category', array('is_active' => 1, 'id' => $idd))->row();
@@ -1123,6 +1190,52 @@ class Home extends CI_Controller
             $data['banner'] = $subcat_data->banner;
             $data['heading'] = $subcat_data->name;
         }
+        // Retrieve distinct values for specific keys
+        $filterdata = $this->db->select('elements')->group_by(array("series_id"))->get_where('tbl_products', array($column => $idd, 'is_quick' => null, 'elements IS NOT NULL' => null))->result();
+        $jewelryStatesArray = $stoneSizeArray = $stoneShapeArray = $stoneTypeArray = array();
+
+        foreach ($filterdata as $item) {
+            $jsonElements = json_decode($item->elements, true);
+            foreach ($jsonElements as $element) {
+                switch ($element['Name']) {
+                    case 'Jewelry State':
+                        if ($element['Value'] != 'N/A') {
+                            $jewelryStatesArray[] = $element['Value'];
+                        }
+                        break;
+                    case 'Primary Stone Size':
+                        if ($element['Value'] != 'N/A') {
+                            $stoneSizeArray[] = $element['Value'];
+                        }
+                        break;
+                    case 'Primary Stone Shape':
+                        if ($element['Value'] != 'N/A') {
+                            $stoneShapeArray[] = $element['Value'];
+                        }
+                        break;
+                    case 'Primary Stone Type':
+                        if ($element['Value'] != 'N/A') {
+                            $stoneTypeArray[] = $element['Value'];
+                        }
+                        break;
+                }
+            }
+        }
+
+        // Remove duplicate values & Re-index the arrays
+        $data['jewelry_state'] = array_values(array_unique($jewelryStatesArray));
+        sort($data['jewelry_state']);
+
+        $data['stone_size'] = array_values(array_unique($stoneSizeArray));
+        sort($data['stone_size']);
+
+        $data['stone_shape'] = array_values(array_unique($stoneShapeArray));
+        sort($data['stone_shape']);
+
+        $data['stone_type'] = array_values(array_unique($stoneTypeArray));
+        sort($data['stone_type']);
+        $data['setting_method'] = [];
+
         $data['type'] = $type;
         $links = $this->pagination->create_links();
         $data['sort_type'] = '';
@@ -1169,7 +1282,7 @@ class Home extends CI_Controller
                 $existingValues = array_column($options[$key], 'DisplayValue');
                 if (!in_array($value, $existingValues)) {
                     // if ($value == $data['products']) {
-                    if (isset($DescriptiveElements[$index]) && isset($DescriptiveElements[$index]->Name) &&$DescriptiveElements[$index]->Name == $key && $DescriptiveElements[$index]->DisplayValue == $value) {
+                    if (isset($DescriptiveElements[$index]) && isset($DescriptiveElements[$index]->Name) && $DescriptiveElements[$index]->Name == $key && $DescriptiveElements[$index]->DisplayValue == $value) {
                         $selected = "selected";
                         $searchedValues[]  = $value;
                     } else {
@@ -1233,7 +1346,7 @@ class Home extends CI_Controller
         $prod = json_decode($response);
         //----- END GET PRODUCT LATEST PRICE ------
         $pro_price = $prod->Products[0]->Price->Value;
-        $pr_data = $this->db->get_where('tbl_price_rule', array('name'=>'Product'))->row();
+        $pr_data = $this->db->get_where('tbl_price_rule', array('name' => 'Product'))->row();
         $data['sizePrice'] = $sizePrice;
         $multiplier = $pr_data->multiplier;
         $cost_price = $pro_price + $sizePrice;
@@ -1396,7 +1509,7 @@ class Home extends CI_Controller
                     $prod = json_decode($response);
                     //----- END GET PRODUCT LATEST PRICE ------
                     $pro_price = $prod->Products[0]->Price->Value;
-                    $pr_data = $this->db->get_where('tbl_price_rule', array('name'=>'Product'))->row();
+                    $pr_data = $this->db->get_where('tbl_price_rule', array('name' => 'Product'))->row();
                     $multiplier = $pr_data->multiplier;
                     $cost_price = $pro_price + $price;
                     $retail = $cost_price * $multiplier;
@@ -3494,7 +3607,7 @@ class Home extends CI_Controller
                     }
                     $this->db->select('*');
                     $this->db->from('tbl_price_rule');
-                    $this->db->where('name','Product');
+                    $this->db->where('name', 'Product');
                     $pr_data = $this->db->get()->row();
                     $multiplier = $pr_data->multiplier;
                     $cost_price11 = $pr_data->cost_price1;
@@ -3813,7 +3926,7 @@ class Home extends CI_Controller
                         }
                         $this->db->select('*');
                         $this->db->from('tbl_price_rule');
-                        $this->db->where('name','Product');
+                        $this->db->where('name', 'Product');
                         $pr_data = $this->db->get()->row();
                         $multiplier = $pr_data->multiplier;
                         $cost_price11 = $pr_data->cost_price1;
@@ -4165,7 +4278,7 @@ class Home extends CI_Controller
                         }
                         $this->db->select('*');
                         $this->db->from('tbl_price_rule');
-                        $this->db->where('name','Product');
+                        $this->db->where('name', 'Product');
                         $pr_data = $this->db->get()->row();
                         $multiplier = $pr_data->multiplier;
                         $cost_price11 = $pr_data->cost_price1;
@@ -4677,7 +4790,7 @@ class Home extends CI_Controller
                     }
                     $this->db->select('*');
                     $this->db->from('tbl_price_rule');
-                    $this->db->where('name','Product');
+                    $this->db->where('name', 'Product');
                     $pr_data = $this->db->get()->row();
                     $multiplier = $pr_data->multiplier;
                     $cost_price11 = $pr_data->cost_price1;
@@ -4996,7 +5109,7 @@ class Home extends CI_Controller
                         }
                         $this->db->select('*');
                         $this->db->from('tbl_price_rule');
-                        $this->db->where('name','Product');
+                        $this->db->where('name', 'Product');
                         $pr_data = $this->db->get()->row();
                         $multiplier = $pr_data->multiplier;
                         $cost_price11 = $pr_data->cost_price1;
@@ -5348,7 +5461,7 @@ class Home extends CI_Controller
                         }
                         $this->db->select('*');
                         $this->db->from('tbl_price_rule');
-                        $this->db->where('name','Product');
+                        $this->db->where('name', 'Product');
                         $pr_data = $this->db->get()->row();
                         $multiplier = $pr_data->multiplier;
                         $cost_price11 = $pr_data->cost_price1;
@@ -7786,7 +7899,7 @@ class Home extends CI_Controller
                 if (!empty($pro_data)) {
                     $this->db->select('*');
                     $this->db->from('tbl_price_rule');
-                    $this->db->where('name','Product');
+                    $this->db->where('name', 'Product');
                     $pr_data = $this->db->get()->row();
                     $multiplier = $pr_data->multiplier;
                     $cost_price11 = $pr_data->cost_price1;

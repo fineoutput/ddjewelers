@@ -38,7 +38,7 @@
   }
 </style>
 <section>
-  <div class="container pl-5 pr-5 pt-3 pb-5">
+  <div class="container-fluid pl-5 pr-5 pt-3 pb-5">
     <div class="row">
       <div class="col-md-12 page_span">
         <p><a href="<?= base_url() ?>"><span>Home</span></a> >
@@ -58,79 +58,152 @@
     <?php } ?>
       </div>
     </div>
+    <?
+    $priceRanges = array(
+      array('min' => 0, 'max' => 500),
+      array('min' => 501, 'max' => 1000),
+      // Add more ranges as needed
+    );
+    function generateCheckboxes($values, $name)
+    {
+      foreach ($values as $value) {
+        echo '<div class="checkbox">';
+        echo '<label>';
+        echo '<input type="checkbox" name="' . $name . '[]" value="' . $value . '">';
+        echo $value;
+        echo '</label>';
+        echo '</div>';
+      }
+    }
+    ?>
     <div class="row ">
-      <!-- <div class="col-md-3 all_pro_fil ">
-        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-          <div class="panel panel-default">
-            <div class="panel-heading" role="tab" id="heading1">
-              <h4 class="panel-title">
-                <a data-toggle="collapse" data-parent="#accordion" href="#collapse1" aria-expanded="false" aria-controls="collapse1">
-                  Primary Stone Size
-                </a>
-              </h4>
+      <div class="col-md-3 all_pro_fil ">
+        <form action="<?= base_url() ?>Home/all_products/<?= $idd ?>/<?= $t ?>" method="get">
+          <div class="d-flex align-items-center justify-content-between">
+            <button type="submit" class="add-btn" style="width:50%">Apply</button>
+            <a href="<?= base_url() ?>Home/all_products/<?= $idd ?>/<?= $t ?>">
+             Remove
+            </a>
             </div>
-            <div id="collapse1" class="panel-collapse in collapse fil_2" role="tabpanel" aria-labelledby="heading1">
-              <div class="panel-body">
+            <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+              <div class="panel panel-default">
+                <div class="panel-heading" role="tab" id="heading1">
+                  <h4 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#accordion" href="#collapse1" aria-expanded="false" aria-controls="collapse1">
+                      Price Range
+                    </a>
+                  </h4>
+                </div>
+                <div id="collapse1" class="panel-collapse in collapse fil_2" role="tabpanel" aria-labelledby="heading1">
+                  <div class="panel-body p-2">
+                    <? foreach ($priceRanges as $range) {
+                      $min = $range['min'];
+                      $max = $range['max'];
+                    ?>
+                      <input type="checkbox" name="price_range[]" value="' . <?= $min ?> . '-' . <?= $max ?> . '"> $<?= $min ?> - $<?= $max ?> <br>
+                    <? } ?>
+                  </div>
+                </div>
               </div>
+              <? if (!empty($jewelry_state)) { ?>
+                <div class="panel panel-default">
+                  <div class="panel-heading" role="tab" id="heading2">
+                    <h4 class="panel-title">
+                      <a data-toggle="collapse" data-parent="#accordion" href="#collapse2" aria-expanded="true" aria-controls="collapse2">
+                        Jewellery Style
+                      </a>
+                    </h4>
+                  </div>
+                  <div id="collapse2" class="panel-collapse in collapse fil_2" role="tabpanel" aria-labelledby="heading2">
+                    <div class="panel-body p-2">
+                      <? foreach ($jewelry_state as $item) {
+                      ?>
+                        <input type="checkbox" name="jewelry_state[]" value="<?= $item ?>"> <?= $item ?> <br>
+                      <? } ?>
+                    </div>
+                  </div>
+                </div>
+              <? } ?>
+              <? if (!empty($stone_shape)) { ?>
+                <div class="panel panel-default">
+                  <div class="panel-heading" role="tab" id="heading3">
+                    <h4 class="panel-title">
+                      <a data-toggle="collapse" data-parent="#accordion" href="#collapse3" aria-expanded="true" aria-controls="collapse3">
+                        Primary Stone Shape
+                      </a>
+                    </h4>
+                  </div>
+                  <div id="collapse3" class="panel-collapse in collapse fil_2" role="tabpanel" aria-labelledby="heading3">
+                    <div class="panel-body p-2">
+                      <? foreach ($stone_shape as $item) {
+                      ?>
+                        <input type="checkbox" name="stone_shape[]" value="<?= $item ?>"> <?= $item ?> <br>
+                      <? } ?>
+                    </div>
+                  </div>
+                </div>
+              <? } ?>
+              <? if (!empty($stone_size)) { ?>
+                <div class="panel panel-default">
+                  <div class="panel-heading" role="tab" id="heading4">
+                    <h4 class="panel-title">
+                      <a data-toggle="collapse" data-parent="#accordion" href="#collapse4" aria-expanded="true" aria-controls="collapse4">
+                        Primary Stone Size
+                      </a>
+                    </h4>
+                  </div>
+                  <div id="collapse4" class="panel-collapse in collapse fil_2" role="tabpanel" aria-labelledby="heading4">
+                    <div class="panel-body p-2">
+                      <? foreach ($stone_size as $item) {
+                      ?>
+                        <input type="checkbox" name="stone_size[]" value="<?= $item ?>"> <?= $item ?> <br>
+                      <? } ?>
+                    </div>
+                  </div>
+                </div>
+              <? } ?>
+              <? if (!empty($stone_type)) { ?>
+                <div class="panel panel-default">
+                  <div class="panel-heading" role="tab" id="heading5">
+                    <h4 class="panel-title">
+                      <a data-toggle="collapse" data-parent="#accordion" href="#collapse5" aria-expanded="true" aria-controls="collapse5">
+                        Primary Stone Type
+                      </a>
+                    </h4>
+                  </div>
+                  <div id="collapse5" class="panel-collapse in collapse fil_2" role="tabpanel" aria-labelledby="heading5">
+                    <div class="panel-body p-2">
+                      <? foreach ($stone_type as $item) {
+                      ?>
+                        <input type="checkbox" name="stone_type[]" value="<?= $item ?>"> <?= $item ?> <br>
+                      <? } ?>
+                    </div>
+                  </div>
+                </div>
+              <? } ?>
+              <? if (!empty($jewelry_state)) { ?>
+                <div class="panel panel-default">
+                  <div class="panel-heading" role="tab" id="heading6">
+                    <h4 class="panel-title">
+                      <a data-toggle="collapse" data-parent="#accordion" href="#collapse6" aria-expanded="true" aria-controls="collapse5">
+                        Setting Method
+                      </a>
+                    </h4>
+                  </div>
+                  <div id="collapse6" class="panel-collapse in collapse fil_2" role="tabpanel" aria-labelledby="heading6">
+                    <div class="panel-body">
+                    </div>
+                  </div>
+                </div>
+              <? } ?>
+
             </div>
-          </div>
-          <div class="panel panel-default">
-            <div class="panel-heading" role="tab" id="heading2">
-              <h4 class="panel-title">
-                <a data-toggle="collapse" data-parent="#accordion" href="#collapse2" aria-expanded="true" aria-controls="collapse2">
-                  Primary Stone type
-                </a>
-              </h4>
-            </div>
-            <div id="collapse2" class="panel-collapse in collapse fil_2" role="tabpanel" aria-labelledby="heading2">
-              <div class="panel-body">
-              </div>
-            </div>
-          </div>
-          <div class="panel panel-default">
-            <div class="panel-heading" role="tab" id="heading3">
-              <h4 class="panel-title">
-                <a data-toggle="collapse" data-parent="#accordion" href="#collapse3" aria-expanded="true" aria-controls="collapse3">
-                  total diamond weight
-                </a>
-              </h4>
-            </div>
-            <div id="collapse3" class="panel-collapse in collapse fil_2" role="tabpanel" aria-labelledby="heading3">
-              <div class="panel-body">
-              </div>
-            </div>
-          </div>
-          <div class="panel panel-default">
-            <div class="panel-heading" role="tab" id="heading4">
-              <h4 class="panel-title">
-                <a data-toggle="collapse" data-parent="#accordion" href="#collapse4" aria-expanded="true" aria-controls="collapse4">
-                  diamond clarity
-                </a>
-              </h4>
-            </div>
-            <div id="collapse4" class="panel-collapse in collapse fil_2" role="tabpanel" aria-labelledby="heading4">
-              <div class="panel-body">
-              </div>
-            </div>
-          </div>
-          <div class="panel panel-default">
-            <div class="panel-heading" role="tab" id="heading5">
-              <h4 class="panel-title">
-                <a data-toggle="collapse" data-parent="#accordion" href="#collapse5" aria-expanded="true" aria-controls="collapse5">
-                  diamond color
-                </a>
-              </h4>
-            </div>
-            <div id="collapse5" class="panel-collapse in collapse fil_2" role="tabpanel" aria-labelledby="heading5">
-              <div class="panel-body">
-              </div>
-            </div>
-          </div>
-        </div>
-        <a href="#">
+        </form>
+        <a href="<?= base_url() ?>Home/all_products/<?= $idd ?>/<?= $t ?>">
           <input type="submit" class="mt-3 add-btn" value="Remove Filter">
-      </div> -->
-      <div class="col-md-12">
+        </a>
+      </div>
+      <div class="col-md-9">
         <div class="row">
           <div class="col-md-12 mb-4">
             <div class="row ">
@@ -222,7 +295,7 @@
                 $catalogValues = json_decode($data->catalog_values);
                 if (in_array("Unset", $catalogValues)) {
                   $set_data = $this->db->select('pro_id, full_set_images, images, group_images, series_id, group_id, description, price, catalog_values')
-                    ->where(['group_id' => $data->group_id, 'series_id' => $data->series_id,$column=>$idd])
+                    ->where(['group_id' => $data->group_id, 'series_id' => $data->series_id, $column => $idd])
                     ->where("JSON_SEARCH(catalog_values, 'one', 'Set') IS NOT NULL", null, false)
                     ->get('tbl_products')
                     ->row();
@@ -230,7 +303,7 @@
                     $data = $set_data;
                   } else {
                     $semi_set_data = $this->db->select('pro_id, full_set_images, images, group_images, series_id, group_id, description, price, catalog_values')
-                      ->where(['group_id' => $data->group_id, 'series_id' => $data->series_id,$column=>$idd])
+                      ->where(['group_id' => $data->group_id, 'series_id' => $data->series_id, $column => $idd])
                       ->where("JSON_SEARCH(catalog_values, 'one', 'Semi-Set') IS NOT NULL", null, false)
                       ->get('tbl_products')
                       ->row();
@@ -321,30 +394,29 @@
                 </div>
               <?php $i++;
               } ?>
-          </div>
-          <div class="row justify-content-center w-100">
-            <?
-              if ($current_page != "all") {
-                echo $links;
-                if (count($page_options) > 1) { ?>
-                <div class="pagination-dropdown row align-items-center">
-                  <label for="page-select">Go to page: </label>
-                  <?= form_dropdown('page-select', $page_options, $current_page, 'class="form-control ml-2 " style="width: auto;" onchange="handleChange(this)"') ?>
-                </div>
-          </div>
-      <? }
-              }
-            } else { ?>
-      <div class="text-center">
-        <img src="<?= base_url() ?>/assets/frontend/no_data.jpg" style="    max-width: 45%;
+              <div class="row justify-content-center w-100">
+                <?
+                if ($current_page != "all") {
+                  echo $links;
+                  if (count($page_options) > 1) { ?>
+                    <div class="pagination-dropdown row align-items-center">
+                      <label for="page-select">Go to page: </label>
+                      <?= form_dropdown('page-select', $page_options, $current_page, 'class="form-control ml-2 " style="width: auto;" onchange="handleChange(this)"') ?>
+                    </div>
+              </div>
+          <? }
+                }
+              } else { ?>
+          <div class="text-center">
+            <img src="<?= base_url() ?>/assets/frontend/no_data.jpg" style="    max-width: 45%;
 height: auto;">
-        <h5 class="mt-2">Opps! No Data Found...</h5>
-      </div>
-    <? } ?>
+            <h5 class="mt-2">Opps! No Data Found...</h5>
+          </div>
+        <? } ?>
+          </div>
         </div>
       </div>
     </div>
-  </div>
   </div>
   <input type="hidden" value="<?= $level_id; ?>" id="level_id">
 </section>
