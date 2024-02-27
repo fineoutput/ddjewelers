@@ -104,7 +104,7 @@
                 <div class="panel-heading" role="tab" id="heading2">
                   <h4 class="panel-title">
                     <a data-toggle="collapse" data-parent="#accordion" href="#collapse2" aria-expanded="true" aria-controls="collapse2">
-                      Jewellery Style
+                      Jewellery State
                     </a>
                   </h4>
                 </div>
@@ -175,7 +175,7 @@
                 </div>
               </div>
             <? } ?>
-            <? if (!empty($jewelry_state)) { ?>
+            <? if (!empty($setting_method)) { ?>
               <div class="panel panel-default">
                 <div class="panel-heading" role="tab" id="heading6">
                   <h4 class="panel-title">
