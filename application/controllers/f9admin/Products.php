@@ -473,7 +473,13 @@ class Products extends CI_finecontrol
         $search_value = json_encode($cleanedArray);
         $jewelryState = $this->extractValue($prod->DescriptiveElementGroup->DescriptiveElements, 'Jewelry State');
         $stoneShape = $this->extractValue($prod->DescriptiveElementGroup->DescriptiveElements, 'Primary Stone Shape');
+        if (empty($stoneShape)) {
+            $stoneShape = $this->extractValue($prod->DescriptiveElementGroup->DescriptiveElements, 'Eng. Center Stone Shape');
+        }
         $stoneSize = $this->extractValue($prod->DescriptiveElementGroup->DescriptiveElements, 'Primary Stone Size');
+        if (empty($stoneSize)) {
+            $stoneSize = $this->extractValue($prod->DescriptiveElementGroup->DescriptiveElements, 'Eng. Center Stone Size');
+        }
         $stoneType = $this->extractValue($prod->DescriptiveElementGroup->DescriptiveElements, 'Primary Stone Type');
         $response = array(
             'category_id' => $receive['category_id'],
