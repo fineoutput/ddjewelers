@@ -592,7 +592,8 @@ $minor2Data = $this->db->get_where('tbl_minisubcategory2', array('id' => $produc
       <?php
       $index = 0;
       foreach ($options as  $key => $uniqueOptions) :
-        $excludedKeys = ['Series', 'Description', 'Primary Stone Shape'];
+        // $excludedKeys = ['Series', 'Description', 'Primary Stone Shape'];
+        $excludedKeys = ['Series', 'Description', 'Primary Stone Shape', 'Clarity, Color :: CTW', 'SERIES', 'Primary Stone Size', 'Finished State'];
         if (in_array($key, $excludedKeys)) {
           $index++;
           continue;
@@ -718,8 +719,14 @@ $minor2Data = $this->db->get_where('tbl_minisubcategory2', array('id' => $produc
       <!-- ------- END MONOGRAM CHAIN OPTIONS --------- -->
       <!-- ------- START MONOGRAM OPTIONS --------- -->
       <? if (!empty($monogram_options)) {
+        $name_arr = [];
         $resultArray = range("A", "Z");
-        foreach ($monogram_options as $mono) { ?>
+        foreach ($monogram_options as $mono) {
+          if ($mono->Description == 'Name') {
+            $name_arr = $mono;
+            continue;
+          }
+      ?>
           <div class="d-flex jus_cont">
             <p><b><?= $mono->Description ?></b></p>
             <select class="w-100" id="mono_options<?= $mono->LocationNumber ?>" name="mono_options" data-name="<?= $mono->Description ?>" data-location="<?= $mono->LocationNumber ?>">
@@ -730,6 +737,12 @@ $minor2Data = $this->db->get_where('tbl_minisubcategory2', array('id' => $produc
                 <option value="<?= $alfa; ?>"><?= $alfa; ?></option>
               <?php endforeach; ?>
             </select>
+          </div>
+        <? }
+        if (!empty($name_arr)) { ?>
+          <div class="d-flex jus_cont">
+            <p><b><?= $name_arr->Description ?></b></p>
+            <p><input class="w-100" name="mono_name" id="mono_name" data-name="<?= $name_arr->Description ?>" data-location="<?= $name_arr->LocationNumber ?>" maxlength="<?= $name_arr->MaxCharacters ?>"><span style="color:red;font-size:12px">Max Length : <?= $name_arr->MaxCharacters ?></span></p>
           </div>
       <? }
       } ?>
@@ -802,6 +815,9 @@ $minor2Data = $this->db->get_where('tbl_minisubcategory2', array('id' => $produc
       <? $monograms = [];
       if (!empty($monogram_options)) {
         foreach ($monogram_options as $mono) {
+          // if ($mono->Description == 'Name') {
+          //   continue;
+          // }
           $monograms[] = [
             "LocationNumber" => $mono->LocationNumber,
             "Text" => $mono->Description,
@@ -1205,6 +1221,22 @@ $minor2Data = $this->db->get_where('tbl_minisubcategory2', array('id' => $produc
         'slow');
     });
 
+  });
+  document.getElementById('mono_name').addEventListener('keyup', function() {
+    // Get the value from the input
+    var value = this.value;
+    // // Update the data-mononame attribute of the button
+    var dataLocation = this.getAttribute('data-location');
+    var myElement = document.getElementById("addToCartBtn");
+    var monograms = JSON.parse(myElement.getAttribute("data-monogram"));
+    var index = monograms.findIndex(function(element) {
+      return element.LocationNumber == dataLocation;
+    });
+    if (index !== -1) {
+      monograms[index].Value = value;
+    }
+    myElement.setAttribute("data-monogram", JSON.stringify(monograms));
+    return;
   });
   //------ qty-----------
   document.addEventListener("DOMContentLoaded", function() {

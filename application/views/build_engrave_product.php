@@ -640,7 +640,7 @@ if ($products->is_quick == 1) {
       <?php
       $index = 0;
       foreach ($options as  $key => $uniqueOptions) :
-        $excludedKeys = ['Series', 'Description', 'Primary Stone Shape', 'Clarity, Color :: CTW', 'SERIES', 'Primary Stone Size'];
+        $excludedKeys = ['Series', 'Description', 'Primary Stone Shape', 'Clarity, Color :: CTW', 'SERIES', 'Primary Stone Size', 'Finished State'];
         if (in_array($key, $excludedKeys)) {
           $index++;
           continue;
