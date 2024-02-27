@@ -207,13 +207,22 @@
 
           <div class="row w-100">
             <?php $i = 1;
+            if ($type == 2) { //---- minor2 category
+              $column = "minor2_category_id";
+            } else if ($type == 1) { //---- minor category
+              $column = "minor_category_id";
+            } else if ($type == 3) { //---- category
+              $column = "category_id";
+            } else { //---- subactegory
+              $column = "subcategory_id";
+            }
             if (!empty($products_data)) {
               foreach ($products_data as $data) {
 
                 $catalogValues = json_decode($data->catalog_values);
                 if (in_array("Unset", $catalogValues)) {
                   $set_data = $this->db->select('pro_id, full_set_images, images, group_images, series_id, group_id, description, price, catalog_values')
-                    ->where(['group_id' => $data->group_id, 'series_id' => $data->series_id])
+                    ->where(['group_id' => $data->group_id, 'series_id' => $data->series_id,$column=>$idd])
                     ->where("JSON_SEARCH(catalog_values, 'one', 'Set') IS NOT NULL", null, false)
                     ->get('tbl_products')
                     ->row();
@@ -221,7 +230,7 @@
                     $data = $set_data;
                   } else {
                     $semi_set_data = $this->db->select('pro_id, full_set_images, images, group_images, series_id, group_id, description, price, catalog_values')
-                      ->where(['group_id' => $data->group_id, 'series_id' => $data->series_id])
+                      ->where(['group_id' => $data->group_id, 'series_id' => $data->series_id,$column=>$idd])
                       ->where("JSON_SEARCH(catalog_values, 'one', 'Semi-Set') IS NOT NULL", null, false)
                       ->get('tbl_products')
                       ->row();
@@ -275,7 +284,7 @@
                     <? if (!empty($data->price)) {
                       $this->db->select('*');
                       $this->db->from('tbl_price_rule');
-                      $this->db->where('name','Product');
+                      $this->db->where('name', 'Product');
                       $pr_data = $this->db->get()->row();
                       $multiplier = $pr_data->multiplier;
                       $cost_price11 = $pr_data->cost_price1;

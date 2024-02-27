@@ -1122,6 +1122,7 @@ class Home extends CI_Controller
             $data['description'] = $subcat_data->description;
             $data['banner'] = $subcat_data->banner;
             $data['heading'] = $subcat_data->name;
+            $data['type'] = $type;
         }
         $links = $this->pagination->create_links();
         $data['sort_type'] = '';
