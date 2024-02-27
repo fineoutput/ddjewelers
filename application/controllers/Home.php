@@ -1122,8 +1122,8 @@ class Home extends CI_Controller
             $data['description'] = $subcat_data->description;
             $data['banner'] = $subcat_data->banner;
             $data['heading'] = $subcat_data->name;
-            $data['type'] = $type;
         }
+        $data['type'] = $type;
         $links = $this->pagination->create_links();
         $data['sort_type'] = '';
         $data['level_id'] = $idd;
@@ -1169,7 +1169,7 @@ class Home extends CI_Controller
                 $existingValues = array_column($options[$key], 'DisplayValue');
                 if (!in_array($value, $existingValues)) {
                     // if ($value == $data['products']) {
-                    if ($DescriptiveElements[$index]->Name == $key && $DescriptiveElements[$index]->DisplayValue == $value) {
+                    if (isset($DescriptiveElements[$index]) && isset($DescriptiveElements[$index]->Name) &&$DescriptiveElements[$index]->Name == $key && $DescriptiveElements[$index]->DisplayValue == $value) {
                         $selected = "selected";
                         $searchedValues[]  = $value;
                     } else {
