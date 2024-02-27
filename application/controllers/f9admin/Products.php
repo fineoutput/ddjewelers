@@ -590,6 +590,29 @@ class Products extends CI_finecontrol
     }
     //============================= END DELETE CRON JOB ==========================
 
+    //============================= START DELETE CRON JOB ==========================
+    public function reset_cron_jon($idd)
+    {
+        if (!empty($this->session->userdata('admin_data'))) {
+            $data['user_name'] = $this->load->get_var('user_name');
+            $id = base64_decode($idd);
+            $data_insert2 = array('status' => 0, 'end_time' => null, 'total_products' => null, 'inserted_products' => null);
+            $this->db->where('id', $id);
+            $zapak = $this->db->update('tbl_cron_jobs', $data_insert2);
+            if ($zapak != 0) {
+                $this->session->set_flashdata('smessage', 'Successfully Reset!');
+                redirect($_SERVER['HTTP_REFERER']);
+            } else {
+                $this->session->set_flashdata('emessage', 'Some error occurred');
+                redirect($_SERVER['HTTP_REFERER']);
+            }
+        } else {
+
+            $this->load->view('admin/login/index');
+        }
+    }
+    //============================= END DELETE CRON JOB ==========================
+
 
 
     //============================= START GET AJAX SUBCATEGORY ==========================

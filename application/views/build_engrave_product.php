@@ -1,4 +1,6 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
 
 <style>
   .swiper-slide.slider-main-box {
@@ -414,6 +416,10 @@
     .swiper-backface-hidden .swiper-slide {
       margin-right: -15px;
     }
+  }
+
+  .font-image {
+    width: 50%;
   }
 </style>
 
@@ -1185,7 +1191,7 @@ if ($products->is_quick == 1) {
             <p class="mb-0">Font</p>
           </div>
           <div class="col-md-12">
-            <div class="message-box">
+            <div class="message-box" id="font-box">
               <select name="en_font" id="en_font" class="py-2 w-100">
               </select>
 
@@ -1415,14 +1421,66 @@ if ($products->is_quick == 1) {
     $('#en_color').html('');
     var fonts;
     var colors = [];
-    en_type.Fonts.map(function(font, i) {
-      if (i == 0) {
-        $("#en_max").html(font.MaxCharacters);
-        $("#en_message").attr("maxlength", font.MaxCharacters);
-      }
-      fonts += '<option value="' + font.Name + '">' + font.Name + '</option>';
+    // en_type.Fonts.map(function(font, i) {
+    //   if (i == 0) {
+    //     $("#en_max").html(font.MaxCharacters);
+    //     $("#en_message").attr("maxlength", font.MaxCharacters);
+    //   }
+    //   fonts += '<option value="' + font.Name + '">' + font.Name + '</option>';
+    // });
+    // $('#en_font').append(fonts);
+    var fonts = en_type.Fonts.map(function(font) {
+      return {
+        id: font.Name,
+        text: font.Name,
+        imageUrl: font.SampleImage, // Store image URL in a data attribute
+      };
     });
-    $('#en_font').append(fonts);
+    // Check if Select2 instance exists
+    var isSelect2Initialized = $('#en_font').data('select2');
+
+    // If Select2 instance exists, destroy it
+    if (isSelect2Initialized) {
+      $('#en_font').select2('destroy');
+    }
+
+    // Update Select2
+    $('#en_font').select2({
+      data: fonts,
+      templateResult: formatOption, // Use custom formatting function
+      templateSelection: formatOptionSelection, // Use custom formatting function for selected option
+    });
+
+    // Custom formatting function to apply font family and image to options
+    function formatOption(option) {
+      if (!option.id) {
+        return option.text;
+      }
+      var imageUrl = option.imageUrl;
+      return $(
+        '<span><img src="' + imageUrl + '" class="font-image" /></span>'
+      );
+    }
+
+    // Custom formatting function for the selected option
+    function formatOptionSelection(option) {
+      return $(
+        '<span><img src="' + option.imageUrl + '" class="font-image" /></span>'
+      );
+    }
+
+    // Set initial MaxCharacters value
+    if (en_type.Fonts.length > 0) {
+      $("#en_max").html(en_type.Fonts[0].MaxCharacters);
+      $("#en_message").attr("maxlength", en_type.Fonts[0].MaxCharacters);
+    }
+
+    // Update MaxCharacters and maxlength when selecting a new font
+    $('#en_font').on('change', function() {
+      var selectedFont = $(this).find(":selected");
+      $("#en_max").html(selectedFont.data("maxcharacters"));
+      $("#en_message").attr("maxlength", selectedFont.data("maxcharacters"));
+    });
     var index = en_type.FillOptions.findIndex(function(option) {
       return option.Name == 'Enamel Color' || option.Name == 'Enamel Color Family';
     });
@@ -1535,7 +1593,10 @@ if ($products->is_quick == 1) {
       myElement.setAttribute("data-engrave", JSON.stringify(eng_data));
     }
     $("#en_div_" + id).html('');
+    $("#font-box").html('');
+    $("#font-box").html('<select name="en_font" id="en_font" class="py-2 w-100"></select>');
     $("#en_div_" + id).hide('');
+    
     setTimeout(() => {
       $("#en_div_btn_" + id).show();
     }, 500);

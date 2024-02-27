@@ -118,7 +118,7 @@
                                                         <?php if ($data->status == 0) { ?>
                                                             <a href="javascript:;" class="dCnf" mydata="<?php echo $i ?>"> <button type="button" class="btn btn-default">Delete</button></a>
                                                         <?php } else { ?>
-                                                            NA
+                                                            <a href="<?php echo base_url() ?>dcadmin/Products/reset_cron_jon/<?php echo base64_encode($data->id); ?>"> <button type="button" class="btn btn-default">Reset</button></a>
                                                         <? } ?>
                                                         <div style="display:none" id="cnfbox<?php echo $i ?>">
                                                             <p> Are you sure delete this </p>
