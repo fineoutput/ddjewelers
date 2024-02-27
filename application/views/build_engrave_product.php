@@ -1458,14 +1458,14 @@ if ($products->is_quick == 1) {
       }
       var imageUrl = option.imageUrl;
       return $(
-        '<span><img src="' + imageUrl + '" class="font-image" /></span>'
+        '<span><img src="' + imageUrl + '" class="font-image" /><span style="font-size:12px">'+option.text+'</span></span>'
       );
     }
 
     // Custom formatting function for the selected option
     function formatOptionSelection(option) {
       return $(
-        '<span><img src="' + option.imageUrl + '" class="font-image" /></span>'
+        '<span><img src="' + option.imageUrl + '" class="font-image" /><span style="font-size:12px">'+option.text+'</span></span>'
       );
     }
 
