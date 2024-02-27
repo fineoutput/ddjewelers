@@ -1402,49 +1402,22 @@ class Home extends CI_Controller
             $data['heading'] = $subcat_data->name;
         }
         // Retrieve distinct values for specific keys
-        $filterdata = $this->db->select('elements')->group_by(array("series_id"))->get_where('tbl_products', array($column => $idd, 'is_quick' => null, 'elements IS NOT NULL' => null))->result();
-        $jewelryStatesArray = $stoneSizeArray = $stoneShapeArray = $stoneTypeArray = array();
-
-        foreach ($filterdata as $item) {
-            $jsonElements = json_decode($item->elements, true);
-            foreach ($jsonElements as $element) {
-                switch ($element['Name']) {
-                    case 'Jewelry State':
-                        // if ($element['Value'] != 'N/A') {
-                        $jewelryStatesArray[] = $element['Value'];
-                        // }
-                        break;
-                    case 'Primary Stone Size':
-                        // if ($element['Value'] != 'N/A') {
-                        $stoneSizeArray[] = $element['Value'];
-                        // }
-                        break;
-                    case 'Primary Stone Shape':
-                        // if ($element['Value'] != 'N/A') {
-                        $stoneShapeArray[] = $element['Value'];
-                        // }
-                        break;
-                    case 'Primary Stone Type':
-                        // if ($element['Value'] != 'N/A') {
-                        $stoneTypeArray[] = $element['Value'];
-                        // }
-                        break;
-                }
-            }
+        $columns = array('jewelry_state', 'stone_size', 'stone_shape', 'stone_type');
+        // Initialize arrays to store unique values
+        foreach ($columns as $columnName) {
+            $result = $this->db
+            ->select($columnName)
+            ->group_by($columnName)
+            ->where($column, $idd)
+            ->where('is_quick IS NULL', null, false) // Use IS NULL without parameter binding
+            ->where("$columnName IS NOT NULL", null, false) // Exclude null values for the specific column
+            ->get('tbl_products')
+            ->result_array();
+    
+        // Store unique values in the data array
+        $data[$columnName] = array_values(array_unique(array_column($result, $columnName)));
+        sort($data[$columnName]);
         }
-
-        // Remove duplicate values & Re-index the arrays
-        $data['jewelry_state'] = array_values(array_unique($jewelryStatesArray));
-        sort($data['jewelry_state']);
-
-        $data['stone_size'] = array_values(array_unique($stoneSizeArray));
-        sort($data['stone_size']);
-
-        $data['stone_shape'] = array_values(array_unique($stoneShapeArray));
-        sort($data['stone_shape']);
-
-        $data['stone_type'] = array_values(array_unique($stoneTypeArray));
-        sort($data['stone_type']);
         $data['setting_method'] = [];
 
         $data['type'] = $type;
