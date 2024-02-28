@@ -285,7 +285,7 @@
 
                 $catalogValues = json_decode($data->catalog_values);
                 if (in_array("Unset", $catalogValues)) {
-                  $set_data = $this->db->select('pro_id, full_set_images, images, group_images, series_id, group_id, description, price, catalog_values')
+                  $set_data = $this->db->select('pro_id, full_set_images, images, group_images, series_id, group_id, group_description, price, catalog_values')
                     ->where(['group_id' => $data->group_id, 'series_id' => $data->series_id, $column => $idd])
                     ->where("JSON_SEARCH(catalog_values, 'one', 'Set') IS NOT NULL", null, false)
                     ->get('tbl_products')
@@ -293,7 +293,7 @@
                   if (!empty($set_data)) {
                     $data = $set_data;
                   } else {
-                    $semi_set_data = $this->db->select('pro_id, full_set_images, images, group_images, series_id, group_id, description, price, catalog_values')
+                    $semi_set_data = $this->db->select('pro_id, full_set_images, images, group_images, series_id, group_id, group_description, price, catalog_values')
                       ->where(['group_id' => $data->group_id, 'series_id' => $data->series_id, $column => $idd])
                       ->where("JSON_SEARCH(catalog_values, 'one', 'Semi-Set') IS NOT NULL", null, false)
                       ->get('tbl_products')
@@ -344,7 +344,7 @@
                       <img src="<?= base_url() ?>assets/uploads/no-image-found.jpg" alt="" class="img-fluid first_img">
                       <img src="<?= base_url() ?>assets/uploads/no-image-found.jpg" alt="" class="img-fluid second_img" style="margin-left: 28px;">
                     <? } ?>
-                    <p><b><?= $data->description ?></b></p>
+                    <p><b><?= $data->group_description ?></b></p>
                     <? if (!empty($data->price)) {
                       $this->db->select('*');
                       $this->db->from('tbl_price_rule');

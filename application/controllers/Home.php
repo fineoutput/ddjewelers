@@ -613,11 +613,11 @@ class Home extends CI_Controller
                     $page_index = 0;
                     $start = 0;
                 }
-                $product_data = $this->db->select('full_set_images,images,group_images,series_id,pro_id,group_id,description,price,catalog_values')->like("search_values", $string)->limit($per_page, $start)->group_by("series_id")->get_where('tbl_products', array())->result();
+                $product_data = $this->db->select('full_set_images,images,group_images,series_id,pro_id,group_id,group_description,price,catalog_values')->like("search_values", $string)->limit($per_page, $start)->group_by("series_id")->get_where('tbl_products', array())->result();
             } else {
                 $page_index = 0;
                 $start = 0;
-                $product_data = $this->db->select('full_set_images,images,group_images,series_id,pro_id,group_id,description,price,catalog_values')->like("search_values", $string)->group_by("series_id")->get_where('tbl_products', array())->result();
+                $product_data = $this->db->select('full_set_images,images,group_images,series_id,pro_id,group_id,group_description,price,catalog_values')->like("search_values", $string)->group_by("series_id")->get_where('tbl_products', array())->result();
             }
             // // $product_data = $this->db->select('id,series_id,pro_id,group_id')
             // //     ->from('tbl_products')
@@ -1011,7 +1011,7 @@ class Home extends CI_Controller
                     $page_index = 0;
                     $start = 0;
                 }
-                $this->db->select('full_set_images, images, group_images, series_id, pro_id, group_id, description, price, catalog_values')
+                $this->db->select('full_set_images, images, group_images, series_id, pro_id, group_id, group_description, price, catalog_values')
                     ->group_by('series_id')
                     ->where($column, $idd)
                     ->where('is_quick', null)
@@ -1037,7 +1037,7 @@ class Home extends CI_Controller
             } else {
                 $page_index = 0;
                 $start = 0;
-                $this->db->select('full_set_images, images, group_images, series_id, pro_id, group_id, description, price, catalog_values')
+                $this->db->select('full_set_images, images, group_images, series_id, pro_id, group_id, group_description, price, catalog_values')
                     ->group_by('series_id')
                     ->where($column, $idd)
                     ->where('is_quick', null);
@@ -1122,7 +1122,7 @@ class Home extends CI_Controller
                     $page_index = 0;
                     $start = 0;
                 }
-                $this->db->select('full_set_images, images, group_images, series_id, pro_id, group_id, description, price, catalog_values')
+                $this->db->select('full_set_images, images, group_images, series_id, pro_id, group_id, group_description, price, catalog_values')
                     ->group_by('series_id')
                     ->where($column, $idd)
                     ->where('is_quick', null)
@@ -1148,7 +1148,7 @@ class Home extends CI_Controller
             } else {
                 $page_index = 0;
                 $start = 0;
-                $this->db->select('full_set_images, images, group_images, series_id, pro_id, group_id, description, price, catalog_values')
+                $this->db->select('full_set_images, images, group_images, series_id, pro_id, group_id, group_description, price, catalog_values')
                     ->group_by('series_id')
                     ->where($column, $idd)
                     ->where('is_quick', null);
@@ -1231,7 +1231,7 @@ class Home extends CI_Controller
                     $page_index = 0;
                     $start = 0;
                 }
-                $this->db->select('full_set_images, images, group_images, series_id, pro_id, group_id, description, price, catalog_values')
+                $this->db->select('full_set_images, images, group_images, series_id, pro_id, group_id, group_description, price, catalog_values')
                     ->group_by('series_id')
                     ->where($column, $idd)
                     ->where('is_quick', null)
@@ -1257,7 +1257,7 @@ class Home extends CI_Controller
             } else {
                 $page_index = 0;
                 $start = 0;
-                $this->db->select('full_set_images, images, group_images, series_id, pro_id, group_id, description, price, catalog_values')
+                $this->db->select('full_set_images, images, group_images, series_id, pro_id, group_id, group_description, price, catalog_values')
                     ->group_by('series_id')
                     ->where($column, $idd)
                     ->where('is_quick', null);
@@ -1312,7 +1312,7 @@ class Home extends CI_Controller
                     }
                 }
             }
-            
+
             $data['productCount'] = $this->db->get('tbl_products')->num_rows();
             // echo $data['productCount'];
             // die();
@@ -1342,7 +1342,7 @@ class Home extends CI_Controller
                     $page_index = 0;
                     $start = 0;
                 }
-                $this->db->select('full_set_images, images, group_images, series_id, pro_id, group_id, description, price, catalog_values')
+                $this->db->select('full_set_images, images, group_images, series_id, pro_id, group_id, group_description, price, catalog_values')
                     ->group_by('series_id')
                     ->where($column, $idd)
                     ->where('is_quick', null)
@@ -1368,7 +1368,7 @@ class Home extends CI_Controller
             } else {
                 $page_index = 0;
                 $start = 0;
-                $this->db->select('full_set_images, images, group_images, series_id, pro_id, group_id, description, price, catalog_values')
+                $this->db->select('full_set_images, images, group_images, series_id, pro_id, group_id, group_description, price, catalog_values')
                     ->group_by('series_id')
                     ->where($column, $idd)
                     ->where('is_quick', null);
@@ -1406,17 +1406,17 @@ class Home extends CI_Controller
         // Initialize arrays to store unique values
         foreach ($columns as $columnName) {
             $result = $this->db
-            ->select($columnName)
-            ->group_by($columnName)
-            ->where($column, $idd)
-            ->where('is_quick IS NULL', null, false) // Use IS NULL without parameter binding
-            ->where("$columnName IS NOT NULL", null, false) // Exclude null values for the specific column
-            ->get('tbl_products')
-            ->result_array();
-    
-        // Store unique values in the data array
-        $data[$columnName] = array_values(array_unique(array_column($result, $columnName)));
-        sort($data[$columnName]);
+                ->select($columnName)
+                ->group_by($columnName)
+                ->where($column, $idd)
+                ->where('is_quick IS NULL', null, false) // Use IS NULL without parameter binding
+                ->where("$columnName IS NOT NULL", null, false) // Exclude null values for the specific column
+                ->get('tbl_products')
+                ->result_array();
+
+            // Store unique values in the data array
+            $data[$columnName] = array_values(array_unique(array_column($result, $columnName)));
+            sort($data[$columnName]);
         }
         $data['setting_method'] = [];
 
@@ -1441,8 +1441,8 @@ class Home extends CI_Controller
         $data['products'] = $this->db->get_where('tbl_products', array('pro_id' => $pro_id))->row();
         $data['stone_data']  = $this->db->select("id,pro_id,stone")->order_by('stone', 'desc')->group_by('stone')->get_where('tbl_products', array('series_id' => $series_id, 'group_id' => $group_id, 'is_quick' => $data['products']->is_quick))->result();
         $product_data  = $this->db->select('elements')->group_by('pro_id')->get_where('tbl_products', array('series_id' => $series_id, 'group_id' => $group_id, 'stone' => $data['products']->stone, 'is_quick' => $data['products']->is_quick))->result();
-        $data['more_products'] = $this->db->select('series_id, full_set_images,images,group_images, group_id,description,pro_id')->where('series_id !=', $data['products']->series_id)->group_by('series_id')->limit(15)->get_where('tbl_products', array('category_id' => $data['products']->category_id, 'is_quick' => $data['products']->is_quick))->result();
-        $data['suggested_products'] = $this->db->select('series_id, full_set_images,images,group_images, group_id,description,pro_id')->where('series_id !=', $data['products']->series_id)->group_by('series_id')->limit(15)->get_where('tbl_products', array('is_quick' => $data['products']->is_quick))->result();
+        $data['more_products'] = $this->db->select('series_id, full_set_images,images,group_images, group_id,group_description,pro_id')->where('series_id !=', $data['products']->series_id)->group_by('series_id')->limit(15)->get_where('tbl_products', array('category_id' => $data['products']->category_id, 'is_quick' => $data['products']->is_quick))->result();
+        $data['suggested_products'] = $this->db->select('series_id, full_set_images,images,group_images, group_id,group_description,pro_id')->where('series_id !=', $data['products']->series_id)->group_by('series_id')->limit(15)->get_where('tbl_products', array('is_quick' => $data['products']->is_quick))->result();
 
 
         // $data['suggested_products'] = [];
