@@ -543,111 +543,65 @@ class Home extends CI_Controller
         } else if ($string == 'cushion center stone') {
             $string = "cushion";
         }
-        // $config['base_url'] = base_url() . 'Home/search_result/' . $string . "/" . $page_index;
         $per_page = 12;
-        // $config['per_page'] = $per_page;
-        // $config['num_links'] = 3;
-        // $config['full_tag_open'] = '<ul class="pagination " style="margin: auto;">';
-        // $config['full_tag_close'] = '</ul>';
-        // $config['use_page_numbers'] = true;
-        // $config['next_link'] = 'First';
-        // $config['first_tag_open'] = '<li class="first page page-link">';
-        // $config['first_tag_close'] = '</li>';
-        // $config['last_link'] = 'Last';
-        // $config['last_tag_open'] = '<li class="last page page-link">';
-        // $config['last_tag_close'] = '</li>';
-        // $config['next_link'] = ' <span aria-hidden="true">&raquo;</span>';
-        // $config['next_tag_open'] = '<li class="page-item page-link nextpage">';
-        // $config['next_tag_close'] = '</li>';
-        // $config['prev_link'] = ' <span aria-hidden="true">&laquo;</span>';
-        // $config['prev_tag_open'] = '<li class="page-item  page-link prevpage">';
-        // $config['prev_tag_close'] = '</li>';
-        // $config['cur_tag_open'] = '<li class="page-item active page-link"><a href="">';
-        // $config['cur_tag_close'] = '</a></li>';
-        // $config['num_tag_open'] = '<li class="page-item page-link page-link">';
-        // $config['num_tag_close'] = '</li>';
-        $productCount = $this->db->select('id')->group_by("series_id")->from('tbl_products')->like("search_values", $string)->count_all_results();
         $data['search_string'] = urldecode($string_main);
         $data['search'] = $string_main;
         $session_string = $this->session->userdata('search_string');
-        if (empty($session_string)) {
-            $productCount = $this->db->select('id')->group_by("series_id")->from('tbl_products')->like("search_values", $string)->count_all_results();
+
+        if (empty($session_string) || $session_string != $string) {
+            // Update session and query product count
             $this->session->set_userdata('search_string', $string);
+            $productCount = $this->db->select('id')
+                ->group_by('series_id')
+                ->from('tbl_products')
+                ->like('search_values', $string)
+                ->count_all_results();
+
             if (!empty($productCount)) {
                 $this->session->set_userdata('productCount', $productCount);
             }
         } else {
-            if ($session_string != $string) {
-                $this->session->set_userdata('search_string', $string);
-                $productCount = $this->db->select('id')->group_by("series_id")->from('tbl_products')->like("search_values", $string)->count_all_results();
-                if (!empty($productCount)) {
-                    $this->session->set_userdata('productCount', $productCount);
-                }
-            } else {
-                $productCount = $this->session->userdata('productCount');
-            }
+            $productCount = $this->session->userdata('productCount');
         }
-
 
         if (!empty($productCount)) {
-            // // // //--------- pagination config ----------------------
-            $total_rows = $productCount;
-            // Calculate the total number of pages
-            $total_pages = ceil($total_rows / $per_page);
+            // Calculate total pages and set up pagination
+            $total_pages = ceil($productCount / $per_page);
+            $page_options = array_merge(range(1, $total_pages), ['Show All']);
 
-            // $config['total_rows'] = $total_rows;
+            // Retrieve data based on pagination
+            if (!empty($page_index) && $page_index != 'all') {
+                $start = is_numeric($page_index) ? ($page_index - 1) * $per_page : 0;
+                $product_data = $this->db->select('full_set_images, images, group_images, series_id, pro_id, group_id, group_description, price, catalog_values')
+                    ->like('search_values', $string)
+                    ->limit($per_page, $start)
+                    ->group_by('series_id')
+                    ->get_where('tbl_products', [])
+                    ->result();
 
-            // Initialize the pagination
-            // $this->pagination->initialize($config);
-
-            // Create an array for the page dropdown options
-            $page_options = array();
-            for ($i = 1; $i <= $total_pages; $i++) {
-                $page_options[$i] = $i;
-            }
-            $page_options[$i] = "Show All";
-            if (!empty($page_index) && $page_index != "all") {
-                if (is_numeric($page_index)) {
-                    $start = ($page_index - 1) * $per_page;
+                if (count($product_data) > 1 || $page_index > 1) {
+                    $data['product_data'] = $product_data;
+                    $data['total_pages'] = $total_pages;
+                    $data['page_options'] = $page_options;
+                    $data['page_index'] = $page_index;
+                    $data['productCount'] = $productCount;
+                    $data['string'] = $string;
+                    $this->load->view('common/header', $data);
+                    $this->load->view('search_products');
+                    $this->load->view('common/footer');
+                    return; // Early return
                 } else {
-                    $page_index = 0;
-                    $start = 0;
+                    // Redirect to product details page
+                    redirect('Home/product_details/' . $product_data[0]->series_id . '/' . $product_data[0]->pro_id . '?groupId=' . $product_data[0]->group_id);
+                    return; // Early return
                 }
-                $product_data = $this->db->select('full_set_images,images,group_images,series_id,pro_id,group_id,group_description,price,catalog_values')->like("search_values", $string)->limit($per_page, $start)->group_by("series_id")->get_where('tbl_products', array())->result();
-            } else {
-                $page_index = 0;
-                $start = 0;
-                $product_data = $this->db->select('full_set_images,images,group_images,series_id,pro_id,group_id,group_description,price,catalog_values')->like("search_values", $string)->group_by("series_id")->get_where('tbl_products', array())->result();
             }
-            // // $product_data = $this->db->select('id,series_id,pro_id,group_id')
-            // //     ->from('tbl_products')
-            // //     ->limit($per_page, $start)
-            // //     ->group_by(array("series_id"))
-            // //     ->like("search_values", $string)
-            // //     ->get();
-            // $product_data = $this->db->select('id')->limit($per_page, $start)->group_by(array("series_id"))->like("search_values", $string)->get_where('tbl_products', array())->result();
-            // echo "hi";die();
-
-            if (count($product_data) > 1 || $page_index > 1) {
-                $data['product_data'] = $product_data;
-                $data['total_pages'] = $total_pages;
-                $data['page_options'] = $page_options;
-                $data['page_index'] = $page_index;
-                $data['productCount'] = $productCount;
-                $data['string'] = $string;
-                $this->load->view('common/header', $data);
-                $this->load->view('search_products');
-                $this->load->view('common/footer');
-            } else {
-                redirect('Home/product_details/' . $product_data[0]->series_id . '/' . $product_data[0]->pro_id . '?groupId=' . $product_data[0]->group_id . '');
-            }
-        } else {
-            $this->load->view('common/header', $data);
-            $this->load->view('empty_result');
-            $this->load->view('common/footer');
-            // $this->session->set_flashdata('emessage', 'No Product found!');
-            // redirect($_SERVER['HTTP_REFERER']);
         }
+
+        // No results or invalid page, display empty result view
+        $this->load->view('common/header', $data);
+        $this->load->view('empty_result');
+        $this->load->view('common/footer');
     }
     function getProductType($input)
     {
@@ -1031,84 +985,10 @@ class Home extends CI_Controller
     }
     private function applyFiltersAndPagination($config, $data, $idd, $page_index)
     {
-        // $this->db->select('full_set_images, images, group_images, series_id, pro_id, group_id, group_description, price, catalog_values')
-        //     ->group_by('series_id')
-        //     ->where($data['column'], $idd)
-        //     ->where('is_quick', null);
-        // if (!empty($data['filters']['price_range'])) {
-        //     $this->handlePriceRangeFilter($data['filters']['price_range']);
-        // }
-        // Apply other filters
-        // foreach ($data['filters'] as $filterName => $filterValues) {
-        //     if ($filterName !== 'price_range' && !empty($filterValues)) {
-        //         $this->db->where_in($filterName, $filterValues);
-        //     }
-        // }
-        // $data['productCount'] = $this->db->get('tbl_products')->num_rows();
-        // $this->db->select('COUNT(DISTINCT series_id) as productCount', false)
-        //     ->from('tbl_products')
-        //     ->where($data['column'], $idd)
-        //   ->where('is_quick <>', 1);
-        // // Apply Price filter
-        // if (!empty($data['filters']['price_range'])) {
-        //     $this->handlePriceRangeFilter($data['filters']['price_range']);
-        // }
-        // // Apply other filters
-        // foreach ($data['filters'] as $filterName => $filterValues) {
-        //     if ($filterName !== 'price_range' && !empty($filterValues)) {
-        //         $this->db->where_in($filterName, $filterValues);
-        //     }
-        // }
-        // $data['productCount'] = $this->db->get()->row()->productCount;
-        // $data['productCount'] = 32;
-        // Pagination configuration
-        // $this->db->select('full_set_images, images, group_images, series_id, pro_id, group_id, group_description, price, catalog_values')
-        //     ->group_by('series_id')
-        //     ->where($data['column'], $idd)
-        //     ->where('is_quick <>', 1);
-
-        // if (!empty($data['filters']['price_range'])) {
-        //     $this->handlePriceRangeFilter($data['filters']['price_range']);
-        // }
-
-        // // Apply other filters
-        // foreach ($data['filters'] as $filterName => $filterValues) {
-        //     if ($filterName !== 'price_range' && !empty($filterValues)) {
-        //         $this->db->where_in($filterName, $filterValues);
-        //     }
-        // }
-
-        // $total_rows = $data['productCount'];
-        // $total_pages = ceil($total_rows / $config['per_page']);
-        // $current_page = $page_index;
-        // $config['total_rows'] = $total_rows;
-        // $this->pagination->initialize($config);
-        // $page_options = array();
-        // for ($i = 1; $i <= $total_pages; $i++) {
-        //     $page_options[$i] = $i;
-        // }
-        // $page_options[$i] = "Show All";
-        // // Retrieve products based on pagination
-        // if (!empty($page_index) && $page_index !== "all") {
-        //     if (is_numeric($page_index)) {
-        //         $start = ($page_index - 1) * $config['per_page'];
-        //         $this->db->limit($config['per_page'], $start);
-        //     } else {
-        //         $page_index = 0;
-        //     }
-        // } else {
-        //     $page_index = 0;
-        // }
-        // $data['products_data'] = $this->db->get('tbl_products')->result();
-        // $this->db->select('full_set_images, images, group_images, series_id, pro_id, group_id, group_description, price, catalog_values');
-        // Use specific JSON functions to retrieve necessary data
         $this->db->select('full_set_images, images, group_images,series_id, pro_id, group_id, group_description, price, catalog_values');
         $this->db->group_by('series_id')
             ->where($data['column'], $idd)
             ->where('is_quick <>', 1);
-        // Use specific JSON functions to retrieve necessary data
-        // $this->db->select('JSON_UNQUOTE(JSON_EXTRACT(full_set_images, "$.specific_field")) AS specific_field');
-
         // Apply Price filter
         if (!empty($data['filters']['price_range'])) {
             $this->handlePriceRangeFilter($data['filters']['price_range']);
