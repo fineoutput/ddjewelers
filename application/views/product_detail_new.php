@@ -898,7 +898,7 @@ $minor2Data = $this->db->get_where('tbl_minisubcategory2', array('id' => $produc
                 <p><b><?= $data->series_id ?></b></p>
                 <a href="<?= base_url() ?>Home/product_details/<?= $data->series_id ?>/<?= $data->pro_id ?>?groupId=<?= $data->group_id ?>">
                   <img src="<?= $all_images[0]->FullUrl ?>" class="img-responsive small_mob" style="margin-bottom: 1rem;">
-                  <p><?= $data->description ?></p>
+                  <p><?= $data->group_description ?></p>
                 </a>
               </div>
             <?php }   ?>
@@ -937,7 +937,7 @@ $minor2Data = $this->db->get_where('tbl_minisubcategory2', array('id' => $produc
                 <p><b><?= $data->series_id ?></b></p>
                 <a href="<?= base_url() ?>Home/product_details/<?= $data->series_id ?>/<?= $data->pro_id ?>?groupId=<?= $data->group_id ?>">
                   <img src="<?= $all_images[0]->FullUrl ?>" class="img-responsive small_mob" style="margin-bottom: 1rem;">
-                  <p><?= $data->description ?></p>
+                  <p><?= $data->group_description ?></p>
                 </a>
               </div>
             <?php }   ?>

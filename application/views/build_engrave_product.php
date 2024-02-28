@@ -621,7 +621,7 @@ if ($products->is_quick == 1) {
       $eng_data = [];
       if (!empty($engraving_options)) {
         foreach ($engraving_options as $loop => $engrave) {
-          if ($engrave->Description == "Logo") {
+          if ($engrave->Description == "Logo" || $engrave->Description == "LOGO") {
             continue;
           }
           $eng_data[] = [
@@ -888,7 +888,7 @@ if ($products->is_quick == 1) {
                 <p><b><?= $data->series_id ?></b></p>
                 <a href="<?= base_url() ?>Home/product_details/<?= $data->series_id ?>/<?= $data->pro_id ?>?groupId=<?= $data->group_id ?>">
                   <img src="<?= $all_images[0]->FullUrl ?>" class="img-responsive small_mob" style="margin-bottom: 1rem;">
-                  <p><?= $data->description ?></p>
+                  <p><?= $data->group_description ?></p>
                 </a>
               </div>
             <?php }   ?>
@@ -927,7 +927,7 @@ if ($products->is_quick == 1) {
                 <p><b><?= $data->series_id ?></b></p>
                 <a href="<?= base_url() ?>Home/product_details/<?= $data->series_id ?>/<?= $data->pro_id ?>?groupId=<?= $data->group_id ?>">
                   <img src="<?= $all_images[0]->FullUrl ?>" class="img-responsive small_mob" style="margin-bottom: 1rem;">
-                  <p><?= $data->description ?></p>
+                  <p><?= $data->group_description ?></p>
                 </a>
               </div>
             <?php }   ?>
