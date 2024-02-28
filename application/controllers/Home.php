@@ -1031,30 +1031,85 @@ class Home extends CI_Controller
     }
     private function applyFiltersAndPagination($config, $data, $idd, $page_index)
     {
-        $this->db->select('full_set_images, images, group_images, series_id, pro_id, group_id, group_description, price, catalog_values')
-            ->group_by('series_id')
-            ->where($data['column'], $idd)
-            ->where('is_quick', null);
-
-        if (!empty($data['filters']['price_range'])) {
-            $this->handlePriceRangeFilter($data['filters']['price_range']);
-        }
-
+        // $this->db->select('full_set_images, images, group_images, series_id, pro_id, group_id, group_description, price, catalog_values')
+        //     ->group_by('series_id')
+        //     ->where($data['column'], $idd)
+        //     ->where('is_quick', null);
+        // if (!empty($data['filters']['price_range'])) {
+        //     $this->handlePriceRangeFilter($data['filters']['price_range']);
+        // }
         // Apply other filters
-        foreach ($data['filters'] as $filterName => $filterValues) {
-            if ($filterName !== 'price_range' && !empty($filterValues)) {
-                $this->db->where_in($filterName, $filterValues);
-            }
-        }
-
-        $data['productCount'] = $this->db->get('tbl_products')->num_rows();
-
+        // foreach ($data['filters'] as $filterName => $filterValues) {
+        //     if ($filterName !== 'price_range' && !empty($filterValues)) {
+        //         $this->db->where_in($filterName, $filterValues);
+        //     }
+        // }
+        // $data['productCount'] = $this->db->get('tbl_products')->num_rows();
+        // $this->db->select('COUNT(DISTINCT series_id) as productCount', false)
+        //     ->from('tbl_products')
+        //     ->where($data['column'], $idd)
+        //   ->where('is_quick <>', 1);
+        // // Apply Price filter
+        // if (!empty($data['filters']['price_range'])) {
+        //     $this->handlePriceRangeFilter($data['filters']['price_range']);
+        // }
+        // // Apply other filters
+        // foreach ($data['filters'] as $filterName => $filterValues) {
+        //     if ($filterName !== 'price_range' && !empty($filterValues)) {
+        //         $this->db->where_in($filterName, $filterValues);
+        //     }
+        // }
+        // $data['productCount'] = $this->db->get()->row()->productCount;
+        // $data['productCount'] = 32;
         // Pagination configuration
-        $this->db->select('full_set_images, images, group_images, series_id, pro_id, group_id, group_description, price, catalog_values')
-            ->group_by('series_id')
-            ->where($data['column'], $idd)
-            ->where('is_quick', null);
+        // $this->db->select('full_set_images, images, group_images, series_id, pro_id, group_id, group_description, price, catalog_values')
+        //     ->group_by('series_id')
+        //     ->where($data['column'], $idd)
+        //     ->where('is_quick <>', 1);
 
+        // if (!empty($data['filters']['price_range'])) {
+        //     $this->handlePriceRangeFilter($data['filters']['price_range']);
+        // }
+
+        // // Apply other filters
+        // foreach ($data['filters'] as $filterName => $filterValues) {
+        //     if ($filterName !== 'price_range' && !empty($filterValues)) {
+        //         $this->db->where_in($filterName, $filterValues);
+        //     }
+        // }
+
+        // $total_rows = $data['productCount'];
+        // $total_pages = ceil($total_rows / $config['per_page']);
+        // $current_page = $page_index;
+        // $config['total_rows'] = $total_rows;
+        // $this->pagination->initialize($config);
+        // $page_options = array();
+        // for ($i = 1; $i <= $total_pages; $i++) {
+        //     $page_options[$i] = $i;
+        // }
+        // $page_options[$i] = "Show All";
+        // // Retrieve products based on pagination
+        // if (!empty($page_index) && $page_index !== "all") {
+        //     if (is_numeric($page_index)) {
+        //         $start = ($page_index - 1) * $config['per_page'];
+        //         $this->db->limit($config['per_page'], $start);
+        //     } else {
+        //         $page_index = 0;
+        //     }
+        // } else {
+        //     $page_index = 0;
+        // }
+        // $data['products_data'] = $this->db->get('tbl_products')->result();
+        // $this->db->select('full_set_images, images, group_images, series_id, pro_id, group_id, group_description, price, catalog_values');
+        // Use specific JSON functions to retrieve necessary data
+        $this->db->select('full_set_images, images, group_images,series_id, pro_id, group_id, group_description, price, catalog_values');
+        $this->db->group_by('series_id')
+            ->where($data['column'], $idd)
+            ->where('is_quick <>', 1);
+        // Use specific JSON functions to retrieve necessary data
+        // $this->db->select('JSON_UNQUOTE(JSON_EXTRACT(full_set_images, "$.specific_field")) AS specific_field');
+
+        // Apply Price filter
         if (!empty($data['filters']['price_range'])) {
             $this->handlePriceRangeFilter($data['filters']['price_range']);
         }
@@ -1066,17 +1121,22 @@ class Home extends CI_Controller
             }
         }
 
-        $total_rows = $data['productCount'];
-        $total_pages = ceil($total_rows / $config['per_page']);
-        $current_page = $page_index;
+        // Get total rows count without fetching data
+        $total_rows_query = $this->db->get_compiled_select('tbl_products', false);
+        $total_rows = $this->db->query($total_rows_query)->num_rows();
+
+        // Set up pagination
         $config['total_rows'] = $total_rows;
+        $data['productCount'] = $total_rows;
         $this->pagination->initialize($config);
         $page_options = array();
+        $current_page = $page_index;
+        $total_pages = ceil($total_rows / $config['per_page']);
         for ($i = 1; $i <= $total_pages; $i++) {
             $page_options[$i] = $i;
         }
         $page_options[$i] = "Show All";
-        // Retrieve products based on pagination
+        // Retrieve limited products based on pagination
         if (!empty($page_index) && $page_index !== "all") {
             if (is_numeric($page_index)) {
                 $start = ($page_index - 1) * $config['per_page'];
@@ -1087,7 +1147,11 @@ class Home extends CI_Controller
         } else {
             $page_index = 0;
         }
-        $data['products_data'] = $this->db->get('tbl_products')->result();
+
+        // Fetch data
+        $data['products_data'] = $this->db->get()->result();
+        // echo "hi";
+        // die();
         $data['current_page'] = $current_page;
         $data['total_pages'] = $total_pages;
         $data['page_options'] = $page_options;
@@ -1102,6 +1166,7 @@ class Home extends CI_Controller
         $data = $this->getColumnDataOnType($idd, $type);
         $data['filters'] = $filters;
         $data = $this->applyFiltersAndPagination($config, $data, $idd, $page_index);
+
         // Retrieve distinct values for specific keys
         $columns = array('jewelry_state', 'stone_size', 'stone_shape', 'stone_type');
         // Initialize arrays to store unique values
@@ -1110,7 +1175,8 @@ class Home extends CI_Controller
                 ->select($columnName)
                 ->group_by($columnName)
                 ->where($data['column'], $idd)
-                ->where('is_quick IS NULL', null, false) // Use IS NULL without parameter binding
+                ->where('is_quick <>', 1)
+                // ->where('is_quick IS NULL', null, false) // Use IS NULL without parameter binding
                 ->where("$columnName IS NOT NULL", null, false) // Exclude null values for the specific column
                 ->get('tbl_products')
                 ->result_array();
