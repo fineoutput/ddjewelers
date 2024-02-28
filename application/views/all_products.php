@@ -177,7 +177,7 @@ p.text-center.box-red {
           <div class="d-flex align-items-center justify-content-between" style="    margin-bottom: 6px;">
             <button type="submit" class="add-btn" style="width:50% ;     margin-right: 2px;">Apply</button>
 
-            <button class="add-btn" style="width: 50%;margin-left:2px;  background: black;">
+            <button class="add-btn" style="width: 50%;margin-left:2px;     background: #75b0da;">
             <a href="<?= base_url() ?>Home/all_products/<?= $idd ?>/<?= $t ?>">
               Reset
             </a></button>
