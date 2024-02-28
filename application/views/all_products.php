@@ -4,6 +4,31 @@
     font-size: 14px !important;
     font-weight: 400;
   }
+.tab-scroll-bar{
+  height: 139px;
+    overflow: hidden;
+    overflow-y: auto;
+}
+.searchColumn {
+    margin-bottom: 1.5rem !important;
+}
+.col-md-3.col-12.searchColumn div {
+    padding: 10px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24) !important;
+}
+
+
+/* width */
+.tab-scroll-bar::-webkit-scrollbar {
+  width: 5px;
+}
+
+
+/* Handle */
+.tab-scroll-bar::-webkit-scrollbar-thumb {
+  background: #5f8fb3; 
+  border-radius: 10px;
+}
 
   .sb-text {
     font-weight: bold;
@@ -36,6 +61,26 @@
     background-color: #fff;
     border: 1px solid #dee2e6;
   }
+
+
+  /* new css add 28/2/2024 */
+@media(max-width:570px){
+  .col-md-3.col-12.searchColumn div {
+  display: flex;
+  flex-direction:row-reverse;
+  align-items: center;
+}
+.col-md-3.col-12.searchColumn div p.price {
+    margin-bottom: 0px;
+}
+img.img-fluid.first_img{
+  width: 60%;
+}
+img.img-fluid.second_img{
+  width: 60%;
+}
+}
+
 </style>
 <section>
   <div class="container-fluid pl-5 pr-5 pt-3 pb-5">
@@ -72,22 +117,24 @@
     <div class="row ">
       <div class="col-md-3 all_pro_fil ">
         <form action="<?= base_url() ?>Home/all_products/<?= $idd ?>/<?= $t ?>" method="get">
-          <div class="d-flex align-items-center justify-content-between">
-            <button type="submit" class="add-btn" style="width:50%">Apply</button>
+          <div class="d-flex align-items-center justify-content-between" style="    margin-bottom: 6px;">
+            <button type="submit" class="add-btn" style="width:50% ;     margin-right: 2px;">Apply</button>
+
+            <button class="add-btn" style="width: 50%;margin-left:2px;">
             <a href="<?= base_url() ?>Home/all_products/<?= $idd ?>/<?= $t ?>">
               Reset
-            </a>
+            </a></button>
           </div>
           <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
             <div class="panel panel-default">
-              <div class="panel-heading" role="tab" id="heading1">
+              <div class="panel-heading " role="tab" id="heading1">
                 <h4 class="panel-title">
                   <a data-toggle="collapse" data-parent="#accordion" href="#collapse1" aria-expanded="false" aria-controls="collapse1">
                     Price Range
                   </a>
                 </h4>
               </div>
-              <div id="collapse1" class="panel-collapse in collapse fil_2" role="tabpanel" aria-labelledby="heading1">
+              <div id="collapse1" class="panel-collapse in collapse fil_2 tab-scroll-bar" role="tabpanel" aria-labelledby="heading1">
                 <div class="panel-body p-2">
                   <?php foreach ($priceRanges as $range) {
                     $min = $range['min'];
@@ -101,14 +148,14 @@
             </div>
             <? if (!empty($jewelry_state)) { ?>
               <div class="panel panel-default">
-                <div class="panel-heading" role="tab" id="heading2">
+                <div class="panel-heading " role="tab" id="heading2">
                   <h4 class="panel-title">
                     <a data-toggle="collapse" data-parent="#accordion" href="#collapse2" aria-expanded="true" aria-controls="collapse2">
                       Jewellery State
                     </a>
                   </h4>
                 </div>
-                <div id="collapse2" class="panel-collapse in collapse fil_2" role="tabpanel" aria-labelledby="heading2">
+                <div id="collapse2" class="panel-collapse in collapse fil_2 tab-scroll-bar" role="tabpanel" aria-labelledby="heading2">
                   <div class="panel-body p-2">
                     <? foreach ($jewelry_state as $item) {
                     ?>
@@ -120,14 +167,14 @@
             <? } ?>
             <? if (!empty($stone_shape)) { ?>
               <div class="panel panel-default">
-                <div class="panel-heading" role="tab" id="heading3">
+                <div class="panel-heading " role="tab" id="heading3">
                   <h4 class="panel-title">
                     <a data-toggle="collapse" data-parent="#accordion" href="#collapse3" aria-expanded="true" aria-controls="collapse3">
                       Primary Stone Shape
                     </a>
                   </h4>
                 </div>
-                <div id="collapse3" class="panel-collapse in collapse fil_2" role="tabpanel" aria-labelledby="heading3">
+                <div id="collapse3" class="panel-collapse in collapse fil_2 tab-scroll-bar" role="tabpanel" aria-labelledby="heading3">
                   <div class="panel-body p-2">
                     <? foreach ($stone_shape as $item) {
                     ?>
@@ -139,14 +186,14 @@
             <? } ?>
             <? if (!empty($stone_size)) { ?>
               <div class="panel panel-default">
-                <div class="panel-heading" role="tab" id="heading4">
+                <div class="panel-heading " role="tab" id="heading4">
                   <h4 class="panel-title">
                     <a data-toggle="collapse" data-parent="#accordion" href="#collapse4" aria-expanded="true" aria-controls="collapse4">
                       Primary Stone Size
                     </a>
                   </h4>
                 </div>
-                <div id="collapse4" class="panel-collapse in collapse fil_2" role="tabpanel" aria-labelledby="heading4">
+                <div id="collapse4" class="panel-collapse in collapse fil_2 tab-scroll-bar" role="tabpanel" aria-labelledby="heading4">
                   <div class="panel-body p-2">
                     <? foreach ($stone_size as $item) {
                     ?>
@@ -158,14 +205,14 @@
             <? } ?>
             <? if (!empty($stone_type)) { ?>
               <div class="panel panel-default">
-                <div class="panel-heading" role="tab" id="heading5">
+                <div class="panel-heading " role="tab" id="heading5">
                   <h4 class="panel-title">
                     <a data-toggle="collapse" data-parent="#accordion" href="#collapse5" aria-expanded="true" aria-controls="collapse5">
                       Primary Stone Type
                     </a>
                   </h4>
                 </div>
-                <div id="collapse5" class="panel-collapse in collapse fil_2" role="tabpanel" aria-labelledby="heading5">
+                <div id="collapse5" class="panel-collapse in collapse fil_2 tab-scroll-bar" role="tabpanel" aria-labelledby="heading5">
                   <div class="panel-body p-2">
                     <? foreach ($stone_type as $item) {
                     ?>
@@ -177,14 +224,14 @@
             <? } ?>
             <? if (!empty($setting_method)) { ?>
               <div class="panel panel-default">
-                <div class="panel-heading" role="tab" id="heading6">
+                <div class="panel-heading " role="tab" id="heading6">
                   <h4 class="panel-title">
                     <a data-toggle="collapse" data-parent="#accordion" href="#collapse6" aria-expanded="true" aria-controls="collapse5">
                       Setting Method
                     </a>
                   </h4>
                 </div>
-                <div id="collapse6" class="panel-collapse in collapse fil_2" role="tabpanel" aria-labelledby="heading6">
+                <div id="collapse6" class="panel-collapse in collapse fil_2 tab-scroll-bar" role="tabpanel" aria-labelledby="heading6">
                   <div class="panel-body">
                   </div>
                 </div>
@@ -195,8 +242,8 @@
         </form>
       </div>
       <div class="col-md-9">
-        <div class="row">
-          <div class="col-md-12 mb-4">
+        <div class="row justify-content-center">
+          <div class="col-md-12 mt-2">
             <div class="row ">
               <div class="col-md-12 mb-4 hrds">
                 <h1 class="r-title">
@@ -268,6 +315,7 @@
               </div> -->
             </div>
           </div>
+          
 
           <div class="row w-100">
             <?php $i = 1;
@@ -334,7 +382,9 @@
                   }
                 }
             ?>
-                <div class="col-md-3 col-4 searchColumn">
+                <div class="col-md-3  col-sm-6 col-12 searchColumn">
+                  <div>
+                   
                   <p class="text-center"><i><?= $data->series_id ?></i></p>
                   <a href="<?= base_url() ?>Home/product_details/<?= $data->series_id ?>/<?= $data->pro_id ?>?groupId=<?= $data->group_id ?>">
                     <? if (!empty($image1)) { ?>
@@ -381,7 +431,8 @@
                       <p class="price"><a href="<?= base_url(); ?>Home/contact_us">contact</a></p>
                     <? } ?>
                   </a>
-                  </a>
+        
+                  </div>
                 </div>
               <?php $i++;
               } ?>
