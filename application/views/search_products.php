@@ -8,6 +8,97 @@
     .searchColumn {
         margin-bottom: 3.5rem;
     }
+
+
+
+    /* new css add 28/2/2024 */
+    .searchColumn {
+    margin-bottom: 1.5rem !important;
+}
+.col-md-3.col-12.searchColumn .under-box {
+    padding: 10px;
+    height: 320px;
+    border: 1px solid #dee2e6!important;
+    border-radius: 5px;
+  }
+  .col-md-3.col-12.searchColumn .under-box:hover {
+    padding: 10px;
+    border: 1px solid #999999 !important;
+    height: 320px;
+}
+
+    
+@media(max-width:570px){
+  .col-md-3.col-12.searchColumn div {
+  display: flex;
+  flex-direction:row-reverse;
+  align-items: center;
+}
+.col-md-3.col-12.searchColumn div p.price {
+    margin-bottom: 0px;
+}
+img.img-fluid.first_img{
+  width: 60%;
+}
+img.img-fluid.second_img{
+  width: 60%;
+}
+.col-md-3.col-12.searchColumn .under-box {
+    padding: 10px;
+    border: 0px !important; 
+    /* border-top:  1px solid #c4c4c4;; */
+    border-bottom:  1px solid #c4c4c4 !important;
+    height: 151px;
+}
+p.bold-text {
+    position: absolute;
+    left: revert;
+    right: 12px;
+    width: 61%;
+    bottom: 31%;
+}
+.col-md-3.col-12.searchColumn div p.price {
+    margin-bottom: 0px;
+    position: absolute;
+    width: 62%;
+    right: 62px;
+ 
+    bottom: 15px;
+}
+p.text-center.box-red {
+    position: relative;
+    top: -32%;
+    text-align: start !important;
+    right: -47px;
+}
+.under-box div img.img-fluid.first_img {
+  display: flex;
+}
+
+}
+
+@media (max-width: 395px){
+  p.bold-text {
+    position: absolute;
+    left: revert;
+    right: 0px;
+    width: 61%;
+    bottom: 22%;
+}
+.col-md-3.col-12.searchColumn div p.price {
+    margin-bottom: 0px;
+    position: absolute;
+    width: 62%;
+    right: 56px;
+}
+p.text-center.box-red {
+    position: relative;
+    top: -32%;
+    right: -32px;
+
+}
+}
+
 </style>
 <section>
     <div class="container-fluid pl-5 pr-5 pt-3 pb-5">
@@ -86,55 +177,60 @@
                                     }
                                 }
                         ?>
-                                <div class="col-md-3 col-4 searchColumn">
-                                    <p class="text-center"><i><?= $data->series_id ?></i></p>
-                                    <a href="<?= base_url() ?>Home/product_details/<?= $data->series_id ?>/<?= $data->pro_id ?>?groupId=<?= $data->group_id ?>">
-                                        <? if (!empty($image1)) { ?>
-                                            <img src="<?= $image1 ?>" alt="" class=" img-fluid first_img">
-                                            <img src="<?= $image2 ? $image2 : $image1 ?>" alt="" class="img-fluid second_img">
-                                        <? } else { ?>
-                                            <img src="<?= base_url() ?>assets/uploads/no-image-found.jpg" alt="" class="img-fluid first_img">
-                                            <img src="<?= base_url() ?>assets/uploads/no-image-found.jpg" alt="" class="img-fluid second_img">
-                                        <? } ?>
-                                        <p><b><?= $data->group_description ?></b></p>
-                                        <? if (!empty($data->price)) {
-                                            $this->db->select('*');
-                                            $this->db->from('tbl_price_rule');
-                                            $this->db->where('name','Product');
-                                            $pr_data = $this->db->get()->row();
-                                            $multiplier = $pr_data->multiplier;
-                                            $cost_price11 = $pr_data->cost_price1;
-                                            $cost_price22 = $pr_data->cost_price2;
-                                            $cost_price33 = $pr_data->cost_price3;
-                                            $cost_price44 = $pr_data->cost_price4;
-                                            $cost_price55 = $pr_data->cost_price5;
-                                            $cost_price = $data->price;
-                                            $retail = $cost_price * $multiplier;
-                                            $now_price = $cost_price;
-                                            if ($cost_price <= 500) {
-                                                $cost_price2 = $cost_price * $cost_price;
-                                                $number = round($cost_price * ($cost_price11 * $cost_price2 + $cost_price22 * $cost_price + $cost_price33), 2);
-                                                $unit = 5;
-                                                $remainder = $number % $unit;
-                                                $mround = ($remainder < $unit / 2) ? $number - $remainder : $number + ($unit - $remainder);
-                                                $now_price = round($mround) - 1 + 0.95;
-                                            }
-                                            if ($cost_price > 500) {
-                                                $number = round($cost_price * ($cost_price44 * $cost_price / $multiplier + $cost_price55));
-                                                $unit = 5;
-                                                $remainder = $number % $unit;
-                                                $mround = ($remainder < $unit / 2) ? $number - $remainder : $number + ($unit - $remainder);
-                                                $now_price = round($mround) - 1 + 0.95;
-                                            }
-                                            $saved = round($retail - $now_price);
-                                        ?>
-                                            <p class="price">$<?= number_format($now_price, 2); ?></p>
-                                        <? } else { ?>
-                                            <p class="price"><a href="<?= base_url(); ?>Home/contact_us">contact</a></p>
-                                        <? } ?>
-                                    </a>
-                                    </a>
-                                </div>
+                                <div class="col-md-3  col-sm-6 col-12 searchColumn">
+                  <div class="under-box">
+                   
+                  <p class="text-center box-red"><i> <b><?= $data->series_id ?> </b></i></p>
+                  <div>
+                  <a href="<?= base_url() ?>Home/product_details/<?= $data->series_id ?>/<?= $data->pro_id ?>?groupId=<?= $data->group_id ?>">
+                    <? if (!empty($image1)) { ?>
+                      <img src="<?= $image1 ?>" alt="" class=" img-fluid first_img">
+                      <img src="<?= $image2 ? $image2 : $image1 ?>" alt="" class="img-fluid second_img" style="margin-left: 28px;">
+                    <? } else { ?>
+                      <img src="<?= base_url() ?>assets/uploads/no-image-found.jpg" alt="" class="img-fluid first_img">
+                      <img src="<?= base_url() ?>assets/uploads/no-image-found.jpg" alt="" class="img-fluid second_img" style="margin-left: 28px;">
+                    <? } ?>
+          
+                    <p class="bold-text"><b><?= $data->group_description ?></b></p>
+                    <? if (!empty($data->price)) {
+                      $this->db->select('*');
+                      $this->db->from('tbl_price_rule');
+                      $this->db->where('name', 'Product');
+                      $pr_data = $this->db->get()->row();
+                      $multiplier = $pr_data->multiplier;
+                      $cost_price11 = $pr_data->cost_price1;
+                      $cost_price22 = $pr_data->cost_price2;
+                      $cost_price33 = $pr_data->cost_price3;
+                      $cost_price44 = $pr_data->cost_price4;
+                      $cost_price55 = $pr_data->cost_price5;
+                      $cost_price = $data->price;
+                      $retail = $cost_price * $multiplier;
+                      $now_price = $cost_price;
+                      if ($cost_price <= 500) {
+                        $cost_price2 = $cost_price * $cost_price;
+                        $number = round($cost_price * ($cost_price11 * $cost_price2 + $cost_price22 * $cost_price + $cost_price33), 2);
+                        $unit = 5;
+                        $remainder = $number % $unit;
+                        $mround = ($remainder < $unit / 2) ? $number - $remainder : $number + ($unit - $remainder);
+                        $now_price = round($mround) - 1 + 0.95;
+                      }
+                      if ($cost_price > 500) {
+                        $number = round($cost_price * ($cost_price44 * $cost_price / $multiplier + $cost_price55));
+                        $unit = 5;
+                        $remainder = $number % $unit;
+                        $mround = ($remainder < $unit / 2) ? $number - $remainder : $number + ($unit - $remainder);
+                        $now_price = round($mround) - 1 + 0.95;
+                      }
+                      $saved = round($retail - $now_price);
+                    ?>
+                      <p class="price box-trft">$<?= number_format($now_price, 2); ?></p>
+                    <? } else { ?>
+                      <p class="price box-trft"><a href="<?= base_url(); ?>Home/contact_us">contact</a></p>
+                    <? } ?>
+                  </a>
+                  </div>
+                  </div>
+                </div>
                             <?php $i++;
                             } 
                             if ($page_index != "all") {

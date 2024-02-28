@@ -12,9 +12,16 @@
 .searchColumn {
     margin-bottom: 1.5rem !important;
 }
-.col-md-3.col-12.searchColumn div {
+.col-md-3.col-12.searchColumn .under-box {
     padding: 10px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24) !important;
+    height: 320px;
+    border: 1px solid #dee2e6!important;
+    border-radius: 5px;
+  }
+  .col-md-3.col-12.searchColumn .under-box:hover {
+    padding: 10px;
+    border: 1px solid #999999 !important;
+    height: 320px;
 }
 
 
@@ -79,6 +86,56 @@ img.img-fluid.first_img{
 img.img-fluid.second_img{
   width: 60%;
 }
+.col-md-3.col-12.searchColumn .under-box {
+    padding: 10px;
+    border: 0px !important; 
+    /* border-top:  1px solid #c4c4c4;; */
+    border-bottom:  1px solid #c4c4c4 !important;
+    height: 151px;
+}
+p.bold-text {
+    position: absolute;
+    left: revert;
+    right: 12px;
+    width: 61%;
+    bottom: 31%;
+}
+.col-md-3.col-12.searchColumn div p.price {
+    margin-bottom: 0px;
+    position: absolute;
+    width: 62%;
+    right: 66px;
+    bottom: 15px;
+}
+p.text-center.box-red {
+    position: relative;
+    top: -32%;
+    text-align: start !important;
+}
+.under-box div img.img-fluid.first_img {
+  display: flex;
+}
+
+}
+@media (max-width: 395px){
+  p.bold-text {
+    position: absolute;
+    left: revert;
+    right: 0px;
+    width: 61%;
+    bottom: 22%;
+}
+.col-md-3.col-12.searchColumn div p.price {
+    margin-bottom: 0px;
+    position: absolute;
+    width: 62%;
+    right: 56px;
+}
+p.text-center.box-red {
+    position: relative;
+    top: -32%;
+    right: 16px;
+}
 }
 
 </style>
@@ -93,7 +150,7 @@ img.img-fluid.second_img{
               > <span><?= $subcategory_name; ?></span> > <span><?= $minorsub_name; ?> > <span><?= $minorsub2_name; ?></span>
         </p>
       <?php } else  if (!empty($minorsub_name)) { ?>
-        > <span><?= $subcategory_name; ?></span> > <span><?= $minorsub_name; ?>d</span>
+        > <span><?= $subcategory_name; ?></span> > <span><?= $minorsub_name; ?></span>
         </p>
       <?php } else if (!empty($subcategory_name)) { ?>
         > <span><?= $subcategory_name; ?></span> </p>
@@ -120,7 +177,7 @@ img.img-fluid.second_img{
           <div class="d-flex align-items-center justify-content-between" style="    margin-bottom: 6px;">
             <button type="submit" class="add-btn" style="width:50% ;     margin-right: 2px;">Apply</button>
 
-            <button class="add-btn" style="width: 50%;margin-left:2px;">
+            <button class="add-btn" style="width: 50%;margin-left:2px;  background: black;">
             <a href="<?= base_url() ?>Home/all_products/<?= $idd ?>/<?= $t ?>">
               Reset
             </a></button>
@@ -383,9 +440,10 @@ img.img-fluid.second_img{
                 }
             ?>
                 <div class="col-md-3  col-sm-6 col-12 searchColumn">
-                  <div>
+                  <div class="under-box">
                    
-                  <p class="text-center"><i><?= $data->series_id ?></i></p>
+                  <p class="text-center box-red"><i> <b><?= $data->series_id ?> </b></i></p>
+                  <div>
                   <a href="<?= base_url() ?>Home/product_details/<?= $data->series_id ?>/<?= $data->pro_id ?>?groupId=<?= $data->group_id ?>">
                     <? if (!empty($image1)) { ?>
                       <img src="<?= $image1 ?>" alt="" class=" img-fluid first_img">
@@ -394,7 +452,8 @@ img.img-fluid.second_img{
                       <img src="<?= base_url() ?>assets/uploads/no-image-found.jpg" alt="" class="img-fluid first_img">
                       <img src="<?= base_url() ?>assets/uploads/no-image-found.jpg" alt="" class="img-fluid second_img" style="margin-left: 28px;">
                     <? } ?>
-                    <p><b><?= $data->group_description ?></b></p>
+          
+                    <p class="bold-text"><b><?= $data->group_description ?></b></p>
                     <? if (!empty($data->price)) {
                       $this->db->select('*');
                       $this->db->from('tbl_price_rule');
@@ -426,12 +485,12 @@ img.img-fluid.second_img{
                       }
                       $saved = round($retail - $now_price);
                     ?>
-                      <p class="price">$<?= number_format($now_price, 2); ?></p>
+                      <p class="price box-trft">$<?= number_format($now_price, 2); ?></p>
                     <? } else { ?>
-                      <p class="price"><a href="<?= base_url(); ?>Home/contact_us">contact</a></p>
+                      <p class="price box-trft"><a href="<?= base_url(); ?>Home/contact_us">contact</a></p>
                     <? } ?>
                   </a>
-        
+                  </div>
                   </div>
                 </div>
               <?php $i++;
