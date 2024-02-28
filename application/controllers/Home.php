@@ -921,11 +921,8 @@ class Home extends CI_Controller
         $this->load->view('common/footer');
     }
 
-    public function all_products($idd, $t, $page_index = "1")
+    private function configurePagination($idd, $t)
     {
-
-        $this->load->helper('form');
-        $type = base64_decode($t);
         $config['base_url'] = base_url() . 'Home/all_products/' . $idd . '/' . $t;
         $per_page = 28;
         $config['per_page'] = $per_page;
@@ -949,458 +946,162 @@ class Home extends CI_Controller
         $config['cur_tag_close'] = '</a></li>';
         $config['num_tag_open'] = '<li class="page-item page-link page-link">';
         $config['num_tag_close'] = '</li>';
+        return $config;
+    }
+    private function prepareFilters()
+    {
+        $filterNames = ['jewelry_state', 'stone_shape', 'stone_size', 'stone_type', 'price_range'];
+        $filters = [];
 
-        $filters = array(
-            'jewelry_state' => isset($_GET['jewelry_state']) ? $_GET['jewelry_state'] : array(),
-            'stone_shape' => isset($_GET['stone_shape']) ? $_GET['stone_shape'] : array(),
-            'stone_size' => isset($_GET['stone_size']) ? $_GET['stone_size'] : array(),
-            'stone_type' => isset($_GET['stone_type']) ? $_GET['stone_type'] : array(),
-            'price_range' => isset($_GET['price_range']) ? $_GET['price_range'] : array(),
-        );
+        foreach ($filterNames as $filterName) {
+            $filters[$filterName] = isset($_GET[$filterName]) ? $_GET[$filterName] : [];
+        }
 
+        // Remove empty values
         foreach ($filters as $filterName => $filterValues) {
-            // Remove empty values
             $filters[$filterName] = array_filter($filterValues);
         }
-        $data['filters'] = $filters;
-        if ($type == 2) { //---- minor2 category
-            $column = 'minor2_category_id';
-            $this->db->select('id')
-                ->group_by('series_id')
-                ->where($column, $idd)
-                ->where('is_quick', null);
-            // Apply filters based on the provided conditions
-            foreach ($filters as $filterName => $filterValues) {
-                if (!empty($filterValues)) {
-                    if ($filterName === 'price_range') {
-                        // Handle price range filter
-                        $this->db->group_start();
-                        foreach ($filterValues as $priceRange) {
-                            list($min, $max) = explode('-', $priceRange);
-                            $this->db->or_where("price BETWEEN $min AND $max", null, false); // Add false to prevent CodeIgniter from escaping the SQL
-                        }
-                        $this->db->group_end();
-                    } else {
-                        // Handle other filters
-                        $this->db->where_in($filterName, $filterValues);
-                    }
-                }
-            }
-            $data['productCount'] = $this->db->get('tbl_products')->num_rows();
-            //--------- pagination config ----------------------
-            $total_rows = $data['productCount'];
-            // Calculate the total number of pages
-            $total_pages = ceil($total_rows / $per_page);
 
-            // Get the current page number
-            $current_page = $page_index;
-            $config['total_rows'] = $total_rows;
-
-            // Initialize the pagination
-            $this->pagination->initialize($config);
-
-            // Create an array for the page dropdown options
-            $page_options = array();
-            for ($i = 1; $i <= $total_pages; $i++) {
-                $page_options[$i] = $i;
-            }
-            if (!empty($page_index) && $page_index != "all") {
-                if (is_numeric($page_index)) {
-                    $start = ($page_index - 1) * $config['per_page'];
-                } else {
-                    $page_index = 0;
-                    $start = 0;
-                }
-                $this->db->select('full_set_images, images, group_images, series_id, pro_id, group_id, group_description, price, catalog_values')
-                    ->group_by('series_id')
-                    ->where($column, $idd)
-                    ->where('is_quick', null)
-                    ->limit($config["per_page"], $start);
-                // Apply filters based on the provided conditions
-                foreach ($filters as $filterName => $filterValues) {
-                    if (!empty($filterValues)) {
-                        if ($filterName === 'price_range') {
-                            // Handle price range filter
-                            $this->db->group_start();
-                            foreach ($filterValues as $priceRange) {
-                                list($min, $max) = explode('-', $priceRange);
-                                $this->db->or_where("price BETWEEN $min AND $max", null, false); // Add false to prevent CodeIgniter from escaping the SQL
-                            }
-                            $this->db->group_end();
-                        } else {
-                            // Handle other filters
-                            $this->db->where_in($filterName, $filterValues);
-                        }
-                    }
-                }
-                $data['products_data'] = $this->db->get('tbl_products')->result();
-            } else {
-                $page_index = 0;
-                $start = 0;
-                $this->db->select('full_set_images, images, group_images, series_id, pro_id, group_id, group_description, price, catalog_values')
-                    ->group_by('series_id')
-                    ->where($column, $idd)
-                    ->where('is_quick', null);
-                // Apply filters based on the provided conditions
-                foreach ($filters as $filterName => $filterValues) {
-                    if (!empty($filterValues)) {
-                        if ($filterName === 'price_range') {
-                            // Handle price range filter
-                            $this->db->group_start();
-                            foreach ($filterValues as $priceRange) {
-                                list($min, $max) = explode('-', $priceRange);
-                                $this->db->or_where("price BETWEEN $min AND $max", null, false); // Add false to prevent CodeIgniter from escaping the SQL
-                            }
-                            $this->db->group_end();
-                        } else {
-                            // Handle other filters
-                            $this->db->where_in($filterName, $filterValues);
-                        }
-                    }
-                }
-                $data['products_data'] = $this->db->get('tbl_products')->result();
-            }
-
-            $mini2_data = $this->db->get_where('tbl_minisubcategory2', array('is_active' => 1, 'id' => $idd))->row();
-            $mini_data = $this->db->get_where('tbl_minisubcategory', array('is_active' => 1, 'id' => $mini2_data->minorsubcategory))->row();
-            $subcat_data = $this->db->get_where('tbl_sub_category', array('is_active' => 1, 'id' => $mini_data->subcategory))->row();
-            $cat_data = $this->db->get_where('tbl_category', array('is_active' => 1, 'id' => $mini_data->category))->row();
-            $data['category_name'] = $cat_data->name;
-            $data['subcategory_name'] = $subcat_data->name;
-            $data['category_id'] = $cat_data->id;
-            $data['minorsub_name'] = $mini_data->name;
-            $data['minorsub2_name'] = $mini2_data->name;
-            $data['description'] = $mini2_data->description;
-            $data['banner'] = $mini2_data->banner;
-            $data['heading'] = $mini2_data->name;
-        } else if ($type == 1) { //---- minor category
-            $column = 'minor_category_id';
-            $this->db->select('id')
-                ->group_by('series_id')
-                ->where($column, $idd)
-                ->where('is_quick', null);
-            // Apply filters based on the provided conditions
-            foreach ($filters as $filterName => $filterValues) {
-                if (!empty($filterValues)) {
-                    if ($filterName === 'price_range') {
-                        // Handle price range filter
-                        $this->db->group_start();
-                        foreach ($filterValues as $priceRange) {
-                            list($min, $max) = explode('-', $priceRange);
-                            $this->db->or_where("price BETWEEN $min AND $max", null, false); // Add false to prevent CodeIgniter from escaping the SQL
-                        }
-                        $this->db->group_end();
-                    } else {
-                        // Handle other filters
-                        $this->db->where_in($filterName, $filterValues);
-                    }
-                }
-            }
-            $data['productCount'] = $this->db->get('tbl_products')->num_rows();
-            //--------- pagination config ----------------------
-            $total_rows = $data['productCount'];
-            // Calculate the total number of pages
-            $total_pages = ceil($total_rows / $per_page);
-
-            // Get the current page number
-            $current_page = $page_index;
-            $config['total_rows'] = $total_rows;
-
-            // Initialize the pagination
-            $this->pagination->initialize($config);
-
-            // Create an array for the page dropdown options
-            $page_options = array();
-            for ($i = 1; $i <= $total_pages; $i++) {
-                $page_options[$i] = $i;
-            }
-            $page_options[$i] = "Show All";
-            if (!empty($page_index) && $page_index != "all") {
-                if (is_numeric($page_index)) {
-                    $start = ($page_index - 1) * $config['per_page'];
-                } else {
-                    $page_index = 0;
-                    $start = 0;
-                }
-                $this->db->select('full_set_images, images, group_images, series_id, pro_id, group_id, group_description, price, catalog_values')
-                    ->group_by('series_id')
-                    ->where($column, $idd)
-                    ->where('is_quick', null)
-                    ->limit($config["per_page"], $start);
-                // Apply filters based on the provided conditions
-                foreach ($filters as $filterName => $filterValues) {
-                    if (!empty($filterValues)) {
-                        if ($filterName === 'price_range') {
-                            // Handle price range filter
-                            $this->db->group_start();
-                            foreach ($filterValues as $priceRange) {
-                                list($min, $max) = explode('-', $priceRange);
-                                $this->db->or_where("price BETWEEN $min AND $max", null, false); // Add false to prevent CodeIgniter from escaping the SQL
-                            }
-                            $this->db->group_end();
-                        } else {
-                            // Handle other filters
-                            $this->db->where_in($filterName, $filterValues);
-                        }
-                    }
-                }
-                $data['products_data'] = $this->db->get('tbl_products')->result();
-            } else {
-                $page_index = 0;
-                $start = 0;
-                $this->db->select('full_set_images, images, group_images, series_id, pro_id, group_id, group_description, price, catalog_values')
-                    ->group_by('series_id')
-                    ->where($column, $idd)
-                    ->where('is_quick', null);
-                // Apply filters based on the provided conditions
-                foreach ($filters as $filterName => $filterValues) {
-                    if (!empty($filterValues)) {
-                        if ($filterName === 'price_range') {
-                            // Handle price range filter
-                            $this->db->group_start();
-                            foreach ($filterValues as $priceRange) {
-                                list($min, $max) = explode('-', $priceRange);
-                                $this->db->or_where("price BETWEEN $min AND $max", null, false); // Add false to prevent CodeIgniter from escaping the SQL
-                            }
-                            $this->db->group_end();
-                        } else {
-                            // Handle other filters
-                            $this->db->where_in($filterName, $filterValues);
-                        }
-                    }
-                }
-                $data['products_data'] = $this->db->get('tbl_products')->result();
-            }
-
-            $mini_data = $this->db->get_where('tbl_minisubcategory', array('is_active' => 1, 'id' => $idd))->row();
-            $subcat_data = $this->db->get_where('tbl_sub_category', array('is_active' => 1, 'id' => $mini_data->subcategory))->row();
-            $cat_data = $this->db->get_where('tbl_category', array('is_active' => 1, 'id' => $mini_data->category))->row();
-            $data['category_name'] = $cat_data->name;
-            $data['subcategory_name'] = $subcat_data->name;
-            $data['category_id'] = $cat_data->id;
-            $data['minorsub_name'] = $mini_data->name;
-            $data['description'] = $mini_data->description;
-            $data['banner'] = $mini_data->banner;
-            $data['heading'] = $mini_data->name;
-        } else if ($type == 3) { //---- category
-            $column = 'category_id';
-            $this->db->select('id')
-                ->group_by('series_id')
-                ->where($column, $idd)
-                ->where('is_quick', null);
-            // Apply filters based on the provided conditions
-            foreach ($filters as $filterName => $filterValues) {
-                if (!empty($filterValues)) {
-                    if ($filterName === 'price_range') {
-                        // Handle price range filter
-                        $this->db->group_start();
-                        foreach ($filterValues as $priceRange) {
-                            list($min, $max) = explode('-', $priceRange);
-                            $this->db->or_where("price BETWEEN $min AND $max", null, false); // Add false to prevent CodeIgniter from escaping the SQL
-                        }
-                        $this->db->group_end();
-                    } else {
-                        // Handle other filters
-                        $this->db->where_in($filterName, $filterValues);
-                    }
-                }
-            }
-            $data['productCount'] = $this->db->get('tbl_products')->num_rows();
-            //--------- pagination config ----------------------
-            $total_rows = $data['productCount'];
-            // Calculate the total number of pages
-            $total_pages = ceil($total_rows / $per_page);
-
-            // Get the current page number
-            $current_page = $page_index;
-            $config['total_rows'] = $total_rows;
-
-            // Initialize the pagination
-            $this->pagination->initialize($config);
-
-            // Create an array for the page dropdown options
-            $page_options = array();
-            for ($i = 1; $i <= $total_pages; $i++) {
-                $page_options[$i] = $i;
-            }
-            $page_options[$i] = "Show All";
-            if (!empty($page_index) && $page_index != "all") {
-                if (is_numeric($page_index)) {
-                    $start = ($page_index - 1) * $config['per_page'];
-                } else {
-                    $page_index = 0;
-                    $start = 0;
-                }
-                $this->db->select('full_set_images, images, group_images, series_id, pro_id, group_id, group_description, price, catalog_values')
-                    ->group_by('series_id')
-                    ->where($column, $idd)
-                    ->where('is_quick', null)
-                    ->limit($config["per_page"], $start);
-                // Apply filters based on the provided conditions
-                foreach ($filters as $filterName => $filterValues) {
-                    if (!empty($filterValues)) {
-                        if ($filterName === 'price_range') {
-                            // Handle price range filter
-                            $this->db->group_start();
-                            foreach ($filterValues as $priceRange) {
-                                list($min, $max) = explode('-', $priceRange);
-                                $this->db->or_where("price BETWEEN $min AND $max", null, false); // Add false to prevent CodeIgniter from escaping the SQL
-                            }
-                            $this->db->group_end();
-                        } else {
-                            // Handle other filters
-                            $this->db->where_in($filterName, $filterValues);
-                        }
-                    }
-                }
-                $data['products_data'] = $this->db->get('tbl_products')->result();
-            } else {
-                $page_index = 0;
-                $start = 0;
-                $this->db->select('full_set_images, images, group_images, series_id, pro_id, group_id, group_description, price, catalog_values')
-                    ->group_by('series_id')
-                    ->where($column, $idd)
-                    ->where('is_quick', null);
-                // Apply filters based on the provided conditions
-                foreach ($filters as $filterName => $filterValues) {
-                    if (!empty($filterValues)) {
-                        if ($filterName === 'price_range') {
-                            // Handle price range filter
-                            $this->db->group_start();
-                            foreach ($filterValues as $priceRange) {
-                                list($min, $max) = explode('-', $priceRange);
-                                $this->db->or_where("price BETWEEN $min AND $max", null, false); // Add false to prevent CodeIgniter from escaping the SQL
-                            }
-                            $this->db->group_end();
-                        } else {
-                            // Handle other filters
-                            $this->db->where_in($filterName, $filterValues);
-                        }
-                    }
-                }
-                $data['products_data'] = $this->db->get('tbl_products')->result();
-            }
-
-            $cat_data = $this->db->get_where('tbl_category', array('is_active' => 1, 'id' => $idd))->row();
-            $data['category_name'] = $cat_data->name;
-            $data['category_id'] = $cat_data->id;
-            $data['subcategory_name'] = '';
-            $data['minorsub_name'] = '';
-            $data['description'] = $cat_data->description;
-            $data['banner'] = $cat_data->banner;
-            $data['heading'] = $cat_data->name;
-        } else { //---- subactegory
-            $column = "subcategory_id";
-            $this->db->select('id')
-                ->group_by('series_id')
-                ->where($column, $idd)
-                ->where('is_quick', null);
-            // Apply filters based on the provided conditions
-            foreach ($filters as $filterName => $filterValues) {
-                if (!empty($filterValues)) {
-                    if ($filterName === 'price_range') {
-                        // Handle price range filter
-                        $this->db->group_start();
-                        foreach ($filterValues as $priceRange) {
-                            list($min, $max) = explode('-', $priceRange);
-                            $this->db->or_where("price BETWEEN $min AND $max", null, false); // Add false to prevent CodeIgniter from escaping the SQL
-                        }
-                        $this->db->group_end();
-                    } else {
-                        // Handle other filters
-                        $this->db->where_in($filterName, $filterValues);
-                    }
-                }
-            }
-
-            $data['productCount'] = $this->db->get('tbl_products')->num_rows();
-            // echo $data['productCount'];
-            // die();
-
-            //--------- pagination config ----------------------
-            $total_rows = $data['productCount'];
-            // Calculate the total number of pages
-            $total_pages = ceil($total_rows / $per_page);
-
-            // Get the current page number
-            $current_page = $page_index;
-            $config['total_rows'] = $total_rows;
-
-            // Initialize the pagination
-            $this->pagination->initialize($config);
-
-            // Create an array for the page dropdown options
-            $page_options = array();
-            for ($i = 1; $i <= $total_pages; $i++) {
-                $page_options[$i] = $i;
-            }
-            $page_options[$i] = "Show All";
-            if (!empty($page_index) && $page_index != "all") {
-                if (is_numeric($page_index)) {
-                    $start = ($page_index - 1) * $config['per_page'];
-                } else {
-                    $page_index = 0;
-                    $start = 0;
-                }
-                $this->db->select('full_set_images, images, group_images, series_id, pro_id, group_id, group_description, price, catalog_values')
-                    ->group_by('series_id')
-                    ->where($column, $idd)
-                    ->where('is_quick', null)
-                    ->limit($config["per_page"], $start);
-                // Apply filters based on the provided conditions
-                foreach ($filters as $filterName => $filterValues) {
-                    if (!empty($filterValues)) {
-                        if ($filterName === 'price_range') {
-                            // Handle price range filter
-                            $this->db->group_start();
-                            foreach ($filterValues as $priceRange) {
-                                list($min, $max) = explode('-', $priceRange);
-                                $this->db->or_where("price BETWEEN $min AND $max", null, false); // Add false to prevent CodeIgniter from escaping the SQL
-                            }
-                            $this->db->group_end();
-                        } else {
-                            // Handle other filters
-                            $this->db->where_in($filterName, $filterValues);
-                        }
-                    }
-                }
-                $data['products_data'] = $this->db->get('tbl_products')->result();
-            } else {
-                $page_index = 0;
-                $start = 0;
-                $this->db->select('full_set_images, images, group_images, series_id, pro_id, group_id, group_description, price, catalog_values')
-                    ->group_by('series_id')
-                    ->where($column, $idd)
-                    ->where('is_quick', null);
-                // Apply filters based on the provided conditions
-                foreach ($filters as $filterName => $filterValues) {
-                    if (!empty($filterValues)) {
-                        if ($filterName === 'price_range') {
-                            // Handle price range filter
-                            $this->db->group_start();
-                            foreach ($filterValues as $priceRange) {
-                                list($min, $max) = explode('-', $priceRange);
-                                $this->db->or_where("price BETWEEN $min AND $max", null, false); // Add false to prevent CodeIgniter from escaping the SQL
-                            }
-                            $this->db->group_end();
-                        } else {
-                            // Handle other filters
-                            $this->db->where_in($filterName, $filterValues);
-                        }
-                    }
-                }
-                $data['products_data'] = $this->db->get('tbl_products')->result();
-            }
-
-            $subcat_data = $this->db->get_where('tbl_sub_category', array('is_active' => 1, 'id' => $idd))->row();
-            $cat_data = $this->db->get_where('tbl_category', array('is_active' => 1, 'id' => $subcat_data->category))->row();
-            $data['category_name'] = $cat_data->name;
-            $data['subcategory_name'] = $subcat_data->name;
-            $data['category_id'] = $cat_data->id;
-            $data['description'] = $subcat_data->description;
-            $data['banner'] = $subcat_data->banner;
-            $data['heading'] = $subcat_data->name;
+        return $filters;
+    }
+    private function getColumnDataOnType($idd, $type)
+    {
+        switch ($type) {
+            case 1:
+                $mini2_data = $this->db->get_where('tbl_minisubcategory2', array('is_active' => 1, 'id' => $idd))->row();
+                $mini_data = $this->db->get_where('tbl_minisubcategory', array('is_active' => 1, 'id' => $mini2_data->minorsubcategory))->row();
+                $subcat_data = $this->db->get_where('tbl_sub_category', array('is_active' => 1, 'id' => $mini_data->subcategory))->row();
+                $cat_data = $this->db->get_where('tbl_category', array('is_active' => 1, 'id' => $mini_data->category))->row();
+                $final['category_name'] = $cat_data->name;
+                $final['subcategory_name'] = $subcat_data->name;
+                $final['category_id'] = $cat_data->id;
+                $final['minorsub_name'] = $mini_data->name;
+                $final['minorsub2_name'] = $mini2_data->name;
+                $final['description'] = $mini2_data->description;
+                $final['banner'] = $mini2_data->banner;
+                $final['heading'] = $mini2_data->name;
+                $data['column'] = 'minor2_category_id';
+                break;
+            case 2:
+                $mini_data = $this->db->get_where('tbl_minisubcategory', array('is_active' => 1, 'id' => $idd))->row();
+                $subcat_data = $this->db->get_where('tbl_sub_category', array('is_active' => 1, 'id' => $mini_data->subcategory))->row();
+                $cat_data = $this->db->get_where('tbl_category', array('is_active' => 1, 'id' => $mini_data->category))->row();
+                $data['category_name'] = $cat_data->name;
+                $data['subcategory_name'] = $subcat_data->name;
+                $data['category_id'] = $cat_data->id;
+                $data['minorsub_name'] = $mini_data->name;
+                $data['description'] = $mini_data->description;
+                $data['banner'] = $mini_data->banner;
+                $data['heading'] = $mini_data->name;
+                $data['column'] = 'minor_category_id';
+                break;
+            case 3:
+                $cat_data = $this->db->get_where('tbl_category', array('is_active' => 1, 'id' => $idd))->row();
+                $data['category_name'] = $cat_data->name;
+                $data['category_id'] = $cat_data->id;
+                $data['subcategory_name'] = '';
+                $data['minorsub_name'] = '';
+                $data['description'] = $cat_data->description;
+                $data['banner'] = $cat_data->banner;
+                $data['heading'] = $cat_data->name;
+                $data['column'] = 'category_id';
+                break;
+            default:
+                $subcat_data = $this->db->get_where('tbl_sub_category', array('is_active' => 1, 'id' => $idd))->row();
+                $cat_data = $this->db->get_where('tbl_category', array('is_active' => 1, 'id' => $subcat_data->category))->row();
+                $data['category_name'] = $cat_data->name;
+                $data['subcategory_name'] = $subcat_data->name;
+                $data['category_id'] = $cat_data->id;
+                $data['description'] = $subcat_data->description;
+                $data['banner'] = $subcat_data->banner;
+                $data['heading'] = $subcat_data->name;
+                $data['column'] = 'subcategory_id';
         }
+        return $data;
+    }
+
+    private function handlePriceRangeFilter($priceRanges)
+    {
+        $this->db->group_start();
+        foreach ($priceRanges as $priceRange) {
+            list($min, $max) = explode('-', $priceRange);
+            $this->db->or_where("price BETWEEN $min AND $max", null, false);
+        }
+        $this->db->group_end();
+    }
+    private function applyFiltersAndPagination($config, $data, $idd, $page_index)
+    {
+        $this->db->select('full_set_images, images, group_images, series_id, pro_id, group_id, group_description, price, catalog_values')
+            ->group_by('series_id')
+            ->where($data['column'], $idd)
+            ->where('is_quick', null);
+
+        if (!empty($data['filters']['price_range'])) {
+            $this->handlePriceRangeFilter($data['filters']['price_range']);
+        }
+
+        // Apply other filters
+        foreach ($data['filters'] as $filterName => $filterValues) {
+            if ($filterName !== 'price_range' && !empty($filterValues)) {
+                $this->db->where_in($filterName, $filterValues);
+            }
+        }
+
+        $data['productCount'] = $this->db->get('tbl_products')->num_rows();
+
+        // Pagination configuration
+        $this->db->select('full_set_images, images, group_images, series_id, pro_id, group_id, group_description, price, catalog_values')
+            ->group_by('series_id')
+            ->where($data['column'], $idd)
+            ->where('is_quick', null);
+
+        if (!empty($data['filters']['price_range'])) {
+            $this->handlePriceRangeFilter($data['filters']['price_range']);
+        }
+
+        // Apply other filters
+        foreach ($data['filters'] as $filterName => $filterValues) {
+            if ($filterName !== 'price_range' && !empty($filterValues)) {
+                $this->db->where_in($filterName, $filterValues);
+            }
+        }
+
+        $total_rows = $data['productCount'];
+        $total_pages = ceil($total_rows / $config['per_page']);
+        $current_page = $page_index;
+        $config['total_rows'] = $total_rows;
+        $this->pagination->initialize($config);
+        $page_options = array();
+        for ($i = 1; $i <= $total_pages; $i++) {
+            $page_options[$i] = $i;
+        }
+        $page_options[$i] = "Show All";
+        // Retrieve products based on pagination
+        if (!empty($page_index) && $page_index !== "all") {
+            if (is_numeric($page_index)) {
+                $start = ($page_index - 1) * $config['per_page'];
+                $this->db->limit($config['per_page'], $start);
+            } else {
+                $page_index = 0;
+            }
+        } else {
+            $page_index = 0;
+        }
+        $data['products_data'] = $this->db->get('tbl_products')->result();
+        $data['current_page'] = $current_page;
+        $data['total_pages'] = $total_pages;
+        $data['page_options'] = $page_options;
+        return $data;
+    }
+    public function all_products($idd, $t, $page_index = "1")
+    {
+        $this->load->helper('form');
+        $type = base64_decode($t);
+        $config = $this->configurePagination($idd, $t);
+        $filters = $this->prepareFilters();
+        $data = $this->getColumnDataOnType($idd, $type);
+        $data['filters'] = $filters;
+        $data = $this->applyFiltersAndPagination($config, $data, $idd, $page_index);
         // Retrieve distinct values for specific keys
         $columns = array('jewelry_state', 'stone_size', 'stone_shape', 'stone_type');
         // Initialize arrays to store unique values
@@ -1408,7 +1109,7 @@ class Home extends CI_Controller
             $result = $this->db
                 ->select($columnName)
                 ->group_by($columnName)
-                ->where($column, $idd)
+                ->where($data['column'], $idd)
                 ->where('is_quick IS NULL', null, false) // Use IS NULL without parameter binding
                 ->where("$columnName IS NOT NULL", null, false) // Exclude null values for the specific column
                 ->get('tbl_products')
@@ -1419,18 +1120,13 @@ class Home extends CI_Controller
             sort($data[$columnName]);
         }
         $data['setting_method'] = [];
-
         $data['type'] = $type;
         $links = $this->pagination->create_links();
         $data['sort_type'] = '';
         $data['level_id'] = $idd;
         $data['links'] = $links;
-        $data['current_page'] = $current_page;
-        $data['total_pages'] = $total_pages;
-        $data['page_options'] = $page_options;
         $data['idd'] = $idd;
         $data['t'] = $t;
-
         $this->load->view('common/header', $data);
         $this->load->view('all_products');
         $this->load->view('common/footer');
