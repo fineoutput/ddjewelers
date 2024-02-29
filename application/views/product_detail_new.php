@@ -37,7 +37,16 @@
 
   }
 
-
+  @media (min-width: 1268px) and (max-width: 2560px){
+button#vie2 {
+    width: 65% !important;
+    font-size: 14px;
+    padding: 6px 10px;
+    justify-content: center;
+    display: flex;
+    margin: auto;
+}
+}
 
 
   .swiper-backface-hidden .swiper-slide {
@@ -525,7 +534,7 @@ $minor2Data = $this->db->get_where('tbl_minisubcategory2', array('id' => $produc
         </div>
         <div class="col-md-12 m-auto">
           <a href="<?= base_url() ?>Home/load_modify_contact/<?= $products->id ?>">
-            <button type="button" class="btn w-100 mt-3" style="background-color:#2a2828;color:white"><i class="fa fa-cog" style="color:#edbe68" aria-hidden="true"></i><span> Modify This Style</span></button>
+            <button type="button" id="vie2" class="btn w-100 mt-3" style="background-color:#2a2828;color:white"><i class="fa fa-cog" style="color:#edbe68" aria-hidden="true"></i><span> Modify This Style</span></button>
           </a>
         </div>
       </div>
