@@ -486,7 +486,7 @@ class Products extends CI_finecontrol
             'subcategory_id' => $receive['subcategory_id'],
             'minor_category_id' => $receive['minor_category_id'],
             'minor2_category_id' => $receive['minor2_category_id'],
-            'is_quick' => $receive['is_quick'] ? $receive['is_quick'] : null,
+            'is_quick' => $receive['is_quick'] ? $receive['is_quick'] : 0,
             'pro_id' => $prod->Id,
             'sku' => $prod->SKU,
             'short_description' => $prod->ShortDescription,
