@@ -434,10 +434,10 @@
                         <a href="<?= base_url() ?>Home/product_details/<?= $data->series_id ?>/<?= $data->pro_id ?>?groupId=<?= $data->group_id ?>">
                           <? if (!empty($image1)) { ?>
                             <img src="<?= $image1 ?>" alt="" class=" img-fluid first_img">
-                            <img src="<?= $image2 ? $image2 : $image1 ?>" alt="" class="img-fluid second_img" style="margin-left: 28px;">
+                            <img src="<?= $image2 ? $image2 : $image1 ?>" alt="" class="img-fluid second_img" style="">
                           <? } else { ?>
                             <img src="<?= base_url() ?>assets/uploads/no-image-found.jpg" alt="" class="img-fluid first_img">
-                            <img src="<?= base_url() ?>assets/uploads/no-image-found.jpg" alt="" class="img-fluid second_img" style="margin-left: 28px;">
+                            <img src="<?= base_url() ?>assets/uploads/no-image-found.jpg" alt="" class="img-fluid second_img">
                           <? } ?></a>
                       </div>
                       <div class="col-md-12 col-7 rext">
