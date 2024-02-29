@@ -9,95 +9,57 @@
         margin-bottom: 3.5rem;
     }
 
+    .col-md-3.col-12.searchColumn .box-sho {
+    padding: 10px;
+    height: 320px;
+    border: 1px solid #dee2e6!important;
+    border-radius: 5px;
+  }
+  .col-md-3.col-12.searchColumn .box-sho:hover {
+    padding: 10px;
+    border: 1px solid #999999 !important;
+    height: 320px;
+}
 
 
     /* new css add 28/2/2024 */
     .searchColumn {
     margin-bottom: 1.5rem !important;
 }
-.col-md-3.col-12.searchColumn .under-box {
-    padding: 10px;
-    height: 320px;
-    border: 1px solid #dee2e6!important;
-    border-radius: 5px;
+
+  
+
+@media(max-width:572px){
+    p.text-center.box-red{
+      display: none;
+    }
+    p.text-center.box-red-2{
+    display: block;
   }
-  .col-md-3.col-12.searchColumn .under-box:hover {
+  p.text-center.box-red-2 {
+    margin: 10px 0px;
+    display: flex;
+}
+  .col-md-12.col-7.rext {
+    text-align: start;
+}
+.col-md-3.col-12.searchColumn .box-sho {
     padding: 10px;
-    border: 1px solid #999999 !important;
-    height: 320px;
+    height: 100% !important;
+    border: 0px solid #dee2e6 !important;
+    border-radius: 5px;
+    border-bottom: 1px solid #dee2e6 !important;
 }
+.searchColumn {
+    margin-bottom: 0.5rem !important;
+}
+  }
 
-    
-@media(max-width:570px){
-  .col-md-3.col-12.searchColumn div {
-  display: flex;
-  flex-direction:row-reverse;
-  align-items: center;
-}
-.col-md-3.col-12.searchColumn div p.price {
-    margin-bottom: 0px;
-}
-img.img-fluid.first_img{
-  width: 60%;
-}
-img.img-fluid.second_img{
-  width: 60%;
-}
-.col-md-3.col-12.searchColumn .under-box {
-    padding: 10px;
-    border: 0px !important; 
-    /* border-top:  1px solid #c4c4c4;; */
-    border-bottom:  1px solid #c4c4c4 !important;
-    height: 151px;
-}
-p.bold-text {
-    position: absolute;
-    left: revert;
-    right: 12px;
-    width: 61%;
-    bottom: 31%;
-}
-.col-md-3.col-12.searchColumn div p.price {
-    margin-bottom: 0px;
-    position: absolute;
-    width: 62%;
-    right: 62px;
- 
-    bottom: 15px;
-}
-p.text-center.box-red {
-    position: relative;
-    top: -32%;
-    text-align: start !important;
-    right: -47px;
-}
-.under-box div img.img-fluid.first_img {
-  display: flex;
-}
-
-}
-
-@media (max-width: 395px){
-  p.bold-text {
-    position: absolute;
-    left: revert;
-    right: 0px;
-    width: 61%;
-    bottom: 22%;
-}
-.col-md-3.col-12.searchColumn div p.price {
-    margin-bottom: 0px;
-    position: absolute;
-    width: 62%;
-    right: 56px;
-}
-p.text-center.box-red {
-    position: relative;
-    top: -32%;
-    right: -32px;
-
-}
-}
+  @media(max-width:493px){
+    h1.r-title.fsd{
+      font-size: 23px !important;
+    }
+  }
 
 </style>
 <section>
@@ -114,7 +76,7 @@ p.text-center.box-red {
                     <div class="col-md-12 mb-4">
                         <div class="row ">
                             <div class="col-md-12 mb-4 hrds">
-                                <h1 class="r-title">
+                                <h1 class="r-title fsd">
                                     Search Products - <?= $search_string; ?> (<?=$productCount?>)
                                 </h1>
                             </div>
@@ -177,19 +139,23 @@ p.text-center.box-red {
                                     }
                                 }
                         ?>
-                                <div class="col-md-3  col-sm-6 col-12 searchColumn">
-                  <div class="under-box">
-                   
-                  <p class="text-center box-red"><i> <b><?= $data->series_id ?> </b></i></p>
-                  <div>
-                  <a href="<?= base_url() ?>Home/product_details/<?= $data->series_id ?>/<?= $data->pro_id ?>?groupId=<?= $data->group_id ?>">
+                                
+<div class="col-md-3  col-sm-6 col-12 searchColumn">
+<div class="box-sho">
+    <div class="row">
+    <div class="col-md-12 col-5" style="align-self: center;">  
+    <p class="text-center box-red"><i> <b><?= $data->series_id ?> </b></i></p>
+    <a href="<?= base_url() ?>Home/product_details/<?= $data->series_id ?>/<?= $data->pro_id ?>?groupId=<?= $data->group_id ?>">
                     <? if (!empty($image1)) { ?>
                       <img src="<?= $image1 ?>" alt="" class=" img-fluid first_img">
                       <img src="<?= $image2 ? $image2 : $image1 ?>" alt="" class="img-fluid second_img" style="margin-left: 28px;">
                     <? } else { ?>
                       <img src="<?= base_url() ?>assets/uploads/no-image-found.jpg" alt="" class="img-fluid first_img">
                       <img src="<?= base_url() ?>assets/uploads/no-image-found.jpg" alt="" class="img-fluid second_img" style="margin-left: 28px;">
-                    <? } ?>
+                    <? } ?></a>
+    </div>
+      <div class="col-md-12 col-7 rext">  
+    <p class="text-center box-red-2"><i> <b><?= $data->series_id ?> </b></i></p>
           
                     <p class="bold-text"><b><?= $data->group_description ?></b></p>
                     <? if (!empty($data->price)) {
@@ -226,11 +192,12 @@ p.text-center.box-red {
                       <p class="price box-trft">$<?= number_format($now_price, 2); ?></p>
                     <? } else { ?>
                       <p class="price box-trft"><a href="<?= base_url(); ?>Home/contact_us">contact</a></p>
-                    <? } ?>
-                  </a>
-                  </div>
-                  </div>
-                </div>
+                    <? } ?> </div>
+    </div>
+    </div>
+
+  </div>
+
                             <?php $i++;
                             } 
                             if ($page_index != "all") {
