@@ -926,14 +926,14 @@ class Home extends CI_Controller
                 $mini_data = $this->db->get_where('tbl_minisubcategory', array('is_active' => 1, 'id' => $mini2_data->minorsubcategory))->row();
                 $subcat_data = $this->db->get_where('tbl_sub_category', array('is_active' => 1, 'id' => $mini_data->subcategory))->row();
                 $cat_data = $this->db->get_where('tbl_category', array('is_active' => 1, 'id' => $mini_data->category))->row();
-                $final['category_name'] = $cat_data->name;
-                $final['subcategory_name'] = $subcat_data->name;
-                $final['category_id'] = $cat_data->id;
-                $final['minorsub_name'] = $mini_data->name;
-                $final['minorsub2_name'] = $mini2_data->name;
-                $final['description'] = $mini2_data->description;
-                $final['banner'] = $mini2_data->banner;
-                $final['heading'] = $mini2_data->name;
+                $data['category_name'] = $cat_data->name;
+                $data['subcategory_name'] = $subcat_data->name;
+                $data['category_id'] = $cat_data->id;
+                $data['minorsub_name'] = $mini_data->name;
+                $data['minorsub2_name'] = $mini2_data->name;
+                $data['description'] = $mini2_data->description;
+                $data['banner'] = $mini2_data->banner;
+                $data['heading'] = $mini2_data->name;
                 $data['column'] = 'minor2_category_id';
                 break;
             case 2:

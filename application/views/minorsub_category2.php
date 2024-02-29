@@ -30,10 +30,10 @@
           <?php $i = 1;
           foreach ($minorsub_category->result() as $data) { ?>
             <div class="col-md-4">
-              <a href="<?= base_url(); ?>Home/all_products/<?= $data->id ?>/<?= base64_encode(2); ?>">
+              <a href="<?= base_url(); ?>Home/all_products/<?= $data->id ?>/<?= base64_encode(1); ?>">
                 <div class="text-center sub_img">
                   <img src="<?= base_url(); ?><?= $data->image ?>">
-                  <p><a href="<?= base_url(); ?>Home/all_products/<?= $data->id ?>/<?= base64_encode(2); ?>"><?= $data->name ?></a></p>
+                  <p><a href="<?= base_url(); ?>Home/all_products/<?= $data->id ?>/<?= base64_encode(1); ?>"><?= $data->name ?></a></p>
                 </div>
               </a>
             </div>

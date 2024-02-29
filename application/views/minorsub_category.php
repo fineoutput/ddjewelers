@@ -33,18 +33,19 @@
 
           ?>
             <div class="col-md-4">
-              <? if ($data->id == 34 || $data->id == 37) { ?>
-                <a href="<?= base_url(); ?>Home/minor_category/<?= base64_encode($data->id) ?>">
-                <? } else if (!empty($check)) { ?>
-                  <a href="<?= base_url(); ?>Home/minor2_sub_products/<?= base64_encode($data->id) ?>">
-                  <? } else { ?>
-                    <a href="<?= base_url(); ?>Home/all_products/<?= $data->id ?>/<?= base64_encode(1); ?>">
-                    <? } ?>
-                    <div class="text-center sub_img">
-                      <img src="<?= base_url(); ?><?= $data->image ?>">
-                      <p><a href="<?= base_url(); ?>Home/all_products/<?= $data->id ?>/<?= base64_encode(1); ?>"><?= $data->name ?></a></p>
-                    </div>
-                    </a>
+              <? if ($data->id == 34 || $data->id == 37) {
+                $url = base_url() . 'Home/minor_category/' . base64_encode($data->id);
+              } else if (!empty($check)) {
+                $url = base_url() . 'Home/minor2_sub_products/' . base64_encode($data->id);
+              } else {
+                $url = base_url() . 'Home/all_products/' . $data->id . '/' . base64_encode(2);
+              } ?>
+              <a href="<?= $url ?>">
+                <div class="text-center sub_img">
+                  <img src="<?= base_url(); ?><?= $data->image ?>">
+                  <p><a href="<?= $url ?>"><?= $data->name ?></a></p>
+                </div>
+              </a>
             </div>
           <?php $i++;
           } ?>
