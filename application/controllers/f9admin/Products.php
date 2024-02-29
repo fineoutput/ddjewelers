@@ -466,7 +466,7 @@ class Products extends CI_finecontrol
     {
         date_default_timezone_set("Asia/Calcutta");
         $cur_date = date("Y-m-d H:i:s");
-        $inputArray = [$prod->SKU, $prod->ShortDescription, $prod->Description, $prod->DescriptiveElementGroup->DescriptiveElements[0]->Value, $prod->DescriptiveElementGroup->GroupId,$prod->GroupDescription];
+        $inputArray = [$prod->SKU, $prod->ShortDescription, $prod->Description, $prod->DescriptiveElementGroup->DescriptiveElements[0]->Value, $prod->DescriptiveElementGroup->GroupId, $prod->GroupDescription];
         $cleanedArray = array_map(function ($item) {
             return str_replace(['\/', '/',], '', $item);
         }, $inputArray);
@@ -951,6 +951,17 @@ class Products extends CI_finecontrol
                     } else {
                         $fun = 'AskSideStone(this)'; //---- if have more then one stone location----
                     }
+                    //------ check price rule condition ----
+                    if ($StoneFamilyName == 'Diamond' && ($stoneCategory == "Diamonds with Grading Report" || $stoneCategory == "Diamonds")) {
+                        $pr_data = $this->db->get_where('tbl_price_rule', array('name' => 'Diamonds'))->row();
+                    } else if ($StoneFamilyName == 'Diamond' && ($stoneCategory == "Lab-Grown" || $stoneCategory == "Lab-Grown with Grading Report")) {
+                        $pr_data = $this->db->get_where('tbl_price_rule', array('name' => 'Lab Grown Diamonds'))->row();
+                    } else if ($StoneFamilyName == 'Moissanite') {
+                        $pr_data = $this->db->get_where('tbl_price_rule', array('name' => 'Moissanite'))->row();
+                    } else {
+                        $pr_data = $this->db->get_where('tbl_price_rule', array('name' => 'Gemstones'))->row();
+                    }
+                    $multiplier = $pr_data->multiplier;
                     //------------- START CREATING TABLE LIST ------------
                     foreach ($data as $item) {
                         // print_r($item);die();
@@ -981,8 +992,6 @@ class Products extends CI_finecontrol
                             //------ if product is serialized but have non-serialized data-----
                             if (!empty($item->Product)) {
                                 //-------- calculate gems stone price --------
-                                $pr_data = $this->db->get_where('tbl_price_rule2', array())->row();
-                                $multiplier = $pr_data->multiplier;
                                 $cost_price = $item->Product->ShowcasePrice->Value;
                                 $final_price = $cost_price;
                                 if ($cost_price <= 500) {
@@ -1031,8 +1040,6 @@ class Products extends CI_finecontrol
                                 }
 
                                 //-------- calculate gems stone price --------
-                                $pr_data = $this->db->get_where('tbl_price_rule2', array())->row();
-                                $multiplier = $pr_data->multiplier;
                                 $cost_price = $item->TotalPrice->Value;
                                 $final_price = $cost_price;
                                 if ($cost_price <= 500) {
