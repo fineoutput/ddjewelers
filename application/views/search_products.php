@@ -12,10 +12,10 @@
     overflow-y: auto;
   }
   img.img-fluid.first_img{
-    width: 63%;
+    width: 75%;
   }
   img.img-fluid.second_img{
-    width: 63%;
+    width: 75%;
   }
 
   .searchColumn {
@@ -24,7 +24,7 @@
 
   .col-md-3.col-12.searchColumn .box-sho {
     padding: 10px;
-    height: 355px;
+    height: 320px;
     border: 1px solid #dee2e6 !important;
     border-radius: 5px;
   }
@@ -32,13 +32,13 @@
   .col-md-3.col-12.searchColumn .box-sho:hover {
     padding: 10px;
     border: 1px solid #999999 !important;
-    height: 355px;
+    height: 320px;
   }
 
   .col-md-3.col-12.searchColumn .under-box:hover {
     padding: 10px;
     border: 1px solid #918f8f;
-    height: 355px;
+    height: 320px;
   }
 
   /* width */
@@ -133,7 +133,7 @@
   }
 </style>
 <section>
-    <div class="container-fluid pl-5 pr-5 pt-3 pb-5">
+    <div class="container pl-5 pr-5 pt-3 pb-5">
         <div class="row">
             <div class="col-md-12 page_span">
                 <p><a href="<?= base_url() ?>"><span>Home</span></a> > Search Products
