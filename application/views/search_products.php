@@ -11,6 +11,12 @@
     overflow: hidden;
     overflow-y: auto;
   }
+  img.img-fluid.first_img{
+    width: 63%;
+  }
+  img.img-fluid.second_img{
+    width: 63%;
+  }
 
   .searchColumn {
     margin-bottom: 1.5rem !important;
@@ -18,7 +24,7 @@
 
   .col-md-3.col-12.searchColumn .box-sho {
     padding: 10px;
-    height: 320px;
+    height: 355px;
     border: 1px solid #dee2e6 !important;
     border-radius: 5px;
   }
@@ -26,13 +32,13 @@
   .col-md-3.col-12.searchColumn .box-sho:hover {
     padding: 10px;
     border: 1px solid #999999 !important;
-    height: 320px;
+    height: 355px;
   }
 
   .col-md-3.col-12.searchColumn .under-box:hover {
     padding: 10px;
     border: 1px solid #918f8f;
-    height: 320px;
+    height: 355px;
   }
 
   /* width */
