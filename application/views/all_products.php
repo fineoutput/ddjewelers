@@ -10,7 +10,9 @@
     overflow: hidden;
     overflow-y: auto;
   }
-
+  img.img-fluid.second_img {
+    margin: auto;
+}
   .searchColumn {
     margin-bottom: 1.5rem !important;
   }

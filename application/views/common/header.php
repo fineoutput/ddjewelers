@@ -42,7 +42,9 @@
     width: 100%;
     display: block;
   }
-
+  img.img-fluid.second_img {
+    margin: auto;
+}
   .container.mt-3 .col-md-12.row.mt-5.p-0 .col-md-3.col-xl-3.col-xxl-3 .d-flex.justify-content-between.p-2.pb-4 a button.btn.d-flex {
     font-size: 14px !important;
     /* padding: 5px; */
