@@ -204,7 +204,7 @@ class Products extends CI_finecontrol
                         'subcategory_id' => $subcategory_id,
                         'minor_category_id' => $minor_category_id,
                         'minor2_category_id' => $minor2_category_id,
-                        'is_quick' => '',
+                        'is_quick' => 0,
                     ];
                     $this->fetch_product($send);
                     $this->session->set_flashdata('smessage', 'Data inserted successfully');
@@ -403,8 +403,11 @@ class Products extends CI_finecontrol
         if (!empty($result_da)) {
             $total_products = $result_da->TotalNumberOfProducts;
             $total_pages = round($result_da->TotalNumberOfProducts / 500) + 1;
-        }
-
+        }else{
+            $total_products = $result;
+            $inserted_products = 'Check Api response';
+            $total_pages = 0;
+        }        
         $NextPage = "";
         for ($i = 0; $i < $total_pages; $i++) {
             if (empty($NextPage)) {
