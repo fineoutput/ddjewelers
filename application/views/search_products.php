@@ -11,6 +11,12 @@
     overflow: hidden;
     overflow-y: auto;
   }
+  img.img-fluid.first_img{
+    width: 75%;
+  }
+  img.img-fluid.second_img{
+    width: 75%;
+  }
 
   .searchColumn {
     margin-bottom: 1.5rem !important;
@@ -127,7 +133,7 @@
   }
 </style>
 <section>
-    <div class="container-fluid pl-5 pr-5 pt-3 pb-5">
+    <div class="container pl-5 pr-5 pt-3 pb-5">
         <div class="row">
             <div class="col-md-12 page_span">
                 <p><a href="<?= base_url() ?>"><span>Home</span></a> > Search Products
