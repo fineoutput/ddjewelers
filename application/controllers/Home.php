@@ -1147,7 +1147,7 @@ class Home extends CI_Controller
             $sizePriceDa = array_values(array_filter($r_data, fn ($item) => $item['Size'] == $data['products']->ring_size))[0] ?? null;
             $sizePrice = $sizePriceDa['Price']['Value'];
         }
-
+        
         //----- START GET PRODUCT LATEST PRICE ------
         $curl = curl_init();
         curl_setopt_array($curl, array(
@@ -1176,21 +1176,24 @@ class Home extends CI_Controller
         $data['sizePrice'] = $sizePrice;
         $multiplier = $pr_data->multiplier;
         $cost_price = $pro_price + $sizePrice;
-        $retail = $cost_price * $multiplier;
-        $now_price = $cost_price;
+        $retail = ceil($cost_price * $multiplier / 5) * 5;
+        $now_price1 = $cost_price;
+        $now_price = ceil($cost_price / 5) * 5;
         if ($cost_price <= 500) {
             $cost_price2 = $cost_price * $cost_price;
             $number = round($cost_price * ($pr_data->cost_price1 * $cost_price2 + $pr_data->cost_price2 * $cost_price + $pr_data->cost_price3), 2);
             $unit = 5;
             $remainder = $number % $unit;
             $mround = ($remainder < $unit / 2) ? $number - $remainder : $number + ($unit - $remainder);
-            $now_price = round($mround) - 1 + 0.95;
+            $now_price1 = round($mround) - 1 + 0.95;
+            $now_price = ceil($now_price1 / 5) * 5;
         } else if ($cost_price > 500) {
             $number = round($cost_price * ($pr_data->cost_price4 * $cost_price / $multiplier + $pr_data->cost_price5));
             $unit = 5;
             $remainder = $number % $unit;
             $mround = ($remainder < $unit / 2) ? $number - $remainder : $number + ($unit - $remainder);
-            $now_price = round($mround) - 1 + 0.95;
+            $now_price1 = round($mround) - 1 + 0.95;
+            $now_price = ceil($now_price1 / 5) * 5;
         }
         $saved = round($retail - $now_price);
         $dis_percent = $saved / $retail * 100;

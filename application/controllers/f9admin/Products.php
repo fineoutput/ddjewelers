@@ -798,7 +798,7 @@ class Products extends CI_finecontrol
                 }
                 $html .= '<div class="row mt-3">';
                 foreach ($res->StoneFamilies as $item) {
-                    $categoriesToRemove = ["Imitation", "Natural"];
+                    $categoriesToRemove = ["Natural"];
                     //------- start removing categoriesToRemove and and duplicate category name -------
                     $categoriesWithSerializedIndicator = $item->CategoriesWithSerializedIndicator;
                     $filteredCategories = array_values(array_filter(array_map(function ($name) use ($categoriesWithSerializedIndicator, $categoriesToRemove) {
@@ -861,7 +861,7 @@ class Products extends CI_finecontrol
             echo json_encode($res);
         }
     }
-    //============================= START GET AJAX STONE FAMILY ==========================
+    //============================= End GET AJAX STONE FAMILY ==========================
     //============================= START GET AJAX SEARCH STONE ==========================
     public function SearchStone()
     {
@@ -1315,6 +1315,9 @@ class Products extends CI_finecontrol
                 // foreach ($res->Stones as $st) {
                 //     $stone_price += ($st->TotalShowcasePrice->Value + $st->ShowcaseLabor->Value);
                 // }
+                //   print_r($res->Stones);
+                // echo json_encode(['status' => 200, 'data' => '',]);
+                // return;
                 //-------- calculate gems stone price --------
                 $stonePrice = 0;
                 $stoneLabor = 0;

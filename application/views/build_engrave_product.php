@@ -1050,6 +1050,7 @@ if ($products->is_quick == 1) {
                     foreach ($setting_options as $st) {
                       if (!empty($st->GroupName)) {
                         $groupName = $st->GroupName;
+                        
                       } else {
                         $groupName = $st->Shape;
                       }

@@ -314,7 +314,7 @@ background-repeat: no-repeat;
     <div class="carousel-item text-center">
       <img class="d-block" src="<?=$products->image5?>?$xlarge$" alt="Fifth slide">
     </div>
-    <?if(!empty($products->image6)){?>}
+    <?if(!empty($products->image6)){?>
     <div class="carousel-item text-center">
       <img class="d-block" src="<?=$products->image6?>?$xlarge$" alt="Sixth slide">
     </div>

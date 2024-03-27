@@ -66,7 +66,8 @@
           </a> -->
         </div>
         <div class="col-md-4 text-center">
-            <img src="<?=$product_data->FullySetImage1?>" class="img-fluid" alt="">
+          <?php $fullimage = json_decode($product_data->full_set_images);       ?>
+            <img src="<?if(!empty($fullimage)){ echo $fullimage[0]->FullUrl;}   ?>" class="img-fluid" alt="">
           <!-- <div class="embed-responsive embed-responsive-4by3">
               <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/v64KOxKVLVg" allowfullscreen></iframe>
           </div> -->
