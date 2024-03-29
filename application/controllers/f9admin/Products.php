@@ -1153,6 +1153,7 @@ class Products extends CI_finecontrol
                     } else {
                         $SF = $StoneFamilyName; //--- if have more then one stone location
                     }
+                   
                     //--------- Start for side stone or more then one stone data fetching ----------------
                     if (!empty($groupName) && $groupName != $st->GroupName) {
                         //--- Replacing stone category name (side stone don't have below stone category)------
@@ -1179,6 +1180,7 @@ class Products extends CI_finecontrol
                                 'Host: api.stuller.com',
                             ),
                         ));
+                        
                         // echo json_encode(['status' => 200, 'data' => '', 'html' => '', 'test' => json_encode('{"ConfigurationModelId":' . $pro_data->config_model_id . ',"LocationNumbers":[' . $st->LocationNumber . '],"StoneFamilyName":"' . $SF . '","StoneCategories":["' . $stoneCategory . '"]"IncludeSerializedProduct":' . $is_serialized . '}')]);
                         // return;
                         $response = curl_exec($curl);
@@ -1240,6 +1242,7 @@ class Products extends CI_finecontrol
                                 $stone_pro_id = '';
                                 $stone_series_no = '';
                             }
+                           
                         }
                     }
                     //--------- End for side stone or more then one stone data fetching ----------------
@@ -1264,6 +1267,7 @@ class Products extends CI_finecontrol
                             }
                         }
                     }
+                  
                 } //------end foreach 
                 $final_arr = json_encode($final_arr);
                 // echo json_encode(['status' => 200, 'data' => '', 'html' => '', 'test' => $final_arr]);
@@ -1287,6 +1291,8 @@ class Products extends CI_finecontrol
                         'Host: api.stuller.com',
                     ),
                 ));
+              
+                
                 $response = curl_exec($curl);
                 curl_close($curl);
                 $res = json_decode($response);
@@ -1301,6 +1307,7 @@ class Products extends CI_finecontrol
                 } else {
                     $value = $res->Product->QualityCatalogValue;
                 }
+                
                 $html = '<h6 class="mt-3">' . $res->Product->GroupDescription . '</h6>';
                 $html .= '<div class="table-responsive-sm">';
                 $html .= '<table class="table table-hover"><tbody>';
@@ -1318,16 +1325,28 @@ class Products extends CI_finecontrol
                 //   print_r($res->Stones);
                 // echo json_encode(['status' => 200, 'data' => '',]);
                 // return;
+                
+
                 //-------- calculate gems stone price --------
                 $stonePrice = 0;
                 $stoneLabor = 0;
+                
                 foreach ($res->Stones as $st_data) {
                     $stonePrice += $st_data->TotalShowcasePrice->Value;
                     $stoneLabor += $st_data->ShowcaseLabor->Value;
                 }
-                $pr_data = $this->db->get_where('tbl_price_rule2', array())->row();
+                
+                
+                if($stoneCategory == "Diamonds with Grading Report"){
+                    $pr_data = $this->db->get_where('tbl_price_rule', array('name' => 'Diamonds'))->row();
+                }
+                else{
+                    $pr_data = $this->db->get_where('tbl_price_rule', array('name' => $stoneCategory))->row();
+                }
+                
                 $multiplier = $pr_data->multiplier;
-                $cost_price = $stonePrice;
+                $cost_price = $res->TotalShowcasePrice->Value-$res->Product->Price->Value-$res->RingSizingShowcasePrice->Value;
+                $retail =  ceil($cost_price * $multiplier / 5) * 5;
                 $stone_final_price = $cost_price;
                 if ($cost_price <= 500) {
                     $cost_price2 = $cost_price * $cost_price;
@@ -1348,35 +1367,46 @@ class Products extends CI_finecontrol
                 // echo json_encode(['status' => 200, 'data' => '',]);
                 // return;
                 //===== update stone price in final price =====
-                $pro_final_price = ($res->TotalShowcasePrice->Value - $stonePrice) + $stone_final_price;
-                //   echo $res->TotalShowcasePrice->Value;
-                //   echo "br";
+                // $pro_final_price = $res->PolishingShowcasePrice->Value+ $stoneLabor + $stone_final_price;
+
+                $final_price = ceil($stone_final_price / 5) * 5;
+                $saved = round($retail - $final_price, 2);
+                 
+                
                 //   echo $pro_final_price;
 
                 // echo json_encode(['status' => 200, 'data' => '',]);
                 // return;
-                $pr_data = $this->db->get_where('tbl_price_rule', array('name' => 'Product'))->row();
-                $multiplier = $pr_data->multiplier;
-                // $cost_price = $res->TotalShowcasePrice->Value;
-                $cost_price = $pro_final_price;
-                $retail =  round($cost_price * $multiplier, 2);
-                $final_price = $cost_price;
-                if ($cost_price <= 500) {
-                    $cost_price2 = $cost_price * $cost_price;
-                    $number = round($cost_price * ($pr_data->cost_price1 * $cost_price2 + $pr_data->cost_price2 * $cost_price + $pr_data->cost_price3), 2);
-                    $unit = 5;
-                    $remainder = $number % $unit;
-                    $mround = ($remainder < $unit / 2) ? $number - $remainder : $number + ($unit - $remainder);
-                    $final_price = round($mround) - 1 + 0.95;
-                } else if ($cost_price > 500) {
-                    $number = round($cost_price * ($pr_data->cost_price4 * $cost_price / $multiplier + $pr_data->cost_price5));
-                    $unit = 5;
-                    $remainder = $number % $unit;
-                    $mround = ($remainder < $unit / 2) ? $number - $remainder : $number + ($unit - $remainder);
-                    $final_price = round($mround) - 1 + 0.95;
-                }
-                $saved = round($retail - $final_price, 2);
-                // $dis_percent = round($saved / $retail * 100,2);
+                
+                //---------------- stoneprice calcuted----------------
+
+
+                
+
+                // $pr_data = $this->db->get_where('tbl_price_rule', array('name' => 'Product'))->row();
+                // $multiplier = $pr_data->multiplier;
+                // // $cost_price = $res->TotalShowcasePrice->Value;
+                // $cost_price = $pro_final_price;
+                // $retail =  ceil($cost_price * $multiplier / 5) * 5;
+                // $final_price = $cost_price;
+                // if ($cost_price <= 500) {
+                //     $cost_price2 = $cost_price * $cost_price;
+                //     $number = round($cost_price * ($pr_data->cost_price1 * $cost_price2 + $pr_data->cost_price2 * $cost_price + $pr_data->cost_price3), 2);
+                //     $unit = 5;
+                //     $remainder = $number % $unit;
+                //     $mround = ($remainder < $unit / 2) ? $number - $remainder : $number + ($unit - $remainder);
+                //     $final_price1 = round($mround) - 1 + 0.95;
+                //     $final_price = ceil($final_price1 / 5) * 5;
+                // } else if ($cost_price > 500) {
+                //     $number = round($cost_price * ($pr_data->cost_price4 * $cost_price / $multiplier + $pr_data->cost_price5));
+                //     $unit = 5;
+                //     $remainder = $number % $unit;
+                //     $mround = ($remainder < $unit / 2) ? $number - $remainder : $number + ($unit - $remainder);
+                //     $final_price1 = round($mround) - 1 + 0.95;
+                //     $final_price = ceil($final_price1 / 5) * 5;
+                // }
+                // $saved = round($retail - $final_price, 2);
+                // // $dis_percent = round($saved / $retail * 100,2);
 
                 $html .= '<div class="price-summary col-md-8 float-right">
                 <div class="price-item">
@@ -1399,7 +1429,7 @@ class Products extends CI_finecontrol
                     data-gem-data=\'' . json_encode($res->Stones) . '\'  data-price="' . $final_price . '" data-img="' . $res->Images[0]->ZoomUrl . '">';
                     }
                 } else {
-                    $html .= '<input type="submit" class="mt-3 add-btn" value="Save" onclick="SaveStone(this);" quantity="1" id="addToCartBtn" data-pro-id="' . $ProductId . '" data-ring_size="' . $RingSize . '" data-ring_price="" data-gem-data=\'' . json_encode($res->Stones) . '\' data-price="' . $final_price . '" data-img="' . $res->Images[0]->ZoomUrl . '">';
+                    $html .= '<input type="submit" class="mt-3 add-btn" value="Save" onclick="SaveStone(this);" quantity="1" id="addToCartBtn" data-pro-id="' . $ProductId . '" data-ring_size="' . $RingSize . '" data-ring_price="" data-gem-data=\'' . json_encode($res->Stones) . '\' data-price="' . $final_price . '" data-img="' . $res->Images[0]->ZoomUrl . '" data-retail="' . $retail . '" data-saved="' . $saved . '">';
                 }
                 $html .=  '<button class="mt-3 add-btn" id="loader" disabled style="display:none">
                 <i class="fa fa-spinner fa-spin"></i> Loading...

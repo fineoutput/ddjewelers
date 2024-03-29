@@ -1609,7 +1609,27 @@ if ($products->is_quick == 1) {
     var ring_size = obj.getAttribute('data-ring_size');
     var ring_price = obj.getAttribute('data-ring_price');
     var gem_data = obj.getAttribute('data-gem-data');
-    var price = obj.getAttribute('data-price');
+
+    var pricetext = obj.getAttribute('data-price');
+    var price = parseFloat(pricetext);
+    var basePriceText = $("#p_price").text();
+    var basePrice = parseFloat(basePriceText);
+    var finalprice = price+basePrice;
+
+    var retailPriceText = $("#r_price").text().replace(/,/g, '').replace(/\$/g, '');
+    var retailPrice = parseFloat(retailPriceText);
+    var retailPrice = parseFloat(retailPriceText);
+    var RetailText = obj.getAttribute('data-retail').replace(/\$/g, '');
+    var Retail = parseFloat(RetailText);
+    var totalretail = Retail+retailPrice;
+
+    var basesavedText = $("#s_price").text();
+    var basesaved = parseFloat(basesavedText);
+    var sevedtext = obj.getAttribute('data-saved');
+    var saved = parseFloat(sevedtext);
+    var totalsaved = basesaved+saved;
+
+    var dis_percent = ((totalsaved / totalretail) * 100).toFixed(0);
     var img = obj.getAttribute('data-img');
     myElement.setAttribute("data-pro-id", ProductId);
     myElement.setAttribute("data-ring_size", ring_size);
@@ -1628,6 +1648,10 @@ if ($products->is_quick == 1) {
     } else if (gem_arr.LabGrownDiamond) {
       var item = gem_arr.LabGrownDiamond;
     }
+    document.getElementById("p_price").textContent = finalprice;
+    document.getElementById("r_price").textContent = totalretail;
+    document.getElementById("s_price").textContent = totalsaved;
+    document.getElementById("d_price").textContent = dis_percent;
     html = "<div class='row m-0 justify-content-between'><span><b>" + item.SKU + "</b></span><a href='javascript:void(0)' id='gem_remove' onclick='ResetGems()' style='color:red'>Reset</a></div>"
     $("#gem_div").html(html);
     $("#gem_btn").hide();
