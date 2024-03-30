@@ -1179,9 +1179,11 @@ class Home extends CI_Controller
         $multiplier = $pr_data->multiplier;
         $cost_price = $pro_price + $sizePrice;
         $retail = ceil($cost_price * $multiplier / 5) * 5;
+        $retail = floor($retail) + 0.95;
         
-        $now_price1 = $cost_price;
-        $now_price = ceil($cost_price / 5) * 5;
+        $now_price = $cost_price;
+        //$now_price = ceil($cost_price / 5) * 5;
+        
         if ($cost_price <= 500) {
             $cost_price2 = $cost_price * $cost_price;
             $number = round($cost_price * ($pr_data->cost_price1 * $cost_price2 + $pr_data->cost_price2 * $cost_price + $pr_data->cost_price3), 2);
@@ -1191,6 +1193,7 @@ class Home extends CI_Controller
             $mround = ($remainder < $unit / 2) ? $number - $remainder : $number + ($unit - $remainder);
             $now_price1 = round($mround) - 1 + 0.95;
             $now_price = ceil($now_price1 / 5) * 5;
+            $now_price = floor($now_price) + 0.95;
 
             
         } else if ($cost_price > 500) {
@@ -1200,6 +1203,7 @@ class Home extends CI_Controller
             $mround = ($remainder < $unit / 2) ? $number - $remainder : $number + ($unit - $remainder);
             $now_price1 = round($mround) - 1 + 0.95;
             $now_price = ceil($now_price1 / 5) * 5;
+            $now_price = floor($now_price) + 0.95;
         }
         $saved = round($retail - $now_price);
         $dis_percent = $saved / $retail * 100;
