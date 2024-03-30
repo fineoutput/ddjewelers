@@ -1630,6 +1630,12 @@ if ($products->is_quick == 1) {
     var totalsaved = basesaved+saved;
 
     var dis_percent = ((totalsaved / totalretail) * 100).toFixed(0);
+
+    document.getElementById("p_price").textContent = finalprice;
+    document.getElementById("r_price").textContent = totalretail;
+    document.getElementById("s_price").textContent = totalsaved;
+    document.getElementById("d_price").textContent = dis_percent;
+
     var img = obj.getAttribute('data-img');
     myElement.setAttribute("data-pro-id", ProductId);
     myElement.setAttribute("data-ring_size", ring_size);
@@ -1648,11 +1654,13 @@ if ($products->is_quick == 1) {
     } else if (gem_arr.LabGrownDiamond) {
       var item = gem_arr.LabGrownDiamond;
     }
-    document.getElementById("p_price").textContent = finalprice;
-    document.getElementById("r_price").textContent = totalretail;
-    document.getElementById("s_price").textContent = totalsaved;
-    document.getElementById("d_price").textContent = dis_percent;
-    html = "<div class='row m-0 justify-content-between'><span><b>" + item.SKU + "</b></span><a href='javascript:void(0)' id='gem_remove' onclick='ResetGems()' style='color:red'>Reset</a></div>"
+    if (item.Id ) {
+      console.log(gem_arr);
+    html = "<div class='row m-0 justify-content-between'><span><b>" + item.SKU + "</b></span><a href='javascript:void(0)' id='gem_remove' onclick='ResetGems()' style='color:red'>Reset</a></div>"}
+    else{
+      html = "<div class='row m-0 justify-content-between'><span><b>" + item.StoneType + "</b></span><a href='javascript:void(0)' id='gem_remove' onclick='ResetGems()' style='color:red'>Reset</a></div>"
+
+    }
     $("#gem_div").html(html);
     $("#gem_btn").hide();
     setTimeout(() => {

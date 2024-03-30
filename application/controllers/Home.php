@@ -1179,7 +1179,7 @@ class Home extends CI_Controller
         $multiplier = $pr_data->multiplier;
         $cost_price = $pro_price + $sizePrice;
         $retail = ceil($cost_price * $multiplier / 5) * 5;
-        $retail = floor($retail) + 0.95;
+       
         
         $now_price = $cost_price;
         //$now_price = ceil($cost_price / 5) * 5;

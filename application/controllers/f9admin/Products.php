@@ -1272,7 +1272,7 @@ class Products extends CI_finecontrol
                 $final_arr = json_encode($final_arr);
                 // echo json_encode(['status' => 200, 'data' => '', 'html' => '', 'test' => $final_arr]);
                 // return;
-
+               
                 //------- start configure product curl-------
                 $curl = curl_init();
                 curl_setopt_array($curl, array(
@@ -1339,6 +1339,12 @@ class Products extends CI_finecontrol
                 
                 if($stoneCategory == "Diamonds with Grading Report"){
                     $pr_data = $this->db->get_where('tbl_price_rule', array('name' => 'Diamonds'))->row();
+                }
+                elseif($stoneCategory == "Lab-Grown"){
+                    $pr_data = $this->db->get_where('tbl_price_rule', array('name' => 'Lab-Grown Diamonds'))->row();
+                }
+                elseif($stoneCategory == "Notable Gems"){
+                    $pr_data = $this->db->get_where('tbl_price_rule', array('name' => 'Imitation'))->row();
                 }
                 else{
                     $pr_data = $this->db->get_where('tbl_price_rule', array('name' => $stoneCategory))->row();
@@ -1407,6 +1413,7 @@ class Products extends CI_finecontrol
                 // }
                 // $saved = round($retail - $final_price, 2);
                 // // $dis_percent = round($saved / $retail * 100,2);
+                
 
                 $html .= '<div class="price-summary col-md-8 float-right">
                 <div class="price-item">
