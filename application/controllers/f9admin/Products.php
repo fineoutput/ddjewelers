@@ -1343,7 +1343,7 @@ class Products extends CI_finecontrol
                 elseif($stoneCategory == "Lab-Grown"){
                     $pr_data = $this->db->get_where('tbl_price_rule', array('name' => 'Lab-Grown Diamonds'))->row();
                 }
-                elseif($stoneCategory == "Notable Gems"){
+                elseif($stoneCategory == "Notable Gems" || $stoneCategory == "Imitation"){
                     $pr_data = $this->db->get_where('tbl_price_rule', array('name' => 'Imitation'))->row();
                 }
                 else{
