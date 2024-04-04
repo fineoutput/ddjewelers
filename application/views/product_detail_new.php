@@ -433,13 +433,21 @@ $minor2Data = $this->db->get_where('tbl_minisubcategory2', array('id' => $produc
 
 <div class="container mt-3 ">
   <div class="row">
-    <div class="col-md-12 page_span">
-      <p>
-        <?= $catData ? $catData->name  : '' ?>
-        <?= $subCatData ? ' > ' . $subCatData->name : '' ?>
-        <?= $minor1Data ? ' > ' . $minor1Data->name  : '' ?>
-        <?= $minor2Data ? ' > ' . $minor2Data->name : '' ?>
-      </p>
+  <div class="col-md-12 page_span">
+    <p>  <?php if (!empty($subCatData)) { ?>
+           <a href="<?= base_url(); ?>Home/sub_category/<?= $catData->id ?>"><span><?= $catData->name; ?></span></a>
+            <?php if (!empty($minor2Data)) { ?>
+              > <span><?= $subCatData->name; ?></span> > <span><?= $minor1Data->name; ?> > <span><?= $minor2Data->name; ?></span>
+        </p>
+      <?php } else  if (!empty($minor1Data)) { ?>
+        > <span><?= $subCatData->name; ?></span> > <span><?= $minor1Data->name; ?></span>
+        </p>
+      <?php } else if (!empty($subCatData)) { ?>
+        > <span><?= $subCatData->name; ?></span> </p>
+      <?php } ?>
+    <?php } else { ?>
+      <span><?= $category_name; ?></span>
+    <?php } ?>
     </div>
     <div class="col-md-12">
       <h1 id="p_title" class="r-title" style="font-weight:600;"><?= $products->description ?></h1>

@@ -477,7 +477,7 @@
                           }
                           $saved = round($retail - $now_price);
                         ?>
-                          <p class="price box-trft">$<?= number_format($now_price, 2); ?></p>
+                         <!-- <p class="price box-trft">$<?= number_format($now_price, 2); ?></p> -->
                         <? } else { ?>
                           <p class="price box-trft"><a href="<?= base_url(); ?>Home/contact_us">contact</a></p>
                         <? } ?>
