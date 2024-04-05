@@ -928,6 +928,7 @@ class Home extends CI_Controller
                 $cat_data = $this->db->get_where('tbl_category', array('is_active' => 1, 'id' => $mini_data->category))->row();
                 $data['category_name'] = $cat_data->name;
                 $data['subcategory_name'] = $subcat_data->name;
+                $data['subcategory_id'] = $subcat_data->id;
                 $data['category_id'] = $cat_data->id;
                 $data['minorsub_name'] = $mini_data->name;
                 $data['minorsub2_name'] = $mini2_data->name;
@@ -941,6 +942,7 @@ class Home extends CI_Controller
                 $subcat_data = $this->db->get_where('tbl_sub_category', array('is_active' => 1, 'id' => $mini_data->subcategory))->row();
                 $cat_data = $this->db->get_where('tbl_category', array('is_active' => 1, 'id' => $mini_data->category))->row();
                 $data['category_name'] = $cat_data->name;
+                $data['subcategory_id'] = $subcat_data->id;
                 $data['subcategory_name'] = $subcat_data->name;
                 $data['category_id'] = $cat_data->id;
                 $data['minorsub_name'] = $mini_data->name;
@@ -964,6 +966,7 @@ class Home extends CI_Controller
                 $subcat_data = $this->db->get_where('tbl_sub_category', array('is_active' => 1, 'id' => $idd))->row();
                 $cat_data = $this->db->get_where('tbl_category', array('is_active' => 1, 'id' => $subcat_data->category))->row();
                 $data['category_name'] = $cat_data->name;
+                $data['subcategory_id'] = $subcat_data->id;
                 $data['subcategory_name'] = $subcat_data->name;
                 $data['category_id'] = $cat_data->id;
                 $data['description'] = $subcat_data->description;

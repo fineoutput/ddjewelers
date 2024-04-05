@@ -127,27 +127,27 @@
     }
   }
 </style>
+
 <section>
   <div class="container-fluid pl-5 pr-5 pt-3 pb-5">
-    <div class="row">
-      <div class="col-md-12 page_span">
+  <div class="row">
+    <div class="col-md-12 page_span">
         <p><a href="<?= base_url() ?>"><span>Home</span></a> >
-          <?php if (!empty($subcategory_name)) { ?>
-            <a href="<?= base_url(); ?>Home/sub_category/<?= $category_id ?>"><span><?= $category_name; ?></span></a>
-            <?php if (!empty($minorsub2_name)) { ?>
-              > <span><?= $subcategory_name; ?></span> > <span><?= $minorsub_name; ?> > <span><?= $minorsub2_name; ?></span>
+            <?php if (!empty($subcategory_name)) { ?>
+                <a href="<?= base_url(); ?>Home/sub_category/<?= $category_id ?>"><span><?= $category_name; ?></span></a>
+                <?php if (!empty($minorsub2_name)) { ?>
+                    > <span><?= $subcategory_name; ?></span> > <span><?= $minorsub_name; ?></span> > <span><?= $minorsub2_name; ?></span>
+                <?php } else if (!empty($minorsub_name)) { ?>
+                    > <a href="<?= base_url(); ?>Home/minor_sub_products/<?= base64_encode($subcategory_id) ?>"><span><?= $subcategory_name; ?></span></a> > <span><?= $minorsub_name; ?></span>
+                <?php } else { ?>
+                    > <span><?= $subcategory_name; ?></span>
+                <?php } ?>
+            <?php } else { ?>
+                <span><?= $category_name; ?></span>
+            <?php } ?>
         </p>
-      <?php } else  if (!empty($minorsub_name)) { ?>
-        > <span><?= $subcategory_name; ?></span> > <span><?= $minorsub_name; ?></span>
-        </p>
-      <?php } else if (!empty($subcategory_name)) { ?>
-        > <span><?= $subcategory_name; ?></span> </p>
-      <?php } ?>
-    <?php } else { ?>
-      <span><?= $category_name; ?></span>
-    <?php } ?>
-      </div>
     </div>
+</div>
     <?
     $priceRanges = array(
       array('min' => 0, 'max' => 500),
@@ -166,7 +166,7 @@
           <div class="d-flex align-items-center justify-content-between" style="    margin-bottom: 6px;">
             <button type="submit" class="add-btn" style="width:50% ;     margin-right: 2px;">Apply</button>
 
-            <button class="add-btn" style="width: 50%;margin-left:2px;     background: #75b0da;;">
+            <button class="add-btn" style="width: 50%;margin-left:2px;     background: #75b0da;">
               <a href="<?= base_url() ?>Home/all_products/<?= $idd ?>/<?= $t ?>">
                 Reset
               </a></button>
