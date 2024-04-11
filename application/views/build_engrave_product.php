@@ -453,7 +453,7 @@ if ($products->is_quick == 1) {
         > <span><?= $subCatData->name; ?></span> </p>
       <?php } ?>
     <?php } else { ?>
-      <span><?= $category_name; ?></span>
+      <span><?= $catData->name; ?></span>
     <?php } ?>
     </div>
     <!-- <p>

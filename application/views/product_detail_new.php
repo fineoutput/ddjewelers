@@ -446,7 +446,7 @@ $minor2Data = $this->db->get_where('tbl_minisubcategory2', array('id' => $produc
         > <span><?= $subCatData->name; ?></span> </p>
       <?php } ?>
     <?php } else { ?>
-      <span><?= $category_name; ?></span>
+      <span><?= $catData->name; ?></span>
     <?php } ?>
     </div>
     <div class="col-md-12">

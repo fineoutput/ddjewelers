@@ -919,7 +919,8 @@ class Home extends CI_Controller
         return $filters;
     }
     private function getColumnDataOnType($idd, $type)
-    {
+    {  
+        
         switch ($type) {
             case 1:
                 $mini2_data = $this->db->get_where('tbl_minisubcategory2', array('is_active' => 1, 'id' => $idd))->row();
@@ -974,20 +975,26 @@ class Home extends CI_Controller
                 $data['heading'] = $subcat_data->name;
                 $data['column'] = 'subcategory_id';
         }
+        
         return $data;
+        
     }
 
     private function handlePriceRangeFilter($priceRanges)
-    {
+    {    
         $this->db->group_start();
         foreach ($priceRanges as $priceRange) {
+           
             list($min, $max) = explode('-', $priceRange);
-            $this->db->or_where("price BETWEEN $min AND $max", null, false);
+            $min = (float) $min; // Cast to float to ensure the variable is treated as a number
+            $max = (float) $max; // Cast to float to ensure the variable is treated as a number
+            
+             $this->db->or_where("price BETWEEN $min AND $max", null, false);
         }
         $this->db->group_end();
     }
     private function applyFiltersAndPagination($config, $data, $idd, $page_index)
-    {
+    {     
         $this->db->select('full_set_images, images, group_images,series_id, pro_id, group_id, group_description, price, catalog_values');
         $this->db->group_by('series_id')
             ->where($data['column'], $idd)
@@ -1076,19 +1083,22 @@ class Home extends CI_Controller
         $data['links'] = $links;
         $data['idd'] = $idd;
         $data['t'] = $t;
+       
         $this->load->view('common/header', $data);
         $this->load->view('all_products');
         $this->load->view('common/footer');
     }
     public function product_details($series_id, $pro_id)
-    {
+    {  
         $group_id = $_GET['groupId'];
         $data['products'] = $this->db->get_where('tbl_products', array('pro_id' => $pro_id))->row();
         $data['stone_data']  = $this->db->select("id,pro_id,stone")->order_by('stone', 'desc')->group_by('stone')->get_where('tbl_products', array('series_id' => $series_id, 'group_id' => $group_id, 'is_quick' => $data['products']->is_quick))->result();
-        $product_data  = $this->db->select('elements')->group_by('pro_id')->get_where('tbl_products', array('series_id' => $series_id, 'group_id' => $group_id, 'stone' => $data['products']->stone, 'is_quick' => $data['products']->is_quick))->result();
+        $product_data  = $this->db->select('elements')->group_by('pro_id')->get_where('tbl_products', array('series_id' => $series_id, 'group_id' => $group_id,  'is_quick' => $data['products']->is_quick))->result();
+
+       // 'stone' => $data['products']->stone,
+
         $data['more_products'] = $this->db->select('series_id, full_set_images,images,group_images, group_id,group_description,pro_id')->where('series_id !=', $data['products']->series_id)->group_by('series_id')->limit(15)->get_where('tbl_products', array('category_id' => $data['products']->category_id, 'is_quick' => $data['products']->is_quick))->result();
         $data['suggested_products'] = $this->db->select('series_id, full_set_images,images,group_images, group_id,group_description,pro_id')->where('series_id !=', $data['products']->series_id)->group_by('series_id')->limit(15)->get_where('tbl_products', array('is_quick' => $data['products']->is_quick))->result();
-
 
         // $data['suggested_products'] = [];
         // $data['more_products']= [];
@@ -1102,7 +1112,7 @@ class Home extends CI_Controller
                 // echo $element['DisplayValue'];
                 $key = $element['Name'];
                 $value = $element['DisplayValue'];
-
+       
                 // Collect unique options for each key
                 if (!isset($options[$key])) {
                     $options[$key] = [];
@@ -1134,6 +1144,7 @@ class Home extends CI_Controller
                 }
             }
         }
+       
 
         // Sort options in ascending order
         foreach ($options as &$option) {
@@ -1221,6 +1232,7 @@ class Home extends CI_Controller
         $setting_options = json_decode($data['products']->setting_options);
         $engraving_options = json_decode($data['products']->engraving_options);
         //--- check added in cart or not 
+        
         $cart = 0;
         if ($this->session->userdata('user_id')) {
             $cartInfo = $this->db->get_where('tbl_cart', array('user_id' => $this->session->userdata('user_id'), 'pro_id' => $data['products']->pro_id, 'ring_size' => $data['products']->ring_size))->row();
