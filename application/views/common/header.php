@@ -88,7 +88,7 @@ div#stonesTypes .col-md-12 .row.mt-3 .col-md-3 button.btn.btn-light {
   }
 
   .swiper-backface-hidden .swiper-slide {
-    margin-right: 20px !important;
+    margin-right: 0px !important;
   }
 
   .swiper-backface-hidden .swiper-slide a p.h6 {
