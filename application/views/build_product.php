@@ -447,7 +447,7 @@ if ($products->is_quick == 1) {
         > <span><?= $subCatData->name; ?></span> </p>
       <?php } ?>
     <?php } else { ?>
-      <span><?= $category_name; ?></span>
+      <span><?= $catData->name; ?></span>
     <?php } ?>
     </div>
     <div class="col-md-12">
@@ -623,6 +623,7 @@ if ($products->is_quick == 1) {
           $index++;
           continue;
         }
+        
         if (!empty($uniqueOptions) && count($uniqueOptions) <= 1) {
           if ($uniqueOptions[0]['DisplayValue'] != 'N/A' && !empty($uniqueOptions[0]['DisplayValue'])) {
       ?>
@@ -630,6 +631,7 @@ if ($products->is_quick == 1) {
               <p><b><?php echo $key; ?></b></p>
               <p><?= $uniqueOptions[0]['DisplayValue'] ?></p>
             </div>
+            
           <? }
         } else if ($key == 'Quality') { ?>
           <div class="d-flex jus_cont">
