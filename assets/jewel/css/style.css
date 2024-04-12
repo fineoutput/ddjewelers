@@ -53,6 +53,7 @@ ul {
 }
 img {
     width: 100%;
+    max-width: 100%;
 }
 input,
 select,
@@ -2627,3 +2628,4 @@ div#zoid-paypal-button-bc23181b7a {
     margin-right: 1px;
 
   }
+  

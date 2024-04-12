@@ -8,8 +8,6 @@
     <?php $i=1; if(!empty($slider)){ foreach($slider->result() as $data) { ?>
     <li data-target="#demo" data-slide-to="<?=$i;?>" class="<? if($i==1) { echo "active"; }?>"></li>
     <?php $i++; } } ?>
-    <!-- <li data-target="#demo" data-slide-to="1"></li>
-    <li data-target="#demo" data-slide-to="2"></li> -->
   </ul>
 
   <!-- The slideshow -->
@@ -18,7 +16,7 @@
 <?php $i=1; if(!empty($slider)){ foreach($slider->result() as $data) { ?>
     <div class="carousel-item <? if($i==1) { echo "active"; }?>">
       <a href="<?=base_url(); ?>Home/sub_category/<?= $data->id?>">
-      <img class="he_40" src="<?=base_url();?><?=$data->image?>" alt="jewel" ></a>
+      <img class="he_40 lazyload" src="<?= base_url() ?>assets/frontend/lazy/slider20210528050501.jpg" data-src="<?=base_url();?><?=$data->image?>" alt="jewel"></a>
 </div>
 <?php $i++; } } ?>
 
@@ -57,11 +55,11 @@
 
       <div class="col-md-4 sm-mt-index">
         <div class="swiper-container mySwiper">
-          <div class="swiper-wrapper">
+          <div class="swiper-wrapper" >
     <?php $i=1; if(!empty($slider1)){ foreach($slider1->result() as $data) { ?>
             <div class="swiper-slide">
               <a href="<?=$data->link;?>">
-                <img src="<?=base_url().$data ->image;?>">
+                <img src="<?=base_url().$data ->image;?>" loading="lazy" >
               </a>
             </div>
     <?php $i++;} }?>
@@ -78,7 +76,7 @@
             <?php $i=1; if(!empty($slider2)){ foreach($slider2->result() as $data) { ?>
                     <div class="swiper-slide">
                       <a href="<?=$data->link;?>">
-                        <img src="<?=base_url().$data->image;?>">
+                        <img src="<?=base_url().$data->image;?>" loading="lazy">
                       </a>
                     </div>
             <?php $i++;} }?>
@@ -95,7 +93,7 @@
             <?php $i=1; if(!empty($slider3)){ foreach($slider3->result() as $data) { ?>
                     <div class="swiper-slide">
                       <a href="<?=$data->link;?>">
-                        <img src="<?=base_url().$data->image;?>">
+                        <img class="lazyload" src="<?= base_url() ?>assets/frontend/lazy/cat1.jpg" data-src="<?=base_url().$data->image;?>" loading="lazy">
                       </a>
                     </div>
             <?php $i++;} }?>
@@ -164,7 +162,7 @@
 
 
         <div>
-          <img src="<?=base_url();?><?=$data->image?>">
+          <img class="lazyload" src="<?= base_url() ?>assets/frontend/lazy/cat1.jpg" data-src="<?=base_url();?><?=$data->image?>">
           <button class="cat_but">
 
         <?php  if(!empty($subcategory_da)){ ?>
@@ -183,38 +181,7 @@
       }?>
       <?php $i++; } ?>
 
-      <!-- <div class="col-md-8" style="margin-top: 2rem;">
-        <div class="row">
 
-          <div class="col-md-12">
-            <a href="<?=base_url(); ?>Home/sub_category">
-            <img src="<?=base_url();?>assets/jewel/img/cat5.jpg">
-            <h3 class="cat2_name"><a href="<?=base_url(); ?>Home/sub_category">Diamonds</a></h3>
-            </a>
-          </div>
-
-
-
-        </div>
-      </div> -->
-
-
-
-      <!-- <div class="col-md-8 " style="margin-top: 2rem;">
-        <a href="<?=base_url(); ?>Home/sub_category">
-        <img class="h-100" src="<?=base_url();?>assets/jewel/img/cat6.jpg">
-        <h3 class="cat2_name"><a href="<?=base_url(); ?>Home/sub_category">Gemstones</a></h3>
-        </a>
-      </div> -->
-
-      <!-- <div class="col-md-4">
-        <a href="<?=base_url(); ?>Home/sub_category">
-        <div>
-          <img src="<?=base_url();?>assets/jewel/img/cat7.jpg">
-          <h3 class="cat3_name"><a href="<?=base_url(); ?>Home/sub_category">Flexible Designs</a></h3>
-        </div>
-        </a>
-      </div> -->
 
     </div>
 
@@ -240,5 +207,14 @@
   </div>
 </section>
 
+<script>
+  window.addEventListener('load', function() {
+    var lazyloadImages = document.querySelectorAll('.lazyload');
 
+    lazyloadImages.forEach(function(img) {
+      img.src = img.getAttribute('data-src');
+      img.removeAttribute('data-src');
+    });
+  });
+</script>
 <!-- not sure end -->
