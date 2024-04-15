@@ -627,6 +627,10 @@ $minor2Data = $this->db->get_where('tbl_minisubcategory2', array('id' => $produc
           <div class="d-flex jus_cont">
             <p><b>Quality</b></p>
             <select class="w-100 " id="<?php echo $key; ?>" name="<?php echo $key; ?>">
+            <?php
+              // Define your PHP variable to generate the ID dynamically
+              $id_select2_example = $key;
+              ?>
               <?php
               $quality = '';
               foreach ($uniqueOptions as $option) :
@@ -648,7 +652,7 @@ $minor2Data = $this->db->get_where('tbl_minisubcategory2', array('id' => $produc
                   $stone = 'rose_white.png';
                 }
               ?>
-                <option value="<?php echo $option['value']; ?>" data-key="<?= $index ?>" <?php echo $option['selected']; ?> data-thumbnail="<?= base_url() ?>assets/jewel/img/stone_quality/<?= $stone ?>"> <?php echo $DisplayValue; ?></option>
+                <option value="<?php echo $option['value']; ?>" data-key="<?= $index ?>" <?php echo $option['selected']; ?> data-img_src="<?= base_url() ?>assets/jewel/img/stone_quality/<?= $stone ?>"><?php echo $DisplayValue; ?></option>
               <?php endforeach; ?>
             </select>
             <!-- <div class="lang-select w-100" style="position: relative;">
@@ -1332,6 +1336,31 @@ $minor2Data = $this->db->get_where('tbl_minisubcategory2', array('id' => $produc
     $('.btn-select').html(langArray[langIndex]);
     //$('.btn-select').attr('value', 'en');
   }
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.5/js/select2.js"></script>
+<script type="text/javascript">
+  function custom_template(obj) {
+    var data = $(obj.element).data();
+    var text = $(obj.element).text();
+    if (data && data['img_src']) {
+      img_src = data['img_src'];
+      template = $("<div  style=\"margin-top:5px;\"><img src=\"" + img_src + "\" style=\"width:20px;height:20px;margin-top: 5px;float: left;\"/><p style=\"font-weight: 700;font-size:14px;margin-left: 25px;\">" + text + "</p></div>");
+      return template;
+    }
+  }
+  var options = {
+    'templateSelection': custom_template,
+    'templateResult': custom_template,
+  }
+  var dynamicId = "<?php echo $id_select2_example; ?>";
+  $('#' + dynamicId).select2(options);
+  $('.select2-selection--single').css({
+    'height': '40px'
+  });
+  $('.select2-container--default').css({
+    'width': '100%'
+  });
 </script>
 
 

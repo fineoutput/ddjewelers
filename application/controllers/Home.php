@@ -510,7 +510,7 @@ class Home extends CI_Controller
         }
     }
     public function search_product()
-    {
+    { 
         $this->load->helper(array('form', 'url'));
         $this->load->library('form_validation');
         $this->load->helper('security');
@@ -531,7 +531,8 @@ class Home extends CI_Controller
         }
     }
     public function search_result($string_main, $page_index = 1)
-    {
+    {     
+        $this->db->cache_on();
         $this->load->helper('form');
         $string = str_replace('SLR-', '', urldecode($string_main));
         if ($string == "10mm") {
@@ -572,6 +573,7 @@ class Home extends CI_Controller
             // Retrieve data based on pagination
             if (!empty($page_index) && $page_index != 'all') {
                 $start = is_numeric($page_index) ? ($page_index - 1) * $per_page : 0;
+                
                 $product_data = $this->db->select('full_set_images, images, group_images, series_id, pro_id, group_id, group_description, price, catalog_values')
                     ->like('search_values', $string)
                     ->limit($per_page, $start)
@@ -1048,7 +1050,7 @@ class Home extends CI_Controller
         return $data;
     }
     public function all_products($idd, $t, $page_index = "1")
-    {
+    {  $this->db->cache_on();
         $this->load->helper('form');
         $type = base64_decode($t);
         $config = $this->configurePagination($idd, $t);
@@ -1096,7 +1098,7 @@ class Home extends CI_Controller
         $product_data  = $this->db->select('elements')->group_by('pro_id')->get_where('tbl_products', array('series_id' => $series_id, 'group_id' => $group_id,  'is_quick' => $data['products']->is_quick))->result();
 
        // 'stone' => $data['products']->stone,
-
+       
         $data['more_products'] = $this->db->select('series_id, full_set_images,images,group_images, group_id,group_description,pro_id')->where('series_id !=', $data['products']->series_id)->group_by('series_id')->limit(15)->get_where('tbl_products', array('category_id' => $data['products']->category_id, 'is_quick' => $data['products']->is_quick))->result();
         $data['suggested_products'] = $this->db->select('series_id, full_set_images,images,group_images, group_id,group_description,pro_id')->where('series_id !=', $data['products']->series_id)->group_by('series_id')->limit(15)->get_where('tbl_products', array('is_quick' => $data['products']->is_quick))->result();
 
@@ -1112,7 +1114,6 @@ class Home extends CI_Controller
                 // echo $element['DisplayValue'];
                 $key = $element['Name'];
                 $value = $element['DisplayValue'];
-       
                 // Collect unique options for each key
                 if (!isset($options[$key])) {
                     $options[$key] = [];

@@ -225,6 +225,9 @@ class Products extends CI_finecontrol
     // ============ START FETCH DATA ========================
     public function fetch_product($received)
     {
+        $this->load->driver('cache');
+        $this->cache->clean();
+        
         ini_set('memory_limit', '3000M');
         $category_id = $received['category_id'];
         $subcategory_id = $received['subcategory_id'];

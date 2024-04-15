@@ -441,20 +441,20 @@ if ($products->is_quick == 1) {
 
   <div class="row">
     <div class="col-md-12 page_span">
-    <p>  <?php if (!empty($subCatData)) { ?>
-           <a href="<?= base_url(); ?>Home/sub_category/<?= $catData->id ?>"><span><?= $catData->name; ?></span></a>
-            <?php if (!empty($minor2Data)) { ?>
-              > <span><?= $subCatData->name; ?></span> > <span><?= $minor1Data->name; ?> > <span><?= $minor2Data->name; ?></span>
-        </p>
-      <?php } else  if (!empty($minor1Data)) { ?>
-        > <span><?= $subCatData->name; ?></span> > <span><?= $minor1Data->name; ?></span>
-        </p>
-      <?php } else if (!empty($subCatData)) { ?>
-        > <span><?= $subCatData->name; ?></span> </p>
-      <?php } ?>
-    <?php } else { ?>
-      <span><?= $catData->name; ?></span>
+      <p> <?php if (!empty($subCatData)) { ?>
+          <a href="<?= base_url(); ?>Home/sub_category/<?= $catData->id ?>"><span><?= $catData->name; ?></span></a>
+          <?php if (!empty($minor2Data)) { ?>
+            > <span><?= $subCatData->name; ?></span> > <span><?= $minor1Data->name; ?> > <span><?= $minor2Data->name; ?></span>
+      </p>
+    <?php } else  if (!empty($minor1Data)) { ?>
+      > <span><?= $subCatData->name; ?></span> > <span><?= $minor1Data->name; ?></span>
+      </p>
+    <?php } else if (!empty($subCatData)) { ?>
+      > <span><?= $subCatData->name; ?></span> </p>
     <?php } ?>
+  <?php } else { ?>
+    <span><?= $catData->name; ?></span>
+  <?php } ?>
     </div>
     <!-- <p>
         <?= $catData ? $catData->name  : '' ?>
@@ -678,6 +678,10 @@ if ($products->is_quick == 1) {
             <p><b>Metal</b></p>
             <select class="w-100 " id="<?php echo $key; ?>" name="<?php echo $key; ?>">
               <?php
+              // Define your PHP variable to generate the ID dynamically
+              $id_select2_example = $key;
+              ?>
+              <?php
               $quality = '';
               $stone = '';
               foreach ($uniqueOptions as $option) :
@@ -699,7 +703,9 @@ if ($products->is_quick == 1) {
                   $stone = 'rose_white.png';
                 }
               ?>
-                <option value="<?php echo $option['value']; ?>" data-key="<?= $index ?>" <?php echo $option['selected']; ?> data-thumbnail="<?= base_url() ?>assets/jewel/img/stone_quality/<?= $stone ?>"> <?php echo $DisplayValue; ?></option>
+
+                <option value="<?php echo $option['value']; ?>" data-key="<?= $index ?>" <?php echo $option['selected']; ?> data-img_src="<?= base_url() ?>assets/jewel/img/stone_quality/<?= $stone ?>"><?php echo $DisplayValue; ?></option>
+
               <?php endforeach; ?>
             </select>
             <!-- <div class="lang-select w-100" style="position: relative;">
@@ -1064,7 +1070,6 @@ if ($products->is_quick == 1) {
                     foreach ($setting_options as $st) {
                       if (!empty($st->GroupName)) {
                         $groupName = $st->GroupName;
-                        
                       } else {
                         $groupName = $st->Shape;
                       }
@@ -1473,14 +1478,14 @@ if ($products->is_quick == 1) {
       }
       var imageUrl = option.imageUrl;
       return $(
-        '<span><img src="' + imageUrl + '" class="font-image" /><span style="font-size:12px">'+option.text+'</span></span>'
+        '<span><img src="' + imageUrl + '" class="font-image" /><span style="font-size:12px">' + option.text + '</span></span>'
       );
     }
 
     // Custom formatting function for the selected option
     function formatOptionSelection(option) {
       return $(
-        '<span><img src="' + option.imageUrl + '" class="font-image" /><span style="font-size:12px">'+option.text+'</span></span>'
+        '<span><img src="' + option.imageUrl + '" class="font-image" /><span style="font-size:12px">' + option.text + '</span></span>'
       );
     }
 
@@ -1611,7 +1616,7 @@ if ($products->is_quick == 1) {
     $("#font-box").html('');
     $("#font-box").html('<select name="en_font" id="en_font" class="py-2 w-100"></select>');
     $("#en_div_" + id).hide('');
-    
+
     setTimeout(() => {
       $("#en_div_btn_" + id).show();
     }, 500);
@@ -1628,20 +1633,20 @@ if ($products->is_quick == 1) {
     var price = parseFloat(pricetext);
     var basePriceText = $("#p_price").text();
     var basePrice = parseFloat(basePriceText);
-    var finalprice = price+basePrice;
+    var finalprice = price + basePrice;
 
     var retailPriceText = $("#r_price").text().replace(/,/g, '').replace(/\$/g, '');
     var retailPrice = parseFloat(retailPriceText);
     var retailPrice = parseFloat(retailPriceText);
     var RetailText = obj.getAttribute('data-retail').replace(/\$/g, '');
     var Retail = parseFloat(RetailText);
-    var totalretail = Retail+retailPrice;
+    var totalretail = Retail + retailPrice;
 
     var basesavedText = $("#s_price").text();
     var basesaved = parseFloat(basesavedText);
     var sevedtext = obj.getAttribute('data-saved');
     var saved = parseFloat(sevedtext);
-    var totalsaved = basesaved+saved;
+    var totalsaved = basesaved + saved;
 
     var dis_percent = ((totalsaved / totalretail) * 100).toFixed(0);
 
@@ -1668,10 +1673,10 @@ if ($products->is_quick == 1) {
     } else if (gem_arr.LabGrownDiamond) {
       var item = gem_arr.LabGrownDiamond;
     }
-    if (item.Id ) {
+    if (item.Id) {
       console.log(gem_arr);
-    html = "<div class='row m-0 justify-content-between'><span><b>" + item.SKU + "</b></span><a href='javascript:void(0)' id='gem_remove' onclick='ResetGems()' style='color:red'>Reset</a></div>"}
-    else{
+      html = "<div class='row m-0 justify-content-between'><span><b>" + item.SKU + "</b></span><a href='javascript:void(0)' id='gem_remove' onclick='ResetGems()' style='color:red'>Reset</a></div>"
+    } else {
       html = "<div class='row m-0 justify-content-between'><span><b>" + item.StoneType + "</b></span><a href='javascript:void(0)' id='gem_remove' onclick='ResetGems()' style='color:red'>Reset</a></div>"
 
     }
@@ -2021,6 +2026,31 @@ if ($products->is_quick == 1) {
     $('.btn-select').html(langArray[langIndex]);
     //$('.btn-select').attr('value', 'en');
   }
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.5/js/select2.js"></script>
+<script type="text/javascript">
+  function custom_template(obj) {
+    var data = $(obj.element).data();
+    var text = $(obj.element).text();
+    if (data && data['img_src']) {
+      img_src = data['img_src'];
+      template = $("<div  style=\"margin-top:5px;\"><img src=\"" + img_src + "\" style=\"width:20px;height:20px;margin-top: 5px;float: left;\"/><p style=\"font-weight: 700;font-size:14px;margin-left: 25px;\">" + text + "</p></div>");
+      return template;
+    }
+  }
+  var options = {
+    'templateSelection': custom_template,
+    'templateResult': custom_template,
+  }
+  var dynamicId = "<?php echo $id_select2_example; ?>";
+  $('#' + dynamicId).select2(options);
+  $('.select2-selection--single').css({
+    'height': '40px'
+  });
+  $('.select2-container--default').css({
+    'width': '100%'
+  });
 </script>
 
 
