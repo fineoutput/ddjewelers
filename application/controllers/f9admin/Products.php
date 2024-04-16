@@ -1352,7 +1352,11 @@ class Products extends CI_finecontrol
                 else{
                     $pr_data = $this->db->get_where('tbl_price_rule', array('name' => $stoneCategory))->row();
                 }
-                
+                if(empty($res->RingSizingShowcasePrice->Value)){
+                    $res->RingSizingShowcasePrice = new stdClass();
+                    $res->RingSizingShowcasePrice->Value  = 0;
+                }
+
                 $multiplier = $pr_data->multiplier;
                 $cost_price = $res->TotalShowcasePrice->Value-$res->Product->Price->Value-$res->RingSizingShowcasePrice->Value;
                 $retail =  ceil($cost_price * $multiplier / 5) * 5;
