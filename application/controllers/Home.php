@@ -991,7 +991,7 @@ class Home extends CI_Controller
             $min = (float) $min; // Cast to float to ensure the variable is treated as a number
             $max = (float) $max; // Cast to float to ensure the variable is treated as a number
             
-             $this->db->or_where("price BETWEEN $min AND $max", null, false);
+             $this->db->or_where("updated_price BETWEEN $min AND $max", null, false);
         }
         $this->db->group_end();
     }
@@ -1050,7 +1050,7 @@ class Home extends CI_Controller
         return $data;
     }
     public function all_products($idd, $t, $page_index = "1")
-    {  $this->db->cache_on();
+    {  
         $this->load->helper('form');
         $type = base64_decode($t);
         $config = $this->configurePagination($idd, $t);
@@ -1188,6 +1188,8 @@ class Home extends CI_Controller
         curl_close($curl);
         $prod = json_decode($response);
         //----- END GET PRODUCT LATEST PRICE ------
+
+        //------------ Applying pricerule---------------------
         $pro_price = $prod->Products[0]->Price->Value;
         $pr_data = $this->db->get_where('tbl_price_rule', array('name' => 'Product'))->row();
         $data['sizePrice'] = $sizePrice;
@@ -1222,6 +1224,8 @@ class Home extends CI_Controller
         }
         $saved = round($retail - $now_price);
         $dis_percent = $saved / $retail * 100;
+
+        //-------------- END applying pricerule---------------------
 
         $data['now_price'] = $now_price;
         $data['saved'] = $saved;

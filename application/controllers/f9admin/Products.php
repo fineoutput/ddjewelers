@@ -225,15 +225,18 @@ class Products extends CI_finecontrol
     // ============ START FETCH DATA ========================
     public function fetch_product($received)
     {
+
         $this->load->driver('cache');
         $this->cache->clean();
-        
+
         ini_set('memory_limit', '3000M');
         $category_id = $received['category_id'];
         $subcategory_id = $received['subcategory_id'];
         $minor_category_id = $received['minor_category_id'];
         $minor2_category_id = $received['minor2_category_id'];
         $is_quick = $received['is_quick'];
+        $cron_id  = $received['cron_id'];
+        $delete_data = $received['delete_data'];
         $api_id = '';
         $type = '';
         $finished = '';
@@ -241,6 +244,8 @@ class Products extends CI_finecontrol
         $include_sku = '';
         $exclude_series = '';
         $exclude_sku = '';
+
+
         if (!empty($is_quick)) {
             //-------------- quick shop products -----------------
             $minor2_data = $this->db->select('id,api_id')->get_where('tbl_quickshop_minisubcategory2', array('id' => $minor2_category_id))->row();
@@ -253,8 +258,10 @@ class Products extends CI_finecontrol
                 $exclude_series = '';
                 $exclude_sku = '';
             }
-            //------ Deleting existing data -----------
-            $delete = $this->db->delete('tbl_products', array('category_id' => $category_id, 'subcategory_id' => $subcategory_id, 'minor_category_id' => $minor_category_id, 'minor2_category_id' => $minor2_category_id));
+            if ($delete_data == 1) {
+                //------ Deleting existing data -----------
+                $delete = $this->db->delete('tbl_products', array('category_id' => $category_id, 'subcategory_id' => $subcategory_id, 'minor_category_id' => $minor_category_id, 'minor2_category_id' => $minor2_category_id));
+            }
         }
         //-------------- normal products -----------------
         else {
@@ -269,8 +276,10 @@ class Products extends CI_finecontrol
                     $exclude_series = $minor2_data->exlude_series;
                     $exclude_sku = $minor2_data->exlude_sku;
                 }
-                //------ Deleting existing data -----------
-                $delete = $this->db->delete('tbl_products', array('category_id' => $category_id, 'subcategory_id' => $subcategory_id, 'minor_category_id' => $minor_category_id, 'minor2_category_id' => $minor2_category_id));
+                if ($delete_data == 1) {
+                    //------ Deleting existing data -----------
+                    $delete = $this->db->delete('tbl_products', array('category_id' => $category_id, 'subcategory_id' => $subcategory_id, 'minor_category_id' => $minor_category_id, 'minor2_category_id' => $minor2_category_id));
+                }
             } else if ($minor_category_id != 0) {
                 $minor_data = $this->db->select('id,api_id,type,finshed,include_series,include_sku,exlude_series,exlude_sku')->get_where('tbl_minisubcategory', array('id' => $minor_category_id))->row();
                 if (!empty($minor_data)) {
@@ -282,8 +291,10 @@ class Products extends CI_finecontrol
                     $exclude_series = $minor_data->exlude_series;
                     $exclude_sku = $minor_data->exlude_sku;
                 }
-                //------ Deleting existing data -----------
-                $delete = $this->db->delete('tbl_products', array('category_id' => $category_id, 'subcategory_id' => $subcategory_id, 'minor_category_id' => $minor_category_id,));
+                if ($delete_data == 1) {
+                    //------ Deleting existing data -----------
+                    $delete = $this->db->delete('tbl_products', array('category_id' => $category_id, 'subcategory_id' => $subcategory_id, 'minor_category_id' => $minor_category_id,));
+                }
             } else if ($subcategory_id != 0) {
                 $sub_data = $this->db->select('id,api_id,type,finshed,include_series,include_sku,exlude_series,exlude_sku')->get_where('tbl_sub_category', array('id' => $subcategory_id))->row();
                 if (!empty($sub_data)) {
@@ -295,8 +306,10 @@ class Products extends CI_finecontrol
                     $exclude_series = $sub_data->exlude_series;
                     $exclude_sku = $sub_data->exlude_sku;
                 }
-                //------ Deleting existing data -----------
-                $delete = $this->db->delete('tbl_products', array('category_id' => $category_id, 'subcategory_id' => $subcategory_id));
+                if ($delete_data == 1) {
+                    //------ Deleting existing data -----------
+                    $delete = $this->db->delete('tbl_products', array('category_id' => $category_id, 'subcategory_id' => $subcategory_id));
+                }
             } else {
                 $cate_data = $this->db->select('id,api_id,type,finshed,include_series,include_sku,exlude_series,exlude_sku')->get_where('tbl_category', array('id' => $category_id))->row();
                 if (!empty($cate_data)) {
@@ -308,14 +321,18 @@ class Products extends CI_finecontrol
                     $exclude_series = $cate_data->exlude_series;
                     $exclude_sku = $cate_data->exlude_sku;
                 }
-                //------ Deleting existing data -----------
-                $delete = $this->db->delete('tbl_products', array('category_id' => $category_id));
+                if ($delete_data == 1) {
+                    //------ Deleting existing data -----------
+                    $delete = $this->db->delete('tbl_products', array('category_id' => $category_id));
+                }
             }
         }
+
         $minimum_cost = $this->db->get_where('tbl_minimum_cost', array('name' => 'Product'))->row();
         if ($finished) {
             $filter = json_encode(["Orderable", "OnPriceList", "Finished"]);
         } else {
+
             $filter = json_encode(["Orderable", "OnPriceList"]);
         }
         if ($type == 1) {
@@ -323,6 +340,7 @@ class Products extends CI_finecontrol
         } else if ($type == 2) {
             $key = 'Series';
         } else {
+
             $key = 'SKU';
         }
         $send = [
@@ -337,8 +355,9 @@ class Products extends CI_finecontrol
             'minimum_cost' => $minimum_cost->cost,
             'key' => $key,
             'is_quick' => $is_quick,
+            'cron_id' => $cron_id,
         ];
-        $res = $this->fetchApiData($send);
+        $res = $this->fetchApiData2($send);
         //------ if category have include series -----
         if (!empty($include_series)) {
             $cleanedString = str_replace(' ', '', $include_series);
@@ -355,8 +374,9 @@ class Products extends CI_finecontrol
                 'minimum_cost' => $minimum_cost->cost,
                 'key' => 'Series',
                 'is_quick' => $is_quick,
+                'cron_id' => $cron_id,
             ];
-            $res = $this->fetchApiData($send);
+            $res = $this->fetchApiData2($send);
         }
         //------ if category have include sku -----
         else if (!empty($include_sku)) {
@@ -374,8 +394,9 @@ class Products extends CI_finecontrol
                 'minimum_cost' => $minimum_cost->cost,
                 'key' => 'SKU',
                 'is_quick' => $is_quick,
+                'cron_id' => $cron_id,
             ];
-            $res = $this->fetchApiData($send);
+            $res = $this->fetchApiData2($send);
         }
         return $res;
     }
@@ -406,11 +427,11 @@ class Products extends CI_finecontrol
         if (!empty($result_da)) {
             $total_products = $result_da->TotalNumberOfProducts;
             $total_pages = round($result_da->TotalNumberOfProducts / 500) + 1;
-        }else{
+        } else {
             $total_products = $result;
             $inserted_products = 'Check Api response';
             $total_pages = 0;
-        }        
+        }
         $NextPage = "";
         for ($i = 0; $i < $total_pages; $i++) {
             if (empty($NextPage)) {
@@ -463,6 +484,135 @@ class Products extends CI_finecontrol
                 $inserted_products += count($products);
             }
         }
+
+        $send = ['total_products' => $total_products, 'inserted_products' => $inserted_products];
+        return $send;
+    }
+    //------------------------------------api data2 ------------------
+    public function getLastPageNumber($id)
+    {
+        $query = $this->db->select('last_no')
+            ->from('tbl_cron_jobs')
+            ->where('id', $id)
+            ->get();
+
+        $result = $query->row();
+
+        if ($result) {
+            return $result->last_no;
+        } else {
+            // Handle case when no record is found
+        }
+    }
+    public function saveLastPageNumber($page, $id)
+    {
+        $data = array(
+            // Define your data to be inserted here
+            'last_no' => $page,
+        );
+        $query = $this->db->select('last_no')
+            ->from('tbl_cron_jobs')
+            ->where('id', $id)
+            ->get();
+
+        $result = $query->row();
+        if (empty($result)) {
+            $this->db->insert('tbl_cron_jobs', $data);
+        } else {
+            $this->db->where('id', $id);
+            $this->db->update('tbl_cron_jobs', $data);
+        }
+    }
+    public function fetchApiData2($receive)
+    {
+        $total_products = 0;
+        $inserted_products = 0;
+        $url = 'https://api.stuller.com/v2/products';
+        $productCountData = '{"Include":["ExcludeAll"],"Filter":' . $receive['filter'] . ',"' . $receive['key'] . '":' . $receive['api_id'] . '}';
+        //================= GET TOTAL NUMBER OF PAGES ========================
+        $header = array();
+        $header[] = 'Host:api.stuller.com';
+        $header[] = 'Content-Type:application/json';
+        $header[] = 'Authorization:Basic ZGV2amV3ZWw6Q29kaW5nMjA9';
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $productCountData);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
+        $result = curl_exec($ch);
+        curl_close($ch);
+        $result_da = json_decode($result);
+        if (!empty($result_da)) {
+            $total_products = $result_da->TotalNumberOfProducts;
+            $total_pages = round($result_da->TotalNumberOfProducts / 500) + 1;
+        } else {
+            $total_products = $result;
+            $inserted_products = 'Check Api response';
+            $total_pages = 0;
+        }
+        //--------------------------insert data------------------------------------
+        $id =  $receive['cron_id'];
+        // Retrieve last page number from storage
+        $last_page = $this->getLastPageNumber($id); // Implement this method to retrieve the last page number
+
+        // Set initial page number
+        $page = ($last_page > 0) ? $last_page : 1;
+        $header = array();
+        $header[] = 'Host:api.stuller.com';
+        $header[] = 'Content-Type:application/json';
+        $header[] = 'Authorization:Basic ZGV2amV3ZWw6Q29kaW5nMjA9';
+
+        while ($inserted_products < 10000) {
+            $productData = '{"Include":["All"],"Filter":' . $receive['filter'] . ',"' . $receive['key'] . '":' . $receive['api_id'] . ',"Page":"' . $page . '"}';
+
+            $ch = curl_init($url);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+            curl_setopt($ch, CURLOPT_POST, 1);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $productData);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
+
+            $result = curl_exec($ch);
+            curl_close($ch);
+
+            $result_da = json_decode($result);
+
+
+            if (!empty($result_da->Products)) {
+                $products = [];
+                foreach ($result_da->Products as $prod) {
+                    //--- exclude when price not found --
+                    if (empty($prod->Price)) {
+                        continue;
+                    }
+                    //----- exclude series ------ 
+                    if (!empty($exclude_series) && in_array($prod->DescriptiveElementGroup->DescriptiveElements[0]->Value, $exclude_series)) {
+                        continue;
+                    }
+                    //----- exclude sku ------ 
+                    if (!empty($exclude_sku) && in_array($prod->SKU, $exclude_sku)) {
+                        continue;
+                    }
+                    if ($prod->Price->Value > $receive['minimum_cost']) {
+                        $products[] = $this->CreateObject($receive, $prod);
+                    }
+                }
+                $this->db->insert_batch('tbl_products', $products);
+                $inserted_products += count($products);
+                $page++; // Move to next page
+            } else {
+                // If no products found on current page, exit loop
+                break;
+            }
+        }
+
+        $this->saveLastPageNumber($page, $id);
+
         $send = ['total_products' => $total_products, 'inserted_products' => $inserted_products];
         return $send;
     }
@@ -487,6 +637,48 @@ class Products extends CI_finecontrol
             $stoneSize = $this->extractValue($prod->DescriptiveElementGroup->DescriptiveElements, 'Eng. Center Stone Size');
         }
         $stoneType = $this->extractValue($prod->DescriptiveElementGroup->DescriptiveElements, 'Primary Stone Type');
+
+        //------------Start Applying pricerule---------------------
+        //---- CALCULATE PRICE -------
+         $ring_price_data =  !empty($prod->ConfigurationModel->RingSizeOptions) ? json_encode($prod->ConfigurationModel->RingSizeOptions) : '';
+        $r_data = json_decode($ring_price_data, true);
+        $sizePrice = 0;
+        if (!empty($r_data)) {
+            $sizePriceDa = array_values(array_filter($r_data, fn ($item) => $item['Size'] == $prod->RingSize))[0] ?? null;
+            $sizePrice = $sizePriceDa['Price']['Value'];
+        }
+        $pro_price = $prod->Price->Value;
+        $pr_data = $this->db->get_where('tbl_price_rule', array('name' => 'Product'))->row();
+        $multiplier = $pr_data->multiplier;
+        $cost_price = $pro_price + $sizePrice;
+        $retail = ceil($cost_price * $multiplier / 5) * 5;
+
+
+        $now_price = $cost_price;
+        //$now_price = ceil($cost_price / 5) * 5;
+
+        if ($cost_price <= 500) {
+            $cost_price2 = $cost_price * $cost_price;
+            $number = round($cost_price * ($pr_data->cost_price1 * $cost_price2 + $pr_data->cost_price2 * $cost_price + $pr_data->cost_price3), 2);
+            $unit = 5;
+            $remainder = $number % $unit;
+
+            $mround = ($remainder < $unit / 2) ? $number - $remainder : $number + ($unit - $remainder);
+            $now_price1 = round($mround) - 1 + 0.95;
+            $now_price = ceil($now_price1 / 5) * 5;
+            $now_price = floor($now_price) + 0.95;
+        } else if ($cost_price > 500) {
+            $number = round($cost_price * ($pr_data->cost_price4 * $cost_price / $multiplier + $pr_data->cost_price5));
+            $unit = 5;
+            $remainder = $number % $unit;
+            $mround = ($remainder < $unit / 2) ? $number - $remainder : $number + ($unit - $remainder);
+            $now_price1 = round($mround) - 1 + 0.95;
+            $now_price = ceil($now_price1 / 5) * 5;
+            $now_price = floor($now_price) + 0.95;
+        }
+
+        //------------End Applying pricerule---------------------
+
         $response = array(
             'category_id' => $receive['category_id'],
             'subcategory_id' => $receive['subcategory_id'],
@@ -505,6 +697,7 @@ class Products extends CI_finecontrol
             'group_id' => $prod->DescriptiveElementGroup->GroupId,
             'series_id' => $prod->DescriptiveElementGroup->DescriptiveElements[0]->Value,
             'price' => $prod->Price->Value,
+            'updated_price' => $now_price,
             'elements' => json_encode($prod->DescriptiveElementGroup->DescriptiveElements),
             'catalog_values' => json_encode(array_column($prod->DescriptiveElementGroup->DescriptiveElements, 'Value')),
             'ring_sizable' => $prod->RingSizable,
@@ -549,7 +742,12 @@ class Products extends CI_finecontrol
         date_default_timezone_set("Asia/Calcutta");
         $start_date = date("Y-m-d H:i:s");
         $cron_jobs = $this->db->order_by('id', 'ASC')->get_where('tbl_cron_jobs', array('status' => 0))->row();
+        $cron_jobs_pending = $this->db->order_by('id', 'ASC')->get_where('tbl_cron_jobs', array('status' => 1))->row();
+        $page = 0;
+
         if (!empty($cron_jobs)) {
+            $id = $cron_jobs->id;
+            $this->saveLastPageNumber($page, $id);
             //------ update cron job status to started --------
             $data_insert = array('status' => 1, 'start_time' => $start_date);
             $this->db->where('id', $cron_jobs->id);
@@ -560,13 +758,52 @@ class Products extends CI_finecontrol
                 'minor_category_id' => $cron_jobs->mincat_id1,
                 'minor2_category_id' => $cron_jobs->mincat_id2,
                 'is_quick' => $cron_jobs->is_quick,
+                'cron_id' => $cron_jobs->id,
+                'delete_data' => 1,
             ];
             $res = $this->fetch_product($send);
             date_default_timezone_set("Asia/Calcutta");
             $end_data = date("Y-m-d H:i:s");
             //------ update cron job status to completed --------
-            $data_insert2 = array('status' => 2, 'end_time' => $end_data, 'total_products' => $res['total_products'], 'inserted_products' => $res['inserted_products']);
+            $data_insert2 = array('status' => 1, 'end_time' => $end_data, 'total_products' => $res['total_products'], 'inserted_products' => $res['inserted_products']);
             $this->db->where('id', $cron_jobs->id);
+            $last_id2 = $this->db->update('tbl_cron_jobs', $data_insert2);
+            $rep = array(
+                'status' => 200,
+                'message' => 'Data inserted successfully'
+            );
+            echo json_encode($rep);
+        } else if (!empty($cron_jobs_pending)) {
+            $data_insert = array('start_time' => $start_date);
+            $this->db->where('id', $cron_jobs_pending->id);
+            $last_id = $this->db->update('tbl_cron_jobs', $data_insert);
+            $send = [
+                'category_id' => $cron_jobs_pending->cat_id,
+                'subcategory_id' => $cron_jobs_pending->subcat_id,
+                'minor_category_id' => $cron_jobs_pending->mincat_id1,
+                'minor2_category_id' => $cron_jobs_pending->mincat_id2,
+                'is_quick' => $cron_jobs_pending->is_quick,
+                'cron_id' => $cron_jobs_pending->id,
+                'delete_data' => 0,
+            ];
+            $res = $this->fetch_product($send);
+            date_default_timezone_set("Asia/Calcutta");
+            $end_data = date("Y-m-d H:i:s");
+
+            //------ update cron job status to started --------
+            $cron_job = $this->db->select('*')
+                ->from('tbl_cron_jobs')
+                ->where('id', $cron_jobs_pending->id)
+                ->get()
+                ->row();
+            $inserted_data = $cron_job->inserted_products + $res['inserted_products'];
+            if ($cron_job->total_products == $inserted_data || $cron_job->total_products < $inserted_data) {
+                $status = 2;
+            } else {
+                $status = 1;
+            }
+            $data_insert2 = array('status' => $status, 'end_time' => $end_data, 'total_products' => $res['total_products'], 'inserted_products' => $inserted_data);
+            $this->db->where('id', $cron_jobs_pending->id);
             $last_id2 = $this->db->update('tbl_cron_jobs', $data_insert2);
             $rep = array(
                 'status' => 200,
@@ -1156,7 +1393,7 @@ class Products extends CI_finecontrol
                     } else {
                         $SF = $StoneFamilyName; //--- if have more then one stone location
                     }
-                   
+
                     //--------- Start for side stone or more then one stone data fetching ----------------
                     if (!empty($groupName) && $groupName != $st->GroupName) {
                         //--- Replacing stone category name (side stone don't have below stone category)------
@@ -1183,7 +1420,7 @@ class Products extends CI_finecontrol
                                 'Host: api.stuller.com',
                             ),
                         ));
-                        
+
                         // echo json_encode(['status' => 200, 'data' => '', 'html' => '', 'test' => json_encode('{"ConfigurationModelId":' . $pro_data->config_model_id . ',"LocationNumbers":[' . $st->LocationNumber . '],"StoneFamilyName":"' . $SF . '","StoneCategories":["' . $stoneCategory . '"]"IncludeSerializedProduct":' . $is_serialized . '}')]);
                         // return;
                         $response = curl_exec($curl);
@@ -1245,7 +1482,6 @@ class Products extends CI_finecontrol
                                 $stone_pro_id = '';
                                 $stone_series_no = '';
                             }
-                           
                         }
                     }
                     //--------- End for side stone or more then one stone data fetching ----------------
@@ -1270,12 +1506,11 @@ class Products extends CI_finecontrol
                             }
                         }
                     }
-                  
                 } //------end foreach 
                 $final_arr = json_encode($final_arr);
                 // echo json_encode(['status' => 200, 'data' => '', 'html' => '', 'test' => $final_arr]);
                 // return;
-               
+
                 //------- start configure product curl-------
                 $curl = curl_init();
                 curl_setopt_array($curl, array(
@@ -1294,8 +1529,8 @@ class Products extends CI_finecontrol
                         'Host: api.stuller.com',
                     ),
                 ));
-              
-                
+
+
                 $response = curl_exec($curl);
                 curl_close($curl);
                 $res = json_decode($response);
@@ -1310,7 +1545,7 @@ class Products extends CI_finecontrol
                 } else {
                     $value = $res->Product->QualityCatalogValue;
                 }
-                
+
                 $html = '<h6 class="mt-3">' . $res->Product->GroupDescription . '</h6>';
                 $html .= '<div class="table-responsive-sm">';
                 $html .= '<table class="table table-hover"><tbody>';
@@ -1328,37 +1563,34 @@ class Products extends CI_finecontrol
                 //   print_r($res->Stones);
                 // echo json_encode(['status' => 200, 'data' => '',]);
                 // return;
-                
+
 
                 //-------- calculate gems stone price --------
                 $stonePrice = 0;
                 $stoneLabor = 0;
-                
+
                 foreach ($res->Stones as $st_data) {
                     $stonePrice += $st_data->TotalShowcasePrice->Value;
                     $stoneLabor += $st_data->ShowcaseLabor->Value;
                 }
-                
-                
-                if($stoneCategory == "Diamonds with Grading Report"){
+
+
+                if ($stoneCategory == "Diamonds with Grading Report") {
                     $pr_data = $this->db->get_where('tbl_price_rule', array('name' => 'Diamonds'))->row();
-                }
-                elseif($stoneCategory == "Lab-Grown"){
+                } elseif ($stoneCategory == "Lab-Grown") {
                     $pr_data = $this->db->get_where('tbl_price_rule', array('name' => 'Lab-Grown Diamonds'))->row();
-                }
-                elseif($stoneCategory == "Notable Gems" || $stoneCategory == "Imitation"){
+                } elseif ($stoneCategory == "Notable Gems" || $stoneCategory == "Imitation") {
                     $pr_data = $this->db->get_where('tbl_price_rule', array('name' => 'Imitation'))->row();
-                }
-                else{
+                } else {
                     $pr_data = $this->db->get_where('tbl_price_rule', array('name' => $stoneCategory))->row();
                 }
-                if(empty($res->RingSizingShowcasePrice->Value)){
+                if (empty($res->RingSizingShowcasePrice->Value)) {
                     $res->RingSizingShowcasePrice = new stdClass();
                     $res->RingSizingShowcasePrice->Value  = 0;
                 }
 
                 $multiplier = $pr_data->multiplier;
-                $cost_price = $res->TotalShowcasePrice->Value-$res->Product->Price->Value-$res->RingSizingShowcasePrice->Value;
+                $cost_price = $res->TotalShowcasePrice->Value - $res->Product->Price->Value - $res->RingSizingShowcasePrice->Value;
                 $retail =  ceil($cost_price * $multiplier / 5) * 5;
                 $stone_final_price = $cost_price;
                 if ($cost_price <= 500) {
@@ -1384,17 +1616,17 @@ class Products extends CI_finecontrol
 
                 $final_price = ceil($stone_final_price / 5) * 5;
                 $saved = round($retail - $final_price, 2);
-                 
-                
+
+
                 //   echo $pro_final_price;
 
                 // echo json_encode(['status' => 200, 'data' => '',]);
                 // return;
-                
+
                 //---------------- stoneprice calcuted----------------
 
 
-                
+
 
                 // $pr_data = $this->db->get_where('tbl_price_rule', array('name' => 'Product'))->row();
                 // $multiplier = $pr_data->multiplier;
@@ -1420,7 +1652,7 @@ class Products extends CI_finecontrol
                 // }
                 // $saved = round($retail - $final_price, 2);
                 // // $dis_percent = round($saved / $retail * 100,2);
-                
+
 
                 $html .= '<div class="price-summary col-md-8 float-right">
                 <div class="price-item">
