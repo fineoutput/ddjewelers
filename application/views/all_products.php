@@ -19,7 +19,7 @@
 
   .col-md-3.col-12.searchColumn .box-sho {
     padding: 10px;
-    height: 320px;
+    /* height: 320px; */
     border: 1px solid #dee2e6 !important;
     border-radius: 5px;
   }
@@ -27,7 +27,7 @@
   .col-md-3.col-12.searchColumn .box-sho:hover {
     padding: 10px;
     border: 1px solid #999999 !important;
-    height: 320px;
+    /* height: 320px; */
   }
 
   .col-md-3.col-12.searchColumn .under-box:hover {
@@ -148,6 +148,7 @@
         </p>
     </div>
 </div>
+
     <?
     $priceRanges = array(
       array('min' => 0, 'max' => 500),
@@ -429,61 +430,72 @@
                 }
             ?>
                 <div class="col-md-3  col-sm-6 col-12 searchColumn">
-                  <div class="box-sho">
-                    <div class="row">
-                      <div class="col-md-12 col-5" style="align-self: center;">
-                        <p class="text-center box-red"><i> <b><?= $data->series_id ?> </b></i></p>
-                        <a href="<?= base_url() ?>Home/product_details/<?= $data->series_id ?>/<?= $data->pro_id ?>?groupId=<?= $data->group_id ?>">
-                          <? if (!empty($image1)) { ?>
-                            <img src="<?= $image1 ?>" alt="" class=" img-fluid first_img">
-                            <img src="<?= $image2 ? $image2 : $image1 ?>" alt="" class="img-fluid second_img" style="">
-                          <? } else { ?>
-                            <img src="<?= base_url() ?>assets/uploads/no-image-found.jpg" alt="" class="img-fluid first_img">
-                            <img src="<?= base_url() ?>assets/uploads/no-image-found.jpg" alt="" class="img-fluid second_img">
-                          <? } ?></a>
-                      </div>
-                      <div class="col-md-12 col-7 rext">
-                        <p class="text-center box-red-2"><i> <b><?= $data->series_id ?> </b></i></p>
 
-                        <p class="bold-text"><b><?= $data->group_description ?></b></p>
-                        <? if (!empty($data->price)) {
-                          $this->db->select('*');
-                          $this->db->from('tbl_price_rule');
-                          $this->db->where('name', 'Product');
-                          $pr_data = $this->db->get()->row();
-                          $multiplier = $pr_data->multiplier;
-                          $cost_price11 = $pr_data->cost_price1;
-                          $cost_price22 = $pr_data->cost_price2;
-                          $cost_price33 = $pr_data->cost_price3;
-                          $cost_price44 = $pr_data->cost_price4;
-                          $cost_price55 = $pr_data->cost_price5;
-                          $cost_price = $data->price;
-                          $retail = $cost_price * $multiplier;
-                          $now_price = $cost_price;
-                          if ($cost_price <= 500) {
-                            $cost_price2 = $cost_price * $cost_price;
-                            $number = round($cost_price * ($cost_price11 * $cost_price2 + $cost_price22 * $cost_price + $cost_price33), 2);
-                            $unit = 5;
-                            $remainder = $number % $unit;
-                            $mround = ($remainder < $unit / 2) ? $number - $remainder : $number + ($unit - $remainder);
-                            $now_price = round($mround) - 1 + 0.95;
-                          }
-                          if ($cost_price > 500) {
-                            $number = round($cost_price * ($cost_price44 * $cost_price / $multiplier + $cost_price55));
-                            $unit = 5;
-                            $remainder = $number % $unit;
-                            $mround = ($remainder < $unit / 2) ? $number - $remainder : $number + ($unit - $remainder);
-                            $now_price = round($mround) - 1 + 0.95;
-                          }
-                          $saved = round($retail - $now_price);
-                        ?>
-                         <!-- <p class="price box-trft">$<?= number_format($now_price, 2); ?></p> -->
-                        <? } else { ?>
-                          <p class="price box-trft"><a href="<?= base_url(); ?>Home/contact_us">contact</a></p>
-                        <? } ?>
+                  <a href="<?= base_url() ?>Home/product_details/<?= $data->series_id ?>/<?= $data->pro_id ?>?groupId=<?= $data->group_id ?>">
+
+                    <div class="box-sho">
+                      <div class="row">
+
+                        <div class="col-md-12 col-5" style="align-self: center;">
+
+                          <p class="text-center box-red" style="margin-bootom:0px!importent;"><i> <b><?= $data->series_id ?> </b></i></p>
+
+                          <p class="bold-text"><b><?= $data->group_description ?></b></p>
+
+                          
+
+                            <? if (!empty($image1)) { ?>
+                              <img src="<?= $image1 ?>" alt="" class=" img-fluid first_img">
+                              <img src="<?= $image2 ? $image2 : $image1 ?>" alt="" class="img-fluid second_img" style="">
+                            <? } else { ?>
+                              <img src="<?= base_url() ?>assets/uploads/no-image-found.jpg" alt="" class="img-fluid first_img">
+                              <img src="<?= base_url() ?>assets/uploads/no-image-found.jpg" alt="" class="img-fluid second_img">
+                            <? } ?>
+                        </div>
+
+                        <div class="col-md-12 col-7 rext">
+                          <p class="text-center box-red-2"><i> <b><?= $data->series_id ?> </b></i></p>
+                          
+                          <? if (!empty($data->price)) {
+                            $this->db->select('*');
+                            $this->db->from('tbl_price_rule');
+                            $this->db->where('name', 'Product');
+                            $pr_data = $this->db->get()->row();
+                            $multiplier = $pr_data->multiplier;
+                            $cost_price11 = $pr_data->cost_price1;
+                            $cost_price22 = $pr_data->cost_price2;
+                            $cost_price33 = $pr_data->cost_price3;
+                            $cost_price44 = $pr_data->cost_price4;
+                            $cost_price55 = $pr_data->cost_price5;
+                            $cost_price = $data->price;
+                            $retail = $cost_price * $multiplier;
+                            $now_price = $cost_price;
+                            if ($cost_price <= 500) {
+                              $cost_price2 = $cost_price * $cost_price;
+                              $number = round($cost_price * ($cost_price11 * $cost_price2 + $cost_price22 * $cost_price + $cost_price33), 2);
+                              $unit = 5;
+                              $remainder = $number % $unit;
+                              $mround = ($remainder < $unit / 2) ? $number - $remainder : $number + ($unit - $remainder);
+                              $now_price = round($mround) - 1 + 0.95;
+                            }
+                            if ($cost_price > 500) {
+                              $number = round($cost_price * ($cost_price44 * $cost_price / $multiplier + $cost_price55));
+                              $unit = 5;
+                              $remainder = $number % $unit;
+                              $mround = ($remainder < $unit / 2) ? $number - $remainder : $number + ($unit - $remainder);
+                              $now_price = round($mround) - 1 + 0.95;
+                            }
+                            $saved = round($retail - $now_price);
+                          ?>
+                          <!-- <p class="price box-trft">$<?= number_format($now_price, 2); ?></p> -->
+                          <? } else { ?>
+                            <p class="price box-trft"><a href="<?= base_url(); ?>Home/contact_us">contact</a></p>
+                          <? } ?>
+                        </div>
                       </div>
                     </div>
-                  </div>
+
+                  </a>
 
                 </div>
 
