@@ -1198,7 +1198,7 @@ class Products extends CI_finecontrol
                     if ($StoneFamilyName == 'Diamond' && ($stoneCategory == "Diamonds with Grading Report" || $stoneCategory == "Diamonds")) {
                         $pr_data = $this->db->get_where('tbl_price_rule', array('name' => 'Diamonds'))->row();
                     } else if ($StoneFamilyName == 'Diamond' && ($stoneCategory == "Lab-Grown" || $stoneCategory == "Lab-Grown with Grading Report")) {
-                        $pr_data = $this->db->get_where('tbl_price_rule', array('name' => 'Lab Grown Diamonds'))->row();
+                        $pr_data = $this->db->get_where('tbl_price_rule', array('name' => 'Lab-Grown Diamonds'))->row();
                     } else if ($StoneFamilyName == 'Moissanite') {
                         $pr_data = $this->db->get_where('tbl_price_rule', array('name' => 'Moissanite'))->row();
                     } else {
