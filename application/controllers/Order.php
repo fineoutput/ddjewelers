@@ -198,9 +198,12 @@ class Order extends CI_Controller
     }
     public function view_checkout($idd)
     {
+        // echo $idd;exit;
         $user_id = $this->session->userdata('user_id');
         $order_id = $this->session->userdata('order_id');
+
         if (!empty($user_id && $order_id)) {
+       
             $id = base64_decode($idd);
             $data['id'] = $idd;
             $order_data = $this->db->get_where('tbl_order1', array('id' => $id))->result();
@@ -317,11 +320,17 @@ class Order extends CI_Controller
             $data2['error_msg'] = $error_msg;
             $data2['methods_data'] = array_values($temp_array);
             $data2['shipping_costs'] = array_values($shipping_costs);
+            // $gateway = new Braintree\Gateway([
+            //     'environment' => 'sandbox',
+            //     'merchantId' => 't88vsbn73n3ktmvc',
+            //     'publicKey' => 'jwvgk8z38gwjywgr',
+            //     'privateKey' => '880e71aeb8ff9eed853f45dc76627f86'
+            // ]);
             $gateway = new Braintree\Gateway([
-                'environment' => 'sandbox',
-                'merchantId' => 't88vsbn73n3ktmvc',
-                'publicKey' => 'jwvgk8z38gwjywgr',
-                'privateKey' => '880e71aeb8ff9eed853f45dc76627f86'
+                'environment' => GOOGLE_PAY_ENVIRONMENTSEC,
+                'merchantId' => GOOGLE_PAY_MERCHANTIDSEC,
+                'publicKey' => GOOGLE_PAY_PUBLICKKEY,
+                'privateKey' => GOOGLE_PAY_PRIVATEKEY
             ]);
             // pass $clientToken to your front-end
             // $clientToken = $gateway->clientToken()->generate([
@@ -377,11 +386,17 @@ class Order extends CI_Controller
                 $ip = $this->input->ip_address();
                 date_default_timezone_set("Asia/Calcutta");
                 $cur_date = date("Y-m-d H:i:s");
+                // $gateway = new Braintree\Gateway([
+                //     'environment' => 'sandbox',
+                //     'merchantId' => 't88vsbn73n3ktmvc',
+                //     'publicKey' => 'jwvgk8z38gwjywgr',
+                //     'privateKey' => '880e71aeb8ff9eed853f45dc76627f86'
+                // ]);
                 $gateway = new Braintree\Gateway([
-                    'environment' => 'sandbox',
-                    'merchantId' => 't88vsbn73n3ktmvc',
-                    'publicKey' => 'jwvgk8z38gwjywgr',
-                    'privateKey' => '880e71aeb8ff9eed853f45dc76627f86'
+                    'environment' => GOOGLE_PAY_ENVIRONMENTSEC,
+                    'merchantId' => GOOGLE_PAY_MERCHANTIDSEC,
+                    'publicKey' => GOOGLE_PAY_PUBLICKKEY,
+                    'privateKey' => GOOGLE_PAY_PRIVATEKEY
                 ]);
                 $result = $gateway->transaction()->sale([
                     'amount' => $amount,
@@ -713,6 +728,7 @@ class Order extends CI_Controller
                 $this->db->from('tbl_users');
                 $this->db->where('id', $order1->user_id);
                 $user = $this->db->get()->row();
+                // echo $user->email;  
                 if (!empty($user->email)) {
                     $to = $user->email;
                     $name = $user->name;

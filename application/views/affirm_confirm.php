@@ -33,10 +33,17 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 <!-- <div class="loader"></div> -->
 </div>
 <script>
-    var affirm_config = {
-  public_api_key: "9PDZ6ZT2BFOPNZXJ",  /* replace with public api key */
-//   script:         "https://affirm.com/js/v2/affirm.js"//--- live ---
-  script:         "https://cdn1-sandbox.affirm.com/js/v2/affirm.js"//--- test ---
+// var affirm_config = {
+//   public_api_key: "9PDZ6ZT2BFOPNZXJ",  /* replace with public api key */
+//   //   script:         "https://affirm.com/js/v2/affirm.js"//--- live ---
+//   script:         "https://cdn1-sandbox.affirm.com/js/v2/affirm.js"//--- test ---
+// };
+
+
+var affirm_config = {
+  public_api_key: "<?=AFFIRM_API_KEY?>",  /* replace with public api key */
+  //   script:         "https://affirm.com/js/v2/affirm.js"//--- live ---
+  script:         "<?=AFFIRM_BASE_URL?>"//--- test ---
 };
 
 (function(m,g,n,d,a,e,h,c){var b=m[n]||{},k=document.createElement(e),p=document.getElementsByTagName(e)[0],l=function(a,b,c){return function(){a[b]._.push([c,arguments])}};b[d]=l(b,d,"set");var f=b[d];b[a]={};b[a]._=[];f._=[];b._=[];b[a][h]=l(b,a,h);b[c]=function(){b._.push([h,arguments])};a=0;for(c="set add save post open empty reset on off trigger ready setProduct".split(" ");a<c.length;a++)f[c[a]]=l(b,d,c[a]);a=0;for(c=["get","token","url","items"];a<c.length;a++)f[c[a]]=function(){};k.async=
@@ -54,10 +61,16 @@ $user_data = $this->session->flashdata('user_data');
 ?>
 affirm.checkout({
  
+//  "merchant": {
+//    "user_confirmation_url": "https://merchantsite.com/confirm",
+//    "user_cancel_url": "https://merchantsite.com/cancel",
+//    "user_confirmation_url_action": "POST",
+//    "name": "DD Jewellers"
+//  },
  "merchant": {
-   "user_confirmation_url": "https://merchantsite.com/confirm",
-   "user_cancel_url": "https://merchantsite.com/cancel",
-   "user_confirmation_url_action": "POST",
+   "user_confirmation_url": "<?=AFFIRM_CONFIRMATION_URL?>",
+   "user_cancel_url": "<?=AFFIRM_CANCEL_URL?>",
+   "user_confirmation_url_action": "<?=AFFIRM_CONFIRMATION_URL_ACTION?>",
    "name": "DD Jewellers"
  },
  "shipping":{

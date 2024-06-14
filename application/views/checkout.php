@@ -450,14 +450,21 @@ $return_url = site_url() . 'Home/callback/' . $ordr_id_enc;
         }
     }, '#paypal-button');
 </script>
+
 <!-- //----------------------------- affirm -------------------- -->
 <script>
+    // var affirm_config = {
+    //     public_api_key: "9PDZ6ZT2BFOPNZXJ",
+    //     /* replace with public api key */
+    //     //   script:         "https://affirm.com/js/v2/affirm.js"//--- live ---
+    //     script: "https://cdn1-sandbox.affirm.com/js/v2/affirm.js" //--- test ---
+    // };
+
     var affirm_config = {
-        public_api_key: "9PDZ6ZT2BFOPNZXJ",
-        /* replace with public api key */
-        //   script:         "https://affirm.com/js/v2/affirm.js"//--- live ---
-        script: "https://cdn1-sandbox.affirm.com/js/v2/affirm.js" //--- test ---
+        public_api_key: "<?=AFFIRM_API_KEY?>", 
+         script:         "<?=AFFIRM_BASE_URL?>"
     };
+
     (function(m, g, n, d, a, e, h, c) {
         var b = m[n] || {},
             k = document.createElement(e),
@@ -493,10 +500,16 @@ $return_url = site_url() . 'Home/callback/' . $ordr_id_enc;
     function affirm_open() {
         $('.center').show();
         affirm.checkout({
+            // "merchant": {
+            //     "user_confirmation_url": "https://merchantsite.com/confirm",
+            //     "user_cancel_url": "https://merchantsite.com/cancel",
+            //     "user_confirmation_url_action": "POST",
+            //     "name": "DD Jewellers"
+            // },
             "merchant": {
-                "user_confirmation_url": "https://merchantsite.com/confirm",
-                "user_cancel_url": "https://merchantsite.com/cancel",
-                "user_confirmation_url_action": "POST",
+                "user_confirmation_url": "<?=AFFIRM_CONFIRMATION_URL?>",
+                "user_cancel_url": "<?=AFFIRM_CANCEL_URL?>",
+                "user_confirmation_url_action": "<?=AFFIRM_CONFIRMATION_URL_ACTION?>",
                 "name": "DD Jewellers"
             },
             "shipping": {
@@ -585,11 +598,17 @@ $return_url = site_url() . 'Home/callback/' . $ordr_id_enc;
                     },
                     dataType: 'json',
                     success: function(response) {
+                        console.log(response);
                         if (response.status == true) {
                             window.open(base_url + 'Home/order_success', "_self");
                         } else if (response.status == false) {
                             window.open(base_url + 'Home/order_failed', "_self");
                         }
+                    },
+                    error: function(xhr, status, error) {
+                        // This function will be called if the request fails
+                        console.error(xhr.responseText);
+                        // Log the error message
                     }
                 });
             }
@@ -624,7 +643,8 @@ $return_url = site_url() . 'Home/callback/' . $ordr_id_enc;
         braintree.googlePayment.create({
             client: clientInstance,
             googlePayVersion: 2,
-            googleMerchantId: 'BCR2DN6TU7ZYT2CP' // Optional in sandbox; if set in sandbox, this value must be a valid production Google Merchant ID
+            // googleMerchantId: 'BCR2DN6TU7ZYT2CP' // Optional in sandbox; if set in sandbox, this value must be a valid production Google Merchant ID
+            googleMerchantId: '<?=GOOGLE_PAY_MERCHANTID?>' // Optional in sandbox; if set in sandbox, this value must be a valid production Google Merchant ID
         }, function(googlePaymentErr, googlePaymentInstance) {
             paymentsClient.isReadyToPay({
                 // see https://developers.google.com/pay/api/web/reference/object#IsReadyToPayRequest
@@ -650,8 +670,10 @@ $return_url = site_url() . 'Home/callback/' . $ordr_id_enc;
                                 totalPriceLabel: "Total"
                             },
                             merchantInfo: {
-                                merchantId: 'BCR2DN6TU7ZYT2CP',
-                                merchantName: 'D&D Jewelry'
+                                // merchantId: 'BCR2DN6TU7ZYT2CP',
+                                merchantId: '<?=GOOGLE_PAY_MERCHANTID?>',
+                                // merchantName: 'D&D Jewelry'
+                                merchantName: '<?=GOOGLE_PAY_MERCHANTNAME?>'
                             },
                         });
                         // We recommend collecting billing address information, at minimum
