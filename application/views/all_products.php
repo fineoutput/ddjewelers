@@ -88,7 +88,10 @@
     display: none;
   }
 
-
+  .box-red {
+    margin-bottom: inherit;
+    line-height: 0px;
+}
 
   @media(max-width:572px) {
     p.text-center.box-red {
@@ -151,12 +154,18 @@
 
     <?
     $priceRanges = array(
-      array('min' => 0, 'max' => 500),
+      array( 'min' => 0, 'max' => 150),
+      array('min' => 151, 'max' => 300),
+      array('min' => 301, 'max' => 500),
       array('min' => 501, 'max' => 1000),
-      array('min' => 1001, 'max' => 1500),
-      array('min' => 1501, 'max' => 2000),
-      array('min' => 2001, 'max' => 2500),
-      array('min' => 2501, 'max' => 3000),
+      array('min' => 1001, 'max' => 2500),
+      array('min' => 2501, 'max' => 5500),
+      array('min' => 5501, 'max' => 7500),
+      array('min' => 7501, 'max' => 10000),
+      array('min' => 10001, 'max' => 15000),
+      array('min' => 15001, 'max' => 25000),
+      array('min' => 25001, 'max' => 35000),
+      array('min' => 35001, 'max' => 50000),
       // Add more ranges as needed
     );
     ?>
