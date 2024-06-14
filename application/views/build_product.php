@@ -35,6 +35,11 @@
     display: none;
   }
 
+  @media (min-width: 1200px) {
+    .modal-xl {
+        max-width: 1223px;
+    }
+  }
 
 
   .sorting {

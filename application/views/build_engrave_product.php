@@ -130,7 +130,7 @@
   }
 
   @media (min-width: 1200px) {
-    #setstonemodel {
+    .modal-xl {
         max-width: 1223px;
     }
   }
