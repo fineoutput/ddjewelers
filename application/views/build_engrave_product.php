@@ -129,6 +129,12 @@
     padding-bottom: 0px;
   }
 
+  @media (min-width: 1200px) {
+    #setstonemodel {
+        max-width: 1223px;
+    }
+  }
+
   /* .btn-select:hover li {
     margin-left: 0px;
   }
@@ -1043,7 +1049,7 @@ if ($products->is_quick == 1) {
 <!-- ====================== START STONE LOCATION MODEL ============================== -->
 <div class="modal fade" id="myModal">
   <div class="dizzy-gillespie" style="position: absolute;left: 0;right: 0;top: 0; bottom: 0;margin:  auto;display:none;z-index: 99999;     background: #125965;" id='modelLoader'></div>
-  <div class="modal-dialog modal-xl">
+  <div class="modal-dialog modal-xl" id="setstonemodel">
     <div class="modal-content">
       <!-- Modal Header -->
       <div class="modal-header">
