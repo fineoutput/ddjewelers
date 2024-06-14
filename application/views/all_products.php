@@ -19,7 +19,7 @@
 
   .col-md-3.col-12.searchColumn .box-sho {
     padding: 10px;
-    height: 237px;
+    height: 100%;
     border: 1px solid #dee2e6 !important;
     border-radius: 5px;
   }
@@ -27,7 +27,7 @@
   .col-md-3.col-12.searchColumn .box-sho:hover {
     padding: 10px;
     border: 1px solid #999999 !important;
-    height: 237px;
+    height: 100%;
   }
 
   .col-md-3.col-12.searchColumn .under-box:hover {
