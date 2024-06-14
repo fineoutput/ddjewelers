@@ -91,7 +91,8 @@
   .box-red {
     margin-bottom: inherit;
     line-height: 0px;
-}
+    padding-top: 12px;
+  }
 
   @media(max-width:572px) {
     p.text-center.box-red {
