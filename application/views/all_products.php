@@ -130,6 +130,25 @@
       font-size: 23px !important;
     }
   }
+
+
+  .manage_text_first {
+    display: block;
+}
+
+.manage_text_sec {
+    display: none;
+}
+
+@media (max-width: 767px) {
+    .manage_text_first {
+        display: none;
+    }
+
+    .manage_text_sec{
+        display: block;
+    }
+}
 </style>
 
 <section>
@@ -448,9 +467,10 @@
 
                         <div class="col-md-12 col-5" style="align-self: center;">
 
-                          <p class="text-center box-red" style="margin-bootom:0px!importent;"><i> <b><?= $data->series_id ?> </b></i></p>
+                          <!-- <p class="text-center box-red" style="margin-bootom:0px!importent;"><i> <b><?//$data->series_id ?> </b></i></p> -->
+                          <p class="text-center manage_text_first" style="margin-bootom:0px!importent;"><i> <b><?= $data->series_id ?> </b></i></p>
 
-                          <p class="bold-text"><b><?= $data->group_description ?></b></p>
+                          <p class="bold-text text-center manage_text_first" ><b><?= $data->group_description ?></b></p>
 
                           
 
@@ -464,8 +484,13 @@
                         </div>
 
                         <div class="col-md-12 col-7 rext">
-                          <p class="text-center box-red-2"><i> <b><?= $data->series_id ?> </b></i></p>
                           
+                          <!-- <p class="text-center box-red-2"><i> <b><?//$data->series_id ?> </b></i></p> -->
+                          <p class="text-center manage_text_sec"><i> <b><?= $data->series_id ?> </b></i></p>
+                          
+                          <p class="bold-text text-center manage_text_sec"><b><?=$data->group_description ?></b></p>
+
+
                           <? if (!empty($data->price)) {
                             $this->db->select('*');
                             $this->db->from('tbl_price_rule');
