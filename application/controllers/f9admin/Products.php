@@ -224,8 +224,8 @@ class Products extends CI_finecontrol
     // ============ END ADD PRODUCT DATA   ========================
     // ============ START FETCH DATA ========================
     public function fetch_product($received)
-    {
-
+    {   
+       
         $this->load->driver('cache');
         $this->cache->clean();
 
@@ -235,8 +235,8 @@ class Products extends CI_finecontrol
         $minor_category_id = $received['minor_category_id'];
         $minor2_category_id = $received['minor2_category_id'];
         $is_quick = $received['is_quick'];
-        $cron_id  = $received['cron_id'];
-        $delete_data = $received['delete_data'];
+        $cron_id  = (isset($received['cron_id']) ) ? $received['cron_id'] : '';
+        $delete_data = (isset($received['delete_data']) )? $received['cron_id'] : '';
         $api_id = '';
         $type = '';
         $finished = '';
@@ -265,7 +265,9 @@ class Products extends CI_finecontrol
         }
         //-------------- normal products -----------------
         else {
+           
             if ($minor2_category_id != 0) {
+              
                 $minor2_data = $this->db->select('id,api_id,type,finshed,include_series,include_sku,exlude_series,exlude_sku')->get_where('tbl_minisubcategory2', array('id' => $minor2_category_id))->row();
                 if (!empty($minor2_data)) {
                     $api_id = $minor2_data->api_id;
@@ -281,6 +283,7 @@ class Products extends CI_finecontrol
                     $delete = $this->db->delete('tbl_products', array('category_id' => $category_id, 'subcategory_id' => $subcategory_id, 'minor_category_id' => $minor_category_id, 'minor2_category_id' => $minor2_category_id));
                 }
             } else if ($minor_category_id != 0) {
+               
                 $minor_data = $this->db->select('id,api_id,type,finshed,include_series,include_sku,exlude_series,exlude_sku')->get_where('tbl_minisubcategory', array('id' => $minor_category_id))->row();
                 if (!empty($minor_data)) {
                     $api_id = $minor_data->api_id;
@@ -296,6 +299,7 @@ class Products extends CI_finecontrol
                     $delete = $this->db->delete('tbl_products', array('category_id' => $category_id, 'subcategory_id' => $subcategory_id, 'minor_category_id' => $minor_category_id,));
                 }
             } else if ($subcategory_id != 0) {
+             
                 $sub_data = $this->db->select('id,api_id,type,finshed,include_series,include_sku,exlude_series,exlude_sku')->get_where('tbl_sub_category', array('id' => $subcategory_id))->row();
                 if (!empty($sub_data)) {
                     $api_id = $sub_data->api_id;
@@ -311,7 +315,9 @@ class Products extends CI_finecontrol
                     $delete = $this->db->delete('tbl_products', array('category_id' => $category_id, 'subcategory_id' => $subcategory_id));
                 }
             } else {
+               
                 $cate_data = $this->db->select('id,api_id,type,finshed,include_series,include_sku,exlude_series,exlude_sku')->get_where('tbl_category', array('id' => $category_id))->row();
+               
                 if (!empty($cate_data)) {
                     $api_id = $cate_data->api_id;
                     $type = $cate_data->type;
@@ -525,6 +531,7 @@ class Products extends CI_finecontrol
     }
     public function fetchApiData2($receive)
     {
+
         $total_products = 0;
         $inserted_products = 0;
         $url = 'https://api.stuller.com/v2/products';
@@ -545,6 +552,7 @@ class Products extends CI_finecontrol
         $result = curl_exec($ch);
         curl_close($ch);
         $result_da = json_decode($result);
+
         if (!empty($result_da)) {
             $total_products = $result_da->TotalNumberOfProducts;
             $total_pages = round($result_da->TotalNumberOfProducts / 500) + 1;
@@ -555,6 +563,7 @@ class Products extends CI_finecontrol
         }
         //--------------------------insert data------------------------------------
         $id =  $receive['cron_id'];
+        // echo $id;exit;
         // Retrieve last page number from storage
         $last_page = $this->getLastPageNumber($id); // Implement this method to retrieve the last page number
 
@@ -581,7 +590,6 @@ class Products extends CI_finecontrol
             curl_close($ch);
 
             $result_da = json_decode($result);
-
 
             if (!empty($result_da->Products)) {
                 $products = [];
