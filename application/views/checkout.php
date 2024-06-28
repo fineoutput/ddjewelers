@@ -521,8 +521,8 @@ $return_url = site_url() . 'Home/callback/' . $ordr_id_enc;
                     "line1": "<?= $address ?>",
                     "line2": "",
                     "city": "<?= $city ?>",
-                    // "state": "<?= $state ?>",
-                    "state": "Alabama",
+                    "state": "<?= $state ?>",
+                    //"state": "Alabama",
                     "zipcode": "<?= $zip ?>",
                     "country": "USA"
                 },
@@ -538,8 +538,8 @@ $return_url = site_url() . 'Home/callback/' . $ordr_id_enc;
                     "line1": "<?= $address ?>",
                     "line2": "",
                     "city": "<?= $city ?>",
-                    // "state": "<?= $state ?>",
-                    "state": "Alabama",
+                    "state": "<?= $state ?>",
+                    //"state": "Alabama",
                     "zipcode": "<?= $zip ?>",
                     "country": "USA"
                 },
