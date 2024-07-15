@@ -318,7 +318,7 @@
                                     <div style="text-align:center;" id="paypal-button" class="btn-space"></div>
                                 </div>
                                 <div class="justify-content-center text-center">
-                                    <div id="google-pay-button"></div>
+                                    <!-- <div id="google-pay-button"></div> -->
                                     <!-- <button id="google-pay-button"></button> -->
                                 </div>
                                 <div class="justify-content-center text-center">
