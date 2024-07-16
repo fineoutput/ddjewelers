@@ -326,17 +326,17 @@ class Order extends CI_Controller
             //     'publicKey' => 'jwvgk8z38gwjywgr',
             //     'privateKey' => '880e71aeb8ff9eed853f45dc76627f86'
             // ]);
-            $gateway = new Braintree\Gateway([
-                'environment' => GOOGLE_PAY_ENVIRONMENTSEC,
-                'merchantId' => GOOGLE_PAY_MERCHANTIDSEC,
-                'publicKey' => GOOGLE_PAY_PUBLICKKEY,
-                'privateKey' => GOOGLE_PAY_PRIVATEKEY
-            ]);
+            // $gateway = new Braintree\Gateway([
+            //     'environment' => GOOGLE_PAY_ENVIRONMENTSEC,
+            //     'merchantId' => GOOGLE_PAY_MERCHANTIDSEC,
+            //     'publicKey' => GOOGLE_PAY_PUBLICKKEY,
+            //     'privateKey' => GOOGLE_PAY_PRIVATEKEY
+            // ]);
             // pass $clientToken to your front-end
             // $clientToken = $gateway->clientToken()->generate([
             //     "customerId" => $aCustomerId
             // ]);
-            $data2['braintree_auth'] = ($clientToken = $gateway->clientToken()->generate());
+            // $data2['braintree_auth'] = ($clientToken = $gateway->clientToken()->generate());
             $this->load->view('common/header', $data2);
             $this->load->view('checkout');
             $this->load->view('common/footer');
