@@ -575,9 +575,9 @@ $return_url = site_url() . 'Home/callback/' . $ordr_id_enc;
             "order_id": "<?= $order1_data[0]->id ?>",
             "currency": "USD",
             "financing_program": "",
-            "shipping_amount": "<?= (int)round($order1_data[0]->shipping * 100) ?>",
+            "shipping_amount": <?= (int)round($order1_data[0]->shipping * 100) ?>,
             "tax_amount": <?= (int)round($order1_data[0]->delivery_charge * 100)?>,
-            "total": "<?= (int)round($order1_data[0]->final_amount * 100) ?>"
+            "total": <?= (int)round($order1_data[0]->final_amount * 100) ?>
         })
         var base_url = "<?= base_url() ?>";
         affirm.checkout.open({
