@@ -35,6 +35,7 @@
         border-radius: 50%;
         font-size: 15px;
     }
+    
 </style>
 
 <section>
@@ -271,6 +272,7 @@
                                     </div>
                                 </div>
                             </form>
+
                             <div class=" border-bottom bg-light py-3">
                                 <h6><b>Shipping Method</b></h6>
                                 <? $i = 0;
@@ -293,8 +295,10 @@
                                     </a>
                                 <? } ?>
                             </div>
+
                             <input type="hidden" name="shipping_arr" id="shipping_arr" value='<?= json_encode($shipping_costs) ?>'>
                             <? if (!empty($methods_data)) { ?>
+
                                 <div class=" mb-3 text-center mb-2">
                                     <!-- <form action="<?= base_url(); ?>Home/affrim_place_order" method="post" enctype="multipart/form-data"> -->
                                     <input type="hidden" value="<?= $address_id; ?>" name="addresss_id">
@@ -310,6 +314,7 @@
                                     <P class="" style="font-size:12px"> <a href='https://www.affirm.com/how-it-works' target='_blank' rel='noopener noreferrer'>Affirm How is Works</a></P>
                                     <!-- </form> -->
                                 </div>
+
                                 <div class=" mb-3 text-center ">
                                     <input type="hidden" value="<?= $address_id; ?>" name="addresss_id">
                                     <input type="hidden" value="" name="applied_promocode" id="applied_promocode">
@@ -317,10 +322,29 @@
                                     <div style="text-align:center;" id="paypal-button-container"></div>
                                     <div style="text-align:center;" id="paypal-button" class="btn-space"></div>
                                 </div>
+
+                                <div class="mb-3 text-center mb-2">
+                                    <form action="<?= base_url(); ?>Home/convergepay" method="post" enctype="multipart/form-data">
+                                        <input type="hidden" name="addresss_id" value="<?= $address_id; ?>">
+                                        <input type="hidden" name="applied_promocode" id="applied_promocode" value="">
+                                        
+                                        <button type="submit" class="pay_btn pay_btn-2" style="align-items: baseline;">
+                                            <div style="padding-top: 4px;">
+                                                <span style="text-transform: none; color: black; font-weight: 600;">
+                                                    Pay With Convergepay
+                                                </span>
+                                                <i class="bi bi-arrow-right"></i>
+                                            </div>
+                                        </button>
+                                    </form>
+                                </div>
+
+
                                 <div class="justify-content-center text-center">
                                     <!-- <div id="google-pay-button"></div> -->
                                     <!-- <button id="google-pay-button"></button> -->
                                 </div>
+
                                 <div class="justify-content-center text-center">
                                     <div id="dropin-container"></div>
                                 </div>
@@ -578,6 +602,7 @@ $return_url = site_url() . 'Home/callback/' . $ordr_id_enc;
             "shipping_amount": <?= (int)round($order1_data[0]->shipping * 100) ?>,
             "tax_amount": <?= (int)round($order1_data[0]->delivery_charge * 100)?>,
             "total": <?= (int)round($order1_data[0]->final_amount * 100) ?>
+ 
         })
         var base_url = "<?= base_url() ?>";
         affirm.checkout.open({
