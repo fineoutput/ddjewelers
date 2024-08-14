@@ -867,4 +867,13 @@ class Order extends CI_Controller
             redirect("Home/login", "refresh");
         }
     }
+
+    //Converge payment Callback function
+
+    public function process_payment() {
+        
+        print_r($_POST);
+        print_r($_GET);
+    }
+    
 }

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>Checkout.js Click to Pay Demo</title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://api.demo.convergepay.com/hosted-payments/Checkout.js"></script>
+    
     <script>
         var transactionToken;
         
@@ -32,7 +32,7 @@
                 ssl_amount: $("#ssl_amount").val()
             };
 
-            $.post("https://www.api.demo.convergepay.com/hosted-payments/transaction_token", tokenRequest, function(data) {
+            $.post("https://api.demo.convergepay.com/hosted-payments/transaction_token", tokenRequest, function(data) {
                 $("#token").html(data);
                 transactionToken = data;
                 initiateEwallets();
@@ -47,7 +47,7 @@
             var baseUrl = '<?php echo base_url(); ?>';
             var paymentData = {
                 ssl_txn_auth_token: transactionToken,
-                ssl_callback_url: baseUrl + 'home/process_payment'
+                ssl_callback_url: baseUrl + 'Order/process_payment'
             };
             ConvergeEmbeddedPayment.initMasterPass('clicktopay-button', paymentData, callback);
             return false;
@@ -79,4 +79,5 @@
     <br>
     Transaction Hash Value:<div id="txn_hash"></div>
 </body>
+<script src="https://api.demo.convergepay.com/hosted-payments/Checkout.js"></script>
 </html>
