@@ -918,8 +918,8 @@ class Order extends CI_Controller
 
                 curl_close($ch);
 
-                echo $response;exit;
-                $data['transaction_token'] = $respone;
+                // echo $response;exit;
+                $data['transaction_token'] = $response;
                 $data['amount'] = $amount;
                 $this->load->view('convergepay' ,$data);
             }else {
