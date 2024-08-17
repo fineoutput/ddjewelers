@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Payment Page</title>
-    <script src="https://path-to-converge-library.js"></script> <!-- Ensure this URL is correct -->
+    18:05
+    <script src="https://api.demo.convergepay.com/hosted-payments/Checkout.js"></script> <!-- Ensure this URL is correct -->
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             var button = document.getElementById('clicktopay-button');
