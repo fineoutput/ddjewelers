@@ -327,6 +327,7 @@
                                     <form action="<?= base_url(); ?>Home/convergepay" method="post" enctype="multipart/form-data">
                                         <input type="hidden" name="addresss_id" value="<?= $address_id; ?>">
                                         <input type="hidden" name="applied_promocode" id="applied_promocode" value="">
+                                        <input type="hidden" name="amount" id="amount" value="<?=round($order1_data[0]->final_amount)?>">
                                         
                                         <button type="submit" class="pay_btn pay_btn-2" style="align-items: baseline;">
                                             <div style="padding-top: 4px;">

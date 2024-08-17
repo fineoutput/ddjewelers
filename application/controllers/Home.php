@@ -328,43 +328,6 @@ class Home extends CI_Controller
         $this->load->view('common/footer');
     }
 
-    public function convergepay() {
-        $this->db->select('*');
-        $this->db->from('tbl_category');
-        $this->db->where('is_active', 1);
-        $this->db->order_by('id', 'ASC');
-        $data['category'] = $this->db->get();
-        $this->db->select('*');
-        $this->db->from('tbl_slider');
-        $this->db->where('is_active', 1);
-        $this->db->order_by('seq', 'ASC');
-        $data['slider'] = $this->db->get();
-        $this->db->select('*');
-        $this->db->from('tbl_slider1');
-        $this->db->where('is_active', 1);
-        $this->db->order_by('seq', 'ASC');
-        $data['slider1'] = $this->db->get();
-        $this->db->select('*');
-        $this->db->from('tbl_slider2');
-        $this->db->where('is_active', 1);
-        $this->db->order_by('seq', 'ASC');
-        $data['slider2'] = $this->db->get();
-        $this->db->select('*');
-        $this->db->from('tbl_slider3');
-        $this->db->where('is_active', 1);
-        $this->db->order_by('seq', 'ASC');
-        $data['slider3'] = $this->db->get()
-        ;
-        $this->load->view('common/header', $data);
-        $this->load->view('convergepay');
-        $this->load->view('common/footer');
-    }
-
-    public function process_payment() {
-        
-        print_r($_POST);
-        print_r($_GET);
-    }
     //Search Products  by subcategory Page after search
     public function search_sub_products($idd)
     {
