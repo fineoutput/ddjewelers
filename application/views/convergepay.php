@@ -3,24 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <title>Payment Page</title>
-    18:05
     <script src="https://api.demo.convergepay.com/hosted-payments/Checkout.js"></script> <!-- Ensure this URL is correct -->
+</head>
+<body>
+    
+    <button id="clicktopay-button">Pay with MasterPass</button>
+    
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
+          document.addEventListener('DOMContentLoaded', function () {
             var button = document.getElementById('clicktopay-button');
             if (button) {
                 button.click();
             }
         });
-    </script>
-</head>
-<body>
-    
-    <button id="clicktopay-button">Pay with MasterPass</button>
-
-    <!-- Your other HTML content -->
-
-    <script>
         var baseUrl = '<?php echo base_url(); ?>';
 
         var paymentData = {
