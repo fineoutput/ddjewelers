@@ -8,14 +8,9 @@
 <body>
     
     <button id="clicktopay-button">Pay with MasterPass</button>
-    
+
     <script>
-          document.addEventListener('DOMContentLoaded', function () {
-            var button = document.getElementById('clicktopay-button');
-            if (button) {
-                button.click();
-            }
-        });
+   
         var baseUrl = '<?php echo base_url(); ?>';
 
         var paymentData = {
@@ -40,6 +35,13 @@
 
         // Initialize MasterPass payment
         ConvergeEmbeddedPayment.initMasterPass('clicktopay-button', paymentData, callback);
+
+        document.addEventListener('DOMContentLoaded', function () {
+            var button = document.getElementById('clicktopay-button');
+            if (button) {
+                button.click();
+            }
+        });
     </script>
 </body>
 </html>
