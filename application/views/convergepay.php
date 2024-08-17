@@ -23,7 +23,7 @@
         var baseUrl = '<?php echo base_url(); ?>';
 
         var paymentData = {
-            ssl_txn_auth_token: <?=$transaction_token?>,  
+            ssl_txn_auth_token: '<?=$transaction_token?>',  
             ssl_callback_url: baseUrl + 'Order/process_payment'
         };
 
