@@ -324,7 +324,7 @@
                                 </div>
 
                                 <div class="mb-3 text-center mb-2">
-                                    <form action="<?= base_url(); ?>Home/convergepay" method="post" enctype="multipart/form-data">
+                                    <form action="<?= base_url(); ?>Order/convergepay" method="post" enctype="multipart/form-data">
                                         <input type="hidden" name="addresss_id" value="<?= $address_id; ?>">
                                         <input type="hidden" name="applied_promocode" id="applied_promocode" value="">
                                         <input type="hidden" name="amount" id="amount" value="<?=round($order1_data[0]->final_amount)?>">
