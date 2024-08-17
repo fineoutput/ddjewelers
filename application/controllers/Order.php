@@ -912,9 +912,14 @@ class Order extends CI_Controller
     }
 
     public function process_payment() {
-        
+        echo"<pre>";
         print_r($_POST);
+        echo"</pre></br>";
+        
+        echo"<pre>";
         print_r($_GET);
+        echo"</pre>";
+
     }
     
 }
