@@ -14,6 +14,7 @@
     </script>
 </head>
 <body>
+    
     <button id="clicktopay-button">Pay with MasterPass</button>
 
     <!-- Your other HTML content -->
