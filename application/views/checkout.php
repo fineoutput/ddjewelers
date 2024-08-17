@@ -434,7 +434,8 @@ $return_url = site_url() . 'Home/callback/' . $ordr_id_enc;
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://www.paypalobjects.com/api/checkout.js"></script>
-<script src="https://api.demo.convergepay.com/hosted-payments/Checkout.js"></script> 
+
+<script src="<?=CONVERGEPAY_POPUP_URL?>"></script> 
 <script>
     // $(document).ready(function() {
     //     if (data != "" && data != null) {

@@ -873,10 +873,10 @@ class Order extends CI_Controller
 
     public function convergepay($amount) {
        
-        $url = 'https://api.demo.convergepay.com/hosted-payments/transaction_token';
-        $accountId = '0022788';  // Replace with your actual account ID
-        $userId = 'apiuser';     // Replace with your actual user ID
-        $pin = '2VGA0V4YSBJR5WFAXBAB0XYXNSM6I8UVV6ZRYC3G6S4HCFOESN0KC73PN2GI3ZUN';  // Replace with your actual PIN
+        $url = CONVERGEPAY_URL;
+        $accountId = CONVERGEPAY_ACCOUNTID;  // Replace with your actual account ID
+        $userId = CONVERGEPAY_USERID;     // Replace with your actual user ID
+        $pin = CONVERGEPAY_PIN;  // Replace with your actual PIN
 
         $postFields = http_build_query([
             'ssl_transaction_type' => 'ccsale',
