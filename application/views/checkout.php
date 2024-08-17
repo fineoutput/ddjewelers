@@ -324,12 +324,12 @@
                                 </div>
 
                                 <div class="mb-3 text-center mb-2">
-                                    <form action="<?= base_url(); ?>Order/convergepay" method="post" enctype="multipart/form-data">
+                                    <!-- <form action="<?= base_url(); ?>Order/convergepay" method="post" enctype="multipart/form-data"> -->
                                         <input type="hidden" name="addresss_id" value="<?= $address_id; ?>">
                                         <input type="hidden" name="applied_promocode" id="applied_promocode" value="">
                                         <input type="hidden" name="amount" id="amount" value="<?=round($order1_data[0]->final_amount)?>">
                                         
-                                        <button type="submit" class="pay_btn pay_btn-2" style="align-items: baseline;">
+                                        <button id="clicktopay-button" class="pay_btn pay_btn-2" style="align-items: baseline;">
                                             <div style="padding-top: 4px;">
                                                 <span style="text-transform: none; color: black; font-weight: 600;">
                                                     Pay With Convergepay
@@ -337,7 +337,7 @@
                                                 <i class="bi bi-arrow-right"></i>
                                             </div>
                                         </button>
-                                    </form>
+                                    <!-- </form> -->
                                 </div>
 
 
@@ -434,6 +434,7 @@ $return_url = site_url() . 'Home/callback/' . $ordr_id_enc;
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://www.paypalobjects.com/api/checkout.js"></script>
+<script src="https://api.demo.convergepay.com/hosted-payments/Checkout.js"></script> 
 <script>
     // $(document).ready(function() {
     //     if (data != "" && data != null) {
@@ -641,7 +642,36 @@ $return_url = site_url() . 'Home/callback/' . $ordr_id_enc;
         })
 
     }
+
 </script>
+
+<script>
+   
+   var baseUrl = '<?php echo base_url(); ?>';
+
+   var paymentData = {
+       ssl_txn_auth_token: '<?=$transaction_token?>',  
+       ssl_callback_url: baseUrl + 'Order/process_payment'
+   };
+
+   var callback = {
+       onError: function (error) {
+           console.error("Error:", error);
+       },
+       onDeclined: function (response) {
+           console.log("Payment Declined:", response);
+       },
+       onApproval: function (response) {
+           console.log("Payment Approved:", response);
+       },
+       onCancelled: function () {
+           console.log("Payment Cancelled");
+       }
+   };
+
+   ConvergeEmbeddedPayment.initMasterPass('clicktopay-button', paymentData, callback);
+</script>
+
 <!-- //------- gpay ------- -->
 <script src="https://pay.google.com/gp/p/js/pay.js"></script>
 <script src="https://js.braintreegateway.com/web/3.91.0/js/client.min.js"></script>

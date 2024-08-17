@@ -337,6 +337,7 @@ class Order extends CI_Controller
             //     "customerId" => $aCustomerId
             // ]);
             // $data2['braintree_auth'] = ($clientToken = $gateway->clientToken()->generate());
+            $data2['transaction_token'] = $this->convergepay($order1_data[0]->final_amount);
             $this->load->view('common/header', $data2);
             $this->load->view('checkout');
             $this->load->view('common/footer');
@@ -870,70 +871,44 @@ class Order extends CI_Controller
 
     //Converge payment Callback function
 
-    public function convergepay() {
+    public function convergepay($amount) {
        
-        $this->load->helper(array('form', 'url'));
-        $this->load->library('form_validation');
-        $this->load->helper('security');
+        $url = 'https://api.demo.convergepay.com/hosted-payments/transaction_token';
+        $accountId = '0022788';  // Replace with your actual account ID
+        $userId = 'apiuser';     // Replace with your actual user ID
+        $pin = '2VGA0V4YSBJR5WFAXBAB0XYXNSM6I8UVV6ZRYC3G6S4HCFOESN0KC73PN2GI3ZUN';  // Replace with your actual PIN
 
-        if ($this->input->post()) {
+        $postFields = http_build_query([
+            'ssl_transaction_type' => 'ccsale',
+            'ssl_account_id'        => $accountId,
+            'ssl_user_id'           => $userId,
+            'ssl_pin'               => $pin,
+            'ssl_amount'            => $amount,
+        ]);
 
-            $this->form_validation->set_rules('amount', 'amount', 'required|xss_clean|trim');
+        $ch = curl_init();
 
-            if ($this->form_validation->run() == TRUE) {
+        curl_setopt_array($ch, [
+            CURLOPT_URL => $url,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 30, // Set a reasonable timeout value
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'POST',
+            CURLOPT_POSTFIELDS => $postFields,
+            CURLOPT_HTTPHEADER => [
+                'Content-Type: application/x-www-form-urlencoded'
+            ],
+        ]);
 
-                $amount = $this->input->post('amount');
+        $response = curl_exec($ch);
 
-                $url = 'https://api.demo.convergepay.com/hosted-payments/transaction_token';
-                $accountId = '0022788';  // Replace with your actual account ID
-                $userId = 'apiuser';     // Replace with your actual user ID
-                $pin = '2VGA0V4YSBJR5WFAXBAB0XYXNSM6I8UVV6ZRYC3G6S4HCFOESN0KC73PN2GI3ZUN';  // Replace with your actual PIN
+        curl_close($ch);
 
-                $postFields = http_build_query([
-                    'ssl_transaction_type' => 'ccsale',
-                    'ssl_account_id'        => $accountId,
-                    'ssl_user_id'           => $userId,
-                    'ssl_pin'               => $pin,
-                    'ssl_amount'            => $amount,
-                ]);
-
-                $ch = curl_init();
-
-                curl_setopt_array($ch, [
-                    CURLOPT_URL => $url,
-                    CURLOPT_RETURNTRANSFER => true,
-                    CURLOPT_ENCODING => '',
-                    CURLOPT_MAXREDIRS => 10,
-                    CURLOPT_TIMEOUT => 30, // Set a reasonable timeout value
-                    CURLOPT_FOLLOWLOCATION => true,
-                    CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-                    CURLOPT_CUSTOMREQUEST => 'POST',
-                    CURLOPT_POSTFIELDS => $postFields,
-                    CURLOPT_HTTPHEADER => [
-                        'Content-Type: application/x-www-form-urlencoded'
-                    ],
-                ]);
-
-                $response = curl_exec($ch);
-
-                curl_close($ch);
-
-                // echo $response;exit;
-                $data['transaction_token'] = $response;
-                $data['amount'] = $amount;
-                $this->load->view('common/header',$data);
-                $this->load->view('convergepay');
-                $this->load->view('common/footer');
-            }else {
-                $this->session->set_flashdata('emessage', validation_errors());
-                redirect($_SERVER['HTTP_REFERER']);
-            }
-        }else {
-            $this->session->set_flashdata('emessage', 'Some error occurred.Post data not found.');
-            redirect($_SERVER['HTTP_REFERER']);
-        }
-
-        
+        return $response;
+             
     }
 
     public function process_payment() {
