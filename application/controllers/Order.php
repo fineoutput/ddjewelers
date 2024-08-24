@@ -929,7 +929,21 @@ class Order extends CI_Controller
             'ssl_verify' => 'N',
             'ssl_get_token' => 'Y',
             'ssl_add_token' => 'Y',
-            'ssl_amount' => $amount
+            'ssl_amount' => $amount,
+            'ssl_first_name' => "John",
+            'ssl_last_name' => "Smith",
+            'ssl_company' => "my_company",
+            'ssl_avs_address' => "my_street",
+            'ssl_address2' => "123",
+            'ssl_city' => "anywhere",
+            'ssl_state' => "AZ",
+            'ssl_avs_zip' => "00000",
+            'ssl_country' => "USA",
+            'ssl_get_token' => "Y",
+            'ssl_add_token' => "Y",
+            'ssl_email' =>'test@gmail.com',
+            'ssl_phone' => "111-111-1111",
+            'ssl_invoice_number' => "INV123"
         ]);
 
         $ch = curl_init();
