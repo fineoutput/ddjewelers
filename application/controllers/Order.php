@@ -337,7 +337,7 @@ class Order extends CI_Controller
             //     "customerId" => $aCustomerId
             // ]);
             // $data2['braintree_auth'] = ($clientToken = $gateway->clientToken()->generate());
-            $data2['transaction_token'] = $this->convergepay($order1_data[0]->final_amount);
+            $data2['transaction_token'] = $this->convergepay($order1_data[0]);
             $this->load->view('common/header', $data2);
             $this->load->view('checkout');
             $this->load->view('common/footer');
@@ -911,12 +911,46 @@ class Order extends CI_Controller
              
     // }
 
-    public function convergepay($amount) {
+    public function convergepay($details) {
+
+        $address_id = $details->address_id;
+        $amount = $details->final_amount;
+
+        $this->db->select('*');
+        $this->db->from('tbl_user_address');
+        $this->db->where('id', $address_id);
+        $addr_da = $this->db->get()->row();
+
+        if (!empty($addr_da)) {
+            $address = $addr_da->address;
+            if (!empty($addr_da->country_id)) {
+                $country_data1 = $this->db->get_where('tbl_country', array('id' => $addr_da->country_id))->result();
+                $country = $country_data1[0]->name;
+            } else {
+                $country = '';
+            }
+            if (!empty($addr_da->state_id)) {
+                $state_data = $this->db->get_where('tbl_state', array('id' => $addr_da->state_id))->result();
+                if (!empty($state_data)) {
+
+                    $state_name = $state_data[0]->name;
+                } else {
+                    $state_name = '';
+                }
+            } else {
+                $state_name = '';
+            }
+        }
+
+        $this->db->select('*');
+        $this->db->from('tbl_users');
+        $this->db->where('id', $addr_da->user_id);
+        $userDetails = $this->db->get()->row();
 
         $merchantID = CONVERGEPAY_ACCOUNTID;
         $merchantUserID = CONVERGEPAY_USERID;
         $merchantPinCode = CONVERGEPAY_PIN;
-        // $vendorID = env('CONVERGE_VENDOR_ID');
+        // $vendorID = '';
         $url = CONVERGEPAY_URL;
 
         $postData = http_build_query([
@@ -924,25 +958,24 @@ class Order extends CI_Controller
             'ssl_user_id' => $merchantUserID,
             'ssl_pin' => $merchantPinCode,
             // 'ssl_vendor_id' => $vendorID,
-            'ssl_invoice_number' => 'Inv123', 
             'ssl_transaction_type' => 'ccsale',
             'ssl_verify' => 'N',
             'ssl_get_token' => 'Y',
             'ssl_add_token' => 'Y',
             'ssl_amount' => $amount,
-            'ssl_first_name' => "John",
-            'ssl_last_name' => "Smith",
+            'ssl_first_name' => $addr_da->first_name,
+            'ssl_last_name' => $addr_da->last_name,
             'ssl_company' => "my_company",
-            'ssl_avs_address' => "my_street",
-            'ssl_address2' => "123",
-            'ssl_city' => "anywhere",
-            'ssl_state' => "AZ",
-            'ssl_avs_zip' => "00000",
-            'ssl_country' => "USA",
+            'ssl_avs_address' => $addr_da->address ?? '',
+            'ssl_address2' => $addr_da->address2 ?? '',
+            'ssl_city' => $addr_da->city ?? '',
+            'ssl_state' => $state_name ,
+            'ssl_avs_zip' => $addr_da->zipcode ?? '',
+            'ssl_country' => $country,
             'ssl_get_token' => "Y",
             'ssl_add_token' => "Y",
-            'ssl_email' =>'test@gmail.com',
-            'ssl_phone' => "111-111-1111",
+            'ssl_email' => $userDetails->email ?? '',
+            'ssl_phone' => $userDetails->phone ?? '',
             'ssl_invoice_number' => "INV123"
         ]);
 
@@ -968,6 +1001,7 @@ class Order extends CI_Controller
         echo"</pre></br>";
 
         log_message('convergepay_response', $_POST);
+        log_message('convergepay_response', $_GET);
 
         echo"<pre>";
         print_r($_GET);
