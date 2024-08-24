@@ -871,44 +871,81 @@ class Order extends CI_Controller
 
     //Converge payment Callback function
 
-    public function convergepay($amount) {
+    // public function convergepay($amount) {
        
-        $url = CONVERGEPAY_URL;
-        $accountId = CONVERGEPAY_ACCOUNTID;  // Replace with your actual account ID
-        $userId = CONVERGEPAY_USERID;     // Replace with your actual user ID
-        $pin = CONVERGEPAY_PIN;  // Replace with your actual PIN
+    //     $url = CONVERGEPAY_URL;
+    //     $accountId = CONVERGEPAY_ACCOUNTID;  // Replace with your actual account ID
+    //     $userId = CONVERGEPAY_USERID;     // Replace with your actual user ID
+    //     $pin = CONVERGEPAY_PIN;  // Replace with your actual PIN
 
-        $postFields = http_build_query([
+    //     $postFields = http_build_query([
+    //         'ssl_transaction_type' => 'ccsale',
+    //         'ssl_account_id'        => $accountId,
+    //         'ssl_user_id'           => $userId,
+    //         'ssl_pin'               => $pin,
+    //         'ssl_amount'            => $amount,
+    //     ]);
+
+    //     $ch = curl_init();
+
+    //     curl_setopt_array($ch, [
+    //         CURLOPT_URL => $url,
+    //         CURLOPT_RETURNTRANSFER => true,
+    //         CURLOPT_ENCODING => '',
+    //         CURLOPT_MAXREDIRS => 10,
+    //         CURLOPT_TIMEOUT => 30, // Set a reasonable timeout value
+    //         CURLOPT_FOLLOWLOCATION => true,
+    //         CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+    //         CURLOPT_CUSTOMREQUEST => 'POST',
+    //         CURLOPT_POSTFIELDS => $postFields,
+    //         CURLOPT_HTTPHEADER => [
+    //             'Content-Type: application/x-www-form-urlencoded'
+    //         ],
+    //     ]);
+
+    //     $response = curl_exec($ch);
+
+    //     curl_close($ch);
+
+    //     return $response;
+             
+    // }
+
+    public function convergepay($amount) {
+
+        $merchantID = CONVERGEPAY_ACCOUNTID;
+        $merchantUserID = CONVERGEPAY_USERID;
+        $merchantPinCode = CONVERGEPAY_PIN;
+        // $vendorID = env('CONVERGE_VENDOR_ID');
+        $url = CONVERGEPAY_URL;
+
+        $postData = http_build_query([
+            'ssl_merchant_id' => $merchantID,
+            'ssl_user_id' => $merchantUserID,
+            'ssl_pin' => $merchantPinCode,
+            // 'ssl_vendor_id' => $vendorID,
+            'ssl_invoice_number' => 'Inv123', 
             'ssl_transaction_type' => 'ccsale',
-            'ssl_account_id'        => $accountId,
-            'ssl_user_id'           => $userId,
-            'ssl_pin'               => $pin,
-            'ssl_amount'            => $amount,
+            'ssl_verify' => 'N',
+            'ssl_get_token' => 'Y',
+            'ssl_add_token' => 'Y',
+            'ssl_amount' => $amount
         ]);
 
         $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $postData);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+        curl_setopt($ch, CURLOPT_VERBOSE, true);
 
-        curl_setopt_array($ch, [
-            CURLOPT_URL => $url,
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => '',
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 30, // Set a reasonable timeout value
-            CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => 'POST',
-            CURLOPT_POSTFIELDS => $postFields,
-            CURLOPT_HTTPHEADER => [
-                'Content-Type: application/x-www-form-urlencoded'
-            ],
-        ]);
-
-        $response = curl_exec($ch);
+        $result = curl_exec($ch);
 
         curl_close($ch);
 
-        return $response;
-             
+        return $result;
     }
 
     public function process_payment() {
