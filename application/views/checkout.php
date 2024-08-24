@@ -324,11 +324,13 @@
                                 </div>
 
                                 <div class="mb-3 text-center mb-2">
+                                    <!-- <input type="hidden" name="addresss_id" value="<?= $address_id; ?>">
+                                    <input type="hidden" name="applied_promocode" id="applied_promocode" value="">
+                                    <input type="hidden" name="amount" id="amount" value="<?=round($order1_data[0]->final_amount)?>"> -->
                                     <!-- <form action="<?= base_url(); ?>Order/convergepay" method="post" enctype="multipart/form-data"> -->
-                                        <input type="hidden" name="addresss_id" value="<?= $address_id; ?>">
-                                        <input type="hidden" name="applied_promocode" id="applied_promocode" value="">
-                                        <input type="hidden" name="amount" id="amount" value="<?=round($order1_data[0]->final_amount)?>">
-                                        
+                                    <form action="https://api.demo.convergepay.com/hosted-payments/" method="post" enctype="application/x-www-form-urlencoded">
+                                        <input id="ssl_txn_auth_token" value="<?=$transaction_token?>" type="hidden" name="ssl_txn_auth_token" size="25">
+
                                         <button id="clicktopay-button" class="pay_btn pay_btn-2" style="align-items: baseline;">
                                             <div style="padding-top: 4px;">
                                                 <span style="text-transform: none; color: black; font-weight: 600;">
@@ -646,7 +648,7 @@ $return_url = site_url() . 'Home/callback/' . $ordr_id_enc;
 
 </script>
 
-<script>
+<!-- <script>
    
    var baseUrl = '<?php echo base_url(); ?>';
 
@@ -671,7 +673,7 @@ $return_url = site_url() . 'Home/callback/' . $ordr_id_enc;
    };
 
    ConvergeEmbeddedPayment.initMasterPass('clicktopay-button', paymentData, callback);
-</script>
+</script> -->
 
 <!-- //------- gpay ------- -->
 <script src="https://pay.google.com/gp/p/js/pay.js"></script>
