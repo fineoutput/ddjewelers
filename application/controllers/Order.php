@@ -1027,6 +1027,19 @@ class Order extends CI_Controller
                     $this->db->where('id', $order_id);
                     $update_status = $this->db->update('tbl_order1', $data_update);
 
+                    // Get the user ID from the session
+                    if(!$this->session->userdata('user_id')){
+                        $this->db->select('*');
+                        $this->db->from('tbl_users');
+                        $this->db->where('id', $user_id);
+                        $userDetails = $this->db->get()->row();
+
+                        $user_name = (explode(" ",$userDetails->name));
+                        $this->session->set_userdata('user_name', $user_name[0]);
+                        $this->session->set_userdata('user_id', $userDetails->id);
+                        $this->session->set_userdata('user_data', $userDetails->id);
+                    }
+
                     // Check if the update was successful
                     if ($update_status) {
                         // Set flashdata for order success
