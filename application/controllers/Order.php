@@ -923,11 +923,11 @@ class Order extends CI_Controller
             'ssl_verify' => 'N',
             'ssl_get_token' => 'Y',
             'ssl_add_token' => 'Y',
-            // 'ssl_amount' => $amount,
-            'ssl_amount' => 1.00,
+            'ssl_amount' => $amount,
+            // 'ssl_amount' => 1.00,
             'ssl_first_name' => $addr_da->first_name,
             'ssl_last_name' => $addr_da->last_name,
-            'ssl_company' => "my_company",
+            'ssl_company' => "DDJewellers",
             'ssl_avs_address' => $addr_da->address ?? '',
             'ssl_address2' => $addr_da->address2 ?? '',
             'ssl_city' => $addr_da->city ?? '',
@@ -938,7 +938,7 @@ class Order extends CI_Controller
             'ssl_add_token' => "Y",
             'ssl_email' => $userDetails->email ?? '',
             'ssl_phone' => $userDetails->phone ?? '',
-            'ssl_invoice_number' => "INV,".$details->id.",". $addr_da->user_id
+            'ssl_invoice_number' => "INV" . str_pad($details->id, 5, "0", STR_PAD_LEFT) . str_pad($addr_da->user_id, 5, "0", STR_PAD_LEFT)
         ]);
 
         $ch = curl_init();
@@ -996,11 +996,13 @@ class Order extends CI_Controller
                 date_default_timezone_set("Asia/Calcutta");
                 $cur_date = date("Y-m-d H:i:s");
 
-                
-                 // Explode the invoice number to extract the order ID
-                $invoice_parts = explode(",", $invoice_number);
-                $order_id = isset($invoice_parts[1]) ? $invoice_parts[1] : null;
-                $user_id = isset($invoice_parts[2]) ? $invoice_parts[2] : null;
+                // Extract order_id and user_id
+                $order_id = substr($invoice_number, 3, 5);
+                $user_id = substr($invoice_number, 8, 5);
+
+                // Remove leading zeros
+                $order_id = ltrim($order_id, "0");
+                $user_id = ltrim($user_id, "0");
 
                 if (!$order_id) {
                     // Handle error if the order ID is not found
@@ -1047,7 +1049,7 @@ class Order extends CI_Controller
                         $this->session->set_flashdata('amount', $amount);
 
                         // Delete the user's cart items
-                        // $this->db->delete('tbl_cart', array('user_id' => $user_id));
+                        $this->db->delete('tbl_cart', array('user_id' => $user_id));
 
                         // Prepare and return the success response
                         $response['status'] = true;
