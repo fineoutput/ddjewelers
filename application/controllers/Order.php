@@ -937,7 +937,7 @@ class Order extends CI_Controller
             'ssl_add_token' => "Y",
             'ssl_email' => $userDetails->email ?? '',
             'ssl_phone' => $userDetails->phone ?? '',
-            'ssl_invoice_number' => "INV,"+$details->id
+            'ssl_invoice_number' => "INV,".$details->id
         ]);
 
         $ch = curl_init();
@@ -1022,23 +1022,24 @@ class Order extends CI_Controller
                         $this->session->set_flashdata('amount', $amount);
 
                         // Delete the user's cart items
-                        $this->db->delete('tbl_cart', array('user_id' => $user_id));
+                        // $this->db->delete('tbl_cart', array('user_id' => $user_id));
 
                         // Prepare and return the success response
                         $response['status'] = true;
                         $response['message'] = "Payment successful.";
-                        echo json_encode($response);
+                       
+                        redirect(base_url('Home/order_success'));
                     } else {
                         // Prepare and return the failure response if the update fails
                         $response['status'] = false;
                         $response['message'] = "Failed to update the order.";
-                        echo json_encode($response);
+                        redirect(base_url('Home/order_failed'));
                     }
                 } else {
                     // Payment was not successful, handle the failure
                     $response['status'] = false;
                     $response['message'] = "Payment failed: " . $result_message;
-                    echo json_encode($response);
+                    redirect(base_url('Home/order_failed'));
                 }
             } else {
                 // Prepare and return the validation error response
