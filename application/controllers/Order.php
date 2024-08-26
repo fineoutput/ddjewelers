@@ -1081,6 +1081,6 @@ class Order extends CI_Controller
     }
 
     public function converge_cancel() {
-        redirect($_SERVER['HTTP_REFERER']);
+        redirect("/", "refresh");
     }
 }
