@@ -919,6 +919,7 @@ class Order extends CI_Controller
             'ssl_pin' => $merchantPinCode,
             // 'ssl_vendor_id' => $vendorID,
             'ssl_transaction_type' => 'ccsale',
+            'ssl_description' => 'test',
             'ssl_verify' => 'N',
             'ssl_get_token' => 'Y',
             'ssl_add_token' => 'Y',
