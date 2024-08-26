@@ -1022,7 +1022,7 @@ class Order extends CI_Controller
                     );
 
                     // Update the order in the database
-                    $this->db->where('invoice_number', $invoice_number);
+                    $this->db->where('id', $order_id);
                     $update_status = $this->db->update('tbl_order1', $data_update);
 
                     // Get the user ID from the session
