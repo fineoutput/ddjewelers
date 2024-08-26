@@ -938,7 +938,8 @@ class Order extends CI_Controller
             'ssl_add_token' => "Y",
             'ssl_email' => $userDetails->email ?? '',
             'ssl_phone' => $userDetails->phone ?? '',
-            'ssl_invoice_number' => "INV" . str_pad($details->id, 5, "0", STR_PAD_LEFT) . str_pad($addr_da->user_id, 5, "0", STR_PAD_LEFT)
+            // 'ssl_invoice_number' => "INV" . str_pad($details->id, 5, "0", STR_PAD_LEFT) . str_pad(, 5, "0", STR_PAD_LEFT)
+            'ssl_invoice_number' => $this->createInvoiceNumber($details->id, $addr_da->user_id)
         ]);
 
         $ch = curl_init();
@@ -996,13 +997,12 @@ class Order extends CI_Controller
                 date_default_timezone_set("Asia/Calcutta");
                 $cur_date = date("Y-m-d H:i:s");
 
-                // Extract order_id and user_id
-                $order_id = substr($invoice_number, 3, 5);
-                $user_id = substr($invoice_number, 8, 5);
+                $parseResponse = $this->parseInvoiceNumber($invoice_number);
 
-                // Remove leading zeros
-                $order_id = ltrim($order_id, "0");
-                $user_id = ltrim($user_id, "0");
+                // Extract order_id and user_id
+                $order_id = $parseResponse['order_id'];
+                $user_id = $parseResponse['user_id'];
+
 
                 if (!$order_id) {
                     // Handle error if the order ID is not found
@@ -1084,5 +1084,34 @@ class Order extends CI_Controller
 
     public function converge_cancel() {
         redirect("/", "refresh");
+    }
+
+    private function createInvoiceNumber($order_id, $user_id) {
+        $current_year = date('Y'); // Get the current year
+    
+        // Generate the invoice number
+        $invoice_number = "INV" . $current_year 
+                        . str_pad($order_id, 3, "0", STR_PAD_LEFT) 
+                        . str_pad($user_id, 5, "0", STR_PAD_LEFT);
+                        
+        return $invoice_number;
+    }
+
+    private function parseInvoiceNumber($invoice_number) {
+
+        // Extract the year, order ID, and user ID
+        $year = substr($invoice_number, 3, 4); 
+        $order_id = substr($invoice_number, 7, 3); 
+        $user_id = substr($invoice_number, 10, 5);
+    
+        // Remove leading zeros
+        $order_id = ltrim($order_id, "0");
+        $user_id = ltrim($user_id, "0");
+    
+        return [
+            'year' => $year,
+            'order_id' => $order_id,
+            'user_id' => $user_id
+        ];
     }
 }
