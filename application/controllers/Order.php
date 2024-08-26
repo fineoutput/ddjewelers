@@ -1084,10 +1084,9 @@ class Order extends CI_Controller
         echo"<pre>";
         print_r($_POST);
         echo"</pre></br>";
-
-        log_message('convergepay_response', $_POST);
-        log_message('convergepay_response', $_GET);
-
+        if(!$this->session->userdata('user_id')){
+           echo "session";
+        }
         echo"<pre>";
         print_r($_GET);
         echo"</pre>";
