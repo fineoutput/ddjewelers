@@ -330,6 +330,7 @@
                                     <!-- <form action="<?= base_url(); ?>Order/convergepay" method="post" enctype="multipart/form-data"> -->
                                     <form action="https://api.demo.convergepay.com/hosted-payments/" method="post" enctype="application/x-www-form-urlencoded">
                                         <input id="ssl_txn_auth_token" value="<?=$transaction_token?>" type="hidden" name="ssl_txn_auth_token" size="25">
+                                        <input id="ssl_callback_url" value="<?=base_url('Order/process_payment')?>" type="hidden" name="ssl_callback_url" size="25">
 
                                         <button id="clicktopay-button" class="pay_btn pay_btn-2" style="align-items: baseline;">
                                             <div style="padding-top: 4px;">

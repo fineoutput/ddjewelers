@@ -871,46 +871,6 @@ class Order extends CI_Controller
 
     //Converge payment Callback function
 
-    // public function convergepay($amount) {
-       
-    //     $url = CONVERGEPAY_URL;
-    //     $accountId = CONVERGEPAY_ACCOUNTID;  // Replace with your actual account ID
-    //     $userId = CONVERGEPAY_USERID;     // Replace with your actual user ID
-    //     $pin = CONVERGEPAY_PIN;  // Replace with your actual PIN
-
-    //     $postFields = http_build_query([
-    //         'ssl_transaction_type' => 'ccsale',
-    //         'ssl_account_id'        => $accountId,
-    //         'ssl_user_id'           => $userId,
-    //         'ssl_pin'               => $pin,
-    //         'ssl_amount'            => $amount,
-    //     ]);
-
-    //     $ch = curl_init();
-
-    //     curl_setopt_array($ch, [
-    //         CURLOPT_URL => $url,
-    //         CURLOPT_RETURNTRANSFER => true,
-    //         CURLOPT_ENCODING => '',
-    //         CURLOPT_MAXREDIRS => 10,
-    //         CURLOPT_TIMEOUT => 30, // Set a reasonable timeout value
-    //         CURLOPT_FOLLOWLOCATION => true,
-    //         CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-    //         CURLOPT_CUSTOMREQUEST => 'POST',
-    //         CURLOPT_POSTFIELDS => $postFields,
-    //         CURLOPT_HTTPHEADER => [
-    //             'Content-Type: application/x-www-form-urlencoded'
-    //         ],
-    //     ]);
-
-    //     $response = curl_exec($ch);
-
-    //     curl_close($ch);
-
-    //     return $response;
-             
-    // }
-
     public function convergepay($details) {
 
         $address_id = $details->address_id;
@@ -977,7 +937,7 @@ class Order extends CI_Controller
             'ssl_add_token' => "Y",
             'ssl_email' => $userDetails->email ?? '',
             'ssl_phone' => $userDetails->phone ?? '',
-            'ssl_invoice_number' => "INV123"
+            'ssl_invoice_number' => "INV,"+$details->id
         ]);
 
         $ch = curl_init();
@@ -996,18 +956,102 @@ class Order extends CI_Controller
         return $result;
     }
 
-    public function process_payment() {
-        echo"<pre>";
-        print_r($_POST);
-        echo"</pre></br>";
+    // public function process_payment() {
+    //     echo"<pre>";
+    //     print_r($_POST);
+    //     echo"</pre></br>";
 
-        log_message('convergepay_response', $_POST);
-        log_message('convergepay_response', $_GET);
+    //     log_message('convergepay_response', $_POST);
+    //     log_message('convergepay_response', $_GET);
 
-        echo"<pre>";
-        print_r($_GET);
-        echo"</pre>";
+    //     echo"<pre>";
+    //     print_r($_GET);
+    //     echo"</pre>";
 
+    // }
+
+    public function process_payment()
+    {
+        $this->load->helper(array('form', 'url'));
+        $this->load->library('form_validation');
+        $this->load->helper('security');
+
+        // Check if the request is a POST request
+        if ($this->input->post()) {
+            // Set form validation rules
+            $this->form_validation->set_rules('ssl_invoice_number', 'Invoice Number', 'required|xss_clean|trim');
+            $this->form_validation->set_rules('ssl_result', 'Result Code', 'required|xss_clean|trim');
+
+            // Run form validation
+            if ($this->form_validation->run() == TRUE) {
+                $invoice_number = $this->input->post('ssl_invoice_number');
+                $result_code = $this->input->post('ssl_result');
+                $result_message = $this->input->post('ssl_result_message');
+                $amount = $this->input->post('ssl_amount');
+                $transaction_id = $this->input->post('ssl_txn_id');
+                $payment_type = 'Converge Pay';
+
+                // Set the default timezone
+                date_default_timezone_set("Asia/Calcutta");
+                $cur_date = date("Y-m-d H:i:s");
+
+                // Fetch order data from the database using the invoice number
+                $order_data = $this->db->get_where('tbl_order1', array('invoice_number' => $invoice_number))->result();
+
+                if ($result_code == '0' && $result_message == 'APPROVAL') {
+                    // Prepare data for updating the order in case of success
+                    $data_update = array(
+                        'payment_type' => $payment_type,
+                        'payment_status' => 1,
+                        'order_status' => 1,
+                        'txn_id' => $transaction_id,
+                        'last_update_date' => $cur_date,
+                    );
+
+                    // Update the order in the database
+                    $this->db->where('invoice_number', $invoice_number);
+                    $update_status = $this->db->update('tbl_order1', $data_update);
+
+                    // Get the user ID from the session
+                    $user_id = $this->session->userdata('user_id');
+
+                    // Check if the update was successful
+                    if ($update_status) {
+                        // Set flashdata for order success
+                        $this->session->set_flashdata('invoice_number', $invoice_number);
+                        $this->session->set_flashdata('amount', $amount);
+
+                        // Delete the user's cart items
+                        $this->db->delete('tbl_cart', array('user_id' => $user_id));
+
+                        // Prepare and return the success response
+                        $response['status'] = true;
+                        $response['message'] = "Payment successful.";
+                        echo json_encode($response);
+                    } else {
+                        // Prepare and return the failure response if the update fails
+                        $response['status'] = false;
+                        $response['message'] = "Failed to update the order.";
+                        echo json_encode($response);
+                    }
+                } else {
+                    // Payment was not successful, handle the failure
+                    $response['status'] = false;
+                    $response['message'] = "Payment failed: " . $result_message;
+                    echo json_encode($response);
+                }
+            } else {
+                // Prepare and return the validation error response
+                $response['status'] = false;
+                $response['message'] = validation_errors();
+                echo json_encode($response);
+            }
+        } else {
+            // Prepare and return the response when no data is posted
+            $response['status'] = false;
+            $response['message'] = 'No data received.';
+            echo json_encode($response);
+        }
     }
-    
+
 }
