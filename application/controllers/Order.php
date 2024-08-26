@@ -995,8 +995,21 @@ class Order extends CI_Controller
                 date_default_timezone_set("Asia/Calcutta");
                 $cur_date = date("Y-m-d H:i:s");
 
+                
+                 // Explode the invoice number to extract the order ID
+                $invoice_parts = explode(",", $invoice_number);
+                $order_id = isset($invoice_parts[1]) ? $invoice_parts[1] : null;
+
+                if (!$order_id) {
+                    // Handle error if the order ID is not found
+                    $response['status'] = false;
+                    $response['message'] = 'Invalid invoice number format.';
+                    echo json_encode($response);
+                    return;
+                }
+
                 // Fetch order data from the database using the invoice number
-                $order_data = $this->db->get_where('tbl_order1', array('invoice_number' => $invoice_number))->result();
+                $order_data = $this->db->get_where('tbl_order1', array('id' => $order_id))->result();
 
                 if ($result_code == '0' && $result_message == 'APPROVAL') {
                     // Prepare data for updating the order in case of success
@@ -1055,4 +1068,17 @@ class Order extends CI_Controller
         }
     }
 
+    public function converge_cancel() {
+        echo"<pre>";
+        print_r($_POST);
+        echo"</pre></br>";
+
+        log_message('convergepay_response', $_POST);
+        log_message('convergepay_response', $_GET);
+
+        echo"<pre>";
+        print_r($_GET);
+        echo"</pre>";
+
+    }
 }
