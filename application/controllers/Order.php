@@ -1081,15 +1081,6 @@ class Order extends CI_Controller
     }
 
     public function converge_cancel() {
-        echo"<pre>";
-        print_r($_POST);
-        echo"</pre></br>";
-        if(!$this->session->userdata('user_id')){
-           echo "session";
-        }
-        echo"<pre>";
-        print_r($_GET);
-        echo"</pre>";
-
+        redirect($_SERVER['HTTP_REFERER']);
     }
 }
