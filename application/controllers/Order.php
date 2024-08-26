@@ -938,7 +938,7 @@ class Order extends CI_Controller
             'ssl_add_token' => "Y",
             'ssl_email' => $userDetails->email ?? '',
             'ssl_phone' => $userDetails->phone ?? '',
-            'ssl_invoice_number' => "INV,".$details->id
+            'ssl_invoice_number' => "INV,".$details->id.",". $addr_da->user_id
         ]);
 
         $ch = curl_init();
@@ -1000,6 +1000,7 @@ class Order extends CI_Controller
                  // Explode the invoice number to extract the order ID
                 $invoice_parts = explode(",", $invoice_number);
                 $order_id = isset($invoice_parts[1]) ? $invoice_parts[1] : null;
+                $user_id = isset($invoice_parts[2]) ? $invoice_parts[2] : null;
 
                 if (!$order_id) {
                     // Handle error if the order ID is not found
@@ -1025,9 +1026,6 @@ class Order extends CI_Controller
                     // Update the order in the database
                     $this->db->where('id', $order_id);
                     $update_status = $this->db->update('tbl_order1', $data_update);
-
-                    // Get the user ID from the session
-                    $user_id = $this->session->userdata('user_id');
 
                     // Check if the update was successful
                     if ($update_status) {
