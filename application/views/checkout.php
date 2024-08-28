@@ -324,30 +324,38 @@
                                 </div>
 
                                 <div class="mb-3 text-center mb-2">
-                                
-                                <form action="<?= CONVERGEPAY_CHECKOUT_URL ?>" method="post" enctype="application/x-www-form-urlencoded">
-                                    <input type="hidden" id="ssl_txn_auth_token" name="ssl_txn_auth_token" value="<?= $transaction_token ?>">
-                                    <input type="hidden" id="ssl_callback_url" name="ssl_callback_url" value="<?= base_url('Order/process_payment') ?>">
+                                    <!-- <input type="hidden" name="addresss_id" value="<?= $address_id; ?>">
+                                    <input type="hidden" name="applied_promocode" id="applied_promocode" value="">
+                                    <input type="hidden" name="amount" id="amount" value="<?=round($order1_data[0]->final_amount)?>"> -->
+                                    <!-- <form action="<?= base_url(); ?>Order/convergepay" method="post" enctype="multipart/form-data"> -->
+                                    <form action="<?=CONVERGEPAY_CHECKOUT_URL?>" method="post" enctype="application/x-www-form-urlencoded">
+                                        <input id="ssl_txn_auth_token" value="<?=$transaction_token?>" type="hidden" name="ssl_txn_auth_token" size="25">
+                                        <input id="ssl_callback_url" value="<?=base_url('Order/process_payment')?>" type="hidden" name="ssl_callback_url" size="25">
 
-                                    <button id="clicktopay-button" class="pay_btn pay_btn-2" style="display: flex; align-items: center; padding: 10px; border: none; background: none;">
-                                        <!-- Image Side -->
-                                        <div style="display: flex; align-items: center; margin-right: 10px;">
-                                            <img class="payicon" src="<?= base_url() ?>assets/jewel/img/payment.png" alt="Payment Icon" style="margin-right: 5px;">
-                                            <img class="payicon" src="<?= base_url() ?>assets/jewel/img/master-card.png" alt="MasterCard Icon" style="margin-right: 5px;">
-                                            <img class="payicon" src="<?= base_url() ?>assets/jewel/img/paymentamex.png" alt="American Express Icon" style="margin-right: 5px;">
-                                            <img class="payicon" src="<?= base_url() ?>assets/jewel/img/paydiscover.png" alt="Discover Card Icon">
-                                        </div>
-                                        
-                                        <!-- Text Side -->
-                                        <div style="text-align: left;">
-                                            <span style="text-transform: none; color: black; font-weight: 600;">
+                                        <button id="clicktopay-button" class="pay_btn pay_btn-2" style="align-items: baseline;display: flex;width: 100%;align-items: center;justify-content: space-between;padding: 10px;">
+                                            <div style="padding-top: 4px;">
+                                                <span style="text-transform: none; color: black; font-weight: 600;">
                                                 Pay with Credit Card
-                                            </span>
-                                        </div>
-                                    </button>
-                                </form>
+                                                </span>
+                                                
+                                            </div>
+    <div class="d-flex pay_ic 
+           " style="align-items: center;">
+          <img class="payicon" style="" src="https://dd.jewelplus.com/assets\jewel\img\payment.png">
+          <!-- <i class="fab fa-cc-visa"></i>
+            <i class="fab fa-cc-mastercard"></i>
+            <i class="fab fa-paypal"></i> -->
+          <img class="payicon" style="" src="https://dd.jewelplus.com/assets\jewel\img\master-card (1).png">
+          <img class="payicon" style="" src="https://dd.jewelplus.com/assets\jewel\img\paymentamex.png">
+          
+          
+          
 
-
+          
+          <!-- <i class="fab fa-cc-amex"></i> -->
+        </div>
+                                        </button>
+                                    </form>
                                 </div>
 
 
