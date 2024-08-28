@@ -325,27 +325,28 @@
 
                                 <div class="mb-3 text-center mb-2">
                                 
-                                    <form action="<?= CONVERGEPAY_CHECKOUT_URL ?>" method="post" enctype="application/x-www-form-urlencoded">
-                                        <input type="hidden" id="ssl_txn_auth_token" name="ssl_txn_auth_token" value="<?= $transaction_token ?>">
-                                        <input type="hidden" id="ssl_callback_url" name="ssl_callback_url" value="<?= base_url('Order/process_payment') ?>">
+                                <form action="<?= CONVERGEPAY_CHECKOUT_URL ?>" method="post" enctype="application/x-www-form-urlencoded">
+                                    <input type="hidden" id="ssl_txn_auth_token" name="ssl_txn_auth_token" value="<?= $transaction_token ?>">
+                                    <input type="hidden" id="ssl_callback_url" name="ssl_callback_url" value="<?= base_url('Order/process_payment') ?>">
 
-                                        <button id="clicktopay-button" class="pay_btn pay_btn-2" style="display: flex; align-items: center; padding: 10px; border: none; background: none;">
-                                            <!-- Text Side -->
-                                            <div style="flex: 1; text-align: left;">
-                                                <span style="text-transform: none; color: black; font-weight: 600;">
-                                                    Pay with Credit Card
-                                                </span>
-                                            </div>
-                                            
-                                            <!-- Image Side -->
-                                            <div style="display: flex; align-items: center; margin-left: 10px;">
-                                                <img class="payicon" src="<?= base_url() ?>assets/jewel/img/payment.png" alt="Payment Icon" style="margin-right: 5px;">
-                                                <img class="payicon" src="<?= base_url() ?>assets/jewel/img/master-card.png" alt="MasterCard Icon" style="margin-right: 5px;">
-                                                <img class="payicon" src="<?= base_url() ?>assets/jewel/img/paymentamex.png" alt="American Express Icon" style="margin-right: 5px;">
-                                                <img class="payicon" src="<?= base_url() ?>assets/jewel/img/paydiscover.png" alt="Discover Card Icon">
-                                            </div>
-                                        </button>
-                                    </form>
+                                    <button id="clicktopay-button" class="pay_btn pay_btn-2" style="display: flex; align-items: center; padding: 10px; border: none; background: none;">
+                                        <!-- Image Side -->
+                                        <div style="display: flex; align-items: center; margin-right: 10px;">
+                                            <img class="payicon" src="<?= base_url() ?>assets/jewel/img/payment.png" alt="Payment Icon" style="margin-right: 5px;">
+                                            <img class="payicon" src="<?= base_url() ?>assets/jewel/img/master-card.png" alt="MasterCard Icon" style="margin-right: 5px;">
+                                            <img class="payicon" src="<?= base_url() ?>assets/jewel/img/paymentamex.png" alt="American Express Icon" style="margin-right: 5px;">
+                                            <img class="payicon" src="<?= base_url() ?>assets/jewel/img/paydiscover.png" alt="Discover Card Icon">
+                                        </div>
+                                        
+                                        <!-- Text Side -->
+                                        <div style="text-align: left;">
+                                            <span style="text-transform: none; color: black; font-weight: 600;">
+                                                Pay with Credit Card
+                                            </span>
+                                        </div>
+                                    </button>
+                                </form>
+
 
                                 </div>
 
