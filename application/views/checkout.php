@@ -35,7 +35,6 @@
         border-radius: 50%;
         font-size: 15px;
     }
-    
 </style>
 
 <section>
@@ -135,9 +134,9 @@
                         $total_cart_amount = 0;
                         if (!empty($order2_data)) {
                             foreach ($order2_data as $cart) {
-                                $gem_data = $cart->gem_data?json_decode($cart->gem_data):[];
-                                $monogram_data = $cart->monogram?json_decode($cart->monogram):[];
-                                $engrave_data = $cart->engrave_data?json_decode($cart->engrave_data):[];
+                                $gem_data = $cart->gem_data ? json_decode($cart->gem_data) : [];
+                                $monogram_data = $cart->monogram ? json_decode($cart->monogram) : [];
+                                $engrave_data = $cart->engrave_data ? json_decode($cart->engrave_data) : [];
                                 $product_id = $cart->pro_id;
                                 $pro_da = $this->db->get_where('tbl_products', array('pro_id' => $cart->pro_id))->row();
                                 if (!empty($pro_da)) {
@@ -177,16 +176,16 @@
                                                     <? }
                                                     } ?>
                                                     <? if (!empty($monogram_data)) { ?>
-                                                            <span><b>Monogram : </b></span>
-                                                            <? foreach ($monogram_data as  $mono) { ?>
-                                                                <span><b><?= $mono->Text ?> - </b> <?= $mono->Value ?> <b>|</b> </span>
-                                                            <? } ?>
+                                                        <span><b>Monogram : </b></span>
+                                                        <? foreach ($monogram_data as  $mono) { ?>
+                                                            <span><b><?= $mono->Text ?> - </b> <?= $mono->Value ?> <b>|</b> </span>
+                                                        <? } ?>
                                                     <? } ?>
                                                     <? if (!empty($engrave_data)) { ?>
-                                                            <span><b>Engrave : </b></span>
-                                                            <? foreach ($engrave_data as  $mono) { ?>
-                                                                <span><b><?= $mono->Description ?> - </b> <?= $mono->Text ?> <b>|</b> </span>
-                                                            <? } ?>
+                                                        <span><b>Engrave : </b></span>
+                                                        <? foreach ($engrave_data as  $mono) { ?>
+                                                            <span><b><?= $mono->Description ?> - </b> <?= $mono->Text ?> <b>|</b> </span>
+                                                        <? } ?>
                                                     <? } ?>
                                                 </div>
                                                 <div class="col-3 p-0">
@@ -323,37 +322,27 @@
                                     <div style="text-align:center;" id="paypal-button" class="btn-space"></div>
                                 </div>
 
-                                <div class="mb-3 text-center mb-2">
-                                    <!-- <input type="hidden" name="addresss_id" value="<?= $address_id; ?>">
-                                    <input type="hidden" name="applied_promocode" id="applied_promocode" value="">
-                                    <input type="hidden" name="amount" id="amount" value="<?=round($order1_data[0]->final_amount)?>"> -->
-                                    <!-- <form action="<?= base_url(); ?>Order/convergepay" method="post" enctype="multipart/form-data"> -->
-                                    <form action="<?=CONVERGEPAY_CHECKOUT_URL?>" method="post" enctype="application/x-www-form-urlencoded">
-                                        <input id="ssl_txn_auth_token" value="<?=$transaction_token?>" type="hidden" name="ssl_txn_auth_token" size="25">
-                                        <input id="ssl_callback_url" value="<?=base_url('Order/process_payment')?>" type="hidden" name="ssl_callback_url" size="25">
+                                <div class="mb-3 text-center mb-2" style="align-items: center;display: flex;justify-content: center;">
+                                 
+                                    <form action="https://api.demo.convergepay.com/hosted-payments" method="post" enctype="application/x-www-form-urlencoded" style="width: 72%;">
+                                        <input id="ssl_txn_auth_token" value="aaeUUkA9RJmuADm0W9/DSQAAAZGYAuk4" type="hidden" name="ssl_txn_auth_token" size="25">
+                                        <input id="ssl_callback_url" value="https://www.fineoutput.co.in/ddjewelers/Order/process_payment" type="hidden" name="ssl_callback_url" size="25">
 
                                         <button id="clicktopay-button" class="pay_btn pay_btn-2" style="align-items: baseline;display: flex;width: 100%;align-items: center;justify-content: space-between;padding: 10px;">
                                             <div style="padding-top: 4px;">
                                                 <span style="text-transform: none; color: black; font-weight: 600;">
-                                                Pay with Credit Card
+                                                    Pay with Credit Card
                                                 </span>
-                                                
-                                            </div>
-    <div class="d-flex pay_ic 
-           " style="align-items: center;">
-          <img class="payicon" style="" src="https://dd.jewelplus.com/assets\jewel\img\payment.png">
-          <!-- <i class="fab fa-cc-visa"></i>
-            <i class="fab fa-cc-mastercard"></i>
-            <i class="fab fa-paypal"></i> -->
-          <img class="payicon" style="" src="https://dd.jewelplus.com/assets\jewel\img\master-card (1).png">
-          <img class="payicon" style="" src="https://dd.jewelplus.com/assets\jewel\img\paymentamex.png">
-          
-          
-          
 
-          
-          <!-- <i class="fab fa-cc-amex"></i> -->
-        </div>
+                                            </div>
+                                            <div class="d-flex pay_ic" style="align-items: center;">
+                                                <img class="payicon" style="" src="https://dd.jewelplus.com/assets\jewel\img\payment.png">
+                         
+                                                <img class="payicon" style="" src="https://dd.jewelplus.com/assets\jewel\img\master-card (1).png">
+                                                <img class="payicon" style="" src="https://dd.jewelplus.com/assets\jewel\img\paymentamex.png">
+
+
+                                            </div>
                                         </button>
                                     </form>
                                 </div>
@@ -505,8 +494,8 @@ $return_url = site_url() . 'Home/callback/' . $ordr_id_enc;
     // };
 
     var affirm_config = {
-        public_api_key: "<?=AFFIRM_API_KEY?>", 
-         script:         "<?=AFFIRM_BASE_URL?>"
+        public_api_key: "<?= AFFIRM_API_KEY ?>",
+        script: "<?= AFFIRM_BASE_URL ?>"
     };
 
     (function(m, g, n, d, a, e, h, c) {
@@ -551,9 +540,9 @@ $return_url = site_url() . 'Home/callback/' . $ordr_id_enc;
             //     "name": "DD Jewellers"
             // },
             "merchant": {
-                "user_confirmation_url": "<?=AFFIRM_CONFIRMATION_URL?>",
-                "user_cancel_url": "<?=AFFIRM_CANCEL_URL?>",
-                "user_confirmation_url_action": "<?=AFFIRM_CONFIRMATION_URL_ACTION?>",
+                "user_confirmation_url": "<?= AFFIRM_CONFIRMATION_URL ?>",
+                "user_cancel_url": "<?= AFFIRM_CANCEL_URL ?>",
+                "user_confirmation_url_action": "<?= AFFIRM_CONFIRMATION_URL_ACTION ?>",
                 "name": "DD Jewellers"
             },
             "shipping": {
@@ -620,9 +609,9 @@ $return_url = site_url() . 'Home/callback/' . $ordr_id_enc;
             "currency": "USD",
             "financing_program": "",
             "shipping_amount": <?= (int)round($order1_data[0]->shipping * 100) ?>,
-            "tax_amount": <?= (int)round($order1_data[0]->delivery_charge * 100)?>,
+            "tax_amount": <?= (int)round($order1_data[0]->delivery_charge * 100) ?>,
             "total": <?= (int)round($order1_data[0]->final_amount * 100) ?>
- 
+
         })
         var base_url = "<?= base_url() ?>";
         affirm.checkout.open({
@@ -633,7 +622,7 @@ $return_url = site_url() . 'Home/callback/' . $ordr_id_enc;
             },
             onSuccess: (data) => {
                 $('.center').show();
-                
+
                 $.ajax({
                     url: base_url + 'Order/affirm_success',
                     method: 'post',
@@ -660,7 +649,6 @@ $return_url = site_url() . 'Home/callback/' . $ordr_id_enc;
         })
 
     }
-
 </script>
 
 <!-- //------- gpay ------- -->
@@ -691,7 +679,7 @@ $return_url = site_url() . 'Home/callback/' . $ordr_id_enc;
             client: clientInstance,
             googlePayVersion: 2,
             // googleMerchantId: 'BCR2DN6TU7ZYT2CP' // Optional in sandbox; if set in sandbox, this value must be a valid production Google Merchant ID
-            googleMerchantId: '<?=GOOGLE_PAY_MERCHANTID?>' // Optional in sandbox; if set in sandbox, this value must be a valid production Google Merchant ID
+            googleMerchantId: '<?= GOOGLE_PAY_MERCHANTID ?>' // Optional in sandbox; if set in sandbox, this value must be a valid production Google Merchant ID
         }, function(googlePaymentErr, googlePaymentInstance) {
             paymentsClient.isReadyToPay({
                 // see https://developers.google.com/pay/api/web/reference/object#IsReadyToPayRequest
@@ -718,9 +706,9 @@ $return_url = site_url() . 'Home/callback/' . $ordr_id_enc;
                             },
                             merchantInfo: {
                                 // merchantId: 'BCR2DN6TU7ZYT2CP',
-                                merchantId: '<?=GOOGLE_PAY_MERCHANTID?>',
+                                merchantId: '<?= GOOGLE_PAY_MERCHANTID ?>',
                                 // merchantName: 'D&D Jewelry'
-                                merchantName: '<?=GOOGLE_PAY_MERCHANTNAME?>'
+                                merchantName: '<?= GOOGLE_PAY_MERCHANTNAME ?>'
                             },
                         });
                         // We recommend collecting billing address information, at minimum
