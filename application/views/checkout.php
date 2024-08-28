@@ -336,10 +336,10 @@
 
                                             </div>
                                             <div class="d-flex pay_ic" style="align-items: center;">
-                                                <img class="payicon" style="" src="https://dd.jewelplus.com/assets\jewel\img\payment.png">
+                                                <img class="payicon" style="width:25%;" src="https://dd.jewelplus.com/assets\jewel\img\payment.png">
                          
-                                                <img class="payicon" style="" src="https://dd.jewelplus.com/assets\jewel\img\master-card (1).png">
-                                                <img class="payicon" style="" src="https://dd.jewelplus.com/assets\jewel\img\paymentamex.png">
+                                                <img class="payicon" style="width:25%;" src="https://dd.jewelplus.com/assets\jewel\img\master-card (1).png">
+                                                <img class="payicon" style="width:25%;" src="https://dd.jewelplus.com/assets\jewel\img\paymentamex.png">
 
 
                                             </div>
