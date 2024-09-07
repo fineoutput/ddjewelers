@@ -324,7 +324,7 @@
 
                                 <div class="mb-3 text-center mb-2" style="align-items: center;display: flex;justify-content: center;">
                                  
-                                    <form action="https://api.demo.convergepay.com/hosted-payments" method="post" enctype="application/x-www-form-urlencoded" style="width: 72%;">
+                                    <form action="CONVERGEPAY_CHECKOUT_URL" method="post" enctype="application/x-www-form-urlencoded" style="width: 72%;">
                                         <input id="ssl_txn_auth_token" value="aaeUUkA9RJmuADm0W9/DSQAAAZGYAuk4" type="hidden" name="ssl_txn_auth_token" size="25">
                                         <input id="ssl_callback_url" value="https://www.fineoutput.co.in/ddjewelers/Order/process_payment" type="hidden" name="ssl_callback_url" size="25">
 
