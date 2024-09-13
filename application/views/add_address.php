@@ -137,13 +137,12 @@
                   <label for="last_name">Last Name *</label>
                   <input type="text" class="form-control" name="last_name" id="last_name" required>
                 </div>
-
-                <div class="form-group">
-                  <label for="phone_number">Phone Number *</label>
-                  <input type="text" class="form-control" name="phone_number" id="phone_number" required>
-                </div>
-
               </div>
+              <div class="form-group">
+                <label for="phone_number">Phone Number *</label>
+                <input type="text" class="form-control" name="phone_number" id="phone_number" required>
+              </div>
+
               <div class="form-group">
                 <label for="address">Address *</label>
                 <textarea name="address" id="address" required></textarea>
