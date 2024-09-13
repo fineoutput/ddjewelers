@@ -5781,6 +5781,7 @@ class Home extends CI_Controller
             redirect("Home/register", "refresh");
         }
     }
+
     public function contact_us()
     {
         $data['contact_data'] = $this->db->get_where('tbl_contact_us_page', array('is_active' => 1))->result();
@@ -5959,6 +5960,7 @@ class Home extends CI_Controller
             $this->form_validation->set_rules('country_id', 'country id', 'required|xss_clean|trim');
             $this->form_validation->set_rules('first_name', 'first name', 'required|xss_clean|trim');
             $this->form_validation->set_rules('last_name', 'last name', 'required|xss_clean|trim');
+            $this->form_validation->set_rules('phone_number', 'phone number', 'required|xss_clean|trim');
             $this->form_validation->set_rules('address', 'address', 'required|xss_clean|trim');
             $this->form_validation->set_rules('address2', 'address2', 'xss_clean|trim');
             $this->form_validation->set_rules('city', 'city', 'required|xss_clean|trim');
@@ -5970,6 +5972,7 @@ class Home extends CI_Controller
                 $country_id = $this->input->post('country_id');
                 $first_name = $this->input->post('first_name');
                 $last_name = $this->input->post('last_name');
+                $phone_number = $this->input->post('phone_number');
                 $address = $this->input->post('address');
                 $address2 = $this->input->post('address2');
                 $city = $this->input->post('city');
@@ -5983,6 +5986,7 @@ class Home extends CI_Controller
                     'country_id' => $country_id,
                     'first_name' => $first_name,
                     'last_name' => $last_name,
+                    'phone_number' => $phone_number,
                     'address' => $address,
                     'address2' => $address2,
                     'city' => $city,

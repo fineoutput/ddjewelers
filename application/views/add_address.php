@@ -63,6 +63,9 @@
                                                                                                 } ?> required>
                       <div style="margin-left:20px">
                         <p><b>Name:</b> <a><?= $address->first_name . ' ' . $address->last_name; ?></a></p>
+
+                        <p><b>Phone Number:</b> <a><?= $address->phone_number; ?></a></p>
+
                         <p><b>Address:</b> <a><?= $address->address; ?></a></p>
 
 
@@ -124,6 +127,7 @@
                   <?php } ?>
                 </select>
               </div>
+
               <div style="display:flex; gap:6px; " class="resp">
                 <div class="form-group col-md-6 p-0">
                   <label for="first_name">First Name *</label>
@@ -132,6 +136,11 @@
                 <div class="form-group col-md-6 p-0">
                   <label for="last_name">Last Name *</label>
                   <input type="text" class="form-control" name="last_name" id="last_name" required>
+                </div>
+
+                <div class="form-group col-md-12 p-0">
+                  <label for="phone_number">Phone Number *</label>
+                  <input type="text" class="form-control" name="phone_number" id="phone_number" required>
                 </div>
 
               </div>
