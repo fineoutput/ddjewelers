@@ -138,7 +138,7 @@
                   <input type="text" class="form-control" name="last_name" id="last_name" required>
                 </div>
 
-                <div class="form-group col-md-12 p-0">
+                <div class="form-group">
                   <label for="phone_number">Phone Number *</label>
                   <input type="text" class="form-control" name="phone_number" id="phone_number" required>
                 </div>
