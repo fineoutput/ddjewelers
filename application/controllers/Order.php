@@ -937,7 +937,7 @@ class Order extends CI_Controller
             'ssl_get_token' => "Y",
             'ssl_add_token' => "Y",
             'ssl_email' => $userDetails->email ?? '',
-            'ssl_phone' => $userDetails->phone ?? '',
+            'ssl_phone' => $addr_da->phone_number ?? '',
             // 'ssl_invoice_number' => "INV" . str_pad($details->id, 5, "0", STR_PAD_LEFT) . str_pad(, 5, "0", STR_PAD_LEFT)
             'ssl_invoice_number' => $this->createInvoiceNumber($details->id, $addr_da->user_id)
         ]);
@@ -991,7 +991,7 @@ class Order extends CI_Controller
                 $result_message = $this->input->post('ssl_result_message');
                 $amount = $this->input->post('ssl_amount');
                 $transaction_id = $this->input->post('ssl_txn_id');
-                $payment_type = 'Converge Pay';
+                $payment_type = 2;
 
                 // Set the default timezone
                 date_default_timezone_set("Asia/Calcutta");
@@ -1019,6 +1019,7 @@ class Order extends CI_Controller
                     // Prepare data for updating the order in case of success
                     $data_update = array(
                         'payment_type' => $payment_type,
+                        'Invoice_number' => $invoice_number,
                         'payment_status' => 1,
                         'order_status' => 1,
                         'txn_id' => $transaction_id,

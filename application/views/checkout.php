@@ -75,6 +75,7 @@
                 $state_name = '';
             }
             $name = $addr_da->first_name . ' ' . $addr_da->last_name;
+            $phone = $addr_da->phone_number;
             $state = $state_name;
             $city = $addr_da->city;
             $zip = $addr_da->zipcode;
@@ -87,6 +88,7 @@
             $zip = "";
             $country = "";
             $notes = '';
+            $phone = '';
         }
         ?>
         <section class="Address">
@@ -98,6 +100,8 @@
 
 
                             <p style="margin-bottom: 5px;overflow-wrap: break-word"><b>Name : </b><?= $name; ?></p>
+
+                            <p style="margin-bottom: 5px;overflow-wrap: break-word"><b>Phone Number : </b><?=$phone; ?></p>
 
                             <p style="margin-bottom: 5px;overflow-wrap: break-word"> <b>Address : </b><?= $address; ?></p>
 
