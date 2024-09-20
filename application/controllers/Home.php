@@ -8259,16 +8259,23 @@ class Home extends CI_Controller
 
     public function GetCountryCode($name) {
         
-        $this->db->select('*');
+        $this->db->select('dial_code');
         $this->db->from('tbl_country_code');
         $this->db->where('name', $name);
         $data = $this->db->get()->row();
 
-        $response = array(
-            'status' => 'success',
-            'message' => 'Data fetched successfully!',
-            'data' => $data
-        );
+        if ($data) {
+            $response = array(
+                'status' => 'success',
+                'message' => 'Data fetched successfully!',
+                'data' => $data
+            );
+        } else {
+            $response = array(
+                'status' => 'error',
+                'message' => 'Country not found!'
+            );
+        }
 
         echo json_encode($response);
 

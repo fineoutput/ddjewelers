@@ -119,7 +119,7 @@
             <form action="<?= base_url(); ?>Home/add_new_address" method="post" enctype="multipart/form-data">
               <div class="form-group">
                 <label>Country *</label>
-                <select name="country_id" class="form-control select2" required onchange="getCountryCode('country_id')">
+                <select name="country_id" id="country_id" class="form-control select2" required onchange="getCountryCode()">
                   <option value="">-----select Country-----</option>
                   <?php $i = 1;
                   foreach ($country_data->result() as $country) { ?>
@@ -139,30 +139,33 @@
                 </div>
               </div>
               
-              <div class="form-group col-md-6 p-0">
-                <label for="dial_code">Dial Code *</label>
-                <select name="country_id" class="form-control select2" required onchange="getCountryCode('country_id')">
-                  <option value="">-----select Code-----</option>
-                  <?php
-                    
-                      $this->db->select('*');
-                      $this->db->from('tbl_country_code');
-                      $country_codes = $this->db->get();
-                      $i = 1;
-                    
-                  foreach ($country_codes->result() as $country_code) {
-                     ?>
+              <div class="row">
 
-                    <option value="<?= $country_code->dial_code ?>" ><?= $country_code->dial_code ?></option>
+                <div class="form-group col-md-4 p-0">
+                  <label for="dial_code">Dial Code *</label>
+                  <select name="dial_code" id="dial_code" class="form-control select2" required onchange="getCountryCode('country_id')">
+                    <option value="">-----select Code-----</option>
+                    <?php
+                      
+                        $this->db->select('*');
+                        $this->db->from('tbl_country_code');
+                        $country_codes = $this->db->get();
+                        $i = 1;
+                      
+                    foreach ($country_codes->result() as $country_code) {
+                       ?>
+  
+                      <option value="<?= $country_code->dial_code ?>" ><?= $country_code->dial_code ?></option>
+  
+                    <?php } ?>
+                  </select>
+                </div>
+  
+                <div class="form-group col-md-8 p-0">
+                  <label for="phone_number">Phone Number *</label>
+                  <input type="text" class="form-control" name="phone_number" id="phone_number" required>
+                </div>
 
-                  <?php } ?>
-                </select>
-              </div>
-
-
-              <div class="form-group col-md-6 p-0">
-                <label for="phone_number">Phone Number *</label>
-                <input type="text" class="form-control" name="phone_number" id="phone_number" required>
               </div>
 
               <div class="form-group">
@@ -230,30 +233,33 @@
 
 <script>
 
-  function getCountryCode(id){
+function getCountryCode() {
+    
+    const selectedCountryName = $('#country_id option:selected').data('name');
 
-    const countryname = $(`#${id}`).val;
+    if (selectedCountryName) {
+        $.ajax({
+            url: '<?= base_url('Home/GetCountryCode/'); ?>' + selectedCountryName,
+            type: 'GET',
+            dataType: 'json',
+            success: function(response) {
+                if(response.status === 'success') {
+                 
+                    $('#dial_code').val(response.data.dial_code);
+                } else {
+                    console.error('Error fetching country code:', response.message);
+                }
+            },
+            error: function(xhr) {
+                console.error('Error:', xhr.responseJSON ? xhr.responseJSON.error : 'Unknown error');
+            }
+        });
+    } else {
+      
+        $('#dial_code').val('');
+    }
+}
 
-    $.ajax({
-
-      url: '<?= base_url('Home/GetCountryCode/'); ?>' + countryname,
-
-      type: 'GET', 
-
-      dataType: 'json',
-
-      success: function(response) {
-
-        console.log(response);
-
-      },
-
-      error: function (xhr) {
-        console.error(xhr.responseJSON.error );
-      }
-    });
-
-  }
 </script>
 
 <!-- register end -->
