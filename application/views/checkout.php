@@ -76,6 +76,7 @@
             }
             $name = $addr_da->first_name . ' ' . $addr_da->last_name;
             $phone = $addr_da->phone_number;
+            $dial_code = $addr_da->dial_code;
             $state = $state_name;
             $city = $addr_da->city;
             $zip = $addr_da->zipcode;
@@ -89,6 +90,7 @@
             $country = "";
             $notes = '';
             $phone = '';
+            $dial_code  = '';
         }
         ?>
         <section class="Address">
@@ -101,7 +103,7 @@
 
                             <p style="margin-bottom: 5px;overflow-wrap: break-word"><b>Name : </b><?= $name; ?></p>
 
-                            <p style="margin-bottom: 5px;overflow-wrap: break-word"><b>Phone Number : </b><?=$phone; ?></p>
+                            <p style="margin-bottom: 5px;overflow-wrap: break-word"><b>Phone Number : </b><?=$dial_code; ?> <?=$phone; ?></p>
 
                             <p style="margin-bottom: 5px;overflow-wrap: break-word"> <b>Address : </b><?= $address; ?></p>
 
@@ -342,7 +344,8 @@
                                             <div class="d-flex pay_ic" style="align-items: center;">
                                                 
                                                 <img class="payicon" style="width:25%;" src="<?= base_url() ?>assets/jewel/img/payment.png">
-                                                <img class="payicon" style="width:25%;" src="<?= base_url() ?>assets/jewel/img/master-card.png">
+                                                <img class="payicon" style="width:25%;" src="<?= base_url() ?>assets/jewel/img/master-card (1).png">
+                                                <img class="payicon" style="width:25%;" src="<?= base_url() ?>assets/jewel/img/discover.png">
                                                 <img class="payicon" style="width:25%;" src="<?= base_url() ?>assets/jewel/img/paymentamex.png">
 
                                             </div>
