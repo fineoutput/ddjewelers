@@ -5961,6 +5961,7 @@ class Home extends CI_Controller
             $this->form_validation->set_rules('first_name', 'first name', 'required|xss_clean|trim');
             $this->form_validation->set_rules('last_name', 'last name', 'required|xss_clean|trim');
             $this->form_validation->set_rules('phone_number', 'phone number', 'required|xss_clean|trim');
+            $this->form_validation->set_rules('dial_code', 'dial code', 'required|xss_clean|trim');
             $this->form_validation->set_rules('address', 'address', 'required|xss_clean|trim');
             $this->form_validation->set_rules('address2', 'address2', 'xss_clean|trim');
             $this->form_validation->set_rules('city', 'city', 'required|xss_clean|trim');
@@ -5973,6 +5974,7 @@ class Home extends CI_Controller
                 $first_name = $this->input->post('first_name');
                 $last_name = $this->input->post('last_name');
                 $phone_number = $this->input->post('phone_number');
+                $dial_code = $this->input->post('dial_code');
                 $address = $this->input->post('address');
                 $address2 = $this->input->post('address2');
                 $city = $this->input->post('city');
@@ -5986,6 +5988,7 @@ class Home extends CI_Controller
                     'country_id' => $country_id,
                     'first_name' => $first_name,
                     'last_name' => $last_name,
+                    'dial_code' => $dial_code,
                     'phone_number' => $phone_number,
                     'address' => $address,
                     'address2' => $address2,
