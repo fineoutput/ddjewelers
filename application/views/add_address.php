@@ -234,8 +234,8 @@
 <script>
 
 function getCountryCode() {
-    alert('hello');
-    const selectedCountryName = $('#country_id option:selected').data('name');
+   
+    const selectedCountryName = $('#country_id option:selected').val();
 
     if (selectedCountryName) {
         $.ajax({
