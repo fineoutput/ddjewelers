@@ -64,7 +64,7 @@
                       <div style="margin-left:20px">
                         <p><b>Name:</b> <a><?= $address->first_name . ' ' . $address->last_name; ?></a></p>
 
-                        <p><b>Phone Number:</b> <a><?= $address->phone_number; ?></a></p>
+                        <p><b>Phone Number:</b> <a><?= $address->phone_number ?? ''; ?></a></p>
 
                         <p><b>Address:</b> <a><?= $address->address; ?></a></p>
 
@@ -119,7 +119,7 @@
             <form action="<?= base_url(); ?>Home/add_new_address" method="post" enctype="multipart/form-data">
               <div class="form-group">
                 <label>Country *</label>
-                <select name="country_id" class="form-control select2" required>
+                <select name="country_id" class="form-control select2" required onchange="getCountryCode('country_id')">
                   <option value="">-----select Country-----</option>
                   <?php $i = 1;
                   foreach ($country_data->result() as $country) { ?>
@@ -138,7 +138,29 @@
                   <input type="text" class="form-control" name="last_name" id="last_name" required>
                 </div>
               </div>
-              <div class="form-group">
+              
+              <div class="form-group col-md-6 p-0">
+                <label for="dial_code">Dial Code *</label>
+                <select name="country_id" class="form-control select2" required onchange="getCountryCode('country_id')">
+                  <option value="">-----select Code-----</option>
+                  <?php
+                    
+                      $this->db->select('*');
+                      $this->db->from('tbl_country_code');
+                      $country_codes = $this->db->get();
+                      $i = 1;
+                    
+                  foreach ($country_codes->result() as $country_code) {
+                     ?>
+
+                    <option value="<?= $country_code->dial_code ?>" ><?= $country_code->dial_code ?></option>
+
+                  <?php } ?>
+                </select>
+              </div>
+
+
+              <div class="form-group col-md-6 p-0">
                 <label for="phone_number">Phone Number *</label>
                 <input type="text" class="form-control" name="phone_number" id="phone_number" required>
               </div>
@@ -181,7 +203,6 @@
                   <label for="zipcode">Zip/Postal Code *</label>
                   <input type="text" class="form-control" name="zipcode" id="zipcode" required>
                 </div>
-
               </div>
               <div class="form-group col-md-6 mb-2  ">
 
@@ -207,5 +228,32 @@
   </div>
 </section>
 
+<script>
+
+  function getCountryCode(id){
+
+    const countryname = $(`#${id}`).val;
+
+    $.ajax({
+
+      url: '<?= base_url('Home/GetCountryCode/'); ?>' + countryname,
+
+      type: 'GET', 
+
+      dataType: 'json',
+
+      success: function(response) {
+
+        console.log(response);
+
+      },
+
+      error: function (xhr) {
+        console.error(xhr.responseJSON.error );
+      }
+    });
+
+  }
+</script>
 
 <!-- register end -->

@@ -8256,4 +8256,21 @@ class Home extends CI_Controller
         }
         echo "Done";
     }
+
+    public function GetCountryCode($name) {
+        
+        $this->db->select('*');
+        $this->db->from('tbl_country_code');
+        $this->db->where('name', $name);
+        $data = $this->db->get()->row();
+
+        $response = array(
+            'status' => 'success',
+            'message' => 'Data fetched successfully!',
+            'data' => $data
+        );
+
+        echo json_encode($response);
+
+    }
 }
