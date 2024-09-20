@@ -334,19 +334,19 @@
                                         <input id="ssl_txn_auth_token" value="<?= $transaction_token ?>" type="hidden" name="ssl_txn_auth_token" size="25">
                                         <input id="ssl_callback_url" value="<?= base_url('Order/process_payment') ?>" type="hidden" name="ssl_callback_url" size="25">
 
-                                        <button id="clicktopay-button" class="pay_btn pay_btn-2" style="align-items: baseline;display: flex;width: 100%;align-items: center;justify-content: space-between;padding: 10px;">
+                                        <button id="clicktopay-button" class="pay_btn pay_btn-2" style="align-items: baseline;display: flex;width: 100%;align-items: center;justify-content: space-between;padding: 10px;flex-direction: column;">
                                             <div style="padding-top: 4px;">
                                                 <span style="text-transform: none; color: black; font-weight: 600;">
                                                     Pay with Credit Card
                                                 </span>
 
                                             </div>
-                                            <div class="d-flex pay_ic" style="align-items: center;">
+                                            <div class="pay_ic" style="align-items: center;" style="">
                                                 
-                                                <img class="payicon" style="width:25%;" src="<?= base_url() ?>assets/jewel/img/payment.png">
-                                                <img class="payicon" style="width:25%;" src="<?= base_url() ?>assets/jewel/img/master-card (1).png">
-                                                <img class="payicon" style="width:25%;" src="<?= base_url() ?>assets/jewel/img/discover.png">
-                                                <img class="payicon" style="width:25%;" src="<?= base_url() ?>assets/jewel/img/paymentamex.png">
+                                                <img class="payicon" style="width:20%;" src="<?= base_url() ?>assets/jewel/img/payment.png">
+                                                <img class="payicon" style="width:20%;" src="<?= base_url() ?>assets/jewel/img/master-card (1).png">
+                                                <img class="payicon" style="width:20%;" src="<?= base_url() ?>assets/jewel/img/discover2.png">
+                                                <img class="payicon" style="width:20%;" src="<?= base_url() ?>assets/jewel/img/paymentamex.png">
 
                                             </div>
                                         </button>
