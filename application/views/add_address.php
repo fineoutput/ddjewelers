@@ -139,9 +139,9 @@
                 </div>
               </div>
               
-              <div class="row">
+              <div class="row p-0">
 
-                <div class="form-group col-md-4 p-0">
+                <div class="form-group col-md-3 p-0">
                   <label for="dial_code">Dial Code *</label>
                   <select name="dial_code" id="dial_code" class="form-control select2" required onchange="getCountryCode('country_id')">
                     <option value="">-----select Code-----</option>
@@ -234,7 +234,7 @@
 <script>
 
 function getCountryCode() {
-    
+    alert('hello');
     const selectedCountryName = $('#country_id option:selected').data('name');
 
     if (selectedCountryName) {
