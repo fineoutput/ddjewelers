@@ -139,7 +139,7 @@
                 </div>
               </div>
               
-              <div class="row p-0">
+              <div class="row p-0" style="justify-content: space-around; align-items: center; gap: 6px;">
 
                 <div class="form-group col-md-3 p-0">
                   <label for="dial_code">Dial Code *</label>
