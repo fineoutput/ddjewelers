@@ -64,7 +64,7 @@
                       <div style="margin-left:20px">
                         <p><b>Name:</b> <a><?= $address->first_name . ' ' . $address->last_name; ?></a></p>
 
-                        <p><b>Phone Number:</b> <a> <?= isset($address->dial_code) ? $address->dial_code : '' ?><?= isset($address->phone_number) ? $address->phone_number : '' ?></a></p>
+                        <p><b>Phone Number:</b> <a> <?= isset($address->dial_code) ? $address->dial_code : '' ?> <?= isset($address->phone_number) ? $address->phone_number : '' ?></a></p>
 
                         <p><b>Address:</b> <a><?= $address->address; ?></a></p>
 
