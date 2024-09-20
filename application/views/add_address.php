@@ -143,7 +143,7 @@
 
                 <div class="form-group col-md-3 p-0">
                   <label for="dial_code">Dial Code *</label>
-                  <select name="dial_code" id="dial_code" class="form-control select2" required onchange="getCountryCode('country_id')">
+                  <select name="dial_code" id="dial_code" class="form-control select2" required>
                     <option value="">-----select Code-----</option>
                     <?php
                       
