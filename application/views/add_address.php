@@ -154,7 +154,7 @@
                       
                     foreach ($country_codes->result() as $country_code) {
                        ?>
-                      <img loading="lazy" src="https://hatscripts.github.io/circle-flags/flags/<?=$country_code->code;?>.svg" width="48" alt="Flag of India">
+                      <img src="https://hatscripts.github.io/circle-flags/flags/<?=strtolower($country_code->code);?>.svg" width="48" alt="Flag of India">
                       <option value="<?= $country_code->dial_code ?>" ><?= $country_code->dial_code ?></option>
   
                     <?php } ?>
