@@ -141,26 +141,7 @@
               
               <div class="row p-0" style="justify-content: space-around; align-items: center; gap: 6px;">
 
-                <div class="form-group col-md-3 p-0">
-                  <label for="dial_code">Dial Code *</label>
-                  <select name="dial_code" id="dial_code" class="form-control select2" required>
-                    <option value="">-----select Code-----</option>
-                    <?php
-                      
-                        $this->db->select('*');
-                        $this->db->from('tbl_country_code');
-                        $country_codes = $this->db->get();
-                        $i = 1;
-                      
-                    foreach ($country_codes->result() as $country_code) {
-                       ?>
-                      <img src="https://hatscripts.github.io/circle-flags/flags/<?=strtolower($country_code->code);?>.svg" width="48" alt="Flag of India">
-                      <option value="<?= $country_code->dial_code ?>" ><?= $country_code->dial_code ?></option>
-  
-                    <?php } ?>
-                  </select>
-                </div>
-
+               
                 <div class="form-group col-md-3 p-0">
                   <label for="dial_code">Dial Code *</label>
                   <?php 
