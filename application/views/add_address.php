@@ -271,7 +271,7 @@ function formatState(state) {
     }
 
     const flagUrl = $(state.element).data('flag'); // Get the flag URL
-    return $(`<span><img src="${flagUrl}" width="20" style="margin-right: 12px; width:15%;" />${state.text}</span>`);
+    return $(`<span><img src="${flagUrl}" width="20" style="margin-right: 12px; width:11%;" />${state.text}</span>`);
 }
 </script>
 
