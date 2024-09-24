@@ -142,28 +142,25 @@
               <div class="row p-0" style="justify-content: space-around; align-items: center; gap: 6px;">
 
                
-                <div class="form-group col-md-3 p-0">
+              <div class="form-group col-md-3 p-0">
                   <label for="dial_code">Dial Code *</label>
                   <?php 
-                    $this->db->select('*');
-                    $this->db->from('tbl_country_code');
-                    $country_codes = $this->db->get();
-         
+                  // Fetch country codes from the database
+                  $country_codes = $this->db->select('*')->from('tbl_country_code')->get();
                   ?>
                   <select name="dial_code" id="dial_code" class="form-control select2" required>
-                      <option value="">-----select Code-----</option>
-                      <?php
-
-                          foreach ($country_codes->result() as $country_code) {
-
-                              $flag_url = "https://hatscripts.github.io/circle-flags/flags/" . strtolower($country_code->code) . ".svg";
-                              ?>
-                              <option value="<?= $country_code->dial_code ?>" data-flag="<?= $flag_url ?>">
-                                  <?= $country_code->dial_code ?> <?$country_code->dial_code ?>
-                              </option>
-                          <?php } ?>
+                      <option value="">----- Select Code -----</option>
+                      <?php foreach ($country_codes->result() as $country_code) { 
+                          // Construct the flag image URL
+                          $flag_url = "https://hatscripts.github.io/circle-flags/flags/" . strtolower($country_code->code) . ".svg";
+                      ?>
+                          <option value="<?= $country_code->dial_code ?>" data-flag="<?= $flag_url ?>">
+                              <?= $country_code->dial_code ?>
+                          </option>
+                      <?php } ?>
                   </select>
               </div>
+
 
   
                 <div class="form-group col-md-8 p-0">
@@ -237,19 +234,16 @@
 </section>
 
 <script>
-
 function getCountryCode() {
-   
     const selectedCountryName = $('#country_id option:selected').val();
 
     if (selectedCountryName) {
         $.ajax({
-            url: '<?= base_url('Home/GetCountryCode/'); ?>' + selectedCountryName,
+            url: `<?= base_url('Home/GetCountryCode/'); ?>${selectedCountryName}`,
             type: 'GET',
             dataType: 'json',
             success: function(response) {
-                if(response.status === 'success') {
-                 
+                if (response.status === 'success') {
                     $('#dial_code').val(response.data.dial_code);
                 } else {
                     console.error('Error fetching country code:', response.message);
@@ -260,31 +254,25 @@ function getCountryCode() {
             }
         });
     } else {
-      
         $('#dial_code').val('');
     }
 }
 
-</script>
-<script>
-    $(document).ready(function() {
-        $('#dial_code').select2({
-            templateResult: formatState,
-            templateSelection: formatState
-        });
+$(document).ready(function() {
+    $('#dial_code').select2({
+        templateResult: formatState,
+        templateSelection: formatState
     });
+});
 
-    function formatState(state) {
-        if (!state.id) {
-            return state.text; // Return the text if no id (initial state)
-        }
-        const flagUrl = $(state.element).data('flag'); // Get the flag URL
-        const $state = $(
-            `<span><img src="${flagUrl}" width="20" style="margin-right: 5px; width:15%;" />${state.text}</span>`
-        );
-        return $state;
+function formatState(state) {
+    if (!state.id) {
+        return state.text; // Initial state
     }
-</script>
 
+    const flagUrl = $(state.element).data('flag'); // Get the flag URL
+    return $(`<span><img src="${flagUrl}" width="20" style="margin-right: 12px; width:15%;" />${state.text}</span>`);
+}
+</script>
 
 <!-- register end -->
