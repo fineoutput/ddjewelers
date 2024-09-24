@@ -160,6 +160,30 @@
                     <?php } ?>
                   </select>
                 </div>
+
+                <div class="form-group col-md-3 p-0">
+                  <label for="dial_code">Dial Code *</label>
+                  <?php 
+                    $this->db->select('*');
+                    $this->db->from('tbl_country_code');
+                    $country_codes = $this->db->get();
+         
+                  ?>
+                  <select name="dial_code" id="dial_code" class="form-control select2" required>
+                      <option value="">-----select Code-----</option>
+                      <?php
+
+                          foreach ($country_codes->result() as $country_code) {
+
+                              $flag_url = "https://hatscripts.github.io/circle-flags/flags/" . strtolower($country_code->code) . ".svg";
+                              ?>
+                              <option value="<?= $country_code->dial_code ?>" data-flag="<?= $flag_url ?>">
+                                  <?= $country_code->dial_code ?> <?$country_code->dial_code ?>
+                              </option>
+                          <?php } ?>
+                  </select>
+              </div>
+
   
                 <div class="form-group col-md-8 p-0">
                   <label for="phone_number">Phone Number *</label>
@@ -261,5 +285,25 @@ function getCountryCode() {
 }
 
 </script>
+<script>
+    $(document).ready(function() {
+        $('#dial_code').select2({
+            templateResult: formatState,
+            templateSelection: formatState
+        });
+    });
+
+    function formatState(state) {
+        if (!state.id) {
+            return state.text; // Return the text if no id (initial state)
+        }
+        const flagUrl = $(state.element).data('flag'); // Get the flag URL
+        const $state = $(
+            `<span><img src="${flagUrl}" width="20" style="margin-right: 5px; width:15%;" />${state.text}</span>`
+        );
+        return $state;
+    }
+</script>
+
 
 <!-- register end -->
