@@ -149,7 +149,7 @@
                   $country_codes = $this->db->select('*')->from('tbl_country_code')->get();
                   ?>
                   <select name="dial_code" id="dial_code" class="form-control select2" required>
-                      <option value="">----- Select Code -----</option>
+                      <option value="">-- Select Code --</option>
                       <?php foreach ($country_codes->result() as $country_code) { 
                           // Construct the flag image URL
                           $flag_url = "https://hatscripts.github.io/circle-flags/flags/" . strtolower($country_code->code) . ".svg";
