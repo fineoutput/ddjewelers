@@ -154,7 +154,7 @@
                           // Construct the flag image URL
                           $flag_url = "https://hatscripts.github.io/circle-flags/flags/" . strtolower($country_code->code) . ".svg";
                       ?>
-                          <option value="<?= $country_code->dial_code ?>" data-flag="<?= $flag_url ?>">
+                          <option value="<?= $country_code->dial_code ?>" data-country-name="<?= $country_code->name ?>" data-flag="<?= $flag_url ?>">
                               <?= $country_code->dial_code ?>
                           </option>
                       <?php } ?>
@@ -244,8 +244,14 @@ function getCountryCode() {
             dataType: 'json',
             success: function(response) {
                 if (response.status === 'success') {
+                  const { dial_code, name } = response.data;
                     // Update the dial_code dropdown
-                    $('#dial_code').val(response.data.dial_code).trigger('change'); // Trigger change event for select2 to refresh
+                  //  $('#dial_code').val(response.data.dial_code).trigger('change'); // Trigger change event for select2 to refresh
+                  $('#dial_code').find('option').each(function() {
+                        if ($(this).val() === dial_code && $(this).data('country-name') == name) {
+                            $(this).prop('selected', true); // Set the option as selected
+                        }
+                    });
                 } else {
                     console.error('Error fetching country code:', response.message);
                 }
