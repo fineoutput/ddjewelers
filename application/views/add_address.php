@@ -265,7 +265,7 @@ $(document).ready(function() {
         templateResult: formatState,
         templateSelection: formatState,
         placeholder: "-- Select Code --", // Set placeholder for better user experience
-        allowClear: true // Allows clearing the selection
+        allowClear: false // Allows clearing the selection
     });
 });
 
