@@ -123,7 +123,7 @@
                   <option value="">-----select Country-----</option>
                   <?php $i = 1;
                   foreach ($country_data->result() as $country) { ?>
-                    <option value="<?= $country->id ?>"><?= $country->name ?></option>
+                    <option value="<?= $country->id ?>" <?php if($country->id == 12) echo 'selected'; ?> ><?= $country->name ?></option>
                   <?php } ?>
                 </select>
               </div>
@@ -261,12 +261,16 @@ function getCountryCode() {
 }
 
 $(document).ready(function() {
+
+  getCountryCode();
+  
     $('#dial_code').select2({
         templateResult: formatState,
         templateSelection: formatState,
         placeholder: "-- Select Code --", // Set placeholder for better user experience
         allowClear: false // Allows clearing the selection
     });
+
 });
 
 // Function to format the dropdown with flags
