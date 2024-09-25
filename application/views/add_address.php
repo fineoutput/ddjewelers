@@ -235,16 +235,17 @@
 
 <script>
 function getCountryCode() {
-    const selectedCountryName = $('#country_id option:selected').val();
+    const selectedCountryId = $('#country_id option:selected').val(); // Get the selected country ID
 
-    if (selectedCountryName) {
+    if (selectedCountryId) {
         $.ajax({
-            url: `<?= base_url('Home/GetCountryCode/'); ?>${selectedCountryName}`,
+            url: `<?= base_url('Home/GetCountryCode/'); ?>${selectedCountryId}`,
             type: 'GET',
             dataType: 'json',
             success: function(response) {
                 if (response.status === 'success') {
-                    $('#dial_code').val(response.data.dial_code);
+                    // Update the dial_code dropdown
+                    $('#dial_code').val(response.data.dial_code).trigger('change'); // Trigger change event for select2 to refresh
                 } else {
                     console.error('Error fetching country code:', response.message);
                 }
@@ -254,25 +255,30 @@ function getCountryCode() {
             }
         });
     } else {
-        $('#dial_code').val('');
+        // Clear the dial_code selection if no country is selected
+        $('#dial_code').val('').trigger('change');
     }
 }
 
 $(document).ready(function() {
     $('#dial_code').select2({
         templateResult: formatState,
-        templateSelection: formatState
+        templateSelection: formatState,
+        placeholder: "-- Select Code --", // Set placeholder for better user experience
+        allowClear: true // Allows clearing the selection
     });
 });
 
+// Function to format the dropdown with flags
 function formatState(state) {
     if (!state.id) {
         return state.text; // Initial state
     }
 
-    const flagUrl = $(state.element).data('flag'); // Get the flag URL
+    const flagUrl = $(state.element).data('flag'); // Get the flag URL from data attribute
     return $(`<span><img src="${flagUrl}" width="20" style="margin-right: 12px; width:11%;" />${state.text}</span>`);
 }
+
 </script>
 
 <!-- register end -->
