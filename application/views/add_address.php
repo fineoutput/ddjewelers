@@ -80,7 +80,7 @@
 
                     </div>
                     <div class="col-2 col-md-1">
-                     <a href="<?= base_url(); ?>Order/delete_address/<?=base64_encode($address->id)?>"><i class="fa fa-trash" aria-hidden="true"></i></a>
+                      <a href="<?= base_url(); ?>Order/delete_address/<?= base64_encode($address->id) ?>"><i class="fa fa-trash" aria-hidden="true"></i></a>
                     </div>
                   </div>
 
@@ -93,17 +93,17 @@
                 </div>
               </div>
             </div>
-           <? if (!empty($user_addr_data->row())) {?>
-            <div class="col-md-12  mt-3 mb-2">
-              <!-- <a href="<?= base_url(); ?>Home/checkout"> -->
-              <button class="sub_btn" type="submit">Continue</button>
-              <!-- </a> -->
-            </div>
-            <?}else{?>
+            <? if (!empty($user_addr_data->row())) { ?>
+              <div class="col-md-12  mt-3 mb-2">
+                <!-- <a href="<?= base_url(); ?>Home/checkout"> -->
+                <button class="sub_btn" type="submit">Continue</button>
+                <!-- </a> -->
+              </div>
+            <? } else { ?>
               <div class="text-center w-100 mt-5">
                 <p style="color:#dc3545">Please add address to proceed further </p>
               </div>
-              <?}?>
+            <? } ?>
           </div>
         </form>
       </div>
@@ -117,13 +117,13 @@
         <div class="row">
           <div class="col-md-12">
             <form action="<?= base_url(); ?>Home/add_new_address" method="post" enctype="multipart/form-data">
-            <div class="form-group">
+              <div class="form-group">
                 <label>Country *</label>
                 <select name="country_id" id="country_id" class="form-control select2" required onchange="getCountryCode()">
                   <option value="">-----select Country-----</option>
                   <?php $i = 1;
                   foreach ($country_data->result() as $country) { ?>
-                    <option value="<?= $country->id ?>" <?php if($country->id == 12) echo 'selected'; ?> ><?= $country->name ?></option>
+                    <option value="<?= $country->id ?>" <?php if ($country->id == 12) echo 'selected'; ?>><?= $country->name ?></option>
                   <?php } ?>
                 </select>
               </div>
@@ -139,32 +139,32 @@
                   <input type="text" class="form-control" name="last_name" id="last_name" required>
                 </div>
               </div>
-              
+
               <div class="row p-0" style="justify-content: space-around; gap: 6px;">
 
-               
-              <div class="form-group col-md-3 p-0">
-    <label for="dial_code">Dial Code *</label>
-    <?php 
-    // Fetch country codes from the database
-    $country_codes = $this->db->select('*')->from('tbl_country_code')->get();
-    ?>
-    <select name="dial_code" id="dial_code" class="form-control select2" required>
-        <option value="">-- Select Code --</option>
-        <?php foreach ($country_codes->result() as $country_code) { 
-            // Construct the flag image URL
-            $flag_url = "https://hatscripts.github.io/circle-flags/flags/" . strtolower($country_code->code) . ".svg";
-        ?>
-            <option value="<?= $country_code->dial_code ?>" data-country-name="<?= $country_code->name ?>" data-flag="<?= $flag_url ?>">
-                <?= $country_code->dial_code ?>
-            </option>
-        <?php } ?>
-    </select>
-</div>
-  
+
+                <div class="form-group col-md-3 p-0">
+                  <label for="dial_code">Dial Code *</label>
+                  <?php
+
+                  $country_codes = $this->db->select('*')->from('tbl_country_code')->get();
+                  ?>
+                  <select name="dial_code" id="dial_code" class="form-control select2" required>
+                    <option value="">-- Select Code --</option>
+                    <?php foreach ($country_codes->result() as $country_code) {
+                  
+                      $flag_url = "https://hatscripts.github.io/circle-flags/flags/" . strtolower($country_code->code) . ".svg";
+                    ?>
+                      <option value="<?= $country_code->dial_code ?>" data-country-name="<?= $country_code->name ?>" data-flag="<?= $flag_url ?>">
+                        <?= $country_code->dial_code ?>
+                      </option>
+                    <?php } ?>
+                  </select>
+                </div>
 
 
-  
+
+
                 <div class="form-group col-md-8 p-0">
                   <label for="phone_number">Phone Number *</label>
                   <input type="text" class="form-control" name="phone_number" id="phone_number" required>
@@ -236,64 +236,64 @@
 </section>
 
 <script>
-function getCountryCode() {
+  function getCountryCode() {
     const selectedCountryId = $('#country_id option:selected').val(); // Get the selected country ID
 
     if (selectedCountryId) {
-        $.ajax({
-            url: `<?= base_url('Home/GetCountryCode/'); ?>${selectedCountryId}`,
-            type: 'GET',
-            dataType: 'json',
-            success: function(response) {
-                if (response.status === 'success') {
-                    const { dial_code, name } = response.data;
-                    // Loop through the dial_code dropdown and match the country name and dial code
-                    $('#dial_code').find('option').each(function() {
-                        if ($(this).val() === dial_code && $(this).data('country-name') == name) {
-                            $(this).prop('selected', true); // Set the option as selected
-                            $('#dial_code').trigger('change'); // Trigger the change event to refresh select2
-                        }
-                    });
-                } else {
-                    console.error('Error fetching country code:', response.message);
-                }
-            },
-            error: function(xhr) {
-                console.error('Error:', xhr.responseJSON ? xhr.responseJSON.error : 'Unknown error');
-            }
-        });
+      $.ajax({
+        url: `<?= base_url('Home/GetCountryCode/'); ?>${selectedCountryId}`,
+        type: 'GET',
+        dataType: 'json',
+        success: function(response) {
+          if (response.status === 'success') {
+            const {
+              dial_code,
+              name
+            } = response.data;
+            
+            $('#dial_code').find('option').each(function() {
+              if ($(this).val() === dial_code && $(this).data('country-name') == name) {
+                $(this).prop('selected', true); 
+                $('#dial_code').trigger('change'); 
+              }
+            });
+          } else {
+            console.error('Error fetching country code:', response.message);
+          }
+        },
+        error: function(xhr) {
+          console.error('Error:', xhr.responseJSON ? xhr.responseJSON.error : 'Unknown error');
+        }
+      });
     } else {
-        // Clear the dial_code selection if no country is selected
-        $('#dial_code').val('').trigger('change');
+      
+      $('#dial_code').val('').trigger('change');
     }
-}
+  }
 
-$(document).ready(function() {
+  $(document).ready(function() {
 
-    // Initialize select2 for country and dial code select boxes
+    
     $('#dial_code').select2({
-        templateResult: formatState,
-        templateSelection: formatState,
-        placeholder: "-- Select Code --",
-        allowClear: false // Prevent clearing the selection
+      templateResult: formatState,
+      templateSelection: formatState,
+      placeholder: "-- Select Code --",
+      allowClear: false 
     });
-    $('#country_id').select2({
-        minimumResultsForSearch: Infinity // Disable the search box
-    });
-    // Initially call getCountryCode to set the default dial code
+    $('#country_id').select2();
+    
     getCountryCode();
-});
+  });
 
-// Function to format the dropdown with flags
-function formatState(state) {
+  
+  function formatState(state) {
     if (!state.id) {
-        return state.text; // Initial state
+      return state.text;
     }
 
-    const flagUrl = $(state.element).data('flag'); // Get the flag URL from data attribute
+    const flagUrl = $(state.element).data('flag'); 
     return $(`<span><img src="${flagUrl}" width="20" style="margin-right: 12px; width:11%;" />${state.text}</span>`);
-}
-
+  }
 </script>
 
 <!-- register end -->
