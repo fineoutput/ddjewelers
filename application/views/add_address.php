@@ -117,16 +117,17 @@
         <div class="row">
           <div class="col-md-12">
             <form action="<?= base_url(); ?>Home/add_new_address" method="post" enctype="multipart/form-data">
-              <div class="form-group">
-                <label>Country *</label>
-                <select name="country_id" id="country_id" class="form-control select2" required onchange="getCountryCode()">
-                  <option value="">-----select Country-----</option>
-                  <?php $i = 1;
-                  foreach ($country_data->result() as $country) { ?>
-                    <option value="<?= $country->id ?>" <?php if($country->id == 12) echo 'selected'; ?> ><?= $country->name ?></option>
-                  <?php } ?>
-                </select>
-              </div>
+            <div class="form-group">
+    <label>Country *</label>
+    <select name="country_id" id="country_id" class="form-control select2" required onchange="getCountryCode()">
+        <option value="">-----select Country-----</option>
+        <?php 
+        foreach ($country_data->result() as $country) { ?>
+            <option value="<?= $country->id ?>" <?php if($country->id == 12) echo 'selected'; ?>><?= $country->name ?></option>
+        <?php } ?>
+    </select>
+</div>
+
 
               <div style="display:flex; gap:6px; " class="resp">
                 <div class="form-group col-md-6 p-0">
@@ -143,23 +144,24 @@
 
                
               <div class="form-group col-md-3 p-0">
-                  <label for="dial_code">Dial Code *</label>
-                  <?php 
-                  // Fetch country codes from the database
-                  $country_codes = $this->db->select('*')->from('tbl_country_code')->get();
-                  ?>
-                  <select name="dial_code" id="dial_code" class="form-control select2" required>
-                      <option value="">-- Select Code --</option>
-                      <?php foreach ($country_codes->result() as $country_code) { 
-                          // Construct the flag image URL
-                          $flag_url = "https://hatscripts.github.io/circle-flags/flags/" . strtolower($country_code->code) . ".svg";
-                      ?>
-                          <option value="<?= $country_code->dial_code ?>" data-country-name="<?= $country_code->name ?>" data-flag="<?= $flag_url ?>">
-                              <?= $country_code->dial_code ?>
-                          </option>
-                      <?php } ?>
-                  </select>
-              </div>
+    <label for="dial_code">Dial Code *</label>
+    <?php 
+    // Fetch country codes from the database
+    $country_codes = $this->db->select('*')->from('tbl_country_code')->get();
+    ?>
+    <select name="dial_code" id="dial_code" class="form-control select2" required>
+        <option value="">-- Select Code --</option>
+        <?php foreach ($country_codes->result() as $country_code) { 
+            // Construct the flag image URL
+            $flag_url = "https://hatscripts.github.io/circle-flags/flags/" . strtolower($country_code->code) . ".svg";
+        ?>
+            <option value="<?= $country_code->dial_code ?>" data-country-name="<?= $country_code->name ?>" data-flag="<?= $flag_url ?>">
+                <?= $country_code->dial_code ?>
+            </option>
+        <?php } ?>
+    </select>
+</div>
+  
 
 
   
@@ -244,12 +246,12 @@ function getCountryCode() {
             dataType: 'json',
             success: function(response) {
                 if (response.status === 'success') {
-                  const { dial_code, name } = response.data;
-                    // Update the dial_code dropdown
-                  //  $('#dial_code').val(response.data.dial_code).trigger('change'); // Trigger change event for select2 to refresh
-                  $('#dial_code').find('option').each(function() {
+                    const { dial_code, name } = response.data;
+                    // Loop through the dial_code dropdown and match the country name and dial code
+                    $('#dial_code').find('option').each(function() {
                         if ($(this).val() === dial_code && $(this).data('country-name') == name) {
                             $(this).prop('selected', true); // Set the option as selected
+                            $('#dial_code').trigger('change'); // Trigger the change event to refresh select2
                         }
                     });
                 } else {
@@ -268,15 +270,16 @@ function getCountryCode() {
 
 $(document).ready(function() {
 
-  getCountryCode();
-  
-    $('#dial_code').select2({
+    // Initialize select2 for country and dial code select boxes
+    $('#country_id, #dial_code').select2({
         templateResult: formatState,
         templateSelection: formatState,
-        placeholder: "-- Select Code --", // Set placeholder for better user experience
-        allowClear: false // Allows clearing the selection
+        placeholder: "-- Select Code --",
+        allowClear: false // Prevent clearing the selection
     });
 
+    // Initially call getCountryCode to set the default dial code
+    getCountryCode();
 });
 
 // Function to format the dropdown with flags
