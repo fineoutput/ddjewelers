@@ -271,13 +271,15 @@ function getCountryCode() {
 $(document).ready(function() {
 
     // Initialize select2 for country and dial code select boxes
-    $('#country_id, #dial_code').select2({
+    $('#dial_code').select2({
         templateResult: formatState,
         templateSelection: formatState,
         placeholder: "-- Select Code --",
         allowClear: false // Prevent clearing the selection
     });
-
+    $('#country_id').select2({
+        minimumResultsForSearch: Infinity // Disable the search box
+    });
     // Initially call getCountryCode to set the default dial code
     getCountryCode();
 });
