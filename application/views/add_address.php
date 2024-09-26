@@ -118,15 +118,15 @@
           <div class="col-md-12">
             <form action="<?= base_url(); ?>Home/add_new_address" method="post" enctype="multipart/form-data">
             <div class="form-group">
-    <label>Country *</label>
-    <select name="country_id" id="country_id" class="form-control select2" required onchange="getCountryCode()">
-        <option value="">-----select Country-----</option>
-        <?php 
-        foreach ($country_data->result() as $country) { ?>
-            <option value="<?= $country->id ?>" <?php if($country->id == 12) echo 'selected'; ?>><?= $country->name ?></option>
-        <?php } ?>
-    </select>
-</div>
+                <label>Country *</label>
+                <select name="country_id" id="country_id" class="form-control select2" required onchange="getCountryCode()">
+                  <option value="">-----select Country-----</option>
+                  <?php $i = 1;
+                  foreach ($country_data->result() as $country) { ?>
+                    <option value="<?= $country->id ?>" <?php if($country->id == 12) echo 'selected'; ?> ><?= $country->name ?></option>
+                  <?php } ?>
+                </select>
+              </div>
 
 
               <div style="display:flex; gap:6px; " class="resp">
