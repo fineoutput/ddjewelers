@@ -156,7 +156,7 @@
                       $flag_url = "https://hatscripts.github.io/circle-flags/flags/" . strtolower($country_code->code) . ".svg";
                     ?>
                       <option value="<?= $country_code->dial_code ?>" data-country-name="<?= $country_code->name ?>" data-flag="<?= $flag_url ?>">
-                        <?= $country_code->dial_code ?>
+                        <?= $country_code->dial_code ?>(<?= $country_code->name ?>)
                       </option>
                     <?php } ?>
                   </select>
